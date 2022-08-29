@@ -1,0 +1,83 @@
+key	text	tooltip
+#Loc PackedFile;1;text/db/dyn_dis.loc		
+incidents_localised_title_fro_dyn_dis_aztec_invasion_trigger	The Enactment of the Great Plan	true
+incidents_localised_title_fro_dyn_dis_aztec_invasion_warning_2	Sightings of Strange Ships	true
+incidents_localised_title_fro_dyn_dis_aztec_invasion_warning_1	Rumors of Strange Ships	true
+incidents_localised_description_fro_dyn_dis_aztec_invasion_trigger	Across the whole world, a message has been heard: "The Great Plan has been understood. None of you are part of it."\\n\\nThe invasion has begun.	true
+incidents_localised_description_fro_dyn_dis_aztec_invasion_warning_1	Rumours are surfacing on ports around the world about mysterious ships, of rock and magic, like nothing anyone has seen before. Too many drunken sailors telling tales, if you ask me.	true
+incidents_localised_description_fro_dyn_dis_aztec_invasion_warning_2	Sightings of strange ships are increasing on all seas, from the New World to Grand Cathay.	true
+incidents_button_text_fro_dyn_dis_aztec_invasion_trigger	They're coming!	true
+incidents_button_text_fro_dyn_dis_aztec_invasion_warning_1	Rumours from druken sailors, no doubt.	true
+incidents_button_text_fro_dyn_dis_aztec_invasion_warning_2	Increase the port guard, just in case.	true
+effect_bundles_localised_description_fro_dyn_dis_aztec_invasion_warning_1	Paranoids all, fearing the sea.	true
+effect_bundles_localised_description_fro_dyn_dis_aztec_invasion_warning_2	What its that, floating in the distance?	true
+effect_bundles_localised_description_fro_dyn_dis_aztec_invasion_trigger	Run! Run away from the sea!	true
+effect_bundles_localised_title_fro_dyn_dis_aztec_invasion_warning_1	Rumors of Strange Ships	true
+effect_bundles_localised_title_fro_dyn_dis_aztec_invasion_warning_2	Sightings of Strange Ships	true
+effect_bundles_localised_title_fro_dyn_dis_aztec_invasion_trigger	The Enactment of the Great Plan	true
+diplomacy_strings_string_personality_desc_short_lizardmen_aztec_invasion	Enactor of the Great Plan	true
+diplomacy_strings_string_personality_desc_long_lizardmen_aztec_invasion	It will enact the Great Plan of the Old Ones. Even if it means to destroy all other races.	true
+mct_dyn_dis_mod_title	Dynamic Disasters	true
+mct_dyn_dis_mod_desc	A flexible mod that generates disasters through out the campaign, to make things more interesting.	true
+mct_dyn_dis_enable_dynamic_disasters	Enable Dynamic Disasters	true
+mct_dyn_dis_enable_dynamic_disasters_tooltip	Enable/Disable the whole mod. \\n\\nSafe to disable mid-campaign, but on-going disasters will still finish.	true
+mct_dyn_dis_aztec_invasion_enable	Enable "Enactment of the Great Plan" disaster	true
+mct_dyn_dis_aztec_invasion_enable_tooltip	Enable/Disable the "Enactment of the Great Plan" disaster. \\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
+mct_dyn_dis_mod_config	Global Config	true
+mct_dyn_dis_disasters_config	Disaster Specific Config	true
+mct_dyn_dis_min_turn_value	Minimum Turn	true
+mct_dyn_dis_difficulty_mod	Difficulty Modifier	true
+mct_dyn_dis_min_turn_value_tooltip	Minimum turn required for this disaster to trigger.	true
+mct_dyn_dis_difficulty_mod_tooltip	Difficulty modifier applied to this disaster.	true
+mct_dyn_dis_grudge_too_far_enable	Enable "A Grudge Too Far" disaster (Vanilla)	true
+mct_dyn_dis_grudge_too_far_enable_tooltip	Enable/Disable the "A Grudge Too Far" disaster (Vanilla). \\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
+mct_dyn_dis_pyramid_of_nagash_enable	Enable "Pyramid of Nagash" disaster (Vanilla)	true
+mct_dyn_dis_pyramid_of_nagash_enable_tooltip	Enable/Disable the "Pyramid of Nagash" disaster (Vanilla). \\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
+mct_dyn_dis_vampires_rise_enable	Enable "Vampire's Rise" disaster (Vanilla)	true
+mct_dyn_dis_vampires_rise_enable_tooltip	Enable/Disable the "Vampire's Rise" disaster (Vanilla). \\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
+mct_dyn_dis_waaagh_enable	Enable "Da Biggest Waaagh" disaster (Vanilla)	true
+mct_dyn_dis_waaagh_enable_tooltip	Enable/Disable the "Da Biggest Waaagh" disaster (Vanilla). \\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
+mct_dyn_dis_wild_hunt_enable	Enable "The Wild Hunt" disaster (Vanilla)	true
+mct_dyn_dis_wild_hunt_enable_tooltip	Enable/Disable the "The Wild Hunt" disaster (Vanilla). \\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
+mct_dyn_dis_raiding_parties_enable	Enable "Raiding Parties" disaster	true
+mct_dyn_dis_raiding_parties_enable_tooltip	Enable/Disable the "Raiding Parties" disaster. \\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
+incidents_localised_title_fro_dyn_dis_raiding_parties_warning	Black and Tattered Sails	true
+incidents_localised_description_fro_dyn_dis_raiding_parties_warning	Black and tattered sails have been spotted on the horizon. We don't know yet where will they attack. Prepare yourself.	true
+incidents_localised_title_fro_dyn_dis_raiding_parties_trigger	Pirates!	true
+incidents_localised_description_fro_dyn_dis_raiding_parties_trigger	Pirates have started raiding the coast of the world. Good luck to the poor devils that atracted their attention...	true
+incidents_button_text_fro_dyn_dis_raiding_parties_warning	Beware of the seas.	true
+incidents_button_text_fro_dyn_dis_raiding_parties_trigger	They're coming!	true
+mct_dyn_dis_chianchi_assault_enable	Enable "Chi'an Chi Assault" disaster	true
+mct_dyn_dis_chianchi_assault_enable_tooltip	Enable/Disable the "Chi'an Chi Assault" disaster. \\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
+incidents_localised_title_fro_dyn_dis_chianchi_assault_warning	Chi'an Chi's gaze is upon them!	true
+incidents_localised_title_fro_dyn_dis_chianchi_assault_wall_assault_trigger	Chi'an Chi has send reinforcements!	true
+incidents_localised_title_fro_dyn_dis_chianchi_assault_daemonic_invasion_trigger	Chi'an Chi's invasion has begun!	true
+incidents_localised_title_fro_dyn_dis_chianchi_assault_finish_before_assault	The Great Bastion stands strong!	true
+incidents_localised_description_fro_dyn_dis_chianchi_assault_warning	Chi'an Chi is watching with interest the Great Kurgan horde that approaches the Great Bastion. Why? What twisted scheme is he planning now?	true
+incidents_localised_description_fro_dyn_dis_chianchi_assault_wall_assault_trigger	Chi'an Chi has send reinforcements to the Great Kurgan horde attacking the Great Bastion! The bastion must not fall!	true
+incidents_localised_description_fro_dyn_dis_chianchi_assault_daemonic_invasion_trigger	The Great Bastion has been breached! Send messengers to all the corners of Grand Cathay! We need to rebuild it soon, or the hordes of Chi'an Chi will flood our lands!	true
+incidents_localised_description_fro_dyn_dis_chianchi_assault_finish_before_assault	The Great Bastion has resisted the attack and the Chaos Hordes have been repelled... but was this part of Chi'an Chi's plan?	true
+incidents_localised_title_fro_dyn_dis_great_uprising_stage_1_warning	Morrslieb is... growing?	true
+incidents_localised_title_fro_dyn_dis_great_uprising_stage_1_trigger	The Under-Empire strikes back!	true
+incidents_localised_title_fro_dyn_dis_great_uprising_stage_2_trigger	The Empire under attack!	true
+incidents_localised_title_fro_dyn_dis_great_uprising_stage_3_trigger	The Great Lustrian War has begun!	true
+incidents_localised_title_fro_dyn_dis_great_uprising_stage_4_trigger	The Karaz Ankor besieged!	true
+incidents_localised_title_fro_dyn_dis_great_uprising_stage_5_trigger	Karaz-a-Karak besieged!	true
+incidents_localised_description_fro_dyn_dis_great_uprising_stage_1_warning	Scholars all around the world are perplex. For the first time in recorded history, Morrslieb has grown in size. Nobody knows why.... yet.	true
+incidents_localised_description_fro_dyn_dis_great_uprising_stage_1_trigger	As news of hordes of Skaven (they do exists!) running wild over Estalia and Tilea reached us, we found new information: Morrslieb is not bigger, is closer! And it's already affecting the winds of magic all around the world!	true
+incidents_localised_description_fro_dyn_dis_great_uprising_stage_2_trigger	The Skaven are a secret no more! Hordes are pouring into the Empire, the northern coast of Arabia, and even the hearthlands of Grand Cathay!	true
+incidents_localised_description_fro_dyn_dis_great_uprising_stage_3_trigger	The Great Trans-oceanic Intercontinental Tunnels have been repaired. The Skaven hordes have arrived to Lustria. The Great Lustrian War has begun!	true
+incidents_localised_description_fro_dyn_dis_great_uprising_stage_4_trigger	The Karaz Ankor, the great network of dwarven Karaks spanning across the whole old World, is under siege by all sides by hordes of Skaven!	true
+incidents_localised_description_fro_dyn_dis_great_uprising_stage_5_trigger	Karaz-a-Karak, the ancestral home of the Dawi, is under siege by hordes and hordes of Skaven! May this be the end of the Dawi?	true
+mct_dyn_dis_the_great_uprising_enable	Enable "The Great Uprising" disaster	true
+mct_dyn_dis_the_great_uprising_enable_tooltip	Enable/Disable the "The Great Uprising" disaster. \\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
+diplomacy_strings_string_personality_desc_short_skaven_great_uprising	Participant of the Master Plan	true
+diplomacy_strings_string_personality_desc_long_skaven_great_uprising	It will follow the Master Plan of the Grey Seers.... until one of them turns its back, yes-yes.	true
+effect_bundles_localised_description_fro_dyn_dis_great_uprising_global_effects	Morrslieb, The Green Moon, is closer than ever, nobody knows why. But the effects of being so close to that accursed moon are already showing around the world.	true
+effect_bundles_localised_title_fro_dyn_dis_great_uprising_global_effects	The Green Shine of Morrslieb	true
+effects_description_fro_dyn_dis_skaven_corruption_mapwide	Skaven corruption: %+n	true
+effects_description_fro_dyn_dis_storm_of_magic_all_factions	Possibility of Storms of Magic across the whole world.	true
+incidents_localised_title_fro_dyn_dis_great_uprising_finish_before_stage_1	The Skaven menace is no more!	true
+incidents_localised_title_fro_dyn_dis_great_uprising_finish	Morrslieb recedes! The Skaven menace is no more!	true
+incidents_localised_description_fro_dyn_dis_great_uprising_finish_before_stage_1	Morrslieb seems to have gone back to its normal size. It seems we will never know what caused such phenomenom.	true
+incidents_localised_description_fro_dyn_dis_great_uprising_finish	After all that destruction, and without the Grey Seers to keep it close, Morrslieb has returned to its natural orbit. The world has been saved.... for now.	true

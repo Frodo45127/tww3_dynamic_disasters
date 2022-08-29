@@ -1,0 +1,4 @@
+effect	icon	priority	icon_negative	category	is_positive_value_good
+#effects_tables;0;db/effects_tables/dyn_dis					
+fro_dyn_dis_storm_of_magic_all_factions	magic_campaign.png	1	magic_campaign.png	campaign	true
+fro_dyn_dis_skaven_corruption_mapwide	corruption_skaven.png	104	corruption_skaven.png	campaign	false

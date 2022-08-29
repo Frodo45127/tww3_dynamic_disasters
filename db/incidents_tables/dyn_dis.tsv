@@ -1,0 +1,19 @@
+key	ui_image	generate	prioritised	event_category	override_icon	is_large_incident
+#incidents_tables;4;db/incidents_tables/dyn_dis						
+fro_dyn_dis_aztec_invasion_warning_2	lzd/wh2_dlc17_new_threats_available	false	true	Disaster		false
+fro_dyn_dis_aztec_invasion_warning_1	lzd/wh2_dlc17_new_threats_available	false	true	Disaster		false
+fro_dyn_dis_aztec_invasion_trigger	lzd/victory	false	true	Disaster		true
+fro_dyn_dis_raiding_parties_warning	cst/legendary_pirate_attacks	false	true	Disaster		false
+fro_dyn_dis_raiding_parties_trigger	cst/legendary_pirate_attacks	false	true	Disaster		false
+fro_dyn_dis_chianchi_assault_warning	tze/faction	false	true	Disaster		false
+fro_dyn_dis_chianchi_assault_wall_assault_trigger	tze/army_morale_up	false	true	Disaster		false
+fro_dyn_dis_chianchi_assault_daemonic_invasion_trigger	tze/victory	false	true	Disaster		false
+fro_dyn_dis_chianchi_assault_finish_before_assault	cth/celebration	false	true	Disaster		false
+fro_dyn_dis_great_uprising_stage_1_warning	skv/politics	false	true	Disaster		false
+fro_dyn_dis_great_uprising_stage_1_trigger	skv/global_action_fire	false	true	Disaster		true
+fro_dyn_dis_great_uprising_stage_2_trigger	skv/ritual_complete	false	true	Disaster		false
+fro_dyn_dis_great_uprising_stage_3_trigger	skv/under_empire_army	false	true	Disaster		true
+fro_dyn_dis_great_uprising_stage_4_trigger	skv/celebration	false	true	Disaster		true
+fro_dyn_dis_great_uprising_stage_5_trigger	skv/victory	false	true	Disaster		true
+fro_dyn_dis_great_uprising_finish_before_stage_1	skv/settlement_lost	false	true	Disaster		false
+fro_dyn_dis_great_uprising_finish	skv/settlement_lost	false	true	Disaster		false
