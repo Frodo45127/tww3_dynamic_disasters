@@ -11,11 +11,18 @@ mod:set_description(loc_prefix.."mod_desc", true)
 ]]
 
 local section_disasters_global_config = mod:add_new_section("mod_config", loc_prefix.."mod_config", true)
-local enable_dynamic_disasters = mod:add_new_option("enable_dynamic_disasters", "checkbox")
-enable_dynamic_disasters:set_default_value(true)
-enable_dynamic_disasters:set_text(loc_prefix.."enable_dynamic_disasters", true)
-enable_dynamic_disasters:set_tooltip_text(loc_prefix.."enable_dynamic_disasters_tooltip", true)
 
+local dynamic_disasters_enable = mod:add_new_option("dynamic_disasters_enable", "checkbox")
+dynamic_disasters_enable:set_default_value(true)
+dynamic_disasters_enable:set_text(loc_prefix.."enable", true)
+dynamic_disasters_enable:set_tooltip_text(loc_prefix.."enable_tooltip", true)
+
+local dynamic_disasters_max_simul = mod:add_new_option("dynamic_disasters_max_simul", "slider")
+dynamic_disasters_max_simul:set_text(loc_prefix.."max_simul", true)
+dynamic_disasters_max_simul:set_tooltip_text(loc_prefix.."max_simul_tooltip", true)
+dynamic_disasters_max_simul:slider_set_min_max(1, 50)
+dynamic_disasters_max_simul:set_default_value(6)
+dynamic_disasters_max_simul:slider_set_step_size(1)
 
 local section_disasters_individual_config = mod:add_new_section("disasters_config", loc_prefix.."disasters_config", true)
 
@@ -87,7 +94,7 @@ chianchi_assault_difficulty_mod:set_default_value(150)
 chianchi_assault_difficulty_mod:slider_set_step_size(1)
 
 --[[
-    The Great Uprising Config
+    The Great Ascendancy Config
 ]]
 local the_great_uprising_enable = mod:add_new_option("the_great_uprising_enable", "checkbox")
 the_great_uprising_enable:set_default_value(true)
@@ -97,9 +104,9 @@ the_great_uprising_enable:set_tooltip_text(loc_prefix.."the_great_uprising_enabl
 local the_great_uprising_min_turn_value = mod:add_new_option("the_great_uprising_min_turn_value", "slider")
 the_great_uprising_min_turn_value:set_text(loc_prefix.."min_turn_value", true)
 the_great_uprising_min_turn_value:set_tooltip_text(loc_prefix.."min_turn_value_tooltip", true)
-the_great_uprising_min_turn_value:slider_set_min_max(10, 400)
-the_great_uprising_min_turn_value:set_default_value(120)
-the_great_uprising_min_turn_value:slider_set_step_size(1)
+the_great_uprising_min_turn_value:slider_set_min_max(13, 390)
+the_great_uprising_min_turn_value:set_default_value(130)
+the_great_uprising_min_turn_value:slider_set_step_size(13)
 
 local the_great_uprising_difficulty_mod = mod:add_new_option("the_great_uprising_difficulty_mod", "slider")
 the_great_uprising_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)

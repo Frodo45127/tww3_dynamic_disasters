@@ -40,6 +40,7 @@ disaster_raiding_parties = {
         started = false,                    -- If the disaster has been started.
         finished = false,                   -- If the disaster has been finished.
         repeteable = true,                  -- If the disaster can be repeated.
+        is_endgame = false,                 -- If the disaster is an endgame.
         min_turn = 30,                      -- Minimum turn required for the disaster to trigger.
         last_triggered_turn = 0,            -- Turn when the disaster was last triggerd.
         last_finished_turn = 0,             -- Turn when the disaster was last finished.

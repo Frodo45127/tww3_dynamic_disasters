@@ -57,6 +57,7 @@ disaster_aztec_invasion = {
         started = false,                    -- If the disaster has been started.
         finished = false,                   -- If the disaster has been finished.
         repeteable = false,                 -- If the disaster can be repeated.
+        is_endgame = true,                  -- If the disaster is an endgame.
         min_turn = 60,                      -- Minimum turn required for the disaster to trigger.
         last_triggered_turn = 0,            -- Turn when the disaster was last triggerd.
         last_finished_turn = 0,             -- Turn when the disaster was last finished.

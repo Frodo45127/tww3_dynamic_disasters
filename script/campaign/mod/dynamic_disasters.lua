@@ -9,6 +9,8 @@ dynamic_disasters = {
     settings = {
         enabled = true,                         -- If the entire Dynamic Disasters system is enabled.
         victory_condition_triggered = false,    -- If a disaster has already triggered a victory condition, as we can't have two at the same time.
+        max_endgames_at_the_same_time = 6,      -- Max amount of endgame crisis one can trigger at the same time, to space them out a bit.
+        currently_running_endgames = 0,         -- Amount of currently running endgames.
     },
     disasters = {},
 
@@ -537,6 +539,7 @@ local mandatory_settings = {
     started = false,                    -- If the disaster has been started.
     finished = false,                   -- If the disaster has been finished.
     repeteable = false,                 -- If the disaster can be repeated.
+    is_endgame = true,                  -- If the disaster is an endgame.
     min_turn = 60,                      -- Minimum turn required for the disaster to trigger.
     status = 0,                         -- Current status of the disaster. Used to re-initialize the disaster correctly on reload.
     last_triggered_turn = 0,            -- Turn when the disaster was last triggerd.
@@ -576,9 +579,13 @@ core:add_listener(
 function dynamic_disasters:load_from_mct(mct)
     local mod = mct:get_mod_by_key("dynamic_disasters")
 
-    local enable_dynamic_disasters = mod:get_option_by_key("enable_dynamic_disasters")
-    local enable_dynamic_disasters_setting = enable_dynamic_disasters:get_finalized_setting()
-    self.settings.enabled = enable_dynamic_disasters_setting
+    local dynamic_disasters_enable = mod:get_option_by_key("dynamic_disasters_enable")
+    local dynamic_disasters_enable_setting = dynamic_disasters_enable:get_finalized_setting()
+    self.settings.enabled = dynamic_disasters_enable_setting
+
+    local dynamic_disasters_max_simul = mod:get_option_by_key("dynamic_disasters_max_simul")
+    local dynamic_disasters_max_simul_setting = dynamic_disasters_max_simul:get_finalized_setting()
+    self.settings.max_endgames_at_the_same_time = dynamic_disasters_max_simul_setting
 
     for _, disaster in pairs(self.disasters) do
         local disaster_enable = mod:get_option_by_key(disaster.name .. "_enable");
@@ -798,23 +805,36 @@ function dynamic_disasters:process_disasters()
                     -- If it's repeteable, try to trigger it again.
                     if disaster.settings.repeteable == true then
                         if disaster.settings.last_finished_turn > 0 and cm:turn_number() - disaster.settings.last_finished_turn > disaster.settings.wait_turns_between_repeats then
-                            if disaster:check_start_disaster_conditions() then
-                                out("Frodo45127: Disaster " .. disaster.name .. " triggered (repeated trigger).");
-                                disaster.settings.finished = false;
-                                disaster.settings.started = true;
-                                disaster.settings.last_triggered_turn = cm:turn_number();
-                                disaster:trigger();
+                            if disaster.settings.is_endgame == false or (disaster.settings.is_endgame == true and self.settings.currently_running_endgames < self.settings.max_endgames_at_the_same_time) then
+
+                                if disaster:check_start_disaster_conditions() then
+                                    out("Frodo45127: Disaster " .. disaster.name .. " triggered (repeated trigger).");
+                                    disaster.settings.finished = false;
+                                    disaster.settings.started = true;
+                                    disaster.settings.last_triggered_turn = cm:turn_number();
+
+                                    if disaster.settings.is_endgame == true then
+                                        self.settings.currently_running_endgames = self.settings.currently_running_endgames + 1;
+                                    end
+
+                                    disaster:trigger();
+                                end
                             end
                         end
                     end
 
                 -- If it's not yet started, check if we have the minimum requirements to start it.
                 elseif disaster.settings.started == false then
-                    if cm:turn_number() >= disaster.settings.min_turn then
+                    if cm:turn_number() >= disaster.settings.min_turn and (disaster.settings.is_endgame == false or (disaster.settings.is_endgame == true and self.settings.currently_running_endgames < self.settings.max_endgames_at_the_same_time)) then
                         if disaster:check_start_disaster_conditions() then
                             out("Frodo45127: Disaster " .. disaster.name .. " triggered (first trigger).");
                             disaster.settings.started = true;
                             disaster.settings.last_triggered_turn = cm:turn_number();
+
+                            if disaster.settings.is_endgame == true then
+                                self.settings.currently_running_endgames = self.settings.currently_running_endgames + 1;
+                            end
+
                             disaster:trigger();
                         end
                     end
@@ -830,6 +850,10 @@ function dynamic_disasters:finish_disaster(disaster)
     disaster.settings.started = false;
     disaster:set_status(0);
     disaster.settings.last_finished_turn = cm:turn_number();
+
+    if disaster.settings.is_endgame == true then
+        self.settings.currently_running_endgames = self.settings.currently_running_endgames - 1;
+    end
 end
 
 -- Function to trigger an incident for a phase of a disaster.

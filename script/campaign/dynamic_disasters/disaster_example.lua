@@ -27,6 +27,7 @@ disaster_example = {
         started = false,                    -- If the disaster has been started.
         finished = false,                   -- If the disaster has been finished.
         repeteable = true,                  -- If the disaster can be repeated.
+        is_endgame = false,                 -- If the disaster is an endgame.
         min_turn = 30,                      -- Minimum turn required for the disaster to trigger.
         status = 0,                         -- Current status of the disaster. Used to re-initialize the disaster correctly on reload.
         last_triggered_turn = 0,            -- Turn when the disaster was last triggerd.
