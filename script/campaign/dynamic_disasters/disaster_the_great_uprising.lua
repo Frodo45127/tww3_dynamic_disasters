@@ -1,56 +1,68 @@
 --[[
-    The Great Uprising disaster, By Frodo45127.
+    The Great Uprising/The Great Ascendancy/The Vermintide disaster, By Frodo45127.
 
     This disaster consists in the execution of the plan proposed to the Lords of Decay by Seerlord Kritislik.
 
-    Requirements:
-        - Random chance (0.005)
-        - +0.005 for each skaven faction that has been wiped out.
-        - At least turn 100 (so the player has already "prepared").
-    Effects:
-        - Trigger/First Warning:
-            - Message of warning about men-sized rats in the sewers.
-            - Wait 10 turns for more info.
-        - Stage 1:
-            - Buff skaven sorceries.
-            - Increase skaven corruption all over the world.
-            - Spawn armies in estalia and tilea if they're not already destroyed/under skaven hands.
-            - Disable diplomacy for skaven.
-            - Make them full agressive for the rest of the campaign.
-            - If no other disaster has triggered a Victory Condition yet, this will trigger one.
-            - Wait 6 turns, or until tilea and estalia are destroyed.
-        - Stage 2:
-            - Buff skaven sorceries.
-            - Increase skaven corruption all over the world.
-            - Spawn armies in araby provinces if they're not already destroyed/under skaven hands.
-            - Spawn armies in empire provinces (nuln) if they're not already destroyed/under skaven hands.
-            - Wait 4 turns, or until araby are destroyed.
-        - Stage 3:
-            - Buff skaven sorceries.
-            - Increase skaven corruption all over the world.
-            - Damage lustrian settlements? Meteorites?
-            - If skaven are still alive, trigger the invasion of Lustria.
-            - Spawn armies near Itza, Tlaxtlan and Xlanhuapec.
-            - Wait 5 turns.
-        - Stage 3.5:
-            - Spawn even more armies in lustria.
-        - Stage 4:
-            - Buff skaven sorceries.
-            - Increase skaven corruption all over the world.
-            - Damage lustrian settlements? Meteorites?
-            - If skaven are still alive, trigger the invasion of Karak Kadrin, Karak Azul, Barak Varr, Karak Hirn, Zhufbar and Karak 8 Peaks (check clans attacking in the endtimes).
-            - Wait 10 turns.
-        - Stage 5:
-            - Buff skaven sorceries.
-            - Increase skaven corruption all over the world.
-            - Damage lustrian settlements? Meteorites?
-            - If skaven are still alive, trigger the invasion of Karaz-a-Karak.
+    Classified as Endgame, can trigger final mission.
 
+    Requirements:
+        - Random chance: 0.25% (1/400 turns).
+        - +0.25% for each Skaven faction that has been wiped out (not confederated).
+        - At least turn 130 (so the player has already "prepared").
+        - Clan Skryre must be alive (it's the one it starts the invasion).
+    Effects:
+        - Trigger/Early Warning:
+            - Message about Morrslieb increasing in size.
+            - Wait 6-10 turns for more info.
+        - Stage 1:
+            - If Clan Skryre is dead, end the disaster here.
+            - If not:
+                - Targets: Estalia, Tilea and Sartosa.
+                - Spawn Clan Skyre armies on Estalia, Tilea and Sartosa.
+                - Clan Skryre declares war on all non-skaven owners of said provinces and on all its neightbours.
+                - Clan Skryre gets disabled diplomacy and full-retard AI.
+                - Trigger "The Green Shine of MorrsLieb" effect (50% Probability of Storm of Magic).
+                - Wait 6-10 turns for more info.
+        - Stage 2:
+            - Targets: The Empire, Araby's North Coast and Cathay's Hearthlands.
+            - Spawn random skaven factions's armies on the Empire and Araby's North Coast.
+            - If Eshin has not been confederated:
+                - Spawn Clan Eshin armies on Cathay's Hearthlands.
+            - All major and minot non-confederated skaven factions declare war on owner of attacked provinces and adjacent regions if not skaven.
+            - All major and minot non-confederated skaven factions gets disabled diplomacy and full-retard AI.
+            - Trigger "The Green Shine of MorrsLieb" effect (50% Probability of Storm of Magic).
+            - Wait 4-7 turns for more info.
+        - Stage 3:
+            - Targets: Xlanhuapec, Itza and Tlaxtlan (Lustria).
+            - Spawn Clans Pestilens and Skryre armies in Lustria.
+            - All major and minot non-confederated skaven factions declare war on owner of attacked provinces and adjacent regions if not skaven.
+            - All major and minot non-confederated skaven factions gets disabled diplomacy and full-retard AI.
+            - Trigger "The Green Shine of MorrsLieb" effect (50% Probability of Storm of Magic).
+            - Wait 4-6 turns for more info.
+        - Stage 4:
+            - Targets: Major settlments of the Karaz Ankor.
+            - Spawn a mix of clans armies on settlements of the Karaz Ankor.
+            - All major and minot non-confederated skaven factions declare war on owner of attacked provinces and adjacent regions if not skaven.
+            - All major and minot non-confederated skaven factions gets disabled diplomacy and full-retard AI.
+            - Trigger "The Green Shine of MorrsLieb" effect (50% Probability of Storm of Magic).
+            - Wait 6-10 turns for more info.
+        - Stage 5 (Optional):
+            - Target: Karaz-a-Karak.
+            - Clan Mors must be alive and not confederated.
+            - Kazaz-a-Karak must be controlled by a dwarven faction.
+            - Spawn a few Clan Mors armies in Karaz-a-Karak.
+            - All major and minot non-confederated skaven factions declare war on owner of attacked provinces and adjacent regions if not skaven.
+            - All major and minot non-confederated skaven factions gets disabled diplomacy and full-retard AI.
+            - Trigger "The Green Shine of MorrsLieb" effect (50% Probability of Storm of Magic).
+            - "The Green Shine of MorrsLieb" effect will last 10 more turns.
 
         - Finish:
-            - All lizard factions destroyed.
+            - Before Stage 1:
+                - If Clan Skryre is killed/confederated.
+            - After Stage 1:
+                - All skaven factions destroyed.
 
-    MAYBE:
+    Ideas:
         - If its faction is dead, put krokgar in lustria after Xlanhuapec falls
         - If its faction is dead, put Belegar in Karak 8 Peaks
         - If we reach the Karaz-a-Karak battle, maybe enter as reinforcements?
@@ -157,6 +169,50 @@ local skaven_factions = {
     "wh3_main_skv_clan_treecherik",     -- Clan Treecherik
     "wh2_dlc15_skv_clan_volkn",         -- Clan Volkn
     "wh3_main_skv_clan_verms",          -- Clan Verms
+}
+
+local factions_stage_1 = {
+    "wh2_main_skv_clan_skryre",         -- Clan Skryre (Ikit Claw)
+}
+
+local factions_stage_2_empire_and_araby = {
+    "wh3_main_skv_clan_carrion",        -- Clan Carrion
+    "wh2_dlc12_skv_clan_fester",        -- Clan Fester
+    "wh2_dlc15_skv_clan_ferrik",        -- Clan Ferrik
+    "wh2_dlc15_skv_clan_kreepus",       -- Clan Kreepus
+    "wh3_main_skv_clan_krizzor",        -- Clan Krizzor
+    "wh2_dlc12_skv_clan_mange",         -- Clan Mange
+    "wh3_main_skv_clan_morbidus",       -- Clan Morbidus
+    "wh2_main_skv_clan_septik",         -- Clan Septik
+    "wh3_main_skv_clan_skrat",          -- Clan Skrat
+    "wh2_main_skv_clan_spittel",        -- Clan Spittel
+    "wh3_main_skv_clan_treecherik",     -- Clan Treecherik
+    "wh2_dlc15_skv_clan_volkn",         -- Clan Volkn
+    "wh3_main_skv_clan_verms",          -- Clan Verms
+}
+
+local factions_stage_2_cathay = {
+    "wh2_main_skv_clan_eshin",          -- Clan Eshin (Snikch)
+}
+
+local factions_stage_3_lustria = {
+    "wh2_main_skv_clan_pestilens",      -- Clan Pestilens (Skrolk)
+    "wh2_main_skv_clan_skryre",         -- Clan Skryre (Ikit Claw)
+}
+
+local factions_stage_4_karaz_ankor = {
+
+    -- Major factions
+    "wh2_main_skv_clan_mors",           -- Clan Mors (Queek)
+    "wh2_main_skv_clan_eshin",          -- Clan Eshin (Snikch)
+    "wh2_main_skv_clan_moulder",        -- Clan Moulder (Throt)
+
+    -- Minor factions
+    "wh2_dlc15_skv_clan_ferrik",        -- Clan Ferrik
+}
+
+local factions_stage_5_karaz_a_karak = {
+    "wh2_main_skv_clan_mors",           -- Clan Mors (Queek)
 }
 
 -- Regions to be invaded in stage 1.
@@ -352,6 +408,7 @@ function disaster_the_great_uprising:set_status(status)
             true
         );
 
+        --[[
         -- This triggers stage three reinforcements if the disaster hasn't been cancelled.
         core:add_listener(
             "GreatUprisingStage3Reinforcements",
@@ -391,13 +448,14 @@ function disaster_the_great_uprising:set_status(status)
                     -- Force war against every skaven faction for each faction the skaven attack.
                     for _, faction_key in pairs(skaven_factions) do
                         local faction = cm:get_faction(faction_key);
-                        self:declare_war_for_owners_and_neightbours(faction, regions_stage_3);
+                        dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions_stage_3);
                     end
                 end
                 core:remove_listener("GreatUprisingStage3Reinforcements")
             end,
             true
         );
+        ]]--
     end
 
     if self.settings.status == STATUS_STAGE_4 then
@@ -419,14 +477,7 @@ function disaster_the_great_uprising:set_status(status)
                     dynamic_disasters:execute_payload(self.settings.finish_event_key, nil, 0);
                     self:trigger_end_disaster();
                 else
-
-                    local region = cm:get_region(regions_stage_5[1]);
-                    local region_owner = region:owning_faction();
-
-                    -- Stage 5 should only trigger if Karaz-a-Karak belongs to the dwarfs.
-                    if region_owner:is_null_interface() == false and region_owner:subculture() == "wh_main_sc_dwf_dwarfs" then
-                        self:trigger_stage_5();
-                    end
+                    self:trigger_stage_5();
                 end
                 core:remove_listener("GreatUprisingStage5")
             end,
@@ -434,7 +485,7 @@ function disaster_the_great_uprising:set_status(status)
         );
     end
 
-    if self.settings.status == STATUS_STAGE_4 or self.settings.status == STATUS_STAGE_5 then
+    if self.settings.status == STATUS_STAGE_5 then
 
         -- This ends the disaster once all rats are dead.
         core:add_listener(
@@ -475,18 +526,17 @@ function disaster_the_great_uprising:trigger_stage_1()
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_skv_skaven")
     dynamic_disasters:execute_payload(self.settings.stage_1_event_key, self.settings.effects_global_key, self.settings.stage_2_delay);
 
-    -- Spawn a few skryre armies in estalia, tilea and sartosa. Enough so they're able to expand next.
-    -- Also, declare war on all neightbours to ensure war continue and they don't just sit there or get relocated.
-    local faction_key = "wh2_main_skv_clan_skryre";
-    for _, region_key in pairs(regions_stage_1) do
+    -- Spawn a few Skryre armies in Estalia, Tilea and Sartosa. Enough so they're able to expand next.
+    for _, faction_key in pairs(factions_stage_1) do
         local faction = cm:get_faction(faction_key);
-        local region = cm:get_region(region_key);
+        dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions_stage_1, true, {"wh2_main_sc_skv_skaven"})
 
-        if not faction == false and not region == false then
-            endgame:declare_war_on_adjacent_region_owners(faction, region)
+        for _, region_key in pairs(regions_stage_1) do
+            dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, true, math.ceil(1.5 * self.settings.difficulty_mod), self.name)
         end
 
-        dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, true, math.ceil(1.5 * self.settings.difficulty_mod), self.name)
+        -- Apply the relevant CAI changes.
+        cm:force_change_cai_faction_personality(faction_key, self.settings.ai_personality)
     end
 
     -- Make sure every attacker is at peace with each other.
@@ -500,10 +550,6 @@ function disaster_the_great_uprising:trigger_stage_1()
         -- Also, make sure they're added to the victory conditions.
         table.insert(self.objectives[1].conditions, "faction " .. src_faction_key)
     end
-
-    -- Apply the relevant war declarations against the player and CAI changes.
-    endgame:no_peace_no_confederation_only_war(faction_key)
-    cm:force_change_cai_faction_personality(faction_key, self.settings.ai_personality)
 
     -- Trigger the effect about Morrslieb.
     self:morrslieb_gaze_is_upon_us(self.settings.stage_2_delay);
@@ -530,48 +576,35 @@ function disaster_the_great_uprising:trigger_stage_2()
         dynamic_disasters:execute_payload(self.settings.stage_2_event_key, self.settings.effects_global_key, self.settings.stage_3_delay);
     end
 
-    local factions_empire_and_araby = {
-        "wh3_main_skv_clan_carrion",        -- Clan Carrion
-        "wh3_main_skv_clan_krizzor",        -- Clan Krizzor
-        "wh3_main_skv_clan_morbidus",       -- Clan Morbidus
-        "wh2_main_skv_clan_septik",         -- Clan Septik
-        "wh2_dlc15_skv_clan_volkn",         -- Clan Volkn
-    }
-
-    local factions_cathay = {
-        "wh2_main_skv_clan_eshin",          -- Clan Eshin (Snikch)
-    }
-
     -- Spawn a few armies in the Empire, the northern coast of Araby and Cathay.
     for _, region_key in pairs(regions_stage_2_empire) do
-        local faction_key = factions_empire_and_araby[math.random(1, #factions_empire_and_araby)];
+        local faction_key = factions_stage_2_empire_and_araby[math.random(1, #factions_stage_2_empire_and_araby)];
         dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, true, math.ceil(1.5 * self.settings.difficulty_mod), self.name)
     end
 
     for _, region_key in pairs(regions_stage_2_araby) do
-        local faction_key = factions_empire_and_araby[math.random(1, #factions_empire_and_araby)];
+        local faction_key = factions_stage_2_empire_and_araby[math.random(1, #factions_stage_2_empire_and_araby)];
         dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, true, math.ceil(2 * self.settings.difficulty_mod), self.name)
     end
 
-    for _, region_key in pairs(regions_stage_2_cathay) do
-        dynamic_disasters:create_scenario_force(factions_cathay[1], region_key, self.settings.army_template, self.settings.base_army_unit_count, true, math.ceil(2 * self.settings.difficulty_mod), self.name)
+    -- The Attack on Cathay depends on Eshin being available to spawn.
+    if #factions_stage_2_cathay > 0 then
+        for _, region_key in pairs(regions_stage_2_cathay) do
+            local faction_key = factions_stage_2_cathay[math.random(1, #factions_stage_2_cathay)];;
+            dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, true, math.ceil(2 * self.settings.difficulty_mod), self.name)
+        end
     end
 
     -- From this stage, we force all skaven on the map to declare war on everyone a single faction faces.
-    -- This includes owners of the attacked region, and owners of nearby regions.
+    -- This includes owners of the attacked region, and owners of nearby regions. Even if its Skaven.
     for _, faction_key in pairs(skaven_factions) do
         local faction = cm:get_faction(faction_key);
-        if not faction == false then
-            self:declare_war_for_owners_and_neightbours(faction, regions_stage_2_empire);
-            self:declare_war_for_owners_and_neightbours(faction, regions_stage_2_araby);
-            self:declare_war_for_owners_and_neightbours(faction, regions_stage_2_cathay);
+        dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions_stage_2_empire, true, {"wh2_main_sc_skv_skaven"});
+        dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions_stage_2_araby, true, {"wh2_main_sc_skv_skaven"});
+        dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions_stage_2_cathay, true, {"wh2_main_sc_skv_skaven"});
 
-            -- Just in case, force war with no peace on the player.
-            endgame:no_peace_no_confederation_only_war(faction_key)
-
-            -- Apply the relevant buffs and CAI changes.
-            cm:force_change_cai_faction_personality(faction_key, self.settings.ai_personality)
-        end
+        -- Apply the relevant buffs and CAI changes.
+        cm:force_change_cai_faction_personality(faction_key, self.settings.ai_personality)
     end
 
     -- Trigger the effect about Morrslieb.
@@ -589,21 +622,16 @@ function disaster_the_great_uprising:trigger_stage_3()
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_skv_skaven")
     dynamic_disasters:execute_payload(self.settings.stage_3_event_key, self.settings.effects_global_key, self.settings.stage_4_delay);
 
-    local factions = {
-        "wh2_main_skv_clan_pestilens",      -- Clan Pestilens (Skrolk)
-        "wh2_main_skv_clan_skryre",         -- Clan Skryre (Ikit Claw)
-    }
-
     -- Spawn a few armies in Lustria.
     for _, region_key in pairs(regions_stage_3) do
-        local faction_key = factions[math.random(1, #factions)];
+        local faction_key = factions_stage_3_lustria[math.random(1, #factions_stage_3_lustria)];
         dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, true, math.ceil(2.5 * self.settings.difficulty_mod), self.name)
     end
 
     -- Force war against every skaven faction for each faction the skaven attack.
     for _, faction_key in pairs(skaven_factions) do
         local faction = cm:get_faction(faction_key);
-        self:declare_war_for_owners_and_neightbours(faction, regions_stage_3);
+        dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions_stage_3, true, {"wh2_main_sc_skv_skaven"});
     end
 
     -- Trigger the effect about Morrslieb.
@@ -621,27 +649,16 @@ function disaster_the_great_uprising:trigger_stage_4()
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_skv_skaven")
     dynamic_disasters:execute_payload(self.settings.stage_4_event_key, self.settings.effects_global_key, self.settings.stage_5_delay);
 
-    local factions = {
-
-        -- Major factions
-        "wh2_main_skv_clan_mors",           -- Clan Mors (Queek)
-        "wh2_main_skv_clan_eshin",          -- Clan Eshin (Snikch)
-        "wh2_main_skv_clan_moulder",        -- Clan Moulder (Throt)
-
-        -- Minor factions
-        "wh2_dlc15_skv_clan_ferrik",        -- Clan Ferrik
-    }
-
     -- Spawn a few armies along the Karak Ankor.
     for _, region_key in pairs(regions_stage_4) do
-        local faction_key = factions[math.random(1, #factions)];
+        local faction_key = factions_stage_4_karaz_ankor[math.random(1, #factions_stage_4_karaz_ankor)];
         dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, true, math.ceil(2 * self.settings.difficulty_mod), self.name)
     end
 
     -- Force war against every skaven faction for each faction the skaven attack.
     for _, faction_key in pairs(skaven_factions) do
         local faction = cm:get_faction(faction_key);
-        self:declare_war_for_owners_and_neightbours(faction, regions_stage_4);
+        dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions_stage_4, true, {"wh2_main_sc_skv_skaven"});
     end
 
     -- Trigger the effect about Morrslieb.
@@ -660,14 +677,14 @@ function disaster_the_great_uprising:trigger_stage_5()
 
     -- Spawn a few armies in Karaz-a-Karak.
     for _, region_key in pairs(regions_stage_5) do
-        local faction_key = "wh2_main_skv_clan_mors";
+        local faction_key = factions_stage_5_karaz_a_karak[math.random(1, #factions_stage_5_karaz_a_karak)];
         dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, true, math.ceil(2 * self.settings.difficulty_mod), self.name)
     end
 
     -- Force war against every skaven faction for each faction the skaven attack.
     for _, faction_key in pairs(skaven_factions) do
         local faction = cm:get_faction(faction_key);
-        self:declare_war_for_owners_and_neightbours(faction, regions_stage_4);
+        dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions_stage_4, true, {"wh2_main_sc_skv_skaven"});
     end
 
     -- Trigger the effect about Morrslieb.
@@ -675,24 +692,6 @@ function disaster_the_great_uprising:trigger_stage_5()
 
     -- Advance status to stage 5.
     self:set_status(STATUS_STAGE_5);
-end
-
--- Function to declare war to owners of a region and all neightbours.
-function disaster_the_great_uprising:declare_war_for_owners_and_neightbours(faction, regions)
-    if not faction == false then
-        for _, region_key in pairs(regions) do
-            local region = cm:get_region(region_key);
-            local region_owner = region:owning_faction()
-
-            if not region == false then
-                endgame:declare_war_on_adjacent_region_owners(faction, region)
-
-                if region_owner:is_null_interface() == false and region_owner:subculture() ~= "wh2_main_sc_skv_skaven" and region_owner:name() ~= "rebels" and not faction:at_war_with(region_owner) then
-                    cm:force_declare_war(faction:name(), region_owner:name(), false, true)
-                end
-            end
-        end
-    end
 end
 
 -- Function to apply the Morrslieb effects to all factions.
@@ -722,7 +721,7 @@ function disaster_the_great_uprising:morrslieb_gaze_is_upon_us(duration)
     -- Apply attackers buffs to all alive skaven factions.
     for _, faction_key in pairs(skaven_factions) do
         local faction = cm:get_faction(faction_key);
-        if not faction == false then
+        if faction:is_null_interface() == false then
 
             -- Just in case, force war with no peace on the player.
             endgame:no_peace_no_confederation_only_war(faction_key)
@@ -743,11 +742,50 @@ end
 --- Function to check if the disaster custom conditions are valid and can be trigger.
 ---@return boolean If the disaster will be triggered or not.
 function disaster_the_great_uprising:check_start_disaster_conditions()
-    local base_chance = 0.005;
+
+    -- Update the potential factions removing the confederated ones.
+    skaven_factions = dynamic_disasters:remove_confederated_factions_from_list(skaven_factions);
+
+    -- Check if any of the attackers if actually alive.
+    local attackers_still_alive = false;
+    local is_skryre_alive = false;
     for _, faction_key in pairs(skaven_factions) do
         local faction = cm:get_faction(faction_key);
-        if faction ~= false and faction:is_dead() then
-            base_chance = base_chance + 0.005;
+        if faction:is_null_interface() == false and faction:is_dead() == false then
+            attackers_still_alive = true;
+        end
+
+        -- Check that Clan Skryre is alive. It's needed to kickstart the disaster.
+        if faction_key == "wh2_main_skv_clan_skryre" and faction ~= false and faction:is_dead() == false then
+            is_skryre_alive = true;
+        end
+
+        -- Shortcut to exit the loop early.
+        if attackers_still_alive == true and is_skryre_alive == true then
+            break;
+        end
+    end
+
+    -- Do not start if Skryre is dead and cannot be revived.
+    if is_skryre_alive == false then
+        return false;
+    end
+
+    -- Do not start if we don't have attackers.
+    if #skaven_factions == 0 or attackers_still_alive == false then
+        return false;
+    end
+
+    -- Base chance: 1/400 turns (0.25%).
+    local base_chance = 0.0025;
+
+    -- Increase the change of starting based on how many attackers are already dead.
+    for _, faction_key in pairs(skaven_factions) do
+        local faction = cm:get_faction(faction_key);
+        if faction:is_null_interface() == false and faction:is_dead() then
+
+            -- Increase in 0.25% the chance of triggering for each dead attacker.
+            base_chance = base_chance + 0.0025;
         end
     end
 
@@ -761,16 +799,125 @@ end
 --- Function to check if the conditions to declare the disaster as "finished" are fulfilled.
 ---@return boolean If the disaster will be finished or not.
 function disaster_the_great_uprising:check_end_disaster_conditions()
+
+    -- Update the list of available factions and check if are all dead.
+    skaven_factions = dynamic_disasters:remove_confederated_factions_from_list(skaven_factions);
     local all_attackers_dead = true;
 
-    for _, faction_key in pairs(skaven_factions) do
-        local faction = cm:get_faction(faction_key);
-        if faction ~= false and not faction:is_dead() then
-            all_attackers_dead = false;
+    if #skaven_factions > 0 then
+        for _, faction_key in pairs(skaven_factions) do
+            local faction = cm:get_faction(faction_key);
+            if faction:is_null_interface() == false and not faction:is_dead() then
+                all_attackers_dead = false;
+            end
         end
     end
 
-    return all_attackers_dead;
+    -- If all skaven factions are dead, end the disaster. If not, check depending on the state we're about to trigger.
+    if all_attackers_dead == true then
+        return true;
+    end
+
+    -- If we haven't triggered the first stage, just check if Skryre is dead. If so, we end the disaster here.
+    if self.settings.status == STATUS_TRIGGERED then
+        factions_stage_1 = dynamic_disasters:remove_confederated_factions_from_list(factions_stage_1);
+        local all_attackers_dead = true;
+
+        if #factions_stage_1 > 0 then
+            for _, faction_key in pairs(factions_stage_1) do
+                local faction = cm:get_faction(faction_key);
+                if faction:is_null_interface() == false and not faction:is_dead() then
+                    all_attackers_dead = false;
+                end
+            end
+        end
+
+        return all_attackers_dead;
+    end
+
+    -- If we're about to trigger Stage 2, make sure we have minor factions to do it. Otherwise, end the invasion here.
+    if self.settings.status == STATUS_STAGE_1 then
+
+        -- Update the list of available factions. Ignore cathay for ending the disaster as it's optional.
+        factions_stage_2_empire_and_araby = dynamic_disasters:remove_confederated_factions_from_list(factions_stage_2_empire_and_araby);
+        factions_stage_2_cathay = dynamic_disasters:remove_confederated_factions_from_list(factions_stage_2_cathay);
+        local all_attackers_dead = true;
+
+        if #factions_stage_2_empire_and_araby > 0 then
+            for _, faction_key in pairs(factions_stage_2_empire_and_araby) do
+                local faction = cm:get_faction(faction_key);
+                if faction:is_null_interface() == false and not faction:is_dead() then
+                    all_attackers_dead = false;
+                end
+            end
+        end
+
+        return all_attackers_dead;
+    end
+
+    -- If we're about to trigger Stage 3, make sure either Skryre or Pestilens are still alive.
+    if self.settings.status == STATUS_STAGE_2 then
+        factions_stage_3_lustria = dynamic_disasters:remove_confederated_factions_from_list(factions_stage_3_lustria);
+        local all_attackers_dead = true;
+
+        if #factions_stage_3_lustria > 0 then
+            for _, faction_key in pairs(factions_stage_3_lustria) do
+                local faction = cm:get_faction(faction_key);
+                if faction:is_null_interface() == false and not faction:is_dead() then
+                    all_attackers_dead = false;
+                end
+            end
+        end
+
+        return all_attackers_dead;
+    end
+
+    -- If we're about to trigger Stage 4, make sure we have factions for it.
+    if self.settings.status == STATUS_STAGE_3 then
+        factions_stage_4_karaz_ankor = dynamic_disasters:remove_confederated_factions_from_list(factions_stage_4_karaz_ankor);
+        local all_attackers_dead = true;
+
+        if #factions_stage_4_karaz_ankor > 0 then
+            for _, faction_key in pairs(factions_stage_4_karaz_ankor) do
+                local faction = cm:get_faction(faction_key);
+                if faction:is_null_interface() == false and not faction:is_dead() then
+                    all_attackers_dead = false;
+                end
+            end
+        end
+
+        return all_attackers_dead;
+    end
+
+
+    -- If we're about to trigger Stage 5, make sure Clan Mors is still alive.
+    if self.settings.status == STATUS_STAGE_4 then
+        factions_stage_5_karaz_a_karak = dynamic_disasters:remove_confederated_factions_from_list(factions_stage_5_karaz_a_karak);
+        local all_attackers_dead = true;
+
+        if #factions_stage_5_karaz_a_karak > 0 then
+            for _, faction_key in pairs(factions_stage_5_karaz_a_karak) do
+                local faction = cm:get_faction(faction_key);
+                if faction:is_null_interface() == false and not faction:is_dead() then
+                    all_attackers_dead = false;
+                end
+            end
+        end
+
+        -- Also check Karaz-a-Karak belongs to the Dawi.
+        local region = cm:get_region(regions_stage_5[1]);
+        local region_owner = region:owning_faction();
+        local is_dawi = false;
+
+        -- Stage 5 should only trigger if Karaz-a-Karak belongs to the dwarfs.
+        if region_owner:is_null_interface() == false and region_owner:subculture() == "wh_main_sc_dwf_dwarfs" then
+            is_dawi = true;
+        end
+
+        return all_attackers_dead and is_dawi;
+    end
+
+    return false;
 end
 
 return disaster_the_great_uprising

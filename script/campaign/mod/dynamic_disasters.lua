@@ -13,6 +13,7 @@ dynamic_disasters = {
         currently_running_endgames = 0,         -- Amount of currently running endgames.
     },
     disasters = {},
+    confederated_factions = {},                 -- List of confederated factions, so they don't get revived.
 
     -- List of weigthed units used by the manager.
     --
@@ -549,6 +550,17 @@ local mandatory_settings = {
     campaigns = {},                     -- Campaigns this disaster works on.
 }
 
+-- Keep track of confederated factions so they don't respawn broken.
+core:add_listener(
+    "BugFixBrokenAI",
+    "FactionJoinsConfederation",
+    true,
+    function(context)
+        table.insert(dynamic_disasters.confederated_factions, context:faction():name());
+    end,
+    true
+)
+
 --[[
     MCT Helpers, so the users can configure the disasters as they want.
 ]]--
@@ -1015,4 +1027,119 @@ function dynamic_disasters:generate_random_army(army_template, unit_count, disas
 
     return ram:generate_force(disaster_name, unit_count, false)
 
+end
+
+
+-- Function to remove all confederated factions from the provided list of factions, returning the new faction key list.
+---@param factions table #Faction keys to check for confederation.
+---@returns table Indexed table with the non-confederated faction keys.
+function dynamic_disasters:remove_confederated_factions_from_list(factions)
+
+    -- Update the potential factions removing the confederated ones.
+    if #self.confederated_factions > 0 then
+        for _, confederated_faction_key in pairs(self.confederated_factions) do
+            local is_attacker = 0;
+            for attacker_index, faction_key in pairs(factions) do
+                if faction_key == confederated_faction_key then
+                    is_attacker = attacker_index;
+                    break;
+                end
+            end
+
+            if is_attacker > 0 then
+                factions[is_attacker] = nil;
+            end
+        end
+    end
+
+    return factions;
+end
+
+
+-- Function to declare war on all region owners of provided regions, and optionally on all neigthbors of the provided faction.
+---@param faction FACTION_SCRIPT_INTERFACE #Faction object
+---@param regions table #Region keys to declare war to.
+---@param attack_faction_neightbors boolean #If we should declare war on all the current faction neighbours too.
+---@param subcultures_to_ignore table #List of subcultures to ignore on war declarations.
+function dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions, attack_faction_neightbors, subcultures_to_ignore)
+    if faction:is_null_interface() == false then
+
+        -- First, declare war on the explicitly provided region owners and its neightbor regions.
+        for _, region_key in pairs(regions) do
+            local region = cm:get_region(region_key);
+            if region:is_null_interface() == false then
+
+                -- Try to declare war on its neighbors first, so we don't depend on the status of the current region.
+                self:declare_war_on_adjacent_region_owners(faction, region, subcultures_to_ignore)
+
+                -- Then get if the current region is occupied and try to declare war on the owner.
+                local region_owner = region:owning_faction()
+                if region_owner:is_null_interface() == false then
+
+                    -- Get if we should ignore the curreent region.
+                    local region_subculture = region_owner:subculture();
+                    local ignore_region = false;
+                    for i = 0, subcultures_to_ignore:num_items() - 1 do
+                        if subcultures_to_ignore:item_at(i) == region_subculture then
+                            ignore_region = true;
+                            break;
+                        end
+                    end
+
+                    -- If the current region is not to be ignored, declate war on the owner.
+                    if ignore_region == false and region_owner:name() ~= "rebels" and not faction:at_war_with(region_owner) then
+                        cm:force_declare_war(faction:name(), region_owner:name(), false, true)
+                    end
+                end
+            end
+        end
+
+        -- If we also want to attack all the faction's physical neighbors, find all the faction's regions and declare war aplenty.
+        if attack_faction_neightbors then
+            local region_list = faction:region_list();
+            for i = 0, region_list:num_items() - 1 do
+                local region = region_list:item_at(i);
+                if region:is_null_interface() == false then
+
+                    -- Try to declare war on its neighbors first, so we don't depend on the status of the current region.
+                    self:declare_war_on_adjacent_region_owners(faction, region, subcultures_to_ignore)
+                end
+            end
+        end
+    end
+end
+
+-- Function to declare war on all region owners of regions adjacent to a specific region.
+---@param faction FACTION_SCRIPT_INTERFACE #Faction object
+---@param base_region REGION_SCRIPT_INTERFACE #Region object
+---@param subcultures_to_ignore table #List of subcultures to ignore on war declarations.
+function dynamic_disasters:declare_war_on_adjacent_region_owners(faction, base_region, subcultures_to_ignore)
+    if base_region:is_null_interface() == false then
+        local adjacent_regions = base_region:adjacent_region_list()
+
+        for i = 0, adjacent_regions:num_items() - 1 do
+            local region = adjacent_regions:item_at(i)
+
+            -- Ignore abandoned regions.
+            if region:is_abandoned() == false then
+                local region_owner = region:owning_faction()
+                if region_owner:is_null_interface() == false then
+
+                    -- Get if we should ignore the curreent region.
+                    local region_subculture = region_owner:subculture();
+                    local ignore_region = false;
+                    for j = 0, subcultures_to_ignore:num_items() - 1 do
+                        if subcultures_to_ignore:item_at(j) == region_subculture then
+                            ignore_region = true;
+                            break;
+                        end
+                    end
+
+                    if ignore_region == false and region_owner:name() ~= "rebels" and not faction:at_war_with(region_owner) then
+                        endgame:declare_war(faction:name(), region_owner:name())
+                    end
+                end
+            end
+        end
+    end
 end
