@@ -245,6 +245,61 @@ dynamic_disasters = {
             },
         },
         vampire_coast = {
+            earlygame = {
+
+                --Melee Infantry
+                wh2_dlc11_cst_inf_zombie_deckhands_mob_0 = 6,
+                wh2_dlc11_cst_inf_zombie_deckhands_mob_1 = 6,
+                wh2_dlc11_cst_inf_syreens = 2,
+
+                --Ranged Infantry
+                wh2_dlc11_cst_inf_zombie_gunnery_mob_0 = 4,
+                wh2_dlc11_cst_inf_zombie_gunnery_mob_1 = 4,
+                wh2_dlc11_cst_inf_zombie_gunnery_mob_2 = 4,
+                wh2_dlc11_cst_inf_zombie_gunnery_mob_3 = 4,
+
+                wh2_dlc11_cst_cav_deck_droppers_0 = 1,
+                wh2_dlc11_cst_cav_deck_droppers_1 = 1,
+                wh2_dlc11_cst_cav_deck_droppers_2 = 1,
+
+                --Monsters
+                wh2_dlc11_cst_mon_animated_hulks_0 = 1,
+
+                --Vehicles
+                wh2_dlc11_cst_art_mortar = 1,
+                wh2_dlc11_cst_art_carronade = 1,
+            },
+            midgame = {
+
+                --Melee Infantry
+                wh2_dlc11_cst_inf_zombie_deckhands_mob_0 = 4,
+                wh2_dlc11_cst_inf_zombie_deckhands_mob_1 = 4,
+                wh2_dlc11_cst_inf_depth_guard_0 = 2,
+                wh2_dlc11_cst_inf_depth_guard_1 = 2,
+                wh2_dlc11_cst_inf_syreens = 4,
+
+                --Ranged Infantry
+                wh2_dlc11_cst_inf_deck_gunners_0 = 4,
+                wh2_dlc11_cst_inf_zombie_gunnery_mob_0 = 4,
+                wh2_dlc11_cst_inf_zombie_gunnery_mob_1 = 4,
+                wh2_dlc11_cst_inf_zombie_gunnery_mob_2 = 4,
+                wh2_dlc11_cst_inf_zombie_gunnery_mob_3 = 4,
+
+                wh2_dlc11_cst_cav_deck_droppers_0 = 2,
+                wh2_dlc11_cst_cav_deck_droppers_1 = 2,
+                wh2_dlc11_cst_cav_deck_droppers_2 = 2,
+
+                --Monsters
+                wh2_dlc11_cst_mon_rotting_leviathan_0 = 1,
+                wh2_dlc11_cst_mon_mournguls_0 = 1,
+                wh2_dlc11_cst_mon_necrofex_colossus_0 = 1,
+                wh2_dlc11_cst_mon_rotting_prometheans_gunnery_mob_0 = 1,
+                wh2_dlc11_cst_mon_animated_hulks_0 = 2,
+
+                --Vehicles
+                wh2_dlc11_cst_art_mortar = 2,
+                wh2_dlc11_cst_art_carronade = 2,
+            },
             lategame = {
 
                 --Melee Infantry
@@ -258,6 +313,9 @@ dynamic_disasters = {
                 wh2_dlc11_cst_inf_zombie_gunnery_mob_1 = 2,
                 wh2_dlc11_cst_inf_zombie_gunnery_mob_2 = 2,
                 wh2_dlc11_cst_inf_zombie_gunnery_mob_3 = 2,
+                wh2_dlc11_cst_cav_deck_droppers_0 = 1,
+                wh2_dlc11_cst_cav_deck_droppers_1 = 1,
+                wh2_dlc11_cst_cav_deck_droppers_2 = 1,
 
                 --Monsters
                 wh2_dlc11_cst_mon_rotting_leviathan_0 = 1,
@@ -273,6 +331,53 @@ dynamic_disasters = {
             },
         },
         dark_elves = {
+            earlygame = {
+
+                --Infantry
+                wh2_main_def_inf_bleakswords_0 = 8,
+                wh2_main_def_inf_dreadspears_0 = 8,
+                wh2_main_def_inf_black_ark_corsairs_1 = 4,
+                wh2_main_def_inf_darkshards_0 = 4,
+                wh2_main_def_inf_darkshards_1 = 4,
+
+                --Cavalry
+                wh2_main_def_cav_dark_riders_0 = 2,
+                wh2_main_def_cav_dark_riders_1 = 2,
+                wh2_main_def_cav_dark_riders_2 = 2,
+
+                --Monsters
+                wh2_main_def_mon_war_hydra = 1,
+
+                --Artillery
+                wh2_main_def_art_reaper_bolt_thrower = 1,
+            },
+            midgame = {
+
+                --Infantry
+                wh2_main_def_inf_black_ark_corsairs_0 = 8,
+                wh2_main_def_inf_black_ark_corsairs_1 = 8,
+                wh2_main_def_inf_witch_elves_0 = 8,
+                wh2_main_def_inf_darkshards_0 = 4,
+                wh2_main_def_inf_darkshards_1 = 4,
+                wh2_main_def_inf_shades_2 = 4,
+
+                --Cavalry
+                wh2_main_def_cav_dark_riders_0 = 2,
+                wh2_main_def_cav_dark_riders_1 = 2,
+                wh2_main_def_cav_dark_riders_2 = 2,
+                wh2_main_def_cav_cold_one_knights_0 = 1,
+                wh2_main_def_cav_cold_one_knights_1 = 1,
+
+                --Monsters
+                wh2_main_def_mon_war_hydra = 1,
+                wh2_main_def_mon_black_dragon = 1,
+
+                --Vehicles
+                wh2_main_def_cav_cold_one_chariot = 1,
+
+                --Artillery
+                wh2_main_def_art_reaper_bolt_thrower = 1,
+            },
             lategame = {
 
                 --Infantry
@@ -330,6 +435,47 @@ dynamic_disasters = {
             }
         },
         norsca = {
+            earlygame = {
+
+                --Infantry
+                wh_main_nor_inf_chaos_marauders_0 = 8,
+                wh_main_nor_inf_chaos_marauders_1 = 8,
+                wh_dlc08_nor_inf_marauder_spearman_0 = 8,
+                wh_dlc08_nor_inf_marauder_berserkers_0 = 2,
+                wh_dlc08_nor_inf_marauder_hunters_0 = 4,
+                wh_dlc08_nor_inf_marauder_hunters_1 = 4,
+
+                --Cavalry
+                wh_dlc08_nor_cav_marauder_horsemasters_0 = 3,
+                wh_main_nor_cav_marauder_horsemen_1 = 3,
+                wh_main_nor_cav_chaos_chariot = 4,
+
+                --Monsters
+                wh_dlc08_nor_mon_norscan_giant_0 = 1,
+                wh_main_nor_mon_chaos_trolls = 2,
+                wh_dlc08_nor_cha_skin_wolf_werekin_0 = 2,
+            },
+            midgame = {
+
+                --Infantry
+                wh_main_nor_inf_chaos_marauders_0 = 8,
+                wh_main_nor_inf_chaos_marauders_1 = 8,
+                wh_dlc08_nor_inf_marauder_spearman_0 = 4,
+                wh_dlc08_nor_inf_marauder_berserkers_0 = 4,
+                wh_dlc08_nor_inf_marauder_hunters_0 = 4,
+
+                --Cavalry
+                wh_dlc08_nor_cav_marauder_horsemasters_0 = 3,
+                wh_main_nor_cav_marauder_horsemen_1 = 3,
+                wh_main_nor_cav_chaos_chariot = 4,
+                wh_dlc08_nor_veh_marauder_warwolves_chariot_0 = 2,
+
+                --Monsters
+                wh_dlc08_nor_mon_war_mammoth_1 = 1,
+                wh_dlc08_nor_mon_norscan_giant_0 = 1,
+                wh_dlc08_nor_mon_norscan_ice_trolls_0 = 2,
+                wh_dlc08_nor_cha_skin_wolf_werekin_0 = 2,
+            },
             lategame = {
 
                 --Infantry

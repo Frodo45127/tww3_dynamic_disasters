@@ -226,17 +226,48 @@ function disaster_raiding_parties:trigger()
     self.settings.subculture = self.settings.potential_attack_subcultures_alive[math.random(1, #self.settings.potential_attack_subcultures_alive)];
     self.settings.faction = self.settings.potential_attack_factions_alive[self.settings.subculture][math.random(1, #self.settings.potential_attack_factions_alive[self.settings.subculture])];
 
-    -- Get the army template to use, based on the subculture.
+    -- Get the army template to use, based on the subculture and turn.
+    local current_turn = cm:turn_number();
     if self.settings.subculture == "wh2_dlc11_sc_cst_vampire_coast" then
-        self.settings.army_template.vampire_coast = "lategame";
+        if current_turn < 50 then
+            self.settings.army_template.vampire_coast = "earlygame";
+        end
+
+        if current_turn >= 50 and current_turn < 100 then
+            self.settings.army_template.vampire_coast = "midgame";
+        end
+
+        if current_turn >= 100 then
+            self.settings.army_template.vampire_coast = "lategame";
+        end
     end
 
     if self.settings.subculture == "wh_dlc08_sc_nor_norsca" then
-        self.settings.army_template.norsca = "lategame";
+        if current_turn < 50 then
+            self.settings.army_template.norsca = "earlygame";
+        end
+
+        if current_turn >= 50 and current_turn < 100 then
+            self.settings.army_template.norsca = "midgame";
+        end
+
+        if current_turn >= 100 then
+            self.settings.army_template.norsca = "lategame";
+        end
     end
 
     if self.settings.subculture == "wh2_main_sc_def_dark_elves" then
-        self.settings.army_template.dark_elves = "lategame";
+        if current_turn < 50 then
+            self.settings.army_template.dark_elves = "earlygame";
+        end
+
+        if current_turn >= 50 and current_turn < 100 then
+            self.settings.army_template.dark_elves = "midgame";
+        end
+
+        if current_turn >= 100 then
+            self.settings.army_template.dark_elves = "lategame";
+        end
     end
 
     -- Recalculate the delay for further executions.
