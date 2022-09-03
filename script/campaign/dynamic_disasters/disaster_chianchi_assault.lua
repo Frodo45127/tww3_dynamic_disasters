@@ -217,17 +217,17 @@ function disaster_chianchi_assault:trigger()
 
     -- Set the army difficulty based on game turn.
     local current_turn = cm:turn_number();
-    if current_turn < 40 then
+    if current_turn < 50 then
         self.settings.army_template.chaos = "earlygame";
         self.settings.army_template.tzeentch = "earlygame";
     end
 
-    if current_turn >= 40 and current_turn < 90 then
+    if current_turn >= 50 and current_turn < 100 then
         self.settings.army_template.chaos = "midgame";
         self.settings.army_template.tzeentch = "midgame";
     end
 
-    if current_turn >= 90 then
+    if current_turn >= 100 then
         self.settings.army_template.chaos = "lategame";
         self.settings.army_template.tzeentch = "lategame";
     end
