@@ -71,8 +71,8 @@ incidents_localised_description_fro_dyn_dis_great_uprising_stage_4_trigger	The K
 incidents_localised_description_fro_dyn_dis_great_uprising_stage_5_trigger	Karaz-a-Karak, the ancestral home of the Dawi, is under siege by hordes and hordes of Skaven! May this be the end of the Dawi?	true
 mct_dyn_dis_the_great_uprising_enable	Enable "The Great Ascendancy" disaster	true
 mct_dyn_dis_the_great_uprising_enable_tooltip	Enable/Disable the "The Great Ascendancy" disaster.\\n\\nThirteen times thirteen passes of the Chaos moon I will give you. Thirteen times thirteen moons I will wait. Go to your legions and your workshops! Bring me victory. Bring me dominance over this mortal realm! You must be as one, work as one, as single-minded as a swarm pouring from a sewer-pipe -- all rats scurry-flood in same direction. Only then will you inherit the ruins of this world, only then will you rule. Thirteen times thirteen moons! Fail, and all will suffer the fate of the seer.\\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
-diplomacy_strings_string_personality_desc_short_skaven_great_uprising	Participant of the Master Plan	true
-diplomacy_strings_string_personality_desc_long_skaven_great_uprising	It will follow the Master Plan of the Grey Seers.... until one of them turns its back, yes-yes.	true
+diplomacy_strings_string_personality_desc_short_skaven_great_uprising	The Vermintide	true
+diplomacy_strings_string_personality_desc_long_skaven_great_uprising	It comes from the deepest holes of the world, to burn the surface on the name of the Horned Rat.	true
 effect_bundles_localised_description_fro_dyn_dis_great_uprising_global_effects	Morrslieb, The Green Moon, is closer than ever, nobody knows why. But the effects of being so close to that accursed moon are already showing around the world.	true
 effect_bundles_localised_title_fro_dyn_dis_great_uprising_global_effects	The Green Shine of Morrslieb	true
 effects_description_fro_dyn_dis_skaven_corruption_mapwide	Skaven corruption: %+n	true
