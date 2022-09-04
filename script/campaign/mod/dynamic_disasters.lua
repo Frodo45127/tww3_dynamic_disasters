@@ -1195,7 +1195,7 @@ end
 ---@return table #Indexed table with the non-confederated faction keys.
 function dynamic_disasters:remove_confederated_factions_from_list(factions)
     local clean_factions = {};
-    for i = 0, factions:num_items() - 1 do
+    for i = 1, #factions do
         local faction = cm:get_faction(factions[i]);
         if not faction == false and faction:is_null_interface() == false and faction:was_confederated() == false then
            table.insert(clean_factions, factions[i]);
@@ -1231,8 +1231,8 @@ function dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regio
                     -- Get if we should ignore the curreent region.
                     local region_subculture = region_owner:subculture();
                     local ignore_region = false;
-                    for i = 0, subcultures_to_ignore:num_items() - 1 do
-                        if subcultures_to_ignore:item_at(i) == region_subculture then
+                    for j = 1, #subcultures_to_ignore do
+                        if subcultures_to_ignore[j] == region_subculture then
                             ignore_region = true;
                             break;
                         end
@@ -1280,8 +1280,8 @@ function dynamic_disasters:declare_war_on_adjacent_region_owners(faction, base_r
                     -- Get if we should ignore the curreent region.
                     local region_subculture = region_owner:subculture();
                     local ignore_region = false;
-                    for j = 0, subcultures_to_ignore:num_items() - 1 do
-                        if subcultures_to_ignore:item_at(j) == region_subculture then
+                    for j = 1, #subcultures_to_ignore do
+                        if subcultures_to_ignore[j] == region_subculture then
                             ignore_region = true;
                             break;
                         end

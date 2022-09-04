@@ -39,7 +39,9 @@ disaster_wild_hunt = {
 		},
 		base_army_count = 4, -- Number of armies that spawn in each forest glade when the event fires.
 		unit_count = 19,
-		early_warning_event = "wh3_main_ie_incident_endgame_wild_hunt_early_warning",
+		early_warning_incident_key = "wh3_main_ie_incident_endgame_wild_hunt_early_warning",
+        early_warning_effects_key = "wh3_main_ie_scripted_endgame_early_warning",
+        invasion_incident_key = "wh3_main_ie_incident_endgame_wild_hunt",
 		ai_personality = "wh3_combi_woodelf_endgame",
 		early_warning_delay = 10,
 		region_count_halved = 0,
@@ -100,7 +102,7 @@ end
 
 function disaster_wild_hunt:trigger()
     self:set_status(STATUS_TRIGGERED);
-    dynamic_disasters:execute_payload("wh3_main_ie_scripted_endgame_early_warning", self.settings.early_warning_event, self.settings.early_warning_delay, nil);
+    dynamic_disasters:execute_payload(self.settings.early_warning_incident_key, self.settings.early_warning_effects_key, self.settings.early_warning_delay, nil);
 
 end
 
@@ -167,11 +169,10 @@ function disaster_wild_hunt:trigger_the_wild_hunt()
 		table.insert(self.settings.factions_to_destroy, wood_elf_factions[i])
 	end
 
-	local incident_key = "wh3_main_ie_incident_endgame_wild_hunt"
     if dynamic_disasters.settings.victory_condition_triggered == false then
-        dynamic_disasters:add_victory_condition(incident_key, objectives, forest_regions[1], nil)
+        dynamic_disasters:add_victory_condition(self.settings.invasion_incident_key, objectives, forest_regions[1], nil)
     else
-        dynamic_disasters:execute_payload(incident_key, incident_key, 0, nil);
+        dynamic_disasters:execute_payload(self.settings.invasion_incident_key, nil, 0, nil);
     end
 
 end
