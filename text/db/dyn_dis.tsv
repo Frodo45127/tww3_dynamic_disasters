@@ -83,3 +83,5 @@ incidents_localised_description_fro_dyn_dis_great_uprising_finish_before_stage_1
 incidents_localised_description_fro_dyn_dis_great_uprising_finish	After all that destruction, and without the Grey Seers to keep it close, Morrslieb has returned to its natural orbit. The world has been saved.... for now.	true
 mct_dyn_dis_max_simul	Max Concurrent Endgames	true
 mct_dyn_dis_max_simul_tooltip	Maximum amount of concurrent endgame disasters that can be run at the same time.	true
+incidents_localised_title_fro_dyn_dis_raiding_parties_early_end	Bless Manaan!	true
+incidents_localised_description_fro_dyn_dis_raiding_parties_early_end	Either by the blessing of Manaan or by sheer luck, a storm unleashed its power upon the Pirate Fleet just as they were prepraring to attack. We can rest... for now.	true

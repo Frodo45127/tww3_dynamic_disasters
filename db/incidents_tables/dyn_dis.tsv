@@ -17,3 +17,4 @@ fro_dyn_dis_great_uprising_stage_4_trigger	skv/celebration	false	true	Disaster		
 fro_dyn_dis_great_uprising_stage_5_trigger	skv/victory	false	true	Disaster		true
 fro_dyn_dis_great_uprising_finish_before_stage_1	skv/settlement_lost	false	true	Disaster		false
 fro_dyn_dis_great_uprising_finish	skv/settlement_lost	false	true	Disaster		false
+fro_dyn_dis_raiding_parties_early_end	cst/sea_monster_attack	false	true	Disaster		false
