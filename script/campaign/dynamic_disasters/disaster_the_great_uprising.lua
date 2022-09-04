@@ -316,7 +316,7 @@ function disaster_the_great_uprising:set_status(status)
             -- If there are skaven alive, proceed with stage 1.
             function()
                 if self:check_end_disaster_conditions() == true then
-                    dynamic_disasters:execute_payload(self.settings.finish_before_stage_1_event_key, nil, 0);
+                    dynamic_disasters:execute_payload(self.settings.finish_before_stage_1_event_key, nil, 0, nil);
                     self:trigger_end_disaster();
                 else
                     self:trigger_stage_1();
@@ -343,7 +343,7 @@ function disaster_the_great_uprising:set_status(status)
             -- If there are skaven alive, proceed with stage 2.
             function()
                 if self:check_end_disaster_conditions() == true then
-                    dynamic_disasters:execute_payload(self.settings.finish_event_key, nil, 0);
+                    dynamic_disasters:execute_payload(self.settings.finish_event_key, nil, 0, nil);
                     self:trigger_end_disaster();
                 else
                     self:trigger_stage_2();
@@ -370,7 +370,7 @@ function disaster_the_great_uprising:set_status(status)
             -- If there are skaven alive, proceed with stage 3.
             function()
                 if self:check_end_disaster_conditions() == true then
-                    dynamic_disasters:execute_payload(self.settings.finish_event_key, nil, 0);
+                    dynamic_disasters:execute_payload(self.settings.finish_event_key, nil, 0, nil);
                     self:trigger_end_disaster();
                 else
                     self:trigger_stage_3();
@@ -398,7 +398,7 @@ function disaster_the_great_uprising:set_status(status)
             -- If there are skaven alive, proceed with stage 4.
             function()
                 if self:check_end_disaster_conditions() == true then
-                    dynamic_disasters:execute_payload(self.settings.finish_event_key, nil, 0);
+                    dynamic_disasters:execute_payload(self.settings.finish_event_key, nil, 0, nil);
                     self:trigger_end_disaster();
                 else
                     self:trigger_stage_4();
@@ -430,7 +430,7 @@ function disaster_the_great_uprising:set_status(status)
             -- If there are skaven alive, trigger the reinforcements
             function()
                 if self:check_end_disaster_conditions() == true then
-                    dynamic_disasters:execute_payload(self.settings.finish_event_key, nil, 0);
+                    dynamic_disasters:execute_payload(self.settings.finish_event_key, nil, 0, nil);
                     self:trigger_end_disaster();
                 else
 
@@ -474,7 +474,7 @@ function disaster_the_great_uprising:set_status(status)
             -- If there are skaven alive, proceed with stage 5.
             function()
                 if self:check_end_disaster_conditions() == true then
-                    dynamic_disasters:execute_payload(self.settings.finish_event_key, nil, 0);
+                    dynamic_disasters:execute_payload(self.settings.finish_event_key, nil, 0, nil);
                     self:trigger_end_disaster();
                 else
                     self:trigger_stage_5();
@@ -497,7 +497,7 @@ function disaster_the_great_uprising:set_status(status)
 
             -- Once every skaven is dead, end it.
             function()
-                dynamic_disasters:execute_payload(self.settings.finish_event_key, nil, 0);
+                dynamic_disasters:execute_payload(self.settings.finish_event_key, nil, 0, nil);
                 self:trigger_end_disaster();
                 core:remove_listener("GreatUprisingEnd")
             end,
@@ -512,7 +512,7 @@ function disaster_the_great_uprising:trigger()
 
     -- Recalculate the delay to trigger this.
     self.settings.stage_1_delay = math.random(6, 10);
-    dynamic_disasters:execute_payload(self.settings.stage_1_warning_event_key, nil, 0);
+    dynamic_disasters:execute_payload(self.settings.stage_1_warning_event_key, nil, 0, nil);
 
     -- Initialize listeners.
     self:set_status(STATUS_TRIGGERED);
@@ -524,7 +524,7 @@ function disaster_the_great_uprising:trigger_stage_1()
     -- Trigger all the stuff related to the invasion (missions, effects,...).
     self.settings.stage_2_delay = math.random(6, 10);
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_skv_skaven")
-    dynamic_disasters:execute_payload(self.settings.stage_1_event_key, self.settings.effects_global_key, self.settings.stage_2_delay);
+    dynamic_disasters:execute_payload(self.settings.stage_1_event_key, self.settings.effects_global_key, self.settings.stage_2_delay, nil);
 
     -- Spawn a few Skryre armies in Estalia, Tilea and Sartosa. Enough so they're able to expand next.
     for _, faction_key in pairs(factions_stage_1) do
@@ -573,7 +573,7 @@ function disaster_the_great_uprising:trigger_stage_2()
             cm:apply_effect_bundle(self.settings.effects_global_key, human_factions[i], self.settings.stage_3_delay)
         end
     else
-        dynamic_disasters:execute_payload(self.settings.stage_2_event_key, self.settings.effects_global_key, self.settings.stage_3_delay);
+        dynamic_disasters:execute_payload(self.settings.stage_2_event_key, self.settings.effects_global_key, self.settings.stage_3_delay, nil);
     end
 
     -- Spawn a few armies in the Empire, the northern coast of Araby and Cathay.
@@ -590,7 +590,7 @@ function disaster_the_great_uprising:trigger_stage_2()
     -- The Attack on Cathay depends on Eshin being available to spawn.
     if #factions_stage_2_cathay > 0 then
         for _, region_key in pairs(regions_stage_2_cathay) do
-            local faction_key = factions_stage_2_cathay[math.random(1, #factions_stage_2_cathay)];;
+            local faction_key = factions_stage_2_cathay[math.random(1, #factions_stage_2_cathay)];
             dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, true, math.ceil(2 * self.settings.difficulty_mod), self.name)
         end
     end
@@ -620,7 +620,7 @@ function disaster_the_great_uprising:trigger_stage_3()
     -- Trigger all the stuff related to the invasion (missions, effects,...).
     self.settings.stage_4_delay = math.random(4, 6);
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_skv_skaven")
-    dynamic_disasters:execute_payload(self.settings.stage_3_event_key, self.settings.effects_global_key, self.settings.stage_4_delay);
+    dynamic_disasters:execute_payload(self.settings.stage_3_event_key, self.settings.effects_global_key, self.settings.stage_4_delay, nil);
 
     -- Spawn a few armies in Lustria.
     for _, region_key in pairs(regions_stage_3) do
@@ -647,7 +647,7 @@ function disaster_the_great_uprising:trigger_stage_4()
     -- Trigger all the stuff related to the invasion (missions, effects,...).
     self.settings.stage_5_delay = math.random(6, 10);
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_skv_skaven")
-    dynamic_disasters:execute_payload(self.settings.stage_4_event_key, self.settings.effects_global_key, self.settings.stage_5_delay);
+    dynamic_disasters:execute_payload(self.settings.stage_4_event_key, self.settings.effects_global_key, self.settings.stage_5_delay, nil);
 
     -- Spawn a few armies along the Karak Ankor.
     for _, region_key in pairs(regions_stage_4) do
@@ -673,7 +673,7 @@ function disaster_the_great_uprising:trigger_stage_5()
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_skv_skaven")
-    dynamic_disasters:execute_payload(self.settings.stage_5_event_key, self.settings.effects_global_key, self.settings.invasion_over_delay);
+    dynamic_disasters:execute_payload(self.settings.stage_5_event_key, self.settings.effects_global_key, self.settings.invasion_over_delay, nil);
 
     -- Spawn a few armies in Karaz-a-Karak.
     for _, region_key in pairs(regions_stage_5) do

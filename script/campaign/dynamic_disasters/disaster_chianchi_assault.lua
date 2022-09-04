@@ -2,20 +2,21 @@
     Chi'an Chi Assault disaster, By Frodo45127.
 
     This disaster consists in a series of coordinated assaults to the Great Wall by Vilich which, if succeeds, will generate additional armies,
-    and will start an assault in Cathay.
+    and will start an assault in Cathay itself. No longer shall you ignore the wall's defenses!
 
     Requirements:
-        - Triggers if, after two turns of max bastion thread, the Kurgan are still there.
+        - Always triggers 3 turns after the bastion reaches max thread, if no Kurgan armies have been defeated.
+        - At least turn 30 (so the player has already "prepared").
+        - Vilich must be not confederated.
     Effects:
         - Trigger/First Warning:
             - Warning that reinforcements will come.
-            - Wait 3-6 turns.
             - Cancels disaster if the Kurgan are dealt with.
-        - Reinforcements:
-            - Spawn reinforcements if invasion is still in progress.
-            - Cancels disaster if the Kurgan are dealt with.
+            - If all 3 bastion gates are still in cathay's hands after 1-3 turns:
+                - Spawn reinforcements on all 3 gates (same spawns as bastion attacks).
+                - Cancels disaster if the Kurgan are dealt with.
         - After taking down the wall:
-            - Spawns a lot of armies for Vilich, with more showing up every 7 turns
+            - Spawns at least 3 armies for Vilich, with more showing up every 7 turns.
             - Lasts until the invasion ends, either by taking back the wall or by losing half of Cathay.
 
 ]]
@@ -91,8 +92,9 @@ function disaster_chianchi_assault:set_status(status)
 
             -- If the invasion is still active, proceed with the warning. If not, take it as "finished".
             function()
-                if Bastion:get_saved_invasion_active_value() == true then
-                    dynamic_disasters:execute_payload(self.settings.warning_event_key, nil, 0);
+                local faction = cm:get_faction(self.settings.faction);
+                if Bastion:get_saved_invasion_active_value() == true and not faction == false and faction:is_null_interface() == false and faction:was_confederated() == false then
+                    dynamic_disasters:execute_payload(self.settings.warning_event_key, nil, 0, nil);
                 else
                     core:remove_listener("ChianchiAssaultGatesDestroyed")
                     core:remove_listener("ChianchiAssaultCountDown")
@@ -117,10 +119,11 @@ function disaster_chianchi_assault:set_status(status)
 
             -- If the invasion is still active, proceed with the disaster. If not, take it as "finished".
             function()
-                if Bastion:get_saved_invasion_active_value() == true then
+                local faction = cm:get_faction(self.settings.faction);
+                if Bastion:get_saved_invasion_active_value() == true and not faction == false and faction:is_null_interface() == false and faction:was_confederated() == false then
                     self:trigger_wall_attack_reinforcement();
                 else
-                    dynamic_disasters:execute_payload(self.settings.finish_before_assault_event_key, nil, 0);
+                    dynamic_disasters:execute_payload(self.settings.finish_before_assault_event_key, nil, 0, nil);
                     core:remove_listener("ChianchiAssaultGatesDestroyed")
                     self:trigger_end_disaster();
                 end
@@ -134,10 +137,10 @@ function disaster_chianchi_assault:set_status(status)
             "ChianchiAssaultGatesDestroyed",
             "WorldStartRound",
             function()
-                local num_razed_gates = self:gates_razed_or_taken();
 
                 -- Make sure this only triggers after the initial warning.
                 if cm:turn_number() > self.settings.last_triggered_turn + self.settings.warning_delay then
+                    local num_razed_gates = self:gates_razed_or_taken();
 
                     -- Trigger in any of these situations:
                     -- - If the invasion ends before a gate it's destroyed, we finish the assault.
@@ -150,13 +153,11 @@ function disaster_chianchi_assault:set_status(status)
             end,
             function()
                 local num_razed_gates = self:gates_razed_or_taken();
-
-                if Bastion:get_saved_invasion_active_value() == true and num_razed_gates > 0 then
+                local faction = cm:get_faction(self.settings.faction);
+                if Bastion:get_saved_invasion_active_value() == true and num_razed_gates > 0 and not faction == false and faction:is_null_interface() == false and faction:was_confederated() == false then
                     self:trigger_full_daemonic_invasion();
-                end
-
-                if (Bastion:get_saved_invasion_active_value() == false) then
-                    dynamic_disasters:execute_payload(self.settings.finish_before_assault_event_key, nil, 0);
+                else
+                    dynamic_disasters:execute_payload(self.settings.finish_before_assault_event_key, nil, 0, nil);
                     self:trigger_end_disaster();
                 end
 
@@ -193,7 +194,8 @@ function disaster_chianchi_assault:set_status(status)
             "WorldStartRound",
             function()
                 -- Only trigger once the invasion has been "finished" either by the player taking down the kurgan, or by the kurgan taking down cathay.
-                if Bastion:get_saved_invasion_active_value() == false then
+                local faction = cm:get_faction(self.settings.faction);
+                if Bastion:get_saved_invasion_active_value() == false or (faction:is_dead() or faction:was_confederated()) then
                     return true
                 end
                 return false;
@@ -242,7 +244,7 @@ function disaster_chianchi_assault:trigger_wall_attack_reinforcement()
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh3_main_sc_tze_tzeentch")
-    dynamic_disasters:execute_payload(self.settings.first_attack_event_key, nil, 0);
+    dynamic_disasters:execute_payload(self.settings.first_attack_event_key, nil, 0, nil);
 
     -- For each gate, spawn a few Vilich armies.
     local armies_to_spawn_per_gate = math.floor(1 * math.ceil(self.settings.difficulty_mod));
@@ -258,7 +260,7 @@ function disaster_chianchi_assault:trigger_full_daemonic_invasion()
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh3_main_sc_tze_tzeentch")
-    dynamic_disasters:execute_payload(self.settings.second_attack_event_key, nil, 0);
+    dynamic_disasters:execute_payload(self.settings.second_attack_event_key, nil, 0, nil);
 
 
     -- On the initial trigger of the invasion, spawn at least 3 more armies to kickstart the invasion.
@@ -269,22 +271,14 @@ function disaster_chianchi_assault:trigger_full_daemonic_invasion()
     end
 
     -- Set diplomacy.
-    local attacker_faction = cm:get_faction(self.settings.faction);
-    if attacker_faction ~= false and not attacker_faction:is_dead() then
+    local faction = cm:get_faction(self.settings.faction);
+    if not faction == false and faction:is_null_interface() == false and not faction:is_dead() then
 
         -- Apply buffs to the attackers, so they can at least push one province into player territory.
         cm:apply_effect_bundle(self.settings.second_attack_attackers_effect_key, self.settings.faction, 10)
 
-        -- Force vilich to attack the whoever in cathay owns the gates.
-        for _, region_key in pairs(Bastion.cathay_bastion_regions) do
-            local region = cm:get_region(region_key)
-            local region_owner = region:owning_faction()
-
-            -- TODO: ignore it if the gates are hold by a vassal or norscan tribe.
-            if region_owner:is_null_interface() == false and region_owner:subculture() == "wh3_main_sc_cth_cathay" and region_owner:name() ~= "rebels" and not attacker_faction:at_war_with(region_owner) then
-                cm:force_declare_war(self.settings.faction, region_owner:name(), false, true)
-            end
-        end
+        -- Declare war on the owners of all cathay
+        dynamic_disasters:declare_war_for_owners_and_neightbours(faction, Bastion.cathay_bastion_regions, false, {"wh_main_sc_chs_chaos", "wh_dlc08_sc_nor_norsca"});
     end
 
     -- Initialize listeners.
@@ -300,11 +294,16 @@ end
 --- Function to check if the disaster custom conditions are valid and can be trigger.
 ---@return boolean If the disaster will be triggered or not.
 function disaster_chianchi_assault:check_start_disaster_conditions()
-    if Bastion:get_saved_invasion_active_value() == true then
-        return true;
-    else
-        return false;
+    local faction = cm:get_faction(self.settings.faction);
+    if not faction == false and faction:is_null_interface() == false and faction:was_confederated() == false then
+        if Bastion:get_saved_invasion_active_value() == true then
+            return true;
+        else
+            return false;
+        end
     end
+
+    return false;
 end
 
 -- Utility function to check how many gates have been razed or taken

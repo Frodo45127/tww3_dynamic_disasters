@@ -94,7 +94,7 @@ end
 
 function disaster_waaagh:trigger()
     self:set_status(STATUS_TRIGGERED);
-    dynamic_disasters:execute_payload("wh3_main_ie_scripted_endgame_early_warning", self.settings.early_warning_event, self.settings.early_warning_delay);
+    dynamic_disasters:execute_payload("wh3_main_ie_scripted_endgame_early_warning", self.settings.early_warning_event, self.settings.early_warning_delay, nil);
 
 end
 
@@ -164,7 +164,7 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
     if dynamic_disasters.settings.victory_condition_triggered == false then
         dynamic_disasters:add_victory_condition(incident_key, objectives, nil, greenskin_factions[1])
     else
-        dynamic_disasters:execute_payload(incident_key, incident_key, 0);
+        dynamic_disasters:execute_payload(incident_key, incident_key, 0, nil);
     end
 end
 

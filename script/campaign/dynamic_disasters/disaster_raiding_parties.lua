@@ -5,18 +5,21 @@
     NOTE: This disaster can use the three factions, except the ones sharing subculture with the player.
 
     Requirements:
-        - Random chance (0.05)
+        - Random chance: 2% (1/50 turns).
+        - +1% for each possible attacker faction that has been wiped out (not confederated).
         - At least turn 30 (so the player has a coast).
         - At least one of the potential attackers must be alive (you can end this disaster by killing them all).
+        - At least 10 turns have passed since the last pirate raid.
     Effects:
         - Trigger/First Warning:
             - Message of warning about ships with black and tattered sails.
             - Wait 4-10 turns for more info.
         - Invasion:
             - Get some random coastal areas, weigthed a bit considering the provinces the player owns.
-            - Pick one random faction and give them some armies near those settlements.
+            - Pick one random faction and give them some armies on the coast nearby.
+            - Invasion is canceled (storm event) if attacker's faction is wiped out before the invasion begins.
         - Finish:
-            - Once everything is spawned, consider it done.
+            - Once everything is spawned, it's up to the AI to attack.
 
 ]]
 
@@ -54,6 +57,7 @@ disaster_raiding_parties = {
         warning_delay = 1,
         warning_event_key = "fro_dyn_dis_raiding_parties_warning",
         raiding_event_key = "fro_dyn_dis_raiding_parties_trigger",
+        raiding_cancel_event_key = "fro_dyn_dis_raiding_parties_early_end",
         raiding_raiders_effect_key = "fro_dyn_dis_raiding_parties_invader_buffs",
 
         army_template = {},
@@ -75,7 +79,7 @@ local potential_attack_factions = {
         "wh2_dlc11_cst_the_drowned",            -- Cylostra
     },
     wh2_main_sc_def_dark_elves = {          -- Dark elves
-        "wh2_main_def_dark_elves",              -- Malekith
+        "wh2_main_def_naggarond",               -- Malekith
         "wh2_main_def_cult_of_pleasure",        -- Morathi
         "wh2_main_def_har_ganeth",              -- Hellebron
         "wh2_dlc11_def_the_blessed_dread",      -- Lokhir
@@ -228,46 +232,29 @@ function disaster_raiding_parties:trigger()
 
     -- Get the army template to use, based on the subculture and turn.
     local current_turn = cm:turn_number();
+    local template = "earlygame";
+    if current_turn < 50 then
+        template = "earlygame";
+    end
+
+    if current_turn >= 50 and current_turn < 100 then
+        template = "midgame";
+    end
+
+    if current_turn >= 100 then
+        template = "lategame";
+    end
+
     if self.settings.subculture == "wh2_dlc11_sc_cst_vampire_coast" then
-        if current_turn < 50 then
-            self.settings.army_template.vampire_coast = "earlygame";
-        end
-
-        if current_turn >= 50 and current_turn < 100 then
-            self.settings.army_template.vampire_coast = "midgame";
-        end
-
-        if current_turn >= 100 then
-            self.settings.army_template.vampire_coast = "lategame";
-        end
+        self.settings.army_template.vampire_coast = template;
     end
 
     if self.settings.subculture == "wh_dlc08_sc_nor_norsca" then
-        if current_turn < 50 then
-            self.settings.army_template.norsca = "earlygame";
-        end
-
-        if current_turn >= 50 and current_turn < 100 then
-            self.settings.army_template.norsca = "midgame";
-        end
-
-        if current_turn >= 100 then
-            self.settings.army_template.norsca = "lategame";
-        end
+        self.settings.army_template.norsca = template;
     end
 
     if self.settings.subculture == "wh2_main_sc_def_dark_elves" then
-        if current_turn < 50 then
-            self.settings.army_template.dark_elves = "earlygame";
-        end
-
-        if current_turn >= 50 and current_turn < 100 then
-            self.settings.army_template.dark_elves = "midgame";
-        end
-
-        if current_turn >= 100 then
-            self.settings.army_template.dark_elves = "lategame";
-        end
+        self.settings.army_template.dark_elves = template;
     end
 
     -- Recalculate the delay for further executions.
@@ -275,17 +262,12 @@ function disaster_raiding_parties:trigger()
     self.settings.wait_turns_between_repeats = self.settings.warning_delay + 10;
 
     self:set_status(STATUS_TRIGGERED);
-    dynamic_disasters:execute_payload(self.settings.warning_event_key, nil, 0);
+    dynamic_disasters:execute_payload(self.settings.warning_event_key, nil, 0, nil);
 end
 
 -- Function to trigger the raid itself.
 function disaster_raiding_parties:trigger_raiding_parties()
     out("Frodo45127: Disaster: " .. self.name .. ". Triggering invasion.");
-
-    -- Trigger all the stuff related to the invasion (missions, effects,...).
-    -- TODO: Allow to attack the attacked region to the payload, so it can be zoom in.
-    cm:activate_music_trigger("ScriptedEvent_Negative", self.settings.subculture)
-    dynamic_disasters:execute_payload(self.settings.raiding_event_key, nil, 0);
 
     -- Get all the coastal regions (as in region with a port) to attack by weight.
     local attack_vectors = {};
@@ -330,16 +312,19 @@ function disaster_raiding_parties:trigger_raiding_parties()
         end
     end
 
-    -- If no coast to attack has been found, just cancel the attack.
-    if #coasts_to_attack < 1 then
-
-        -- TODO: Put a message here, or something to signal the pirates are no longer going to attack.
+    -- If no coast to attack has been found, or we wiped out the entire faction, just cancel the attack.
+    local faction = cm:get_faction(self.settings.faction);
+    if #coasts_to_attack < 1 or (faction:is_null_interface() == true or faction:is_dead() or faction:was_confederated()) then
+        cm:activate_music_trigger("ScriptedEvent_Negative", self.settings.subculture)
+        dynamic_disasters:execute_payload(self.settings.raiding_cancel_event_key, nil, 0, nil);
         return
     end
 
     -- Get the region at random from the top half of the coasts.
     local coast_to_attack = coasts_to_attack[math.random(1, #coasts_to_attack)];
+    local first_sea_region = nil;
     for _, sea_region in pairs(potential_coasts[coast_to_attack]) do
+        first_sea_region = sea_region;
 
         -- Scale is an optional value for manually increasing/decreasing armies in one region.
         -- By default it's 1 (no change in amount of armies).
@@ -360,23 +345,19 @@ function disaster_raiding_parties:trigger_raiding_parties()
         end
     end
 
+    -- Trigger all the stuff related to the invasion (missions, effects,...).
+    cm:activate_music_trigger("ScriptedEvent_Negative", self.settings.subculture)
+    dynamic_disasters:execute_payload(self.settings.raiding_event_key, nil, 0, dyn_dis_sea_potential_attack_vectors[first_sea_region].coastal_regions[1]);
+
     -- Set diplomacy.
-    local attacker_faction = cm:get_faction(self.settings.faction);
-    if attacker_faction ~= false and not attacker_faction:is_dead() then
+    if faction:is_null_interface() == false and not faction:is_dead() then
 
         -- Apply buffs to the attackers, so they can at least push one province into player territory.
         cm:apply_effect_bundle(self.settings.raiding_raiders_effect_key, self.settings.faction, 10)
 
         -- Make every attacking faction go full retard against the owner of the coastal provinces.
         for _, sea_region in pairs(potential_coasts[coast_to_attack]) do
-            for _, land_region in pairs(dyn_dis_sea_potential_attack_vectors[sea_region].coastal_regions) do
-                local region = cm:get_region(land_region)
-                local region_owner = region:owning_faction()
-
-                if region_owner:is_null_interface() == false and region_owner:subculture() ~= self.settings.subculture and region_owner:name() ~= "rebels" and not attacker_faction:at_war_with(region_owner) then
-                    cm:force_declare_war(self.settings.faction, region_owner:name(), false, true)
-                end
-            end
+            dynamic_disasters:declare_war_for_owners_and_neightbours(faction, dyn_dis_sea_potential_attack_vectors[sea_region].coastal_regions, false, {self.settings.subculture});
         end
     end
 end
@@ -405,6 +386,10 @@ function disaster_raiding_parties:check_start_disaster_conditions()
     self.settings.potential_attack_subcultures_alive = {};
     local count_alive = 0;
     for subculture, factions in pairs(potential_attack_factions) do
+
+        -- Update the potential factions removing the confederated ones.
+        factions = dynamic_disasters:remove_confederated_factions_from_list(factions);
+
         local is_human = false;
         for _, human_subculture in pairs(human_subcultures) do
             if human_subculture == subculture then
@@ -418,8 +403,8 @@ function disaster_raiding_parties:check_start_disaster_conditions()
             local factions_alive = {};
             local count = 0;
             for _, faction_key in pairs(factions) do
-                local faction = cm:get_faction(faction_key);
-                if faction ~= false and not faction:is_dead() then
+                local faction = cm:get_faction(faction_key, true);
+                if faction:is_null_interface() == false and not faction:is_dead() then
                     count = count + 1;
                     table.insert(factions_alive, faction_key);
                 end
@@ -438,11 +423,17 @@ function disaster_raiding_parties:check_start_disaster_conditions()
         return false;
     end
 
+    -- Base chance: 1/50 turns (2%).
     local base_chance = 0.02;
+
+    -- Increase the change of starting based on how many attackers are already dead.
+    -- In theory, no need to remove again confederated factions.
     for _, factions in pairs(potential_attack_factions) do
         for _, faction_key in pairs(factions) do
             local faction = cm:get_faction(faction_key);
-            if faction ~= false and faction:is_dead() then
+            if faction:is_null_interface() == false and faction:is_dead() then
+
+                -- Increase in 1% the chance of triggering for each dead attacker.
                 base_chance = base_chance + 0.01;
             end
         end

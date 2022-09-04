@@ -120,7 +120,7 @@ end
 
 function disaster_pyramid_of_nagash:trigger()
 	self:set_status(STATUS_TRIGGERED);
-	dynamic_disasters:execute_payload("wh3_main_ie_scripted_endgame_early_warning", self.settings.early_warning_event, self.settings.early_warning_delay);
+	dynamic_disasters:execute_payload("wh3_main_ie_scripted_endgame_early_warning", self.settings.early_warning_event, self.settings.early_warning_delay, nil);
 end
 
 function disaster_pyramid_of_nagash:trigger_resurection_of_nagash()
@@ -194,7 +194,7 @@ function disaster_pyramid_of_nagash:trigger_resurection_of_nagash()
         dynamic_disasters:add_victory_condition(incident_key, objectives, self.settings.region_key, nil)
     else
     	self.settings.is_current_victory_condition = false;
-        dynamic_disasters:execute_payload(incident_key, incident_key, 0);
+        dynamic_disasters:execute_payload(incident_key, incident_key, 0, nil);
     end
 
     -- Executed at the end because it needs some data set in this function to work.

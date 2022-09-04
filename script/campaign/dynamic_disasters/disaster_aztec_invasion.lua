@@ -840,7 +840,7 @@ function disaster_aztec_invasion:trigger_first_warning()
     out("Frodo45127: Disaster: " .. self.name .. ". Triggering first warning.");
 
     self.settings.first_warning_turn = cm:turn_number();
-    dynamic_disasters:execute_payload(self.settings.first_warning_event_key, self.settings.first_warning_event_key, self.settings.turns_to_trigger_from_first_warning);
+    dynamic_disasters:execute_payload(self.settings.first_warning_event_key, self.settings.first_warning_event_key, self.settings.turns_to_trigger_from_first_warning, nil);
 end
 
 -- Function to trigger the second warning before the invasion.
@@ -848,7 +848,7 @@ function disaster_aztec_invasion:trigger_second_warning()
     out("Frodo45127: Disaster: " .. self.name .. ". Triggering second warning.");
 
     self.settings.second_warning_turn = cm:turn_number();
-    dynamic_disasters:execute_payload(self.settings.second_warning_event_key, self.settings.second_warning_event_key, self.settings.turns_to_trigger_from_second_warning);
+    dynamic_disasters:execute_payload(self.settings.second_warning_event_key, self.settings.second_warning_event_key, self.settings.turns_to_trigger_from_second_warning, nil);
 end
 
 -- Function to trigger the invasion itself.
@@ -952,7 +952,7 @@ function disaster_aztec_invasion:trigger_aztec_invasion()
             cm:apply_effect_bundle(self.settings.invasion_event_key, human_factions[i], 10)
         end
     else
-        dynamic_disasters:execute_payload(self.settings.invasion_event_key, self.settings.invasion_event_key, 10);
+        dynamic_disasters:execute_payload(self.settings.invasion_event_key, self.settings.invasion_event_key, 10, nil);
     end
 
     -- Set the invasions status to started.
