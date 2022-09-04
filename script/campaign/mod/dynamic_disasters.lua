@@ -13,7 +13,6 @@ dynamic_disasters = {
         currently_running_endgames = 0,         -- Amount of currently running endgames.
     },
     disasters = {},                             -- List of disasters. This is populated on first tick.
-    confederated_factions = {},                 -- List of confederated factions, so they don't get revived.
 
     -- List of weigthed units used by the manager.
     --
@@ -696,17 +695,6 @@ local mandatory_settings = {
     campaigns = {},                     -- Campaigns this disaster works on.
 }
 
--- Keep track of confederated factions so they don't respawn broken.
-core:add_listener(
-    "BugFixBrokenAI",
-    "FactionJoinsConfederation",
-    true,
-    function(context)
-        table.insert(dynamic_disasters.confederated_factions, context:faction():name());
-    end,
-    true
-)
-
 --[[
     MCT Helpers, so the users can configure the disasters as they want.
 ]]--
@@ -1023,7 +1011,8 @@ end
 ---@param incident_key string #Incident key for the incident this function will trigger. Must exists in the DB.
 ---@param effect_bundle_key string #Optional. Effect Bundle key for the effect bundle to trigger with this incident. Must exists in the DB.
 ---@param duration integer #Optional. Duration for the effect bundle.
-function dynamic_disasters:execute_payload(incident_key, effect_bundle_key, duration)
+---@param region_key string #Optional. Region key for the region this incident will allow to zoom in.
+function dynamic_disasters:execute_payload(incident_key, effect_bundle_key, duration, region_key)
     if duration == nil then
         duration = 0;
     end
@@ -1039,6 +1028,11 @@ function dynamic_disasters:execute_payload(incident_key, effect_bundle_key, dura
             payload:set_duration(duration)
             payload_builder:effect_bundle_to_faction(payload)
         end
+
+        -- This doesn't work.
+        --if region_key ~= nil then
+        --    incident_builder:set_region(region_key);
+        --end
 
         incident_builder:set_payload(payload_builder)
         cm:launch_custom_incident_from_builder(incident_builder, cm:get_faction(human_factions[i]))
@@ -1200,29 +1194,21 @@ end
 ---@param factions table #Faction keys to check for confederation.
 ---@return table #Indexed table with the non-confederated faction keys.
 function dynamic_disasters:remove_confederated_factions_from_list(factions)
-
-    -- Update the potential factions removing the confederated ones.
-    if #self.confederated_factions > 0 then
-        for _, confederated_faction_key in pairs(self.confederated_factions) do
-            local is_attacker = 0;
-            for attacker_index, faction_key in pairs(factions) do
-                if faction_key == confederated_faction_key then
-                    is_attacker = attacker_index;
-                    break;
-                end
-            end
-
-            if is_attacker > 0 then
-                factions[is_attacker] = nil;
-            end
+    local clean_factions = {};
+    for i = 0, factions:num_items() - 1 do
+        local faction = cm:get_faction(factions[i]);
+        if not faction == false and faction:is_null_interface() == false and faction:was_confederated() == false then
+           table.insert(clean_factions, factions[i]);
         end
     end
 
-    return factions;
+    return clean_factions;
 end
 
 
 -- Function to declare war on all region owners of provided regions, and optionally on all neigthbors of the provided faction.
+--
+-- TODO: Make this function allow to ignore allies when declaring war.
 ---@param faction FACTION_SCRIPT_INTERFACE #Faction object
 ---@param regions table #Region keys to declare war to.
 ---@param attack_faction_neightbors boolean #If we should declare war on all the current faction neighbours too.
