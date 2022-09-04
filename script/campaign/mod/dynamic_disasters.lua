@@ -825,7 +825,8 @@ cm:add_first_tick_callback(
             -- If the disaster failed to load, report it.
             else
                 out("\tFailed to load disaster file [" .. disaster_name .. "], error is: " .. tostring(load_error) .. ". Will attempt to require() this file to generate a more meaningful error message:")
-                local require_result, require_error = pcall(require, disaster_filepath)
+                local path_no_lua =  tostring(string.sub(disaster_filepath, 0, (string.len(disaster_filepath)-4)))
+                local require_result, require_error = pcall(require, path_no_lua)
 
                 if require_result then
                     out("\tWARNING: require() seemed to be able to load file [" .. disaster_filepath .. "] with filename [" .. disaster_name .. "], where loadfile failed? Maybe the scenario is loaded, maybe it isn't - proceed with caution!")
