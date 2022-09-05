@@ -17,11 +17,16 @@ dynamic_disasters_enable:set_default_value(true)
 dynamic_disasters_enable:set_text(loc_prefix.."enable", true)
 dynamic_disasters_enable:set_tooltip_text(loc_prefix.."enable_tooltip", true)
 
+local dynamic_disasters_debug = mod:add_new_option("dynamic_disasters_debug", "checkbox")
+dynamic_disasters_debug:set_default_value(false)
+dynamic_disasters_debug:set_text(loc_prefix.."debug", true)
+dynamic_disasters_debug:set_tooltip_text(loc_prefix.."debug_tooltip", true)
+
 local dynamic_disasters_max_simul = mod:add_new_option("dynamic_disasters_max_simul", "slider")
 dynamic_disasters_max_simul:set_text(loc_prefix.."max_simul", true)
 dynamic_disasters_max_simul:set_tooltip_text(loc_prefix.."max_simul_tooltip", true)
 dynamic_disasters_max_simul:slider_set_min_max(1, 50)
-dynamic_disasters_max_simul:set_default_value(6)
+dynamic_disasters_max_simul:set_default_value(4)
 dynamic_disasters_max_simul:slider_set_step_size(1)
 
 local section_disasters_individual_config = mod:add_new_section("disasters_config", loc_prefix.."disasters_config", true)

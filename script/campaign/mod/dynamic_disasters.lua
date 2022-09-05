@@ -8,8 +8,9 @@
 dynamic_disasters = {
     settings = {
         enabled = true,                         -- If the entire Dynamic Disasters system is enabled.
+        debug = false,                          -- Debug mode. Forces all disasters to trigger and all in-between phase timers are reduced to 1 turn.
         victory_condition_triggered = false,    -- If a disaster has already triggered a victory condition, as we can't have two at the same time.
-        max_endgames_at_the_same_time = 6,      -- Max amount of endgame crisis one can trigger at the same time, to space them out a bit.
+        max_endgames_at_the_same_time = 4,      -- Max amount of endgame crisis one can trigger at the same time, to space them out a bit.
         currently_running_endgames = 0,         -- Amount of currently running endgames.
     },
     disasters = {},                             -- List of disasters. This is populated on first tick.
@@ -729,6 +730,10 @@ function dynamic_disasters:load_from_mct(mct)
     local dynamic_disasters_enable = mod:get_option_by_key("dynamic_disasters_enable")
     local dynamic_disasters_enable_setting = dynamic_disasters_enable:get_finalized_setting()
     self.settings.enabled = dynamic_disasters_enable_setting
+
+    local dynamic_disasters_debug = mod:get_option_by_key("dynamic_disasters_debug")
+    local dynamic_disasters_debug_setting = dynamic_disasters_debug:get_finalized_setting()
+    self.settings.debug = dynamic_disasters_debug_setting
 
     local dynamic_disasters_max_simul = mod:get_option_by_key("dynamic_disasters_max_simul")
     local dynamic_disasters_max_simul_setting = dynamic_disasters_max_simul:get_finalized_setting()

@@ -4,8 +4,10 @@
     This disaster consists in a series of coordinated assaults to the Great Wall by Vilich which, if succeeds, will generate additional armies,
     and will start an assault in Cathay itself. No longer shall you ignore the wall's defenses!
 
+    Supports debug mode, but still requires a max bastion thread to trigger.
+
     Requirements:
-        - Always triggers 3 turns after the bastion reaches max thread, if no Kurgan armies have been defeated.
+        - Always triggers between 2 and 3 turns after the bastion reaches max thread, if no Kurgan armies have been defeated.
         - At least turn 30 (so the player has already "prepared").
         - Vilich must be not confederated.
     Effects:
@@ -18,6 +20,7 @@
         - After taking down the wall:
             - Spawns at least 3 armies for Vilich, with more showing up every 7 turns.
             - Lasts until the invasion ends, either by taking back the wall or by losing half of Cathay.
+        - Event waits 5 turns before being able to be repeated.
 
 ]]
 
@@ -47,21 +50,15 @@ disaster_chianchi_assault = {
         status = 0,                         -- Current status of the disaster. Used to re-initialize the disaster correctly on reload.
         last_triggered_turn = 0,            -- Turn when the disaster was last triggerd.
         last_finished_turn = 0,             -- Turn when the disaster was last finished.
-        wait_turns_between_repeats = 5,     -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
+        wait_turns_between_repeats = 1,     -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
         difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
         campaigns = {                       -- Campaigns this disaster works on.
             "main_warhammer",
         },
 
         -- Disaster-specific data.
-        warning_delay = 3,
-        reinforcements_delay = 2,
-        warning_event_key = "fro_dyn_dis_chianchi_assault_warning",
-        first_attack_event_key = "fro_dyn_dis_chianchi_assault_wall_assault_trigger",
-        first_attack_attackers_effect_key = "fro_dyn_dis_chianchi_assault_wall_assault_invader_buffs",
-        second_attack_event_key = "fro_dyn_dis_chianchi_assault_daemonic_invasion_trigger",
-        second_attack_attackers_effect_key = "fro_dyn_dis_chianchi_assault_daemonic_invasion_invader_buffs",
-        finish_before_assault_event_key = "fro_dyn_dis_chianchi_assault_finish_before_assault",
+        warning_delay = 1,
+        reinforcements_delay = 1,
 
         army_template = {
             chaos = "earlygame",
@@ -70,7 +67,13 @@ disaster_chianchi_assault = {
         base_army_unit_count = 19,
 
         faction = "wh3_dlc20_chs_vilitch",
-    }
+    },
+
+    warning_event_key = "fro_dyn_dis_chianchi_assault_warning",
+    first_attack_event_key = "fro_dyn_dis_chianchi_assault_wall_assault_trigger",
+    second_attack_event_key = "fro_dyn_dis_chianchi_assault_daemonic_invasion_trigger",
+    second_attack_attackers_effect_key = "fro_dyn_dis_chianchi_assault_daemonic_invasion_invader_buffs",
+    finish_before_assault_event_key = "fro_dyn_dis_chianchi_assault_finish_before_assault",
 }
 
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
@@ -94,7 +97,7 @@ function disaster_chianchi_assault:set_status(status)
             function()
                 local faction = cm:get_faction(self.settings.faction);
                 if Bastion:get_saved_invasion_active_value() == true and not faction == false and faction:is_null_interface() == false and faction:was_confederated() == false then
-                    dynamic_disasters:execute_payload(self.settings.warning_event_key, nil, 0, nil);
+                    dynamic_disasters:execute_payload(self.warning_event_key, nil, 0, nil);
                 else
                     core:remove_listener("ChianchiAssaultGatesDestroyed")
                     core:remove_listener("ChianchiAssaultCountDown")
@@ -123,7 +126,7 @@ function disaster_chianchi_assault:set_status(status)
                 if Bastion:get_saved_invasion_active_value() == true and not faction == false and faction:is_null_interface() == false and faction:was_confederated() == false then
                     self:trigger_wall_attack_reinforcement();
                 else
-                    dynamic_disasters:execute_payload(self.settings.finish_before_assault_event_key, nil, 0, nil);
+                    dynamic_disasters:execute_payload(self.finish_before_assault_event_key, nil, 0, nil);
                     core:remove_listener("ChianchiAssaultGatesDestroyed")
                     self:trigger_end_disaster();
                 end
@@ -157,7 +160,7 @@ function disaster_chianchi_assault:set_status(status)
                 if Bastion:get_saved_invasion_active_value() == true and num_razed_gates > 0 and not faction == false and faction:is_null_interface() == false and faction:was_confederated() == false then
                     self:trigger_full_daemonic_invasion();
                 else
-                    dynamic_disasters:execute_payload(self.settings.finish_before_assault_event_key, nil, 0, nil);
+                    dynamic_disasters:execute_payload(self.finish_before_assault_event_key, nil, 0, nil);
                     self:trigger_end_disaster();
                 end
 
@@ -214,8 +217,16 @@ end
 function disaster_chianchi_assault:trigger()
     out("Frodo45127: Starting disaster: " .. self.name);
 
-    -- Recalculate the delay to trigger this after the initial warning.
-    self.settings.reinforcements_delay = math.random(1, 3);
+    -- Recalculate the delays to trigger this after the initial warning.
+    if dynamic_disasters.settings.debug == false then
+        self.settings.warning_delay = math.random(2, 3);
+        self.settings.reinforcements_delay = math.random(self.settings.warning_delay, 6);
+        self.settings.wait_turns_between_repeats = 5;
+    else
+        self.settings.warning_delay = 1;
+        self.settings.reinforcements_delay = 1;
+        self.settings.wait_turns_between_repeats = 1;
+    end
 
     -- Set the army difficulty based on game turn.
     local current_turn = cm:turn_number();
@@ -244,7 +255,7 @@ function disaster_chianchi_assault:trigger_wall_attack_reinforcement()
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh3_main_sc_tze_tzeentch")
-    dynamic_disasters:execute_payload(self.settings.first_attack_event_key, nil, 0, nil);
+    dynamic_disasters:execute_payload(self.first_attack_event_key, nil, 0, nil);
 
     -- For each gate, spawn a few Vilich armies.
     local armies_to_spawn_per_gate = math.floor(1 * math.ceil(self.settings.difficulty_mod));
@@ -260,7 +271,7 @@ function disaster_chianchi_assault:trigger_full_daemonic_invasion()
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh3_main_sc_tze_tzeentch")
-    dynamic_disasters:execute_payload(self.settings.second_attack_event_key, nil, 0, nil);
+    dynamic_disasters:execute_payload(self.second_attack_event_key, nil, 0, nil);
 
 
     -- On the initial trigger of the invasion, spawn at least 3 more armies to kickstart the invasion.
@@ -275,7 +286,7 @@ function disaster_chianchi_assault:trigger_full_daemonic_invasion()
     if not faction == false and faction:is_null_interface() == false and not faction:is_dead() then
 
         -- Apply buffs to the attackers, so they can at least push one province into player territory.
-        cm:apply_effect_bundle(self.settings.second_attack_attackers_effect_key, self.settings.faction, 10)
+        cm:apply_effect_bundle(self.second_attack_attackers_effect_key, self.settings.faction, 10)
 
         -- Declare war on the owners of all cathay
         dynamic_disasters:declare_war_for_owners_and_neightbours(faction, Bastion.cathay_bastion_regions, false, {"wh_main_sc_chs_chaos", "wh_dlc08_sc_nor_norsca"});

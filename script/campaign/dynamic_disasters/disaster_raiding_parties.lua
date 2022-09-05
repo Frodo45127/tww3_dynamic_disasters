@@ -2,6 +2,9 @@
     Raiding Parties disaster, By Frodo45127.
 
     This disaster consists on limited coastal attacks by either Vampire Coast armies, Norscan or Dark Elven fleets.
+
+    Supports debug mode.
+
     NOTE: This disaster can use the three factions, except the ones sharing subculture with the player.
 
     Requirements:
@@ -55,11 +58,6 @@ disaster_raiding_parties = {
 
         -- Disaster-specific data.
         warning_delay = 1,
-        warning_event_key = "fro_dyn_dis_raiding_parties_warning",
-        raiding_event_key = "fro_dyn_dis_raiding_parties_trigger",
-        raiding_cancel_event_key = "fro_dyn_dis_raiding_parties_early_end",
-        raiding_raiders_effect_key = "fro_dyn_dis_raiding_parties_invader_buffs",
-
         army_template = {},
         base_army_unit_count = 19,
 
@@ -67,7 +65,11 @@ disaster_raiding_parties = {
         subculture = "",
         potential_attack_factions_alive = {},
         potential_attack_subcultures_alive = {},
-    }
+    },
+    warning_event_key = "fro_dyn_dis_raiding_parties_warning",
+    raiding_event_key = "fro_dyn_dis_raiding_parties_trigger",
+    raiding_cancel_event_key = "fro_dyn_dis_raiding_parties_early_end",
+    raiding_raiders_effect_key = "fro_dyn_dis_raiding_parties_invader_buffs",
 }
 
 -- Factions that will receive the attacking armies.
@@ -258,11 +260,16 @@ function disaster_raiding_parties:trigger()
     end
 
     -- Recalculate the delay for further executions.
-    self.settings.warning_delay = math.random(4, 10);
-    self.settings.wait_turns_between_repeats = self.settings.warning_delay + 10;
+    if dynamic_disasters.settings.debug == false then
+        self.settings.warning_delay = math.random(4, 10);
+        self.settings.wait_turns_between_repeats = self.settings.warning_delay + 10;
+    else
+        self.settings.warning_delay = 1;
+        self.settings.wait_turns_between_repeats = 1;
+    end
 
     self:set_status(STATUS_TRIGGERED);
-    dynamic_disasters:execute_payload(self.settings.warning_event_key, nil, 0, nil);
+    dynamic_disasters:execute_payload(self.warning_event_key, nil, 0, nil);
 end
 
 -- Function to trigger the raid itself.
@@ -316,7 +323,7 @@ function disaster_raiding_parties:trigger_raiding_parties()
     local faction = cm:get_faction(self.settings.faction);
     if #coasts_to_attack < 1 or (faction:is_null_interface() == true or faction:is_dead() or faction:was_confederated()) then
         cm:activate_music_trigger("ScriptedEvent_Negative", self.settings.subculture)
-        dynamic_disasters:execute_payload(self.settings.raiding_cancel_event_key, nil, 0, nil);
+        dynamic_disasters:execute_payload(self.raiding_cancel_event_key, nil, 0, nil);
         return
     end
 
@@ -347,13 +354,13 @@ function disaster_raiding_parties:trigger_raiding_parties()
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
     cm:activate_music_trigger("ScriptedEvent_Negative", self.settings.subculture)
-    dynamic_disasters:execute_payload(self.settings.raiding_event_key, nil, 0, dyn_dis_sea_potential_attack_vectors[first_sea_region].coastal_regions[1]);
+    dynamic_disasters:execute_payload(self.raiding_event_key, nil, 0, dyn_dis_sea_potential_attack_vectors[first_sea_region].coastal_regions[1]);
 
     -- Set diplomacy.
     if faction:is_null_interface() == false and not faction:is_dead() then
 
         -- Apply buffs to the attackers, so they can at least push one province into player territory.
-        cm:apply_effect_bundle(self.settings.raiding_raiders_effect_key, self.settings.faction, 10)
+        cm:apply_effect_bundle(self.raiding_raiders_effect_key, self.settings.faction, 10)
 
         -- Make every attacking faction go full retard against the owner of the coastal provinces.
         for _, sea_region in pairs(potential_coasts[coast_to_attack]) do
@@ -421,6 +428,11 @@ function disaster_raiding_parties:check_start_disaster_conditions()
     -- If none of the available factions is alive, do not trigger the disaster.
     if count_alive == 0 then
         return false;
+    end
+
+    -- Debug mode support.
+    if dynamic_disasters.settings.debug == true then
+        return true;
     end
 
     -- Base chance: 1/50 turns (2%).

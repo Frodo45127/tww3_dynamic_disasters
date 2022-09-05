@@ -4,7 +4,7 @@
     This disaster consists in a coastal invasion by Lizarmen, to restore the... status of the world according to the great plan.
     Meaning, the classic "There is no problem with others if there is no others" solution.
 
-    Classified as Endgame, can trigger final mission.
+    Classified as Endgame, can trigger final mission. Supports debug mode.
 
     Requirements:
         - Random chance: 0.5% (1/200 turns).
@@ -61,7 +61,7 @@ disaster_aztec_invasion = {
         finished = false,                   -- If the disaster has been finished.
         repeteable = false,                 -- If the disaster can be repeated.
         is_endgame = true,                  -- If the disaster is an endgame.
-        min_turn = 60,                      -- Minimum turn required for the disaster to trigger.
+        min_turn = 100,                     -- Minimum turn required for the disaster to trigger.
         last_triggered_turn = 0,            -- Turn when the disaster was last triggerd.
         last_finished_turn = 0,             -- Turn when the disaster was last finished.
         wait_turns_between_repeats = 0,     -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
@@ -71,21 +71,18 @@ disaster_aztec_invasion = {
         },
 
         -- Disaster-specific data.
-        first_warning_delay = math.random(3, 6),
-        second_warning_delay = math.random(3, 6),
-        first_warning_event_key = "fro_dyn_dis_aztec_invasion_warning_1",
-        second_warning_event_key = "fro_dyn_dis_aztec_invasion_warning_2",
-        invasion_event_key = "fro_dyn_dis_aztec_invasion_trigger",
-        ai_personality = "fro_dyn_dis_wh3_combi_lizardmen_endgame",
-
-        first_warning_turn = 0,
-        second_warning_turn = 0,
-        invasion_start_turn = 0,
-        invasion_end_turn = 0,
-
-        army_template = { lizardmen = "lategame" },
+        second_warning_delay = 1,
+        invasion_delay = 1,
+        army_template = {
+            lizardmen = "lategame"
+        },
         base_army_unit_count = 19,
-    }
+    },
+
+    first_warning_event_key = "fro_dyn_dis_aztec_invasion_warning_1",
+    second_warning_event_key = "fro_dyn_dis_aztec_invasion_warning_2",
+    invasion_event_key = "fro_dyn_dis_aztec_invasion_trigger",
+    ai_personality = "fro_dyn_dis_wh3_combi_lizardmen_endgame",
 }
 
 -- Potential areas of invasion. It containes a table with area-of-invasion -> [regions to invade from].
@@ -785,7 +782,7 @@ function disaster_aztec_invasion:set_status(status)
             "DisasterAztecInvasionSecondWarning",
             "WorldStartRound",
             function()
-                return cm:turn_number() == self.settings.last_triggered_turn + self.settings.first_warning_delay
+                return cm:turn_number() == self.settings.last_triggered_turn + self.settings.second_warning_delay
             end,
             function()
                 self:trigger_second_warning();
@@ -799,7 +796,7 @@ function disaster_aztec_invasion:set_status(status)
             "DisasterAztecInvasionAztecInvasion",
             "WorldStartRound",
             function()
-                return cm:turn_number() == self.settings.last_triggered_turn + self.settings.first_warning_delay + self.settings.second_warning_delay
+                return cm:turn_number() == self.settings.last_triggered_turn + self.settings.second_warning_delay + self.settings.invasion_delay
             end,
             function()
                 self:trigger_aztec_invasion();
@@ -839,16 +836,26 @@ end
 function disaster_aztec_invasion:trigger_first_warning()
     out("Frodo45127: Disaster: " .. self.name .. ". Triggering first warning.");
 
-    self.settings.first_warning_turn = cm:turn_number();
-    dynamic_disasters:execute_payload(self.settings.first_warning_event_key, self.settings.first_warning_event_key, self.settings.turns_to_trigger_from_first_warning, nil);
+    if dynamic_disasters.settings.debug == false then
+        self.settings.second_warning_delay = math.random(3, 6);
+    else
+        self.settings.second_warning_delay = 1;
+    end
+
+    dynamic_disasters:execute_payload(self.first_warning_event_key, self.first_warning_event_key, self.settings.second_warning_delay, nil);
 end
 
 -- Function to trigger the second warning before the invasion.
 function disaster_aztec_invasion:trigger_second_warning()
     out("Frodo45127: Disaster: " .. self.name .. ". Triggering second warning.");
 
-    self.settings.second_warning_turn = cm:turn_number();
-    dynamic_disasters:execute_payload(self.settings.second_warning_event_key, self.settings.second_warning_event_key, self.settings.turns_to_trigger_from_second_warning, nil);
+    if dynamic_disasters.settings.debug == false then
+        self.settings.invasion_delay = math.random(3, 6);
+    else
+        self.settings.invasion_delay = 1;
+    end
+
+    dynamic_disasters:execute_payload(self.second_warning_event_key, self.second_warning_event_key, self.settings.invasion_delay, nil);
 end
 
 -- Function to trigger the invasion itself.
@@ -856,7 +863,6 @@ function disaster_aztec_invasion:trigger_aztec_invasion()
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
     out("Frodo45127: Disaster: " .. self.name .. ". Triggering invasion.");
-    self.settings.invasion_start_turn = cm:turn_number();
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_lzd_lizardmen")
 
     -- Get all the coastal regions (as in region with a port) owned by the player.
@@ -915,7 +921,7 @@ function disaster_aztec_invasion:trigger_aztec_invasion()
         if faction:is_null_interface() == false and not faction:is_dead() then
 
             -- Change their AI to something more aggressive.
-            cm:force_change_cai_faction_personality(faction_key, self.settings.ai_personality)
+            cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
 
             -- Apply buffs to the attackers, so they can at least push one province into player territory.
             cm:apply_effect_bundle("fro_dyn_dis_aztec_invasion_trigger_invader_buffs", faction_key, 10)
@@ -946,13 +952,13 @@ function disaster_aztec_invasion:trigger_aztec_invasion()
 
     -- Trigger the victory condition, if needed.
     if dynamic_disasters.settings.victory_condition_triggered == false then
-        dynamic_disasters:add_victory_condition(self.settings.invasion_event_key, self.objectives, nil, nil)
+        dynamic_disasters:add_victory_condition(self.invasion_event_key, self.objectives, nil, nil)
         local human_factions = cm:get_human_factions()
         for i = 1, #human_factions do
-            cm:apply_effect_bundle(self.settings.invasion_event_key, human_factions[i], 10)
+            cm:apply_effect_bundle(self.invasion_event_key, human_factions[i], 10)
         end
     else
-        dynamic_disasters:execute_payload(self.settings.invasion_event_key, self.settings.invasion_event_key, 10, nil);
+        dynamic_disasters:execute_payload(self.invasion_event_key, self.invasion_event_key, 10, nil);
     end
 
     -- Set the invasions status to started.
@@ -962,8 +968,6 @@ end
 -- Function to trigger cleanup stuff after the invasion is over.
 function disaster_aztec_invasion:trigger_end_disaster()
     out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
-
-    self.settings.invasion_end_turn = cm:turn_number();
     dynamic_disasters:finish_disaster(self);
 end
 
@@ -987,6 +991,11 @@ function disaster_aztec_invasion:check_start_disaster_conditions()
     -- Do not start if we don't have attackers.
     if #potential_attack_factions == 0 or attackers_still_alive == false then
         return false;
+    end
+
+    -- Debug mode support.
+    if dynamic_disasters.settings.debug == true then
+        return true;
     end
 
     -- Base chance: 1/200 turns (0.5%).
