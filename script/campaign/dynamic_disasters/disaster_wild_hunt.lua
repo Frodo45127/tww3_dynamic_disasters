@@ -39,15 +39,16 @@ disaster_wild_hunt = {
 		},
 		base_army_count = 4, -- Number of armies that spawn in each forest glade when the event fires.
 		unit_count = 19,
-		early_warning_incident_key = "wh3_main_ie_incident_endgame_wild_hunt_early_warning",
-        early_warning_effects_key = "wh3_main_ie_scripted_endgame_early_warning",
-        invasion_incident_key = "wh3_main_ie_incident_endgame_wild_hunt",
-		ai_personality = "wh3_combi_woodelf_endgame",
 		early_warning_delay = 10,
 		region_count_halved = 0,
 		factions_to_destroy = {},
 		regions_to_capture = {},
-	}
+	},
+
+    early_warning_incident_key = "wh3_main_ie_incident_endgame_wild_hunt_early_warning",
+    early_warning_effects_key = "wh3_main_ie_scripted_endgame_early_warning",
+    invasion_incident_key = "wh3_main_ie_incident_endgame_wild_hunt",
+    ai_personality = "wh3_combi_woodelf_endgame",
 }
 
 local potential_wood_elves = {
@@ -101,8 +102,16 @@ function disaster_wild_hunt:set_status(status)
 end
 
 function disaster_wild_hunt:trigger()
+
+    -- Debug mode support.
+    if dynamic_disasters.settings.debug == false then
+        self.settings.early_warning_delay = math.random(8, 12);
+    else
+        self.settings.early_warning_delay = 1;
+    end
+
+    dynamic_disasters:execute_payload(self.early_warning_incident_key, self.early_warning_effects_key, self.settings.early_warning_delay, nil);
     self:set_status(STATUS_TRIGGERED);
-    dynamic_disasters:execute_payload(self.settings.early_warning_incident_key, self.settings.early_warning_effects_key, self.settings.early_warning_delay, nil);
 
 end
 
@@ -119,9 +128,9 @@ function disaster_wild_hunt:trigger_the_wild_hunt()
 			table.insert(forest_regions, region_key)
 			table.insert(wood_elf_factions, faction_key)
 
-			endgame:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.unit_count, true, 2)
+			dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.unit_count, true, 2, self.name)
 			if faction_key ==  "wh_dlc05_wef_wood_elves" then
-				endgame:create_scenario_force(faction_key, "wh3_main_combi_region_the_oak_of_ages", self.settings.army_template, self.settings.unit_count, true, math.floor(self.settings.base_army_count*self.settings.difficulty_mod))
+				dynamic_disasters:create_scenario_force(faction_key, "wh3_main_combi_region_the_oak_of_ages", self.settings.army_template, self.settings.unit_count, true, math.floor(self.settings.base_army_count*self.settings.difficulty_mod), self.name)
 			end
 
 			endgame:no_peace_no_confederation_only_war(faction_key)
@@ -130,7 +139,7 @@ function disaster_wild_hunt:trigger_the_wild_hunt()
 			local region = cm:get_region(region_key)
 			local region_owner = region:owning_faction()
 
-			cm:force_change_cai_faction_personality(faction_key, self.settings.ai_personality)
+			cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
 
 			if region_owner:is_null_interface() or region_owner:name() == "rebels" or (not region_owner:name() == faction_key and not region_owner:is_human()) then
 				cm:transfer_region_to_faction(region_key, faction_key)
@@ -170,9 +179,9 @@ function disaster_wild_hunt:trigger_the_wild_hunt()
 	end
 
     if dynamic_disasters.settings.victory_condition_triggered == false then
-        dynamic_disasters:add_victory_condition(self.settings.invasion_incident_key, objectives, forest_regions[1], nil)
+        dynamic_disasters:add_victory_condition(self.invasion_incident_key, objectives, forest_regions[1], nil)
     else
-        dynamic_disasters:execute_payload(self.settings.invasion_incident_key, nil, 0, nil);
+        dynamic_disasters:execute_payload(self.invasion_incident_key, nil, 0, nil);
     end
 
 end
@@ -186,6 +195,12 @@ end
 --- Function to check if the disaster custom conditions are valid and can be trigger.
 ---@return boolean If the disaster will be triggered or not.
 function disaster_wild_hunt:check_start_disaster_conditions()
+
+    -- Debug mode support.
+    if dynamic_disasters.settings.debug == true then
+        return true;
+    end
+
     local base_chance = 0.005;
     for faction_key, _ in pairs(potential_wood_elves) do
         local faction = cm:get_faction(faction_key);

@@ -65,6 +65,26 @@ disaster_raiding_parties = {
         subculture = "",
         potential_attack_factions_alive = {},
         potential_attack_subcultures_alive = {},
+        potential_attack_factions = {         -- Factions that will receive the attacking armies.
+            wh2_dlc11_sc_cst_vampire_coast = {      -- Vampire Coast
+                "wh2_dlc11_cst_vampire_coast",          -- Harkon
+                "wh2_dlc11_cst_noctilus",               -- Noctilus
+                "wh2_dlc11_cst_pirates_of_sartosa",     -- Aranessa
+                "wh2_dlc11_cst_the_drowned",            -- Cylostra
+            },
+            wh2_main_sc_def_dark_elves = {          -- Dark elves
+                "wh2_main_def_naggarond",               -- Malekith
+                "wh2_main_def_cult_of_pleasure",        -- Morathi
+                "wh2_main_def_har_ganeth",              -- Hellebron
+                "wh2_dlc11_def_the_blessed_dread",      -- Lokhir
+                "wh2_main_def_hag_graef",               -- Malus
+                "wh2_twa03_def_rakarth",                -- Rakarth
+            },
+            wh_dlc08_sc_nor_norsca = {              -- Norsca
+                "wh_dlc08_nor_norsca",                  -- Wulfrik
+                "wh_dlc08_nor_wintertooth",             -- Throgg
+            },
+        }
     },
     warning_event_key = "fro_dyn_dis_raiding_parties_warning",
     raiding_event_key = "fro_dyn_dis_raiding_parties_trigger",
@@ -72,27 +92,6 @@ disaster_raiding_parties = {
     raiding_raiders_effect_key = "fro_dyn_dis_raiding_parties_invader_buffs",
 }
 
--- Factions that will receive the attacking armies.
-local potential_attack_factions = {
-    wh2_dlc11_sc_cst_vampire_coast = {      -- Vampire Coast
-        "wh2_dlc11_cst_vampire_coast",          -- Harkon
-        "wh2_dlc11_cst_noctilus",               -- Noctilus
-        "wh2_dlc11_cst_pirates_of_sartosa",     -- Aranessa
-        "wh2_dlc11_cst_the_drowned",            -- Cylostra
-    },
-    wh2_main_sc_def_dark_elves = {          -- Dark elves
-        "wh2_main_def_naggarond",               -- Malekith
-        "wh2_main_def_cult_of_pleasure",        -- Morathi
-        "wh2_main_def_har_ganeth",              -- Hellebron
-        "wh2_dlc11_def_the_blessed_dread",      -- Lokhir
-        "wh2_main_def_hag_graef",               -- Malus
-        "wh2_twa03_def_rakarth",                -- Rakarth
-    },
-    wh_dlc08_sc_nor_norsca = {              -- Norsca
-        "wh_dlc08_nor_norsca",                  -- Wulfrik
-        "wh_dlc08_nor_wintertooth",             -- Throgg
-    },
-}
 
 -- Potential coasts to attack. Each coast may contain one or more regions.
 local potential_coasts = {
@@ -392,7 +391,7 @@ function disaster_raiding_parties:check_start_disaster_conditions()
     self.settings.potential_attack_factions_alive = {};
     self.settings.potential_attack_subcultures_alive = {};
     local count_alive = 0;
-    for subculture, factions in pairs(potential_attack_factions) do
+    for subculture, factions in pairs(self.settings.potential_attack_factions) do
 
         -- Update the potential factions removing the confederated ones.
         factions = dynamic_disasters:remove_confederated_factions_from_list(factions);
@@ -440,7 +439,7 @@ function disaster_raiding_parties:check_start_disaster_conditions()
 
     -- Increase the change of starting based on how many attackers are already dead.
     -- In theory, no need to remove again confederated factions.
-    for _, factions in pairs(potential_attack_factions) do
+    for _, factions in pairs(self.settings.potential_attack_factions) do
         for _, faction_key in pairs(factions) do
             local faction = cm:get_faction(faction_key);
             if faction:is_null_interface() == false and faction:is_dead() then

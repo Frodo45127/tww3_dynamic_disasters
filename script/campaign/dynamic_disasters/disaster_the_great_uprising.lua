@@ -9,7 +9,7 @@
         - Random chance: 0.25% (1/400 turns).
         - +0.25% for each Skaven faction that has been wiped out (not confederated).
         - At least turn 130 (so the player has already "prepared").
-        - Clan Skryre must be alive (it's the one it starts the invasion).
+        - Clan Skryre must be not confederated (it's the one it starts the invasion).
     Effects:
         - Trigger/Early Warning:
             - Message about Morrslieb increasing in size.
@@ -127,6 +127,81 @@ disaster_the_great_uprising = {
         stage_4_delay = 1,
         stage_5_delay = 1,
         invasion_over_delay = 10,
+
+
+        -- List of skaven factions that will participate in the uprising.
+        skaven_factions = {
+
+            -- Major factions
+            "wh2_main_skv_clan_mors",           -- Clan Mors (Queek)
+            "wh2_main_skv_clan_pestilens",      -- Clan Pestilens (Skrolk)
+            "wh2_dlc09_skv_clan_rictus",        -- Clan Rictus (Tretch)
+            "wh2_main_skv_clan_skryre",         -- Clan Skryre (Ikit Claw)
+            "wh2_main_skv_clan_eshin",          -- Clan Eshin (Snikch)
+            "wh2_main_skv_clan_moulder",        -- Clan Moulder (Throt)
+
+            -- Minor factions
+            "wh3_main_skv_clan_carrion",        -- Clan Carrion
+            "wh2_dlc12_skv_clan_fester",        -- Clan Fester
+            "wh2_dlc15_skv_clan_ferrik",        -- Clan Ferrik
+            "wh2_main_skv_grey_seer_clan",      -- Clan Grey Seer (what's this)
+            "wh2_dlc16_skv_clan_gritus",        -- Clan Gritus
+            "wh3_main_skv_clan_gritus",         -- Clan Gritus (again? From another campaign?)
+            "wh2_dlc15_skv_clan_kreepus",       -- Clan Kreepus
+            "wh3_main_skv_clan_krizzor",        -- Clan Krizzor
+            "wh2_dlc12_skv_clan_mange",         -- Clan Mange
+            "wh3_main_skv_clan_morbidus",       -- Clan Morbidus
+            "wh2_main_skv_clan_septik",         -- Clan Septik
+            "wh3_main_skv_clan_skrat",          -- Clan Skrat
+            "wh2_main_skv_clan_spittel",        -- Clan Spittel
+            "wh3_main_skv_clan_treecherik",     -- Clan Treecherik
+            "wh2_dlc15_skv_clan_volkn",         -- Clan Volkn
+            "wh3_main_skv_clan_verms",          -- Clan Verms
+        },
+
+        factions_stage_1 = {
+            "wh2_main_skv_clan_skryre",         -- Clan Skryre (Ikit Claw)
+        },
+
+        factions_stage_2_empire_and_araby = {
+            "wh3_main_skv_clan_carrion",        -- Clan Carrion
+            "wh2_dlc12_skv_clan_fester",        -- Clan Fester
+            "wh2_dlc15_skv_clan_ferrik",        -- Clan Ferrik
+            "wh2_dlc15_skv_clan_kreepus",       -- Clan Kreepus
+            "wh3_main_skv_clan_krizzor",        -- Clan Krizzor
+            "wh2_dlc12_skv_clan_mange",         -- Clan Mange
+            "wh3_main_skv_clan_morbidus",       -- Clan Morbidus
+            "wh2_main_skv_clan_septik",         -- Clan Septik
+            "wh3_main_skv_clan_skrat",          -- Clan Skrat
+            "wh2_main_skv_clan_spittel",        -- Clan Spittel
+            "wh3_main_skv_clan_treecherik",     -- Clan Treecherik
+            "wh2_dlc15_skv_clan_volkn",         -- Clan Volkn
+            "wh3_main_skv_clan_verms",          -- Clan Verms
+        },
+
+        factions_stage_2_cathay = {
+            "wh2_main_skv_clan_eshin",          -- Clan Eshin (Snikch)
+        },
+
+        factions_stage_3_lustria = {
+            "wh2_main_skv_clan_pestilens",      -- Clan Pestilens (Skrolk)
+            "wh2_main_skv_clan_skryre",         -- Clan Skryre (Ikit Claw)
+        },
+
+        factions_stage_4_karaz_ankor = {
+
+            -- Major factions
+            "wh2_main_skv_clan_mors",           -- Clan Mors (Queek)
+            "wh2_main_skv_clan_eshin",          -- Clan Eshin (Snikch)
+            "wh2_main_skv_clan_moulder",        -- Clan Moulder (Throt)
+
+            -- Minor factions
+            "wh2_dlc15_skv_clan_ferrik",        -- Clan Ferrik
+        },
+
+        factions_stage_5_karaz_a_karak = {
+            "wh2_main_skv_clan_mors",           -- Clan Mors (Queek)
+        },
     },
 
     stage_1_warning_event_key = "fro_dyn_dis_great_uprising_stage_1_warning",
@@ -140,80 +215,6 @@ disaster_the_great_uprising = {
     effects_global_key = "fro_dyn_dis_great_uprising_global_effects",
     attacker_buffs_key = "fro_dyn_dis_great_uprising_attacker_buffs",
     ai_personality = "fro_dyn_dis_wh3_combi_skaven_endgame",
-}
-
--- List of skaven factions that will participate in the uprising.
-local skaven_factions = {
-
-    -- Major factions
-    "wh2_main_skv_clan_mors",           -- Clan Mors (Queek)
-    "wh2_main_skv_clan_pestilens",      -- Clan Pestilens (Skrolk)
-    "wh2_dlc09_skv_clan_rictus",        -- Clan Rictus (Tretch)
-    "wh2_main_skv_clan_skryre",         -- Clan Skryre (Ikit Claw)
-    "wh2_main_skv_clan_eshin",          -- Clan Eshin (Snikch)
-    "wh2_main_skv_clan_moulder",        -- Clan Moulder (Throt)
-
-    -- Minor factions
-    "wh3_main_skv_clan_carrion",        -- Clan Carrion
-    "wh2_dlc12_skv_clan_fester",        -- Clan Fester
-    "wh2_dlc15_skv_clan_ferrik",        -- Clan Ferrik
-    "wh2_main_skv_grey_seer_clan",      -- Clan Grey Seer (what's this)
-    "wh2_dlc16_skv_clan_gritus",        -- Clan Gritus
-    "wh3_main_skv_clan_gritus",         -- Clan Gritus (again? From another campaign?)
-    "wh2_dlc15_skv_clan_kreepus",       -- Clan Kreepus
-    "wh3_main_skv_clan_krizzor",        -- Clan Krizzor
-    "wh2_dlc12_skv_clan_mange",         -- Clan Mange
-    "wh3_main_skv_clan_morbidus",       -- Clan Morbidus
-    "wh2_main_skv_clan_septik",         -- Clan Septik
-    "wh3_main_skv_clan_skrat",          -- Clan Skrat
-    "wh2_main_skv_clan_spittel",        -- Clan Spittel
-    "wh3_main_skv_clan_treecherik",     -- Clan Treecherik
-    "wh2_dlc15_skv_clan_volkn",         -- Clan Volkn
-    "wh3_main_skv_clan_verms",          -- Clan Verms
-}
-
-local factions_stage_1 = {
-    "wh2_main_skv_clan_skryre",         -- Clan Skryre (Ikit Claw)
-}
-
-local factions_stage_2_empire_and_araby = {
-    "wh3_main_skv_clan_carrion",        -- Clan Carrion
-    "wh2_dlc12_skv_clan_fester",        -- Clan Fester
-    "wh2_dlc15_skv_clan_ferrik",        -- Clan Ferrik
-    "wh2_dlc15_skv_clan_kreepus",       -- Clan Kreepus
-    "wh3_main_skv_clan_krizzor",        -- Clan Krizzor
-    "wh2_dlc12_skv_clan_mange",         -- Clan Mange
-    "wh3_main_skv_clan_morbidus",       -- Clan Morbidus
-    "wh2_main_skv_clan_septik",         -- Clan Septik
-    "wh3_main_skv_clan_skrat",          -- Clan Skrat
-    "wh2_main_skv_clan_spittel",        -- Clan Spittel
-    "wh3_main_skv_clan_treecherik",     -- Clan Treecherik
-    "wh2_dlc15_skv_clan_volkn",         -- Clan Volkn
-    "wh3_main_skv_clan_verms",          -- Clan Verms
-}
-
-local factions_stage_2_cathay = {
-    "wh2_main_skv_clan_eshin",          -- Clan Eshin (Snikch)
-}
-
-local factions_stage_3_lustria = {
-    "wh2_main_skv_clan_pestilens",      -- Clan Pestilens (Skrolk)
-    "wh2_main_skv_clan_skryre",         -- Clan Skryre (Ikit Claw)
-}
-
-local factions_stage_4_karaz_ankor = {
-
-    -- Major factions
-    "wh2_main_skv_clan_mors",           -- Clan Mors (Queek)
-    "wh2_main_skv_clan_eshin",          -- Clan Eshin (Snikch)
-    "wh2_main_skv_clan_moulder",        -- Clan Moulder (Throt)
-
-    -- Minor factions
-    "wh2_dlc15_skv_clan_ferrik",        -- Clan Ferrik
-}
-
-local factions_stage_5_karaz_a_karak = {
-    "wh2_main_skv_clan_mors",           -- Clan Mors (Queek)
 }
 
 -- Regions to be invaded in stage 1.
@@ -538,7 +539,7 @@ function disaster_the_great_uprising:trigger_stage_1()
     dynamic_disasters:execute_payload(self.stage_1_event_key, self.effects_global_key, self.settings.stage_2_delay, nil);
 
     -- Spawn a few Skryre armies in Estalia, Tilea and Sartosa. Enough so they're able to expand next.
-    for _, faction_key in pairs(factions_stage_1) do
+    for _, faction_key in pairs(self.settings.factions_stage_1) do
         local faction = cm:get_faction(faction_key);
         dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions_stage_1, true, {"wh2_main_sc_skv_skaven"})
 
@@ -551,8 +552,8 @@ function disaster_the_great_uprising:trigger_stage_1()
     end
 
     -- Make sure every attacker is at peace with each other.
-    for _, src_faction_key in pairs(skaven_factions) do
-        for _, dest_faction_key in pairs(skaven_factions) do
+    for _, src_faction_key in pairs(self.settings.skaven_factions) do
+        for _, dest_faction_key in pairs(self.settings.skaven_factions) do
             if src_faction_key ~= dest_faction_key then
                 cm:force_make_peace(src_faction_key, dest_faction_key);
             end
@@ -594,26 +595,26 @@ function disaster_the_great_uprising:trigger_stage_2()
 
     -- Spawn a few armies in the Empire, the northern coast of Araby and Cathay.
     for _, region_key in pairs(regions_stage_2_empire) do
-        local faction_key = factions_stage_2_empire_and_araby[math.random(1, #factions_stage_2_empire_and_araby)];
+        local faction_key = self.settings.factions_stage_2_empire_and_araby[math.random(1, #self.settings.factions_stage_2_empire_and_araby)];
         dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, true, math.ceil(1.5 * self.settings.difficulty_mod), self.name)
     end
 
     for _, region_key in pairs(regions_stage_2_araby) do
-        local faction_key = factions_stage_2_empire_and_araby[math.random(1, #factions_stage_2_empire_and_araby)];
+        local faction_key = self.settings.factions_stage_2_empire_and_araby[math.random(1, #self.settings.factions_stage_2_empire_and_araby)];
         dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, true, math.ceil(2 * self.settings.difficulty_mod), self.name)
     end
 
     -- The Attack on Cathay depends on Eshin being available to spawn.
-    if #factions_stage_2_cathay > 0 then
+    if #self.settings.factions_stage_2_cathay > 0 then
         for _, region_key in pairs(regions_stage_2_cathay) do
-            local faction_key = factions_stage_2_cathay[math.random(1, #factions_stage_2_cathay)];
+            local faction_key = self.settings.factions_stage_2_cathay[math.random(1, #self.settings.factions_stage_2_cathay)];
             dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, true, math.ceil(2 * self.settings.difficulty_mod), self.name)
         end
     end
 
     -- From this stage, we force all skaven on the map to declare war on everyone a single faction faces.
     -- This includes owners of the attacked region, and owners of nearby regions. Even if its Skaven.
-    for _, faction_key in pairs(skaven_factions) do
+    for _, faction_key in pairs(self.settings.skaven_factions) do
         local faction = cm:get_faction(faction_key);
         dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions_stage_2_empire, true, {"wh2_main_sc_skv_skaven"});
         dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions_stage_2_araby, true, {"wh2_main_sc_skv_skaven"});
@@ -645,12 +646,12 @@ function disaster_the_great_uprising:trigger_stage_3()
 
     -- Spawn a few armies in Lustria.
     for _, region_key in pairs(regions_stage_3) do
-        local faction_key = factions_stage_3_lustria[math.random(1, #factions_stage_3_lustria)];
+        local faction_key = self.settings.factions_stage_3_lustria[math.random(1, #self.settings.factions_stage_3_lustria)];
         dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, true, math.ceil(2.5 * self.settings.difficulty_mod), self.name)
     end
 
     -- Force war against every skaven faction for each faction the skaven attack.
-    for _, faction_key in pairs(skaven_factions) do
+    for _, faction_key in pairs(self.settings.skaven_factions) do
         local faction = cm:get_faction(faction_key);
         dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions_stage_3, true, {"wh2_main_sc_skv_skaven"});
     end
@@ -677,12 +678,12 @@ function disaster_the_great_uprising:trigger_stage_4()
 
     -- Spawn a few armies along the Karak Ankor.
     for _, region_key in pairs(regions_stage_4) do
-        local faction_key = factions_stage_4_karaz_ankor[math.random(1, #factions_stage_4_karaz_ankor)];
+        local faction_key = self.settings.factions_stage_4_karaz_ankor[math.random(1, #self.settings.factions_stage_4_karaz_ankor)];
         dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, true, math.ceil(2 * self.settings.difficulty_mod), self.name)
     end
 
     -- Force war against every skaven faction for each faction the skaven attack.
-    for _, faction_key in pairs(skaven_factions) do
+    for _, faction_key in pairs(self.settings.skaven_factions) do
         local faction = cm:get_faction(faction_key);
         dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions_stage_4, true, {"wh2_main_sc_skv_skaven"});
     end
@@ -703,12 +704,12 @@ function disaster_the_great_uprising:trigger_stage_5()
 
     -- Spawn a few armies in Karaz-a-Karak.
     for _, region_key in pairs(regions_stage_5) do
-        local faction_key = factions_stage_5_karaz_a_karak[math.random(1, #factions_stage_5_karaz_a_karak)];
+        local faction_key = self.settings.factions_stage_5_karaz_a_karak[math.random(1, #self.settings.factions_stage_5_karaz_a_karak)];
         dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, true, math.ceil(2 * self.settings.difficulty_mod), self.name)
     end
 
     -- Force war against every skaven faction for each faction the skaven attack.
-    for _, faction_key in pairs(skaven_factions) do
+    for _, faction_key in pairs(self.settings.skaven_factions) do
         local faction = cm:get_faction(faction_key);
         dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions_stage_4, true, {"wh2_main_sc_skv_skaven"});
     end
@@ -745,7 +746,7 @@ function disaster_the_great_uprising:morrslieb_gaze_is_upon_us(duration)
     end;
 
     -- Apply attackers buffs to all alive skaven factions.
-    for _, faction_key in pairs(skaven_factions) do
+    for _, faction_key in pairs(self.settings.skaven_factions) do
         local faction = cm:get_faction(faction_key);
         if faction:is_null_interface() == false then
 
@@ -770,35 +771,35 @@ end
 function disaster_the_great_uprising:check_start_disaster_conditions()
 
     -- Update the potential factions removing the confederated ones.
-    skaven_factions = dynamic_disasters:remove_confederated_factions_from_list(skaven_factions);
+    self.settings.skaven_factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.skaven_factions);
 
     -- Check if any of the attackers if actually alive.
     local attackers_still_alive = false;
-    local is_skryre_alive = false;
-    for _, faction_key in pairs(skaven_factions) do
+    local is_skryre_available = false;
+    for _, faction_key in pairs(self.settings.skaven_factions) do
         local faction = cm:get_faction(faction_key);
-        if faction:is_null_interface() == false and faction:is_dead() == false then
+        if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false then
             attackers_still_alive = true;
         end
 
-        -- Check that Clan Skryre is alive. It's needed to kickstart the disaster.
-        if faction_key == "wh2_main_skv_clan_skryre" and faction ~= false and faction:is_dead() == false then
-            is_skryre_alive = true;
+        -- Check that Clan Skryre is alive or dead and non-confederated. It's needed to kickstart the disaster.
+        if faction_key == "wh2_main_skv_clan_skryre" and faction:was_confederated() == false then
+            is_skryre_available = true;
         end
 
         -- Shortcut to exit the loop early.
-        if attackers_still_alive == true and is_skryre_alive == true then
+        if attackers_still_alive == true and is_skryre_available == true then
             break;
         end
     end
 
     -- Do not start if Skryre is dead and cannot be revived.
-    if is_skryre_alive == false then
+    if is_skryre_available == false then
         return false;
     end
 
     -- Do not start if we don't have attackers.
-    if #skaven_factions == 0 or attackers_still_alive == false then
+    if #self.settings.skaven_factions == 0 or attackers_still_alive == false then
         return false;
     end
 
@@ -811,7 +812,7 @@ function disaster_the_great_uprising:check_start_disaster_conditions()
     local base_chance = 0.0025;
 
     -- Increase the change of starting based on how many attackers are already dead.
-    for _, faction_key in pairs(skaven_factions) do
+    for _, faction_key in pairs(self.settings.skaven_factions) do
         local faction = cm:get_faction(faction_key);
         if faction:is_null_interface() == false and faction:is_dead() then
 
@@ -832,11 +833,11 @@ end
 function disaster_the_great_uprising:check_end_disaster_conditions()
 
     -- Update the list of available factions and check if are all dead.
-    skaven_factions = dynamic_disasters:remove_confederated_factions_from_list(skaven_factions);
+    self.settings.skaven_factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.skaven_factions);
     local all_attackers_dead = true;
 
-    if #skaven_factions > 0 then
-        for _, faction_key in pairs(skaven_factions) do
+    if #self.settings.skaven_factions > 0 then
+        for _, faction_key in pairs(self.settings.skaven_factions) do
             local faction = cm:get_faction(faction_key);
             if faction:is_null_interface() == false and not faction:is_dead() then
                 all_attackers_dead = false;
@@ -851,31 +852,31 @@ function disaster_the_great_uprising:check_end_disaster_conditions()
 
     -- If we haven't triggered the first stage, just check if Skryre is dead. If so, we end the disaster here.
     if self.settings.status == STATUS_TRIGGERED then
-        factions_stage_1 = dynamic_disasters:remove_confederated_factions_from_list(factions_stage_1);
-        local all_attackers_dead = true;
+        self.settings.factions_stage_1 = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions_stage_1);
+        local all_attackers_unavailable = true;
 
-        if #factions_stage_1 > 0 then
-            for _, faction_key in pairs(factions_stage_1) do
+        if #self.settings.factions_stage_1 > 0 then
+            for _, faction_key in pairs(self.settings.factions_stage_1) do
                 local faction = cm:get_faction(faction_key);
-                if faction:is_null_interface() == false and not faction:is_dead() then
-                    all_attackers_dead = false;
+                if faction:is_null_interface() == false and faction:was_confederated() == false then
+                    all_attackers_unavailable = false;
                 end
             end
         end
 
-        return all_attackers_dead;
+        return all_attackers_unavailable;
     end
 
     -- If we're about to trigger Stage 2, make sure we have minor factions to do it. Otherwise, end the invasion here.
     if self.settings.status == STATUS_STAGE_1 then
 
         -- Update the list of available factions. Ignore cathay for ending the disaster as it's optional.
-        factions_stage_2_empire_and_araby = dynamic_disasters:remove_confederated_factions_from_list(factions_stage_2_empire_and_araby);
-        factions_stage_2_cathay = dynamic_disasters:remove_confederated_factions_from_list(factions_stage_2_cathay);
+        self.settings.factions_stage_2_empire_and_araby = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions_stage_2_empire_and_araby);
+        self.settings.factions_stage_2_cathay = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions_stage_2_cathay);
         local all_attackers_dead = true;
 
-        if #factions_stage_2_empire_and_araby > 0 then
-            for _, faction_key in pairs(factions_stage_2_empire_and_araby) do
+        if #self.settings.factions_stage_2_empire_and_araby > 0 then
+            for _, faction_key in pairs(self.settings.factions_stage_2_empire_and_araby) do
                 local faction = cm:get_faction(faction_key);
                 if faction:is_null_interface() == false and not faction:is_dead() then
                     all_attackers_dead = false;
@@ -888,11 +889,11 @@ function disaster_the_great_uprising:check_end_disaster_conditions()
 
     -- If we're about to trigger Stage 3, make sure either Skryre or Pestilens are still alive.
     if self.settings.status == STATUS_STAGE_2 then
-        factions_stage_3_lustria = dynamic_disasters:remove_confederated_factions_from_list(factions_stage_3_lustria);
+        self.settings.factions_stage_3_lustria = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions_stage_3_lustria);
         local all_attackers_dead = true;
 
-        if #factions_stage_3_lustria > 0 then
-            for _, faction_key in pairs(factions_stage_3_lustria) do
+        if #self.settings.factions_stage_3_lustria > 0 then
+            for _, faction_key in pairs(self.settings.factions_stage_3_lustria) do
                 local faction = cm:get_faction(faction_key);
                 if faction:is_null_interface() == false and not faction:is_dead() then
                     all_attackers_dead = false;
@@ -905,11 +906,11 @@ function disaster_the_great_uprising:check_end_disaster_conditions()
 
     -- If we're about to trigger Stage 4, make sure we have factions for it.
     if self.settings.status == STATUS_STAGE_3 then
-        factions_stage_4_karaz_ankor = dynamic_disasters:remove_confederated_factions_from_list(factions_stage_4_karaz_ankor);
+        self.settings.factions_stage_4_karaz_ankor = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions_stage_4_karaz_ankor);
         local all_attackers_dead = true;
 
-        if #factions_stage_4_karaz_ankor > 0 then
-            for _, faction_key in pairs(factions_stage_4_karaz_ankor) do
+        if #self.settings.factions_stage_4_karaz_ankor > 0 then
+            for _, faction_key in pairs(self.settings.factions_stage_4_karaz_ankor) do
                 local faction = cm:get_faction(faction_key);
                 if faction:is_null_interface() == false and not faction:is_dead() then
                     all_attackers_dead = false;
@@ -923,11 +924,11 @@ function disaster_the_great_uprising:check_end_disaster_conditions()
 
     -- If we're about to trigger Stage 5, make sure Clan Mors is still alive.
     if self.settings.status == STATUS_STAGE_4 then
-        factions_stage_5_karaz_a_karak = dynamic_disasters:remove_confederated_factions_from_list(factions_stage_5_karaz_a_karak);
+        self.settings.factions_stage_5_karaz_a_karak = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions_stage_5_karaz_a_karak);
         local all_attackers_dead = true;
 
-        if #factions_stage_5_karaz_a_karak > 0 then
-            for _, faction_key in pairs(factions_stage_5_karaz_a_karak) do
+        if #self.settings.factions_stage_5_karaz_a_karak > 0 then
+            for _, faction_key in pairs(self.settings.factions_stage_5_karaz_a_karak) do
                 local faction = cm:get_faction(faction_key);
                 if faction:is_null_interface() == false and not faction:is_dead() then
                     all_attackers_dead = false;

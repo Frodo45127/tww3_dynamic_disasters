@@ -77,6 +77,16 @@ disaster_aztec_invasion = {
             lizardmen = "lategame"
         },
         base_army_unit_count = 19,
+        potential_attack_factions = {       -- Factions that will receive the attacking armies.
+            "wh2_main_lzd_hexoatl",                     -- Mazda
+            "wh2_main_lzd_last_defenders",              -- Kroq-Gar
+            "wh2_dlc12_lzd_cult_of_sotek",              -- Tehenhauin
+            "wh2_main_lzd_tlaqua",                      -- Tiktaq'to
+            "wh2_main_lzd_itza",                        -- Gor-Rok
+            "wh2_dlc13_lzd_spirits_of_the_jungle",      -- Nakai
+            "wh2_dlc17_lzd_oxyotl",                     -- Oxyotl
+        }
+
     },
 
     first_warning_event_key = "fro_dyn_dis_aztec_invasion_warning_1",
@@ -522,6 +532,7 @@ dyn_dis_sea_potential_attack_vectors = {
 
     -- South/East coast of the Southlands
     wh3_main_combi_region_serpent_coast_sea = {
+        scale = 0.75,
         spawn_positions = {
             {618, 49},
             {693, 50},
@@ -537,6 +548,7 @@ dyn_dis_sea_potential_attack_vectors = {
 
     -- Atlantid coast, East
     wh3_main_combi_region_the_daemonium_coast = {
+        scale = 0.5,
         spawn_positions = {
             {772, 68},
             {876, 39},
@@ -593,6 +605,7 @@ dyn_dis_sea_potential_attack_vectors = {
 
     -- South coast of the Southlands
     wh3_main_combi_region_the_churning_gulf = {
+        scale = 0.75,
         spawn_positions = {
             {562, 53},
             {554, 108},
@@ -608,6 +621,7 @@ dyn_dis_sea_potential_attack_vectors = {
 
     -- Atlantid, center.
     wh3_main_combi_region_daemons_landing = {
+        scale = 0.5,
         spawn_positions = {
             {456, 87},
         },
@@ -618,6 +632,7 @@ dyn_dis_sea_potential_attack_vectors = {
 
     -- Atlantid, West
     wh3_main_combi_region_the_lustria_straight = {
+        scale = 0.75,
         spawn_positions = {
             {375, 86},
             {228, 64},
@@ -760,17 +775,6 @@ dyn_dis_sea_potential_attack_vectors = {
     },
 }
 
--- Factions that will receive the attacking armies.
-local potential_attack_factions = {
-    "wh2_main_lzd_hexoatl",                     -- Mazda
-    "wh2_main_lzd_last_defenders",              -- Kroq-Gar
-    "wh2_dlc12_lzd_cult_of_sotek",              -- Tehenhauin
-    "wh2_main_lzd_tlaqua",                      -- Tiktaq'to
-    "wh2_main_lzd_itza",                        -- Gor-Rok
-    "wh2_dlc13_lzd_spirits_of_the_jungle",      -- Nakai
-    "wh2_dlc17_lzd_oxyotl",                     -- Oxyotl
-}
-
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
 function disaster_aztec_invasion:set_status(status)
     self.settings.status = status;
@@ -885,7 +889,7 @@ function disaster_aztec_invasion:trigger_aztec_invasion()
 
     -- Once we have the attack vectors, create the invasion forces.
     -- Both, the areas attacked and the amount of armies to spawn are based on campaign difficulty.
-    local attacker_faction = potential_attack_factions[math.random(1, #potential_attack_factions)];
+    local attacker_faction = self.settings.potential_attack_factions[math.random(1, #self.settings.potential_attack_factions)];
     for sea_region, weight in pairs(attack_vectors) do
         out("Frodo45127: Sea Region: " .. sea_region .. ". weight: " .. tostring(weight));
 
@@ -911,12 +915,12 @@ function disaster_aztec_invasion:trigger_aztec_invasion()
             end
 
             -- Change attacker for the next region.
-            attacker_faction = potential_attack_factions[math.random(1, #potential_attack_factions)];
+            attacker_faction = self.settings.potential_attack_factions[math.random(1, #self.settings.potential_attack_factions)];
         end
     end
 
     -- Trigger wars and faction buffs/AI changes for attackers. Do this after spawning armies so it only affects alive/spawned factions.
-    for _, faction_key in pairs(potential_attack_factions) do
+    for _, faction_key in pairs(self.settings.potential_attack_factions) do
         local faction = cm:get_faction(faction_key);
         if faction:is_null_interface() == false and not faction:is_dead() then
 
@@ -939,8 +943,8 @@ function disaster_aztec_invasion:trigger_aztec_invasion()
     end
 
     -- Make sure every attacker is at peace with each other.
-    for _, src_faction_key in pairs(potential_attack_factions) do
-        for _, dest_faction_key in pairs(potential_attack_factions) do
+    for _, src_faction_key in pairs(self.settings.potential_attack_factions) do
+        for _, dest_faction_key in pairs(self.settings.potential_attack_factions) do
             if src_faction_key ~= dest_faction_key then
                 cm:force_make_peace(src_faction_key, dest_faction_key);
             end
@@ -976,11 +980,11 @@ end
 function disaster_aztec_invasion:check_start_disaster_conditions()
 
     -- Update the potential factions removing the confederated ones.
-    potential_attack_factions = dynamic_disasters:remove_confederated_factions_from_list(potential_attack_factions);
+    self.settings.potential_attack_factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.potential_attack_factions);
 
     -- Check if any of the attackers if actually alive.
     local attackers_still_alive = false;
-    for _, faction_key in pairs(potential_attack_factions) do
+    for _, faction_key in pairs(self.settings.potential_attack_factions) do
         local faction = cm:get_faction(faction_key);
         if faction:is_null_interface() == false and faction:is_dead() == false then
             attackers_still_alive = true;
@@ -989,7 +993,7 @@ function disaster_aztec_invasion:check_start_disaster_conditions()
     end
 
     -- Do not start if we don't have attackers.
-    if #potential_attack_factions == 0 or attackers_still_alive == false then
+    if #self.settings.potential_attack_factions == 0 or attackers_still_alive == false then
         return false;
     end
 
@@ -1002,7 +1006,7 @@ function disaster_aztec_invasion:check_start_disaster_conditions()
     local base_chance = 0.005;
 
     -- Increase the change of starting based on how many attackers are already dead.
-    for _, faction_key in pairs(potential_attack_factions) do
+    for _, faction_key in pairs(self.settings.potential_attack_factions) do
         local faction = cm:get_faction(faction_key);
         if faction:is_null_interface() == false and faction:is_dead() then
 
@@ -1023,11 +1027,11 @@ end
 function disaster_aztec_invasion:check_end_disaster_conditions()
 
     -- Update the potential factions removing the confederated ones.
-    potential_attack_factions = dynamic_disasters:remove_confederated_factions_from_list(potential_attack_factions);
+    self.settings.potential_attack_factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.potential_attack_factions);
 
     local all_attackers_dead = true;
 
-    for _, faction_key in pairs(potential_attack_factions) do
+    for _, faction_key in pairs(self.settings.potential_attack_factions) do
         local faction = cm:get_faction(faction_key);
         if faction ~= false and not faction:is_dead() then
             all_attackers_dead = false;

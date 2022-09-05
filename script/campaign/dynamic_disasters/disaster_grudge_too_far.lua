@@ -39,13 +39,15 @@ disaster_grudge_too_far = {
 		major_army_count = 4, -- Number of armies that spawn for the major playables
 		minor_army_count = 2, -- Number of armies that spawn for the minor dwarves
 		unit_count = 19,
-		early_warning_event = "wh3_main_ie_incident_endgame_grudge_too_far_early_warning",
-		ai_personality = "wh3_combi_dwarf_endgame",
         early_warning_delay = 10,
 
         region_count_halved = 0,
         regions_to_capture = {}
-	}
+	},
+    early_warning_incident_key = "wh3_main_ie_incident_endgame_grudge_too_far_early_warning",
+	early_warning_effects_key = "wh3_main_ie_scripted_endgame_early_warning",
+    invasion_incident_key = "wh3_main_ie_incident_endgame_grudge_too_far",
+	ai_personality = "wh3_combi_dwarf_endgame",
 }
 
 local potential_dwarfs = {
@@ -104,8 +106,16 @@ function disaster_grudge_too_far:set_status(status)
 end
 
 function disaster_grudge_too_far:trigger()
+
+    -- Debug mode support.
+    if dynamic_disasters.settings.debug == false then
+        self.settings.early_warning_delay = math.random(8, 12);
+    else
+        self.settings.early_warning_delay = 1;
+    end
+
+    dynamic_disasters:execute_payload(self.early_warning_incident_key, self.early_warning_effects_key, self.settings.early_warning_delay, nil);
     self:set_status(STATUS_TRIGGERED);
-    dynamic_disasters:execute_payload("wh3_main_ie_scripted_endgame_early_warning", self.settings.early_warning_event, self.settings.early_warning_delay, nil);
 end
 
 function disaster_grudge_too_far:trigger_second_great_beard_war()
@@ -128,14 +138,14 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
 			if army_count < 1 then
 				army_count = 1
 			end
-			endgame:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.unit_count, true, army_count)
+			dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.unit_count, true, army_count, self.name)
 			if faction_key == "wh_main_dwf_karak_izor" then
 				if not invasion_faction:is_dead() and cm:get_region("wh3_main_combi_region_karak_eight_peaks"):owning_faction():name() == faction_key then
-					endgame:create_scenario_force(faction_key, "wh3_main_combi_region_karak_eight_peaks", self.settings.army_template, self.settings.unit_count, true, army_count)
+					dynamic_disasters:create_scenario_force(faction_key, "wh3_main_combi_region_karak_eight_peaks", self.settings.army_template, self.settings.unit_count, true, army_count, self.name)
 				end
 			end
 
-			cm:force_change_cai_faction_personality(faction_key, self.settings.ai_personality)
+			cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
 
 			-- Give the invasion region to the invader if it isn't owned by them or a human
 			local region = cm:get_region(region_key)
@@ -167,11 +177,10 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
         table.insert(self.settings.regions_to_capture, dwarf_regions[i])
 	end
 
-	local incident_key = "wh3_main_ie_incident_endgame_grudge_too_far"
     if dynamic_disasters.settings.victory_condition_triggered == false then
-        dynamic_disasters:add_victory_condition(incident_key, objectives, dwarf_regions[1], nil)
+        dynamic_disasters:add_victory_condition(self.invasion_incident_key, objectives, dwarf_regions[1], nil)
     else
-        dynamic_disasters:execute_payload(incident_key, incident_key, 0, nil);
+        dynamic_disasters:execute_payload(self.invasion_incident_key, nil, 0, nil);
     end
 end
 
@@ -184,6 +193,12 @@ end
 --- Function to check if the disaster custom conditions are valid and can be trigger.
 ---@return boolean If the disaster will be triggered or not.
 function disaster_grudge_too_far:check_start_disaster_conditions()
+
+    -- Debug mode support.
+    if dynamic_disasters.settings.debug == true then
+        return true;
+    end
+
     local base_chance = 0.005;
     for faction_key, _ in pairs(potential_dwarfs) do
         local faction = cm:get_faction(faction_key);

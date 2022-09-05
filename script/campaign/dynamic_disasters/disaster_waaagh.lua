@@ -39,10 +39,12 @@ disaster_waaagh = {
 		},
 		base_army_count = 4, -- Number of armies that spawn when the event fires.
 		unit_count = 19,
-		early_warning_event = "wh3_main_ie_incident_endgame_waaagh_early_warning",
-		ai_personality = "wh3_combi_empire_endgame",
         early_warning_delay = 10,
-	}
+	},
+
+    early_warning_incident_key = "wh3_main_ie_incident_endgame_waaagh_early_warning",
+    early_warning_effects_key = "wh3_main_ie_scripted_endgame_early_warning",
+	ai_personality = "wh3_combi_empire_endgame",
 }
 
 local potential_greenskins = {
@@ -93,8 +95,16 @@ function disaster_waaagh:set_status(status)
 end
 
 function disaster_waaagh:trigger()
+
+    -- Debug mode support.
+    if dynamic_disasters.settings.debug == false then
+        self.settings.early_warning_delay = math.random(8, 12);
+    else
+        self.settings.early_warning_delay = 1;
+    end
+
+    dynamic_disasters:execute_payload(self.early_warning_incident_key, self.early_warning_effects_key, self.settings.early_warning_delay, nil);
     self:set_status(STATUS_TRIGGERED);
-    dynamic_disasters:execute_payload("wh3_main_ie_scripted_endgame_early_warning", self.settings.early_warning_event, self.settings.early_warning_delay, nil);
 
 end
 
@@ -116,10 +126,10 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
 			end
 			if region_key ~= nil then
 				table.insert(greenskin_factions, faction_key)
-				endgame:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.unit_count, true, math.floor(self.settings.base_army_count*self.settings.difficulty_mod))
+				dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.unit_count, true, math.floor(self.settings.base_army_count*self.settings.difficulty_mod), self.name)
 				cm:apply_effect_bundle("wh3_main_ie_scripted_endgame_waaagh", faction_key, 0)
 				endgame:no_peace_no_confederation_only_war(faction_key)
-				cm:force_change_cai_faction_personality(faction_key, self.settings.ai_personality)
+				cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
 			end
 		end
 	end
@@ -134,7 +144,7 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
 				local region_key = "wh3_main_combi_region_black_crag"
 				local region_owner = cm:get_region(region_key):owning_faction()
 				table.insert(greenskin_factions, faction_key)
-				endgame:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.unit_count, true, math.floor(self.settings.base_army_count*self.settings.difficulty_mod))
+				dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.unit_count, true, math.floor(self.settings.base_army_count*self.settings.difficulty_mod), self.name)
 				if region_owner:is_null_interface() or (not region_owner:name() == faction_key and not region_owner:is_human()) then
 					cm:transfer_region_to_faction(region_key, faction_key)
 				end
@@ -164,7 +174,7 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
     if dynamic_disasters.settings.victory_condition_triggered == false then
         dynamic_disasters:add_victory_condition(incident_key, objectives, nil, greenskin_factions[1])
     else
-        dynamic_disasters:execute_payload(incident_key, incident_key, 0, nil);
+        dynamic_disasters:execute_payload(incident_key, nil, 0, nil);
     end
 end
 
@@ -177,6 +187,12 @@ end
 --- Function to check if the disaster custom conditions are valid and can be trigger.
 ---@return boolean If the disaster will be triggered or not.
 function disaster_waaagh:check_start_disaster_conditions()
+
+    -- Debug mode support.
+    if dynamic_disasters.settings.debug == true then
+        return true;
+    end
+
     local base_chance = 0.005;
     for _, faction_key in pairs(potential_greenskins) do
         local faction = cm:get_faction(faction_key);
