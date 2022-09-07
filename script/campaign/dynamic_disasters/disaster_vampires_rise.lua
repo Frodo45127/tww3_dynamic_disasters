@@ -144,7 +144,7 @@ function disaster_vampires_rise:trigger_the_great_vampiric_war()
 
 	local incident_key = "wh3_main_ie_incident_endgame_vampires_rise"
     if dynamic_disasters.settings.victory_condition_triggered == false then
-        dynamic_disasters:add_victory_condition(incident_key, objectives, nil, vampire_faction)
+        dynamic_disasters:add_victory_condition(incident_key, objectives, nil, vampire_factions[1])
     else
         dynamic_disasters:execute_payload(incident_key, nil, 0, nil);
     end
