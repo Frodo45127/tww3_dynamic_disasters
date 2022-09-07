@@ -107,37 +107,39 @@ function disaster_vampires_rise:trigger()
 end
 
 function disaster_vampires_rise:trigger_the_great_vampiric_war()
-    self:set_status(STATUS_STARTED);
-	cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_vmp_vampire_counts")
 
-    local vampire_regions = {}
-	local vampire_faction = nil
+	local vampire_factions = {}
 	
 	for faction_key, region_key in pairs(potential_vampires) do
 		local faction = cm:get_faction(faction_key)
 		if not faction:is_human() and not (faction:was_confederated() and faction:can_be_human()) then
-			if vampire_faction == nil then
-				vampire_faction = faction_key
-			end
-			table.insert(vampire_regions, region_key)
+			table.insert(vampire_factions, faction_key)
 			dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.unit_count, true, math.floor(self.settings.base_army_count*self.settings.difficulty_mod), self.name)
 			endgame:no_peace_no_confederation_only_war(faction_key)
 			cm:apply_effect_bundle("wh3_main_ie_scripted_endgame_vampires_rise", faction_key, 0)
 			cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
+            dynamic_disasters:declare_war_for_owners_and_neightbours(faction, { region_key }, true, { "wh_main_sc_vmp_vampire_counts" })
 		end
 	end
 
 	local human_factions = cm:get_human_factions()
 	local objectives = {
 		{
-			type = "CONTROL_N_REGIONS_FROM",
-			conditions = {
-				"total "..#vampire_regions,
-			}
+            type = "DESTROY_FACTION",
+            conditions = {
+                "confederation_valid"
+            }
 		}
 	}
-	for i = 1, #vampire_regions do 
-		table.insert(objectives[1].conditions, "region "..vampire_regions[i])
+
+    -- If we got not factions, stop the disaster.
+    if #vampire_factions == 0 then
+        self:trigger_end_disaster();
+        return
+    end
+
+	for i = 1, #vampire_factions do
+		table.insert(objectives[1].conditions, "faction "..vampire_factions[i])
 	end
 
 	local incident_key = "wh3_main_ie_incident_endgame_vampires_rise"
@@ -146,6 +148,9 @@ function disaster_vampires_rise:trigger_the_great_vampiric_war()
     else
         dynamic_disasters:execute_payload(incident_key, nil, 0, nil);
     end
+
+    cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_vmp_vampire_counts")
+    self:set_status(STATUS_STARTED);
 end
 
 

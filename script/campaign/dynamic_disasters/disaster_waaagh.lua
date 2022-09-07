@@ -80,14 +80,14 @@ function disaster_waaagh:set_status(status)
 
         -- Listener to end the invasion.
         core:add_listener(
-            "VampiresRiseEnd",
+            "WaaaghEnd",
             "WorldStartRound",
             function ()
                 return self:check_end_disaster_conditions()
             end,
             function()
                 self:trigger_end_disaster();
-                core:remove_listener("VampiresRiseEnd")
+                core:remove_listener("WaaaghEnd")
             end,
             true
         );
@@ -109,8 +109,6 @@ function disaster_waaagh:trigger()
 end
 
 function disaster_waaagh:trigger_da_biggest_waaagh()
-    self:set_status(STATUS_STARTED);
-	cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_grn_greenskins")
 
 	local greenskin_factions = {}
 	
@@ -130,6 +128,8 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
 				cm:apply_effect_bundle("wh3_main_ie_scripted_endgame_waaagh", faction_key, 0)
 				endgame:no_peace_no_confederation_only_war(faction_key)
 				cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
+
+                dynamic_disasters:declare_war_for_owners_and_neightbours(faction, { region_key }, true, { "wh_main_sc_grn_greenskins" })
 			end
 		end
 	end
@@ -151,6 +151,7 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
 				cm:apply_effect_bundle("wh3_main_ie_scripted_endgame_waaagh", faction_key, 0)
 				endgame:no_peace_no_confederation_only_war(faction_key)
 				cm:force_change_cai_faction_personality(faction_key, "wh3_combi_greenskin_endgame")
+                dynamic_disasters:declare_war_for_owners_and_neightbours(faction, { region_key }, true, { "wh_main_sc_grn_greenskins" })
 				break
 			end
 		end
@@ -170,12 +171,21 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
 		table.insert(objectives[1].conditions, "faction "..greenskin_factions[i])
 	end
 
+    -- If we got no regions, end the disaster.
+    if #greenskin_factions == 0 then
+        self:trigger_end_disaster();
+        return
+    end
+
 	local incident_key = "wh3_main_ie_incident_endgame_waaagh"
     if dynamic_disasters.settings.victory_condition_triggered == false then
         dynamic_disasters:add_victory_condition(incident_key, objectives, nil, greenskin_factions[1])
     else
         dynamic_disasters:execute_payload(incident_key, nil, 0, nil);
     end
+
+    cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_grn_greenskins")
+    self:set_status(STATUS_STARTED);
 end
 
 -- Function to trigger cleanup stuff after the invasion is over.

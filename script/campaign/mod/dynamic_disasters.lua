@@ -1173,7 +1173,17 @@ function dynamic_disasters:create_scenario_force_at_coords(faction_key, region_k
             cm:force_declare_war(faction_key, region_owning_faction:name(), false, false)
         end
     end
+end
 
+-- Function to reveal a bunch of regions for the players, if they can't see them yet.
+---@param regions table #List of land region keys.
+function dynamic_disasters:reveal_regions(regions)
+    local human_factions = cm:get_human_factions()
+    for i = 1, #human_factions do
+        for i2 = 1, #regions do
+            cm:make_region_visible_in_shroud(human_factions[i], regions[i2]);
+        end
+    end
 end
 
 -- Function to generate random armies based on a combination of templates. Allows combination between different templates.

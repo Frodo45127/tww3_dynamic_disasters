@@ -119,9 +119,6 @@ function disaster_grudge_too_far:trigger()
 end
 
 function disaster_grudge_too_far:trigger_second_great_beard_war()
-    self:set_status(STATUS_STARTED);
-	cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_emp_empire")
-	
 	local dwarf_regions = {}
 	
 	for faction_key, region_key in pairs(potential_dwarfs) do
@@ -155,7 +152,7 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
 			end
 
 			endgame:no_peace_no_confederation_only_war(faction_key)
-			endgame:declare_war_on_adjacent_region_owners(invasion_faction, region)
+			dynamic_disasters:declare_war_for_owners_and_neightbours(invasion_faction, { region_key }, true, { "wh_main_sc_dwf_dwarfs" })
 
 			cm:apply_effect_bundle("wh3_main_ie_scripted_endgame_grudge_too_far", faction_key, 0)
 		end
@@ -168,6 +165,7 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
 			type = "CONTROL_N_REGIONS_FROM",
 			conditions = {
 				"total "..self.settings.region_count_halved,
+                "override_text mission_text_text_mis_activity_control_n_regions_satrapy_including_at_least_n"
 			}
 		}
 	}
@@ -177,11 +175,20 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
         table.insert(self.settings.regions_to_capture, dwarf_regions[i])
 	end
 
+    -- If we got no regions, end the disaster.
+    if #dwarf_regions == 0 then
+        self:trigger_end_disaster();
+        return
+    end
+
     if dynamic_disasters.settings.victory_condition_triggered == false then
         dynamic_disasters:add_victory_condition(self.invasion_incident_key, objectives, dwarf_regions[1], nil)
     else
         dynamic_disasters:execute_payload(self.invasion_incident_key, nil, 0, nil);
     end
+
+    cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_dwf_dwarfs")
+    self:set_status(STATUS_STARTED);
 end
 
 -- Function to trigger cleanup stuff after the invasion is over.

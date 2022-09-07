@@ -87,14 +87,14 @@ function disaster_wild_hunt:set_status(status)
 
         -- Listener to end the invasion.
         core:add_listener(
-            "WildHuntEnd",
+            "TheWildHuntEnd",
             "WorldStartRound",
             function ()
                 return self:check_end_disaster_conditions()
             end,
             function()
                 self:trigger_end_disaster();
-                core:remove_listener("WildHuntEnd")
+                core:remove_listener("TheWildHuntEnd")
             end,
             true
         );
@@ -116,8 +116,6 @@ function disaster_wild_hunt:trigger()
 end
 
 function disaster_wild_hunt:trigger_the_wild_hunt()
-    self:set_status(STATUS_STARTED);
-	cm:activate_music_trigger("ScriptedEvent_Negative", "wh_dlc05_sc_wef_wood_elves")
 
 	local forest_regions = {}
 	local wood_elf_factions = {}
@@ -158,6 +156,7 @@ function disaster_wild_hunt:trigger_the_wild_hunt()
 			type = "CONTROL_N_REGIONS_FROM",
 			conditions = {
 				"total "..region_count_halved,
+                "override_text mission_text_text_mis_activity_control_n_regions_satrapy_including_at_least_n"
 			}
 		},
 		{
@@ -178,12 +177,22 @@ function disaster_wild_hunt:trigger_the_wild_hunt()
 		table.insert(self.settings.factions_to_destroy, wood_elf_factions[i])
 	end
 
+    -- If we got no forest regions, end the disaster.
+    if #forest_regions == 0 then
+        self:trigger_end_disaster();
+        return
+    end
+
+
     if dynamic_disasters.settings.victory_condition_triggered == false then
         dynamic_disasters:add_victory_condition(self.invasion_incident_key, objectives, forest_regions[1], nil)
     else
         dynamic_disasters:execute_payload(self.invasion_incident_key, nil, 0, nil);
     end
 
+    cm:activate_music_trigger("ScriptedEvent_Negative", "wh_dlc05_sc_wef_wood_elves")
+
+    self:set_status(STATUS_STARTED);
 end
 
 -- Function to trigger cleanup stuff after the invasion is over.

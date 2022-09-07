@@ -179,7 +179,7 @@ function disaster_chianchi_assault:set_status(status)
             "ChianchiAssaultGatesDestroyedArmyRespawner",
             "WorldStartRound",
             function()
-                return cm:turn_number() % 7;
+                return cm:turn_number() % 7 == 0;
             end,
             function()
                 local armies_to_spawn_per_gate = math.floor(1 * math.ceil(self.settings.difficulty_mod / 2));

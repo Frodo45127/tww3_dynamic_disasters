@@ -34,17 +34,39 @@ disaster_pyramid_of_nagash = {
 		army_template = {},
 		base_army_count = 8, -- Number of armies that spawn when the event fires.
 		unit_count = 19	,
-		faction_key = "wh2_dlc09_tmb_the_sentinels", -- Default invasion faction
 		early_warning_delay = 10,
 		is_current_victory_condition = false,
-		region_bundle = "",
+		faction_data = nil, -- To be filled with the relevant faction data.
+	},
+
+	tomb_kings_data = {
+		faction_key = "wh2_dlc09_tmb_the_sentinels", -- Default invasion faction, will use another TK faction if they control the pyramid
+		incident_key = "wh3_main_ie_incident_endgame_black_pyramid_tomb_kings",
+		faction_bundle = "wh3_main_ie_scripted_endgame_black_pyramid_faction_tomb_kings",
+		region_bundle = "wh3_main_ie_scripted_endgame_black_pyramid_region_tomb_kings",
+		ai_personality = "wh3_combi_tombking_endgame",
+		subculture = "wh2_dlc09_sc_tmb_tomb_kings",
+		music = "wh2_dlc09_sc_tmb_tomb_kings",
+		army_template = {
+			tomb_kings = "lategame"
+		}
+	},
+	vampires_data = {
+		faction_key = "",
+		incident_key = "wh3_main_ie_incident_endgame_black_pyramid_vampires",
+		faction_bundle = "wh3_main_ie_scripted_endgame_black_pyramid_faction_vampires",
+		region_bundle = "wh3_main_ie_scripted_endgame_black_pyramid_region_vampires",
+		ai_personality = "wh3_combi_vampire_endgame",
+		subculture = "wh_main_sc_vmp_vampire_counts",
+		music = "wh_main_sc_vmp_vampire_counts",
+		army_template = {
+			vampires = "lategame"
+		}
 	},
 
 	region_key = "wh3_main_combi_region_black_pyramid_of_nagash",
     early_warning_incident_key = "wh3_main_ie_incident_endgame_black_pyramid_early_warning",
 	early_warning_effects_key = "wh3_main_ie_scripted_endgame_early_warning",
-	ai_personality_tomb_kings = "wh3_combi_tombking_endgame",
-	ai_personality_vampires = "wh3_combi_vampire_endgame",
 }
 
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
@@ -71,15 +93,20 @@ function disaster_pyramid_of_nagash:set_status(status)
 
     if self.settings.status == STATUS_STARTED then
 
+    	-- Fix for older versions of the disaster.
+    	if self.settings.faction_data == nil then
+    		self.settings.faction_data = self.tomb_kings_data;
+    	end
+
     	-- Listener to keep spawning armies every 10 turns.
 		core:add_listener(
 			"endgame_pyramid_of_nagash_spawn_army",
 			"WorldStartRound",
 			function()
-				return cm:turn_number() % 10 and cm:get_faction(self.settings.faction_key):has_home_region()
+				return cm:turn_number() % 10 == 0 and cm:get_faction(self.settings.faction_data.faction_key):has_home_region()
 			end,
 			function()
-				dynamic_disasters:create_scenario_force(self.settings.faction_key, self.region_key, self.settings.army_template, self.settings.unit_count, false, 1, self.name)
+				dynamic_disasters:create_scenario_force(self.settings.faction_data.faction_key, self.region_key, self.settings.army_template, self.settings.unit_count, false, math.ceil(self.settings.difficulty_mod), self.name)
 			end,
 			true
 		)
@@ -93,7 +120,7 @@ function disaster_pyramid_of_nagash:set_status(status)
 					return context:mission():mission_record_key() == "wh_main_ultimate_victory"
 				end,
 				function()
-					cm:remove_effect_bundle_from_region(self.settings.region_bundle, self.region_key)
+					cm:remove_effect_bundle_from_region(self.settings.faction_data.region_bundle, self.region_key)
 					core:remove_listener("endgame_pyramid_of_nagash_spawn_army")
 					core:remove_listener("endgame_pyramid_of_nagash_ultimate_victory")
 					disaster_pyramid_of_nagash:trigger_end_disaster()
@@ -108,7 +135,7 @@ function disaster_pyramid_of_nagash:set_status(status)
 					return self:check_end_disaster_conditions()
 				end,
 				function()
-					cm:remove_effect_bundle_from_region(self.settings.region_bundle, self.region_key)
+					cm:remove_effect_bundle_from_region(self.settings.faction_data.region_bundle, self.region_key)
 					core:remove_listener("endgame_pyramid_of_nagash_spawn_army")
 					core:remove_listener("endgame_pyramid_of_nagash_ultimate_victory")
 					disaster_pyramid_of_nagash:trigger_end_disaster()
@@ -135,58 +162,40 @@ end
 
 function disaster_pyramid_of_nagash:trigger_resurection_of_nagash()
 	local region = cm:get_region(self.region_key)
-	local owning_faction
+	local data = self.tomb_kings_data
 
 	-- Check to see if AI Vampires or Tomb Kings already own the region
-	if not region:is_abandoned() and not region:owning_faction():is_human() then
-		owning_faction = region:owning_faction()
-
-		if owning_faction:subculture() == "wh2_dlc09_sc_tmb_tomb_kings" then
-			self.settings.faction_key = owning_faction:name()
-			self.settings.army_template.tomb_kings = "lategame"
-		elseif owning_faction:subculture() == "wh_main_sc_vmp_vampire_counts" then
-			self.settings.faction_key = owning_faction:name()
-			self.settings.army_template.vampires = "lategame"
-		else
-			-- Default to Tomb Kings if neither Tomg Kings or Vampires own the region
-			self.settings.army_template.tomb_kings = "lategame"
+	if not region:is_abandoned() then
+		local owning_faction = region:owning_faction()
+		if not owning_faction:is_human() then
+			if owning_faction:subculture() == "wh2_dlc09_sc_tmb_tomb_kings" then
+				data.faction_key = owning_faction:name()
+			elseif owning_faction:subculture() == "wh_main_sc_vmp_vampire_counts" then
+				data = self.vampires_data
+				data.faction_key = owning_faction:name()
+			end
 		end
-
-	-- If the region is abandoned or controlled by a human we use the default
-	else
-		self.settings.army_template.tomb_kings = "lategame"
 	end
 
-	dynamic_disasters:create_scenario_force(self.settings.faction_key, self.region_key, self.settings.army_template, self.settings.unit_count, true, math.floor(self.settings.base_army_count*self.settings.difficulty_mod), self.name)
+	self.settings.faction_data = data;
+	self.settings.army_template = self.settings.faction_data.army_template;
 
-	local incident_key, faction_bundle
-	if self.settings.army_template.vampires == "lategame" then
-		cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_vmp_vampire_counts")
-		incident_key = "wh3_main_ie_incident_endgame_black_pyramid_vampires"
-		faction_bundle = "wh3_main_ie_scripted_endgame_black_pyramid_faction_vampires"
-		self.settings.region_bundle = "wh3_main_ie_scripted_endgame_black_pyramid_region_vampires"
-		cm:force_change_cai_faction_personality(self.settings.faction_key, self.ai_personality_vampires)
-	else
-		cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_dlc09_sc_tmb_tomb_kings")
-		incident_key = "wh3_main_ie_incident_endgame_black_pyramid_tomb_kings"
-		faction_bundle = "wh3_main_ie_scripted_endgame_black_pyramid_faction_tomb_kings"
-		self.settings.region_bundle = "wh3_main_ie_scripted_endgame_black_pyramid_region_tomb_kings"
-		cm:force_change_cai_faction_personality(self.settings.faction_key, self.ai_personality_tomb_kings)
-	end
+	dynamic_disasters:create_scenario_force(self.settings.faction_data.faction_key, self.region_key, self.settings.army_template, self.settings.unit_count, true, math.floor(self.settings.base_army_count*self.settings.difficulty_mod), self.name)
 
-	cm:apply_effect_bundle(faction_bundle, self.settings.faction_key, 0)
-	cm:apply_effect_bundle_to_region(self.settings.region_bundle, self.region_key, 0)
-	
-	endgame:no_peace_no_confederation_only_war(self.settings.faction_key)
-	local invasion_faction = cm:get_faction(self.settings.faction_key)
-	endgame:declare_war_on_adjacent_region_owners(invasion_faction, region)
+	cm:apply_effect_bundle(self.settings.faction_data.faction_bundle, self.settings.faction_data.faction_key, 0)
+	cm:apply_effect_bundle_to_region(self.settings.faction_data.region_bundle, self.region_key, 0)
+	cm:force_change_cai_faction_personality(self.settings.faction_data.faction_key, self.settings.faction_data.ai_personality)
+
+	endgame:no_peace_no_confederation_only_war(self.settings.faction_data.faction_key)
+	local invasion_faction = cm:get_faction(self.settings.faction_data.faction_key)
+	dynamic_disasters:declare_war_for_owners_and_neightbours(invasion_faction, { self.region_key }, true, { self.settings.faction_data.subculture })
 
 	local human_factions = cm:get_human_factions()
 	local objectives = {
 		{
 			type = "DESTROY_FACTION",
 			conditions = {
-				"faction "..self.settings.faction_key,
+				"faction "..self.settings.faction_data.faction_key,
 				"confederation_valid"
 			}
 		},
@@ -201,13 +210,14 @@ function disaster_pyramid_of_nagash:trigger_resurection_of_nagash()
 	
     if dynamic_disasters.settings.victory_condition_triggered == false then
     	self.settings.is_current_victory_condition = true;
-        dynamic_disasters:add_victory_condition(incident_key, objectives, self.region_key, nil)
+        dynamic_disasters:add_victory_condition(self.settings.faction_data.incident_key, objectives, self.region_key, nil)
     else
     	self.settings.is_current_victory_condition = false;
-        dynamic_disasters:execute_payload(incident_key, nil, 0, nil);
+        dynamic_disasters:execute_payload(self.settings.faction_data.incident_key, nil, 0, nil);
     end
 
     -- Executed at the end because it needs some data set in this function to work.
+	cm:activate_music_trigger("ScriptedEvent_Negative", self.settings.faction_data.music);
 	self:set_status(STATUS_STARTED);
 end
 
@@ -240,7 +250,7 @@ end
 function disaster_pyramid_of_nagash:check_end_disaster_conditions()
     local done = true;
 
-    local faction = cm:get_faction(self.settings.faction_key);
+    local faction = cm:get_faction(self.settings.faction_data.faction_key);
     if faction ~= false and not faction:is_dead() then
         done = false;
     end
@@ -248,7 +258,7 @@ function disaster_pyramid_of_nagash:check_end_disaster_conditions()
 	local region = cm:get_region(self.region_key)
 	if not region:is_abandoned() and not region:owning_faction():is_human() then
 		local owning_faction = region:owning_faction()
-		if owning_faction:name() == self.settings.faction_key then
+		if owning_faction:name() == self.settings.faction_data.faction_key then
 			done = false;
 		end
 
