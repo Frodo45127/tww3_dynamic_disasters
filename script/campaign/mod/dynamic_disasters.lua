@@ -688,6 +688,7 @@ local mandatory_settings = {
     repeteable = false,                 -- If the disaster can be repeated.
     is_endgame = true,                  -- If the disaster is an endgame.
     min_turn = 60,                      -- Minimum turn required for the disaster to trigger.
+    max_turn = 0,                       -- If the disaster hasn't trigger at this turn, we try to trigger it. Set to 0 to not check for max turn. Used only for some disasters.
     status = 0,                         -- Current status of the disaster. Used to re-initialize the disaster correctly on reload.
     last_triggered_turn = 0,            -- Turn when the disaster was last triggerd.
     last_finished_turn = 0,             -- Turn when the disaster was last finished.
@@ -750,6 +751,12 @@ function dynamic_disasters:load_from_mct(mct)
         if not min_turn == false then
             local min_turn_setting = min_turn:get_finalized_setting();
             disaster.settings.min_turn = min_turn_setting;
+        end
+
+        local max_turn = mod:get_option_by_key(disaster.name .. "_max_turn_value");
+        if not max_turn == false then
+            local max_turn_setting = max_turn:get_finalized_setting();
+            disaster.settings.max_turn = max_turn_setting;
         end
 
         local difficulty_mod = mod:get_option_by_key(disaster.name .. "_difficulty_mod");

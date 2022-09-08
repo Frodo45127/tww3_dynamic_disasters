@@ -236,6 +236,11 @@ function disaster_pyramid_of_nagash:check_start_disaster_conditions()
         return true;
     end
 
+    -- If we're at max turn, trigger it without checking chances.
+    if self.settings.max_turn > 0 and cm:turn_number() == self.settings.max_turn then
+        return true;
+    end
+
     local base_chance = 0.02;
 
     if math.random() < base_chance then

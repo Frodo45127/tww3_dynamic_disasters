@@ -107,6 +107,7 @@ disaster_the_great_uprising = {
         repeteable = false,                 -- If the disaster can be repeated.
         is_endgame = true,                  -- If the disaster is an endgame.
         min_turn = 130,                     -- Minimum turn required for the disaster to trigger.
+        max_turn = 0,                       -- If the disaster hasn't trigger at this turn, we try to trigger it. Set to 0 to not check for max turn. Used only for some disasters.
         status = 0,                         -- Current status of the disaster. Used to re-initialize the disaster correctly on reload.
         last_triggered_turn = 0,            -- Turn when the disaster was last triggerd.
         last_finished_turn = 0,             -- Turn when the disaster was last finished.
@@ -805,6 +806,11 @@ function disaster_the_great_uprising:check_start_disaster_conditions()
 
     -- Debug mode support.
     if dynamic_disasters.settings.debug == true then
+        return true;
+    end
+
+    -- If we're at max turn, trigger it without checking chances.
+    if self.settings.max_turn > 0 and cm:turn_number() == self.settings.max_turn then
         return true;
     end
 

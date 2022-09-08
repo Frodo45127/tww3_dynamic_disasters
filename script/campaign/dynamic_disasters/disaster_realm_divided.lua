@@ -15,6 +15,12 @@
         - Civil war will broke out.
         - Ends when the player anahilates all other non-allied cathayan factions.
 
+    Caravan lord armies will consist on a mix of Cathayan, Ogre, Kislevitan, Empire and Bretonian units.
+    Bonus for with for each alliance:
+        - Miao Ying/Zhao Ming: Confederation. Gains the faction buffs of the other one.
+        - Wei-Jin: Gains brutal anti-corruption bonuses (useful for the Endtimes and Great Ascendancy disasters) and faster turn times/filling for the compass (maybe add bonuses).
+        - Caravan Lords: Gains a lot more money. All caravan armies gain some units. Caravan lords gains buffs. Better relations with human/ogre factions. If multiple caravans can be enabled, enable them. If more nodes can be added, add them.
+
     Conditions to trigger:
         - Player must be a Cathayan faction.
         - Player must control at least half of Cathay.
@@ -42,7 +48,7 @@ disaster_example = {
         enabled = false,                    -- If the disaster is enabled or not.
         started = false,                    -- If the disaster has been started.
         finished = false,                   -- If the disaster has been finished.
-        repeteable = true,                  -- If the disaster can be repeated.
+        repeteable = false,                 -- If the disaster can be repeated.
         is_endgame = false,                 -- If the disaster is an endgame.
         min_turn = 30,                      -- Minimum turn required for the disaster to trigger.
         status = 0,                         -- Current status of the disaster. Used to re-initialize the disaster correctly on reload.
@@ -53,7 +59,15 @@ disaster_example = {
         campaigns = {                       -- Campaigns this disaster works on.
             "main_warhammer",
         },
-    }
+    },
+
+    northern_provinces_data = {
+
+    },
+
+    western_provinces_data = {
+
+    },
 }
 
 -- Function to set the status of the disaster, initializing the needed listeners in the process.

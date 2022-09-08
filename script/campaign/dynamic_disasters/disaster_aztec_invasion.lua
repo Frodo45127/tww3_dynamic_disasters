@@ -62,6 +62,7 @@ disaster_aztec_invasion = {
         repeteable = false,                 -- If the disaster can be repeated.
         is_endgame = true,                  -- If the disaster is an endgame.
         min_turn = 100,                     -- Minimum turn required for the disaster to trigger.
+        max_turn = 0,                       -- If the disaster hasn't trigger at this turn, we try to trigger it. Set to 0 to not check for max turn. Used only for some disasters.
         last_triggered_turn = 0,            -- Turn when the disaster was last triggerd.
         last_finished_turn = 0,             -- Turn when the disaster was last finished.
         wait_turns_between_repeats = 0,     -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
@@ -999,6 +1000,11 @@ function disaster_aztec_invasion:check_start_disaster_conditions()
 
     -- Debug mode support.
     if dynamic_disasters.settings.debug == true then
+        return true;
+    end
+
+    -- If we're at max turn, trigger it without checking chances.
+    if self.settings.max_turn > 0 and cm:turn_number() == self.settings.max_turn then
         return true;
     end
 
