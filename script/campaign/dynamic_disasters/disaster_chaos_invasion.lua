@@ -50,6 +50,7 @@
 local STATUS_TRIGGERED = 1;
 local STATUS_STAGE_1 = 2;
 local STATUS_STAGE_2 = 3;
+local STATUS_STAGE_3 = 4;
 
 -- Object representing the disaster.
 disaster_chaos_invasion = {
@@ -64,16 +65,16 @@ disaster_chaos_invasion = {
     settings = {
 
         -- Common data for all disasters.
-        enabled = false,                    -- If the disaster is enabled or not.
+        enabled = true,                     -- If the disaster is enabled or not.
         started = false,                    -- If the disaster has been started.
         finished = false,                   -- If the disaster has been finished.
-        repeteable = true,                  -- If the disaster can be repeated.
-        is_endgame = false,                 -- If the disaster is an endgame.
-        min_turn = 30,                      -- Minimum turn required for the disaster to trigger.
+        repeteable = false,                 -- If the disaster can be repeated.
+        is_endgame = true,                  -- If the disaster is an endgame.
+        min_turn = 100,                     -- Minimum turn required for the disaster to trigger.
         status = 0,                         -- Current status of the disaster. Used to re-initialize the disaster correctly on reload.
         last_triggered_turn = 0,            -- Turn when the disaster was last triggerd.
         last_finished_turn = 0,             -- Turn when the disaster was last finished.
-        wait_turns_between_repeats = 5,     -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
+        wait_turns_between_repeats = 0,     -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
         difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
         campaigns = {                       -- Campaigns this disaster works on.
             "main_warhammer",
@@ -83,6 +84,7 @@ disaster_chaos_invasion = {
         base_army_unit_count = 19,
         stage_1_delay = 1,
         stage_2_delay = 1,
+        stage_3_delay = 1,
 
         army_template = nil,
     },
@@ -94,7 +96,12 @@ disaster_chaos_invasion = {
         },
     },
 
+    stage_1_warning_event_key = "fro_dyn_dis_chaos_invasion_stage_1_warning",
+    stage_1_event_key = "fro_dyn_dis_chaos_invasion_stage_1_trigger",
+    stage_2_event_key = "fro_dyn_dis_chaos_invasion_stage_2_trigger",
+    stage_3_event_key = "fro_dyn_dis_chaos_invasion_stage_3_trigger",
     finish_before_stage_1_event_key = "fro_dyn_dis_chaos_invasion_finish_before_stage_1",
+    finish_event_key = "fro_dyn_dis_chaos_invasion_finish",
 }
 
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
@@ -129,10 +136,52 @@ function disaster_chaos_invasion:set_status(status)
 
     if self.settings.status == STATUS_STAGE_1 then
 
+        -- This triggers stage two of the disaster if the disaster hasn't been cancelled.
+        core:add_listener(
+            "ChaosInvasionStage2",
+            "WorldStartRound",
+            function()
+                if cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay then
+                    return true
+                end
+                return false;
+            end,
+            function()
+                if self:check_end_disaster_conditions() == true then
+                    dynamic_disasters:execute_payload(self.finish_event_key, nil, 0, nil);
+                    self:trigger_end_disaster();
+                else
+                    self:trigger_stage_2();
+                end
+                core:remove_listener("ChaosInvasionStage2")
+            end,
+            true
+        );
     end
 
     if self.settings.status == STATUS_STAGE_2 then
 
+        -- This triggers stage three of the disaster if the disaster hasn't been cancelled.
+        core:add_listener(
+            "ChaosInvasionStage3",
+            "WorldStartRound",
+            function()
+                if cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.stage_3_delay then
+                    return true
+                end
+                return false;
+            end,
+            function()
+                if self:check_end_disaster_conditions() == true then
+                    dynamic_disasters:execute_payload(self.finish_event_key, nil, 0, nil);
+                    self:trigger_end_disaster();
+                else
+                    self:trigger_stage_3();
+                end
+                core:remove_listener("ChaosInvasionStage3")
+            end,
+            true
+        );
     end
 end
 
@@ -147,10 +196,11 @@ function disaster_chaos_invasion:trigger()
     end
 
     -- Initialize listeners.
+    dynamic_disasters:execute_payload(self.stage_1_warning_event_key, nil, 0, nil);
     self:set_status(STATUS_TRIGGERED);
 end
 
--- Function to trigger the first stage of the Great Uprising.
+-- Function to trigger the first stage of the Chaos Invasion.
 function disaster_chaos_invasion:trigger_stage_1()
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
@@ -160,39 +210,63 @@ function disaster_chaos_invasion:trigger_stage_1()
         self.settings.stage_2_delay = 1;
     end
 
-    cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_skv_skaven")
-    dynamic_disasters:execute_payload(self.stage_1_event_key, self.effects_global_key, self.settings.stage_2_delay, nil);
-
-    -- Spawn a few Skryre armies in Estalia, Tilea and Sartosa. Enough so they're able to expand next.
-    for _, faction_key in pairs(self.settings.factions_stage_1) do
-        local faction = cm:get_faction(faction_key);
-        dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions_stage_1, true, {"wh2_main_sc_skv_skaven"})
-
-        for _, region_key in pairs(regions_stage_1) do
-            dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, true, math.ceil(1.5 * self.settings.difficulty_mod), self.name)
-        end
-
-        -- Apply the relevant CAI changes.
-        cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
+    local human_factions = cm:get_human_factions();
+    for i = 1, #human_factions do
+        cm:show_message_event_located(
+            human_factions[i],
+            "event_feed_strings_text_wh_event_feed_string_scripted_event_chaos_invasion_mid_primary_detail",
+            "",
+            "event_feed_strings_text_wh_event_feed_string_scripted_event_chaos_invasion_mid_secondary_detail",
+            100,
+            100,
+            true, 30
+        );
+        --out.chaos("Showing Chaos Event : "..human_factions[i]);
+        --cm:make_region_visible_in_shroud(human_factions[i], "wh_main_chaos_wastes");
     end
 
-    -- Make sure every attacker is at peace with each other.
-    for _, src_faction_key in pairs(self.settings.skaven_factions) do
-        for _, dest_faction_key in pairs(self.settings.skaven_factions) do
-            if src_faction_key ~= dest_faction_key then
-                cm:force_make_peace(src_faction_key, dest_faction_key);
-            end
-        end
-
-        -- Also, make sure they're added to the victory conditions.
-        table.insert(self.objectives[1].conditions, "faction " .. src_faction_key)
-    end
-
-    -- Trigger the effect about Morrslieb.
-    self:morrslieb_gaze_is_upon_us(self.settings.stage_2_delay);
+    cm:register_instant_movie("Warhammer/chs_rises");
 
     -- Advance status to stage 1.
     self:set_status(STATUS_STAGE_1);
+end
+
+-- Function to trigger the second stage of the Chaos Invasion.
+function disaster_chaos_invasion:trigger_stage_2()
+
+    -- Trigger all the stuff related to the invasion (missions, effects,...).
+    if dynamic_disasters.settings.debug == false then
+        self.settings.stage_3_delay = math.random(6, 10);
+    else
+        self.settings.stage_3_delay = 1;
+    end
+
+    local human_factions = cm:get_human_factions();
+    for i = 1, #human_factions do
+        cm:show_message_event_located(
+            human_factions[i],
+            "event_feed_strings_text_wh_event_feed_string_scripted_event_chaos_invasion_end_primary_detail",
+            "",
+            "event_feed_strings_text_wh_event_feed_string_scripted_event_chaos_invasion_end_secondary_detail",
+            100,
+            100,
+            true, 31
+        );
+        --out.chaos("Showing Chaos Event : "..human_factions[i]);
+        --cm:make_region_visible_in_shroud(human_factions[i], "wh_main_chaos_wastes");
+    end
+    cm:register_instant_movie("Warhammer/chs_invasion");
+
+    -- Advance status to stage 2.
+    self:set_status(STATUS_STAGE_2);
+end
+
+-- Function to trigger the third stage of the Chaos Invasion.
+function disaster_chaos_invasion:trigger_stage_3()
+
+
+    -- Advance status to stage 3.
+    self:set_status(STATUS_STAGE_3);
 end
 
 -- Function to trigger cleanup stuff after the disaster is over.
@@ -214,6 +288,13 @@ function disaster_chaos_invasion:check_start_disaster_conditions()
     end
 
     return true;
+end
+
+
+--- Function to check if the conditions to declare the disaster as "finished" are fulfilled.
+---@return boolean If the disaster will be finished or not.
+function disaster_chaos_invasion:check_end_disaster_conditions()
+    return false;
 end
 
 -- Return the disaster so the manager can read it.
