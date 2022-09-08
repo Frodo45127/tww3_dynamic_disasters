@@ -5,8 +5,8 @@
 ]]
 
 -- Faction-wide stats tracker.
-tracker_stats_faction = {
-    data = {},                  -- Contains per-player faction stats.
+faction_stats_tracker = {
+    stats = {},                     -- Contains per-player faction stats.
 }
 
 -- Stats of a player vs a single faction.
@@ -28,21 +28,21 @@ local stats_vs_faction = {
 -- Function to setup the save/load from savegame logic for items. Copied from dynamic_disasters.
 --
 -- Pretty much a reusable function to load data from save and set it to be saved on the next save.
----@param item table #Object/Table to save. It MUST CONTAIN a data node, as that's what it really gets saved.
+---@param item table #Object/Table to save. It MUST CONTAIN a stats node, as that's what it really gets saved.
 ---@param save_key string #Unique key to identify the saved data.
 local function setup_save(item, save_key)
     local old_data = cm:get_saved_value(save_key);
     if old_data ~= nil then
-       item.data = old_data;
+       item.stats = old_data;
     end
-    cm:set_saved_value(save_key, item.data);
+    cm:set_saved_value(save_key, item.stats);
 end
 
 -- Initialise the faction-wide stats tracker on first tick.
 cm:add_first_tick_callback(
     function()
         out("Frodo45127: Initializing faction-wide stats tracker.")
-        setup_save(tracker_stats_faction, "tracker_stats_faction")
+        setup_save(faction_stats_tracker, "faction_stats_tracker")
     end
 )
 -- Aggression-by-battle tracker.
@@ -50,7 +50,7 @@ core:add_listener(
     "TrackerBattleCompleted",
     "BattleCompleted",
     function() return cm:model():pending_battle():has_been_fought() end,
-    function(_) tracker_stats_faction:battle_completed() end,
+    function(_) faction_stats_tracker:battle_completed() end,
     true
 );
 
@@ -59,7 +59,7 @@ core:add_listener(
 ]]
 
 -- Function to track aggression due to battles fought against a specific faction.
-function tracker_stats_faction:battle_completed()
+function faction_stats_tracker:battle_completed()
     local num_attackers = cm:pending_battle_cache_num_attackers();
     local num_defenders = cm:pending_battle_cache_num_defenders();
 
@@ -81,7 +81,7 @@ function tracker_stats_faction:battle_completed()
 
         local attacker = cm:get_faction(attacker_name);
         if not attacker == false and attacker:is_null_interface() == false and attacker:is_human() == true then
-            table.insert(humans.attackers, attacker_name);
+            humans.attackers[attacker_name] = true;
         end
     end
 
@@ -91,7 +91,7 @@ function tracker_stats_faction:battle_completed()
 
         local defender = cm:get_faction(defender_name);
         if not defender == false and defender:is_null_interface() == false and defender:is_human() == true then
-            table.insert(humans.defenders, defender_name);
+            humans.defenders[defender_name] = true;
         end
     end
 
@@ -102,15 +102,17 @@ function tracker_stats_faction:battle_completed()
     local defender_result = pending_battle:defender_battle_result();
 
     -- For each player attacking, record their victories/defeats.
-    for i = 1, #humans.attackers do
-        local human_faction_key = humans.attackers[i];
-        local human_stats = self.data.stats[human_faction_key];
+    for human_faction_key, _ in pairs(humans.attackers) do
+        local human_stats = self.stats[human_faction_key];
+        out("Frodo45127: Tracking battle result of player " .. human_faction_key .." attacking.")
 
         if human_stats == nil then
             human_stats = {};
         end
 
-        for _, defender_faction_key in pairs(defenders) do
+        for defender_faction_key, _ in pairs(defenders) do
+            out("Frodo45127: Tracking battle result against" .. defender_faction_key ..".")
+
             local human_stats_vs_faction = human_stats[defender_faction_key];
             if human_stats_vs_faction == nil then
                 human_stats_vs_faction = stats_vs_faction;
@@ -123,6 +125,9 @@ function tracker_stats_faction:battle_completed()
                 human_stats_vs_faction.battles_lost = human_stats_vs_faction.battles_lost + 1;
             end
 
+            out("Frodo45127: Player " .. human_faction_key .. " has won " .. human_stats_vs_faction.battles_won .. " battles against " .. defender_faction_key ..".")
+            out("Frodo45127: Player " .. human_faction_key .. " has lost " .. human_stats_vs_faction.battles_lost .. " battles against " .. defender_faction_key ..".")
+
             -- Track battle results.
             human_stats_vs_faction.battle_results[attacker_result] = human_stats_vs_faction.battle_results[attacker_result] + 1;
 
@@ -131,19 +136,21 @@ function tracker_stats_faction:battle_completed()
         end
 
         -- Save the updated stats into the stats section.
-        self.data.stats[human_faction_key] = human_stats;
+        self.stats[human_faction_key] = human_stats;
     end
 
     -- Same thing for human defenders.
-    for i = 1, #humans.defenders do
-        local human_faction_key = humans.defenders[i];
-        local human_stats = self.data.stats[human_faction_key];
+    for human_faction_key, _ in pairs(humans.defenders) do
+        local human_stats = self.stats[human_faction_key];
+        out("Frodo45127: Tracking battle result of player " .. human_faction_key .." defending.")
 
         if human_stats == nil then
             human_stats = {};
         end
 
-        for _, attacker_faction_key in pairs(attackers) do
+        for attacker_faction_key, _ in pairs(attackers) do
+            out("Frodo45127: Tracking battle result against " .. attacker_faction_key ..".")
+
             local human_stats_vs_faction = human_stats[attacker_faction_key];
             if human_stats_vs_faction == nil then
                 human_stats_vs_faction = stats_vs_faction;
@@ -158,12 +165,14 @@ function tracker_stats_faction:battle_completed()
 
             -- Track battle results.
             human_stats_vs_faction.battle_results[defender_result] = human_stats_vs_faction.battle_results[defender_result] + 1;
+            out("Frodo45127: Player " .. human_faction_key .. " has won " .. human_stats_vs_faction.battles_won .. " battles against " .. attacker_faction_key ..".")
+            out("Frodo45127: Player " .. human_faction_key .. " has lost " .. human_stats_vs_faction.battles_lost .. " battles against " .. attacker_faction_key ..".")
 
             -- Save the updated stats.
             human_stats[attacker_faction_key] = human_stats_vs_faction;
         end
 
         -- Save the updated stats into the stats section.
-        self.data.stats[human_faction_key] = human_stats;
+        self.stats[human_faction_key] = human_stats;
     end
 end
