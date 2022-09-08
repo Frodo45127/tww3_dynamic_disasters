@@ -12,6 +12,9 @@ dynamic_disasters = {
         victory_condition_triggered = false,    -- If a disaster has already triggered a victory condition, as we can't have two at the same time.
         max_endgames_at_the_same_time = 4,      -- Max amount of endgame crisis one can trigger at the same time, to space them out a bit.
         currently_running_endgames = 0,         -- Amount of currently running endgames.
+
+        order_factions_swap = {},               -- List of factions that, due to a disaster, have changed sides to the order-tide.
+        chaos_factions_swap = {},               -- List of factions that, due to a disaster, have changed sides to the chaos-tide.
     },
     disasters = {},                             -- List of disasters. This is populated on first tick.
 
@@ -724,7 +727,7 @@ core:add_listener(
 )
 
 -- Function to load settings from the mct.
----@param mct object #MCT object.
+---@param mct userdata #MCT object.
 function dynamic_disasters:load_from_mct(mct)
     local mod = mct:get_mod_by_key("dynamic_disasters")
 
@@ -1316,4 +1319,143 @@ function dynamic_disasters:declare_war_on_adjacent_region_owners(faction, base_r
             end
         end
     end
+end
+
+-- Function to determine if a faction is currently considered an order faction or not.
+---@param faction_key string #Faction key to check.
+---@return boolean #If the faction is considered an order faction or not. Returns false if the key is invalid.
+function dynamic_disasters:is_order_faction(faction_key)
+
+    -- Make sure the faction is valid before proceeding.
+    local faction = cm:get_faction(faction_key);
+    if faction == false or faction:is_null_interface() == true then
+        return false;
+    end
+
+    -- Check the list of factions that for one reason or another swapped sides to order.
+    local is_order_faction = false;
+    if #self.order_factions_swap > 0 then
+        for i = 1, #self.order_factions_swap do
+            if self.order_factions_swap[i] == faction_key then
+                is_order_faction = true;
+                break;
+            end
+        end
+    end
+
+    if is_order_faction == true then
+        return true;
+    end
+
+    -- Check the list of factions that for one reason or another swapped sides to chaos, just in case it was an order faction that moved to chaos.
+    local is_chaos_faction = false;
+    if #self.chaos_factions_swap > 0 then
+        for i = 1, #self.chaos_factions_swap do
+            if self.chaos_factions_swap[i] == faction_key then
+                is_chaos_faction = true;
+                break;
+            end
+        end
+    end
+
+    if is_chaos_faction == true then
+        return false;
+    end
+
+    -- If our faction didn't swapped sides, check it's subculture.
+    local subcultures = {
+        "wh2_main_sc_hef_high_elves",
+        "wh2_main_sc_lzd_lizardmen",
+        "wh3_main_sc_cth_cathay",
+        "wh3_main_sc_ksl_kislev",
+        "wh_dlc05_sc_wef_wood_elves",
+        "wh_main_sc_brt_bretonnia",
+        "wh_main_sc_dwf_dwarfs",
+        "wh_main_sc_emp_empire",
+        "wh_main_sc_teb_teb",
+    }
+
+    local subculture = faction:subculture();
+    for i = 1, #subcultures do
+        if subcultures[i] == subculture then
+            is_order_faction = true;
+            break;
+        end
+    end
+
+    return is_order_faction;
+end
+
+-- Function to determine if a faction is currently considered a neutral faction or not.
+---@param faction_key string #Faction key to check.
+---@return boolean #If the faction is considered a neutral faction or not. Returns false if the key is invalid.
+function dynamic_disasters:is_neutral_faction(faction_key)
+    return self:is_order_faction(faction_key) == false and self:is_chaos_faction(faction_key) == false;
+end
+
+-- Function to determine if a faction is currently considered a chaos faction or not.
+---@param faction_key string #Faction key to check.
+---@return boolean #If the faction is considered a chaos faction or not. Returns false if the key is invalid.
+function dynamic_disasters:is_chaos_faction(faction_key)
+
+    -- Make sure the faction is valid before proceeding.
+    local faction = cm:get_faction(faction_key);
+    if faction == false or faction:is_null_interface() == true then
+        return false;
+    end
+
+    -- Check the list of factions that for one reason or another swapped sides to chaos.
+    local is_chaos_faction = false;
+    if #self.chaos_factions_swap > 0 then
+        for i = 1, #self.chaos_factions_swap do
+            if self.chaos_factions_swap[i] == faction_key then
+                is_chaos_faction = true;
+                break;
+            end
+        end
+    end
+
+    if is_chaos_faction == true then
+        return true;
+    end
+
+    -- Check the list of factions that for one reason or another swapped sides to order.
+    local is_order_faction = false;
+    if #self.order_factions_swap > 0 then
+        for i = 1, #self.order_factions_swap do
+            if self.order_factions_swap[i] == faction_key then
+                is_order_faction = true;
+                break;
+            end
+        end
+    end
+
+    if is_order_faction == true then
+        return false;
+    end
+
+    -- If our faction didn't swapped sides, check it's subculture.
+    local subcultures = {
+        "wh2_main_rogue_chaos",
+        "wh2_main_sc_def_dark_elves",
+        "wh2_main_sc_skv_skaven",
+        "wh3_main_sc_dae_daemons",
+        "wh3_main_sc_kho_khorne",
+        "wh3_main_sc_nur_nurgle",
+        "wh3_main_sc_sla_slaanesh",
+        "wh3_main_sc_tze_tzeentch",
+        "wh_dlc03_sc_bst_beastmen",
+        "wh_dlc08_sc_nor_norsca",
+        "wh_main_sc_chs_chaos",
+    }
+
+    local subculture = faction:subculture();
+    for i = 1, #subcultures do
+        if subcultures[i] == subculture then
+            is_chaos_faction = true;
+            break;
+        end
+    end
+
+    return is_chaos_faction;
 end
