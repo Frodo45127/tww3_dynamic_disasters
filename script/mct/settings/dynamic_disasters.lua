@@ -10,7 +10,7 @@ mod:set_description(loc_prefix.."mod_desc", true)
     Global Config
 ]]
 
-local section_disasters_global_config = mod:add_new_section("mod_config", loc_prefix.."mod_config", true)
+local disasters_global_config_section = mod:add_new_section("mod_config", loc_prefix.."mod_config", true)
 
 local dynamic_disasters_enable = mod:add_new_option("dynamic_disasters_enable", "checkbox")
 dynamic_disasters_enable:set_default_value(true)
@@ -29,7 +29,7 @@ dynamic_disasters_max_simul:slider_set_min_max(1, 50)
 dynamic_disasters_max_simul:set_default_value(4)
 dynamic_disasters_max_simul:slider_set_step_size(1)
 
-local section_disasters_individual_config = mod:add_new_section("disasters_config", loc_prefix.."disasters_config", true)
+local disasters_individual_config_section = mod:add_new_section("disasters_config", loc_prefix.."disasters_config", true)
 
 
 --[[

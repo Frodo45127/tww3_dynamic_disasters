@@ -85,3 +85,7 @@ mct_dyn_dis_max_simul	Max Concurrent Endgames	true
 mct_dyn_dis_max_simul_tooltip	Maximum amount of concurrent endgame disasters that can be run at the same time.	true
 incidents_localised_title_fro_dyn_dis_raiding_parties_early_end	Bless Manaan!	true
 incidents_localised_description_fro_dyn_dis_raiding_parties_early_end	Either by the blessing of Manaan or by sheer luck, a storm unleashed its power upon the Pirate Fleet just as they were prepraring to attack. We can rest... for now.	true
+mct_dyn_dis_debug	Enable Debug Mode	true
+mct_dyn_dis_debug_tooltip	Enable/Disable debug mode.\\n\\nIn debug mode, all disasters trigger instantly, and all timers between warnings/phases/invasions/repetitions are reduced to 1 turn. Only affects disasters that support it.	true
+mct_dyn_dis_max_turn_value	Maximum turn	true
+mct_dyn_dis_max_turn_value_tooltip	Maximum turn for this disaster to trigger. If the disaster has not yet triggered when reaching this turn, it'll trigger if none of the requeriments are unfulfilled. \\nSet to 0 to allow the disaster to trigger normally based on its requeriments.	true
