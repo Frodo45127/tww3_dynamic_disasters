@@ -60,6 +60,11 @@ aztec_invasion_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_toolt
 aztec_invasion_difficulty_mod:slider_set_min_max(10, 500)
 aztec_invasion_difficulty_mod:set_default_value(150)
 aztec_invasion_difficulty_mod:slider_set_step_size(1)
+local d = mod:add_new_option("d1", "dummy")
+d:set_text(" ");
+
+local d = mod:add_new_option("d2", "dummy")
+d:set_text(" ");
 
 --[[
     Raiding Parties Config
@@ -133,7 +138,11 @@ the_great_uprising_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_t
 the_great_uprising_difficulty_mod:slider_set_min_max(10, 500)
 the_great_uprising_difficulty_mod:set_default_value(150)
 the_great_uprising_difficulty_mod:slider_set_step_size(1)
+local d = mod:add_new_option("d3", "dummy")
+d:set_text(" ");
 
+local d = mod:add_new_option("d4", "dummy")
+d:set_text(" ");
 
 --[[
     Vanilla Grudge Too Far Config
@@ -164,6 +173,12 @@ grudge_too_far_difficulty_mod:slider_set_min_max(10, 500)
 grudge_too_far_difficulty_mod:set_default_value(150)
 grudge_too_far_difficulty_mod:slider_set_step_size(1)
 
+local d = mod:add_new_option("d5", "dummy")
+d:set_text(" ");
+
+local d = mod:add_new_option("d6", "dummy")
+d:set_text(" ");
+
 --[[
     Vanilla Pyramid of Nagash Config
 ]]
@@ -192,6 +207,12 @@ pyramid_of_nagash_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_to
 pyramid_of_nagash_difficulty_mod:slider_set_min_max(10, 500)
 pyramid_of_nagash_difficulty_mod:set_default_value(150)
 pyramid_of_nagash_difficulty_mod:slider_set_step_size(1)
+
+local d = mod:add_new_option("d7", "dummy")
+d:set_text(" ");
+
+local d = mod:add_new_option("d8", "dummy")
+d:set_text(" ");
 
 --[[
     Vanilla Vampires Rise Config
@@ -222,6 +243,12 @@ vampires_rise_difficulty_mod:slider_set_min_max(10, 500)
 vampires_rise_difficulty_mod:set_default_value(150)
 vampires_rise_difficulty_mod:slider_set_step_size(1)
 
+local d = mod:add_new_option("d9", "dummy")
+d:set_text(" ");
+
+local d = mod:add_new_option("d10", "dummy")
+d:set_text(" ");
+
 --[[
     Vanilla Waaagh Config
 ]]
@@ -251,6 +278,12 @@ waaagh_difficulty_mod:slider_set_min_max(10, 500)
 waaagh_difficulty_mod:set_default_value(150)
 waaagh_difficulty_mod:slider_set_step_size(1)
 
+local d = mod:add_new_option("d11", "dummy")
+d:set_text(" ");
+
+local d = mod:add_new_option("d12", "dummy")
+d:set_text(" ");
+
 --[[
     Vanilla Wild Hunt Config
 ]]
@@ -279,3 +312,9 @@ wild_hunt_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_tooltip", 
 wild_hunt_difficulty_mod:slider_set_min_max(10, 500)
 wild_hunt_difficulty_mod:set_default_value(150)
 wild_hunt_difficulty_mod:slider_set_step_size(1)
+
+local d = mod:add_new_option("d13", "dummy")
+d:set_text(" ");
+
+local d = mod:add_new_option("d14", "dummy")
+d:set_text(" ");
