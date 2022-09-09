@@ -8,6 +8,7 @@
     Requirements:
         - Random chance: 0.25% (1/400 turns).
         - +0.25% for each Skaven faction that has been wiped out (not confederated).
+        - If the chaos invasion disaster has been triggered, chance of this disaster triggering increases by 10%.
         - At least turn 130 (so the player has already "prepared").
         - Clan Skryre must be not confederated (it's the one it starts the invasion).
     Effects:
@@ -824,6 +825,14 @@ function disaster_the_great_uprising:check_start_disaster_conditions()
 
             -- Increase in 0.25% the chance of triggering for each dead attacker.
             base_chance = base_chance + 0.0025;
+        end
+    end
+
+    -- If the chaos invasion has been triggered, get this up a 10%.
+    for _, disaster in pairs(dynamic_disasters.disasters) do
+        if disaster.name == "chaos_invasion" and disaster.settings.started == true and disaster.settings.finished == false then
+            base_chance = base_chance + 10;
+            break;
         end
     end
 
