@@ -9,7 +9,7 @@ dynamic_disasters = {
     settings = {
         enabled = true,                         -- If the entire Dynamic Disasters system is enabled.
         debug = false,                          -- Debug mode. Forces all disasters to trigger and all in-between phase timers are reduced to 1 turn.
-        disable_vanilla_endgames = true,       -- If this should disable the vanilla endgames, to avoid duplicated disasters.
+        disable_vanilla_endgames = true,        -- If this should disable the vanilla endgames, to avoid duplicated disasters. TODO: Fix issues with missions getting overwritten due to this.
         victory_condition_triggered = false,    -- If a disaster has already triggered a victory condition, as we can't have two at the same time.
         max_endgames_at_the_same_time = 4,      -- Max amount of endgame crisis one can trigger at the same time, to space them out a bit.
         currently_running_endgames = 0,         -- Amount of currently running endgames.
@@ -1135,9 +1135,9 @@ function dynamic_disasters:create_scenario_force(faction_key, region_key, army_t
     if declare_war then
         local invasion_faction = cm:get_faction(faction_key)
         local region_owning_faction = cm:get_region(region_key):owning_faction()
-        if region_owning_faction:is_null_interface() == false and faction_key ~= region_owning_faction:name() and region_owning_faction:name() ~= "rebels" and invasion_faction:at_war_with(region_owning_faction) == false then
-            out("ENDGAME: Declaring war between "..faction_key.." and "..region_owning_faction:name())
-            cm:force_declare_war(faction_key, region_owning_faction:name(), false, false)
+        if not region_owning_faction == false and region_owning_faction:is_null_interface() == false then
+            out("Frodo: Trying to declare war between "..faction_key.." and "..region_owning_faction:name() .. " due to army spawn.")
+            endgame:declare_war(invasion_faction, region_owning_faction)
         end
     end
 
@@ -1184,9 +1184,9 @@ function dynamic_disasters:create_scenario_force_at_coords(faction_key, region_k
     if declare_war then
         local invasion_faction = cm:get_faction(faction_key)
         local region_owning_faction = cm:get_region(region_key):owning_faction()
-        if region_owning_faction:is_null_interface() == false and faction_key ~= region_owning_faction:name() and region_owning_faction:name() ~= "rebels" and not invasion_faction == false and invasion_faction:at_war_with(region_owning_faction) == false then
-            out("Frodo45127: Declaring war between "..faction_key.." and "..region_owning_faction:name())
-            cm:force_declare_war(faction_key, region_owning_faction:name(), false, false)
+        if not region_owning_faction == false and region_owning_faction:is_null_interface() == false then
+            out("Frodo: Trying to declare war between "..faction_key.." and "..region_owning_faction:name() .. " due to army spawn.")
+            endgame:declare_war(invasion_faction, region_owning_faction)
         end
     end
 end
@@ -1245,7 +1245,7 @@ end
 ---@param attack_faction_neightbors boolean #If we should declare war on all the current faction neighbours too.
 ---@param subcultures_to_ignore table #List of subcultures to ignore on war declarations.
 function dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions, attack_faction_neightbors, subcultures_to_ignore)
-    if faction:is_null_interface() == false then
+    if not faction == false and faction:is_null_interface() == false then
 
         -- First, declare war on the explicitly provided region owners and its neightbor regions.
         for _, region_key in pairs(regions) do
@@ -1257,9 +1257,9 @@ function dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regio
 
                 -- Then get if the current region is occupied and try to declare war on the owner.
                 local region_owner = region:owning_faction()
-                if region_owner:is_null_interface() == false then
+                if not region_owner == false and region_owner:is_null_interface() == false then
 
-                    -- Get if we should ignore the curreent region.
+                    -- Get if we should ignore the current region.
                     local region_subculture = region_owner:subculture();
                     local ignore_region = false;
                     for j = 1, #subcultures_to_ignore do
@@ -1270,8 +1270,8 @@ function dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regio
                     end
 
                     -- If the current region is not to be ignored, declate war on the owner.
-                    if ignore_region == false and region_owner:name() ~= "rebels" and not faction:at_war_with(region_owner) then
-                        cm:force_declare_war(faction:name(), region_owner:name(), false, true)
+                    if ignore_region == false then
+                        endgame:declare_war(faction:name(), region_owner:name())
                     end
                 end
             end
@@ -1282,11 +1282,9 @@ function dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regio
             local region_list = faction:region_list();
             for i = 0, region_list:num_items() - 1 do
                 local region = region_list:item_at(i);
-                if region:is_null_interface() == false then
 
-                    -- Try to declare war on its neighbors first, so we don't depend on the status of the current region.
-                    self:declare_war_on_adjacent_region_owners(faction, region, subcultures_to_ignore)
-                end
+                -- Try to declare war on its neighbors first, so we don't depend on the status of the current region.
+                self:declare_war_on_adjacent_region_owners(faction, region, subcultures_to_ignore)
             end
         end
     end
@@ -1297,7 +1295,7 @@ end
 ---@param base_region REGION_SCRIPT_INTERFACE #Region object
 ---@param subcultures_to_ignore table #List of subcultures to ignore on war declarations.
 function dynamic_disasters:declare_war_on_adjacent_region_owners(faction, base_region, subcultures_to_ignore)
-    if base_region:is_null_interface() == false then
+    if not base_region == false and base_region:is_null_interface() == false then
         local adjacent_regions = base_region:adjacent_region_list()
 
         for i = 0, adjacent_regions:num_items() - 1 do
@@ -1306,9 +1304,11 @@ function dynamic_disasters:declare_war_on_adjacent_region_owners(faction, base_r
             -- Ignore abandoned regions.
             if region:is_abandoned() == false then
                 local region_owner = region:owning_faction()
-                if region_owner:is_null_interface() == false then
 
-                    -- Get if we should ignore the curreent region.
+                -- Ignore vassal's regions.
+                if not region_owner == false and region_owner:is_null_interface() == false then
+
+                    -- Get if we should ignore the current region.
                     local region_subculture = region_owner:subculture();
                     local ignore_region = false;
                     for j = 1, #subcultures_to_ignore do
@@ -1318,7 +1318,7 @@ function dynamic_disasters:declare_war_on_adjacent_region_owners(faction, base_r
                         end
                     end
 
-                    if ignore_region == false and region_owner:name() ~= "rebels" and not faction:at_war_with(region_owner) then
+                    if ignore_region == false then
                         endgame:declare_war(faction:name(), region_owner:name())
                     end
                 end

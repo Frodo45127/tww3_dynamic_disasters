@@ -758,7 +758,6 @@ function disaster_the_great_uprising:morrslieb_gaze_is_upon_us(duration)
             -- Apply the relevant buffs and CAI changes.
             cm:apply_effect_bundle(self.attacker_buffs_key, faction_key, duration);
         end
-
     end
 end
 
