@@ -17,6 +17,11 @@ dynamic_disasters_enable:set_default_value(true)
 dynamic_disasters_enable:set_text(loc_prefix.."enable", true)
 dynamic_disasters_enable:set_tooltip_text(loc_prefix.."enable_tooltip", true)
 
+local dynamic_disasters_disable_vanilla_endgames = mod:add_new_option("dynamic_disasters_disable_vanilla_endgames", "checkbox")
+dynamic_disasters_disable_vanilla_endgames:set_default_value(true)
+dynamic_disasters_disable_vanilla_endgames:set_text(loc_prefix.."disable_vanilla_endgames", true)
+dynamic_disasters_disable_vanilla_endgames:set_tooltip_text(loc_prefix.."disable_vanilla_endgames_tooltip", true)
+
 local dynamic_disasters_debug = mod:add_new_option("dynamic_disasters_debug", "checkbox")
 dynamic_disasters_debug:set_default_value(false)
 dynamic_disasters_debug:set_text(loc_prefix.."debug", true)
