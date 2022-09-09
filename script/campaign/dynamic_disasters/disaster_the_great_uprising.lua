@@ -16,7 +16,7 @@
             - Message about Morrslieb increasing in size.
             - Wait 6-10 turns for more info.
         - Stage 1:
-            - If Clan Skryre is dead, end the disaster here.
+            - If Clan Skryre has been confederated, end the disaster here.
             - If not:
                 - Targets: Estalia, Tilea and Sartosa.
                 - Spawn Clan Skyre armies on Estalia, Tilea and Sartosa.
