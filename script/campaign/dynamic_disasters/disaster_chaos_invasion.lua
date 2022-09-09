@@ -9,11 +9,11 @@
         - Requires archaon to be non-vassalized (maybe alive too?).
         - Warning 8-12 turns before (reuse wh1/2 stuff?).
         - First wave:
-            - Spawn many armies for Archaon and valkia.
-            - Spawn armies of Kairos near bretonia (year of misfortune).
+            - Spawn many armies for Archaon, Sigvald, Kholek and Valkia to lead the push through Norsca, the Mountains of Morne and Naggarond.
             - Force-vasallize any remaining norscan tribe by their closest chaos character. We need a chaos-tide.
             - Force all remaining chaos factions into war with ALL order/neutral factions.
         - Second wave (only if kislev is still alive):
+            - Spawn armies of Kairos near bretonia (year of misfortune).
             - Small global chaos corruptionincrease.
             - If chaos corruption goes above 75, spawn a rift on a province.
                 - Said rift will spawn daemon armies each 10 turns + 1 an initial one.
@@ -59,7 +59,16 @@ disaster_chaos_invasion = {
     -- Values for categorizing the disaster.
     is_global = true;
     allowed_for_sc = {},
-    denied_for_sc = {},
+    denied_for_sc = {           -- Disabled for all chaos-related subcultures except Skaven. They're already broken on their own.
+        "wh3_main_sc_dae_daemons",
+        "wh3_main_sc_kho_khorne",
+        "wh3_main_sc_nur_nurgle",
+        "wh3_main_sc_sla_slaanesh",
+        "wh3_main_sc_tze_tzeentch",
+        "wh_dlc03_sc_bst_beastmen",
+        "wh_dlc08_sc_nor_norsca",
+        "wh_main_sc_chs_chaos",
+    },
 
     -- Settings of the disaster that will be stored in a save.
     settings = {
@@ -86,20 +95,36 @@ disaster_chaos_invasion = {
         stage_2_delay = 1,
         stage_3_delay = 1,
 
-        army_template = nil,
-    },
+        -- List of Chaos factions that will participate in the invasion.
+        factions = {
+            "wh_main_chs_chaos",             -- Archaon
+            "wh3_dlc20_chs_kholek",          -- Kholek
+            "wh3_dlc20_chs_sigvald",         -- Sigvald
+            "wh3_dlc20_chs_valkia",          -- Valkia
+        },
 
-    stage_1_date = {
-        army_template = {
-            chaos = "lategame",
-            tzeentch = "lategame",
+        stage_1_data = {
+            factions = {
+                "wh_main_chs_chaos",             -- Archaon
+                "wh3_dlc20_chs_kholek",          -- Kholek
+                "wh3_dlc20_chs_sigvald",         -- Sigvald
+                "wh3_dlc20_chs_valkia",          -- Valkia
+            },
+
+            army_template = {
+                chaos = "lategame",
+                khorne = "lategame",
+            },
         },
     },
 
-    stage_1_warning_event_key = "fro_dyn_dis_chaos_invasion_stage_1_warning",
-    stage_1_event_key = "fro_dyn_dis_chaos_invasion_stage_1_trigger",
-    stage_2_event_key = "fro_dyn_dis_chaos_invasion_stage_2_trigger",
-    stage_3_event_key = "fro_dyn_dis_chaos_invasion_stage_3_trigger",
+
+    stage_1_warning_title = "event_feed_strings_text_wh_event_feed_string_scripted_event_chaos_invasion_early_primary_detail",
+    stage_1_warning_description = "event_feed_strings_text_wh_event_feed_string_scripted_event_chaos_invasion_early_secondary_detail",
+    stage_1_event_title = "event_feed_strings_text_wh_event_feed_string_scripted_event_chaos_invasion_mid_primary_detail",
+    stage_1_event_description = "event_feed_strings_text_wh_event_feed_string_scripted_event_chaos_invasion_mid_secondary_detail",
+    stage_2_event_title = "event_feed_strings_text_wh_event_feed_string_scripted_event_chaos_invasion_end_primary_detail",
+    stage_2_event_description = "event_feed_strings_text_wh_event_feed_string_scripted_event_chaos_invasion_end_secondary_detail",
     finish_before_stage_1_event_key = "fro_dyn_dis_chaos_invasion_finish_before_stage_1",
     finish_event_key = "fro_dyn_dis_chaos_invasion_finish",
 }
@@ -195,8 +220,12 @@ function disaster_chaos_invasion:trigger()
         self.settings.stage_1_delay = 1;
     end
 
+    local human_factions = cm:get_human_factions();
+    for i = 1, #human_factions do
+        cm:show_message_event(human_factions[i], self.stage_1_warning_title, "", self.stage_1_warning_description, true, 29);
+    end
+
     -- Initialize listeners.
-    dynamic_disasters:execute_payload(self.stage_1_warning_event_key, nil, 0, nil);
     self:set_status(STATUS_TRIGGERED);
 end
 
@@ -212,19 +241,8 @@ function disaster_chaos_invasion:trigger_stage_1()
 
     local human_factions = cm:get_human_factions();
     for i = 1, #human_factions do
-        cm:show_message_event_located(
-            human_factions[i],
-            "event_feed_strings_text_wh_event_feed_string_scripted_event_chaos_invasion_mid_primary_detail",
-            "",
-            "event_feed_strings_text_wh_event_feed_string_scripted_event_chaos_invasion_mid_secondary_detail",
-            100,
-            100,
-            true, 30
-        );
-        --out.chaos("Showing Chaos Event : "..human_factions[i]);
-        --cm:make_region_visible_in_shroud(human_factions[i], "wh_main_chaos_wastes");
+        cm:show_message_event(human_factions[i], self.stage_1_event_title, "", self.stage_1_event_description, true, 30);
     end
-
     cm:register_instant_movie("Warhammer/chs_rises");
 
     -- Advance status to stage 1.
@@ -243,17 +261,7 @@ function disaster_chaos_invasion:trigger_stage_2()
 
     local human_factions = cm:get_human_factions();
     for i = 1, #human_factions do
-        cm:show_message_event_located(
-            human_factions[i],
-            "event_feed_strings_text_wh_event_feed_string_scripted_event_chaos_invasion_end_primary_detail",
-            "",
-            "event_feed_strings_text_wh_event_feed_string_scripted_event_chaos_invasion_end_secondary_detail",
-            100,
-            100,
-            true, 31
-        );
-        --out.chaos("Showing Chaos Event : "..human_factions[i]);
-        --cm:make_region_visible_in_shroud(human_factions[i], "wh_main_chaos_wastes");
+        cm:show_message_event(human_factions[i], self.stage_2_event_title, "", self.stage_2_event_description, true, 31);
     end
     cm:register_instant_movie("Warhammer/chs_invasion");
 
@@ -282,18 +290,92 @@ end
 -- @return boolean If the disaster will be triggered or not.
 function disaster_chaos_invasion:check_start_disaster_conditions()
 
+    -- Update the potential factions for stage 1, removing the confederated ones.
+    self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
+
+    -- Check if any of the attackers if actually alive.
+    local attackers_still_alive = false;
+    local is_archaon_available = false;
+    for _, faction_key in pairs(self.settings.factions) do
+        local faction = cm:get_faction(faction_key);
+        if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false then
+            attackers_still_alive = true;
+        end
+
+        -- Check that Archaon is alive or dead and non-confederated. It's needed to kickstart the disaster.
+        if faction_key == "wh_main_chs_chaos" and faction:was_confederated() == false then
+            is_archaon_available = true;
+        end
+
+        -- Shortcut to exit the loop early.
+        if attackers_still_alive == true and is_archaon_available == true then
+            break;
+        end
+    end
+
+    -- Do not start if Archaon is not available to use.
+    if is_archaon_available == false then
+        return false;
+    end
+
+    -- Do not start if we don't have attackers for stage 1.
+    if #self.settings.factions == 0 or attackers_still_alive == false then
+        return false;
+    end
+
     -- Debug mode support.
     if dynamic_disasters.settings.debug == true then
         return true;
     end
 
-    return true;
+    -- If we're at max turn, trigger it without checking chances.
+    if self.settings.max_turn > 0 and cm:turn_number() == self.settings.max_turn then
+        return true;
+    end
+
+    -- Base chance: 1/100 turns (1%).
+    local base_chance = 0.01;
+    if math.random() < base_chance then
+        return true;
+    end
+
+    return false;
 end
 
 
 --- Function to check if the conditions to declare the disaster as "finished" are fulfilled.
 ---@return boolean If the disaster will be finished or not.
 function disaster_chaos_invasion:check_end_disaster_conditions()
+
+    -- Update the list of available factions and check if are all dead.
+    self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
+    local all_attackers_dead = true;
+
+    if #self.settings.factions > 0 then
+        for _, faction_key in pairs(self.settings.factions) do
+            local faction = cm:get_faction(faction_key);
+            if faction:is_null_interface() == false and not faction:is_dead() then
+                all_attackers_dead = false;
+            end
+        end
+    end
+
+    -- If all chaos factions are dead, end the disaster. If not, check depending on the state we're about to trigger.
+    if all_attackers_dead == true then
+        return true;
+    end
+
+    -- If we haven't triggered the first stage, just check if Archaon is confederated. If so, we end the disaster here.
+    if self.settings.status == STATUS_TRIGGERED then
+        local faction_key = "wh_main_chs_chaos";
+        local faction = cm:get_faction(faction_key);
+        if faction == false or faction:is_null_interface() == true or faction:was_confederated() == true then
+            return true;
+        else
+            return false;
+        end
+    end
+
     return false;
 end
 
