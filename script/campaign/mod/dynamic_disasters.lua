@@ -1104,68 +1104,81 @@ cm:add_first_tick_callback(
         end
 
         -- Once loaded, we need to check if the disaster is available for our campaign/faction.
-        local faction_name = cm:get_local_faction_name();
-        local faction = cm:get_faction(faction_name);
         local campaign_key = cm:get_campaign_name();
-
+        local human_factions = cm:get_human_factions();
         for _, disaster in pairs(disasters_loaded) do
+            local disaster_is_valid = true;
 
-            -- Check that it has all the required settings, and initialize them in case it has them missing.
-            for setting, value in pairs(mandatory_settings) do
-                if disaster.settings[setting] == nil then
-                    disaster.settings[setting] = value;
-                    out("\tDisaster: "..disaster.name..". Missing setting: ".. setting .. ". Initializing to default value.")
+            -- Make sure its valid for all human factions.
+            for _, faction_name in pairs(human_factions) do
+                local faction = cm:get_faction(faction_name);
+
+                -- Check that it has all the required settings, and initialize them in case it has them missing.
+                for setting, value in pairs(mandatory_settings) do
+                    if disaster.settings[setting] == nil then
+                        disaster.settings[setting] = value;
+                        out("\tDisaster: "..disaster.name..". Missing setting: ".. setting .. ". Initializing to default value.")
+                    end
                 end
-            end
 
-            -- Check that the disaster supports the campaign we're loading into.
-            -- Each disaster must manually specify which campaign map supports, as it will probably need custom tweaks for each map.
-            local allowed_in_campaign = false;
-            for _, campaign_supported in pairs(disaster.settings.campaigns) do
-                if campaign_supported == campaign_key then
-                    allowed_in_campaign = true;
-                    break
+                -- Check that the disaster supports the campaign we're loading into.
+                -- Each disaster must manually specify which campaign map supports, as it will probably need custom tweaks for each map.
+                local allowed_in_campaign = false;
+                for _, campaign_supported in pairs(disaster.settings.campaigns) do
+                    if campaign_supported == campaign_key then
+                        allowed_in_campaign = true;
+                        break;
+                    end
                 end
-            end
 
-            if allowed_in_campaign then
+                if allowed_in_campaign then
 
-                -- Global disasters may be blacklisted for certain subcultures.
-                if disaster.is_global == true then
-                    local allowed = true;
+                    -- Global disasters may be blacklisted for certain subcultures.
+                    if disaster.is_global == true then
+                        local allowed = true;
 
-                    for _, subculture in pairs(disaster.denied_for_sc) do
-                        if subculture == faction:subculture() then
-                            allowed = false
-                        end
-                    end
-
-                    if allowed == true then
-                        table.insert(dynamic_disasters.disasters, disaster)
-                    end
-
-                -- If the disaster is not global, check if it's allowed and not denied for your subculture.
-                else
-                    local allowed = false;
-
-                    for _, subculture in pairs(disaster.allowed_for_sc) do
-                        if subculture == faction:subculture() then
-                            allowed = true
-                        end
-                    end
-
-                    if allowed == true then
                         for _, subculture in pairs(disaster.denied_for_sc) do
                             if subculture == faction:subculture() then
-                                allowed = false
+                                allowed = false;
+                                break;
+                            end
+                        end
+
+                        if allowed == false then
+                            disaster_is_valid = false;
+                        end
+
+                    -- If the disaster is not global, check if it's allowed and not denied for your subculture.
+                    else
+                        local allowed = false;
+
+                        for _, subculture in pairs(disaster.allowed_for_sc) do
+                            if subculture == faction:subculture() then
+                                allowed = true;
+                                break;
                             end
                         end
 
                         if allowed == true then
-                            table.insert(dynamic_disasters.disasters, disaster)
+                            for _, subculture in pairs(disaster.denied_for_sc) do
+                                if subculture == faction:subculture() then
+                                    allowed = false;
+                                    break;
+                                end
+                            end
+
+                            if allowed == false then
+                                disaster_is_valid = false;
+                            end
                         end
                     end
+                else
+                    disaster_is_valid = false;
                 end
+            end
+
+            if disaster_is_valid then
+                table.insert(dynamic_disasters.disasters, disaster)
             end
         end
 
