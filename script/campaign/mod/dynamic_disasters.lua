@@ -1517,7 +1517,7 @@ function dynamic_disasters:create_scenario_force(faction_key, region_key, army_t
         local region_owning_faction = cm:get_region(region_key):owning_faction()
         if not region_owning_faction == false and region_owning_faction:is_null_interface() == false then
             out("Frodo45127: Trying to declare war between " .. faction_key .. " and ".. region_owning_faction:name() .. " due to army spawn.")
-            endgame:declare_war(faction_key, region_owning_faction:name())
+            dynamic_disasters:declare_war(faction_key, region_owning_faction:name(), true, true)
         end
     end
 
@@ -1591,7 +1591,7 @@ function dynamic_disasters:create_scenario_force_at_coords(faction_key, region_k
         local region_owning_faction = cm:get_region(region_key):owning_faction()
         if not region_owning_faction == false and region_owning_faction:is_null_interface() == false then
             out("Frodo45127: Trying to declare war between "..faction_key.." and "..region_owning_faction:name() .. " due to army spawn.")
-            endgame:declare_war(faction_key, region_owning_faction:name())
+            dynamic_disasters:declare_war(faction_key, region_owning_faction:name(), true, true)
         end
     end
 
@@ -1609,6 +1609,27 @@ function dynamic_disasters:reveal_regions(regions)
     end
 end
 
+-- Function to declare wars between factions.
+---@param attacker_key string #Attacker's faction key.
+---@param defender_key string #Defender's faction key
+---@param invite_attacker_allies boolean #Invite attacker allies to the war
+---@param invite_defender_allies boolean #Invite defender allies to the war
+function dynamic_disasters:declare_war(attacker_key, defender_key, invite_attacker_allies, invite_defender_allies)
+    if defender_key == "rebels" then
+        return
+    end
+    local defender_faction = cm:get_faction(defender_key)
+    if defender_faction:is_null_interface() == false then
+        if defender_faction:is_vassal() then
+            defender_faction = defender_faction:master()
+            defender_key = defender_faction:name()
+        end
+        if attacker_key ~= defender_key and cm:get_faction(attacker_key):at_war_with(defender_faction) == false then
+            out("Frodo45127: Declaring war between "..attacker_key.." and "..defender_key)
+            cm:force_declare_war(attacker_key, defender_key, invite_attacker_allies, invite_defender_allies)
+        end
+    end
+end
 
 -- Function to force a peace between a list of factions.
 ---@param factions table #List of faction keys that must sign peace, if they're at war.
@@ -1685,7 +1706,7 @@ function dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regio
         -- First, declare war on the explicitly provided region owners and its neightbor regions.
         for _, region_key in pairs(regions) do
             local region = cm:get_region(region_key);
-            if region:is_null_interface() == false then
+            if not region == false and region:is_null_interface() == false then
 
                 -- Try to declare war on its neighbors first, so we don't depend on the status of the current region.
                 self:declare_war_on_adjacent_region_owners(faction, region, subcultures_to_ignore)
@@ -1706,7 +1727,7 @@ function dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regio
 
                     -- If the current region is not to be ignored, declate war on the owner.
                     if ignore_region == false then
-                        endgame:declare_war(faction:name(), region_owner:name())
+                        dynamic_disasters:declare_war(faction:name(), region_owner:name(), true, true)
                     end
                 end
             end
@@ -1754,7 +1775,7 @@ function dynamic_disasters:declare_war_on_adjacent_region_owners(faction, base_r
                     end
 
                     if ignore_region == false then
-                        endgame:declare_war(faction:name(), region_owner:name())
+                        dynamic_disasters:declare_war(faction:name(), region_owner:name(), true, true)
                     end
                 end
             end
