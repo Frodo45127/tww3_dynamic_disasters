@@ -1469,9 +1469,17 @@ function dynamic_disasters:generate_random_army(army_template, unit_count, disas
     ram:new_force(disaster_name)
 
     for race, template_type in pairs(army_template) do
-        for unit, weight in pairs(self.army_templates[race][template_type]) do
-            ram:add_unit(disaster_name, unit, weight)
+        if self.army_templates[race] == nil then
+            out("Frodo45127: ERROR: You passed the race " .. tostring(race) .. " which doesn't have an army template!")
+        elseif self.army_templates[race][template_type] == nil then
+            out("Frodo45127: ERROR: You passed the template " .. tostring(template_type) .. " which doesn't exists for the race " .. tostring(race) .. "!")
+
+        else
+            for unit, weight in pairs(self.army_templates[race][template_type]) do
+                ram:add_unit(disaster_name, unit, weight)
+            end
         end
+
     end
 
     return ram:generate_force(disaster_name, unit_count, false);
