@@ -1458,7 +1458,27 @@ function dynamic_disasters:reveal_regions(regions)
     end
 end
 
+
+-- Function to force a peace between a list of factions.
+---@param factions table #List of faction keys that must sign peace, if they're at war.
+---@param force_alliance boolean #Force a military alliance between both factions.
+function dynamic_disasters:force_peace_between_factions(factions, force_alliance)
+    for _, src_faction_key in pairs(self.settings.factions) do
+        for _, dest_faction_key in pairs(self.settings.factions) do
+            if src_faction_key ~= dest_faction_key then
+                cm:force_make_peace(src_faction_key, dest_faction_key);
+
+                if force_alliance == true then
+                    cm:force_alliance(src_faction_key, dest_faction_key, true);
+                end
+            end
+        end
+    end
+end
+
 -- Function to generate random armies based on a combination of templates. Allows combination between different templates.
+--
+-- NOTE: If you pass an invalid army template, it'll be reported in the logs.
 ---@param army_template table #Table with the faction->template format. The templates MUST exists in the dynamic_disasters object.
 ---@param unit_count integer #Amount of non-mandatory units on the army.
 ---@param disaster_name string #Name of the disaster that will use this army.
