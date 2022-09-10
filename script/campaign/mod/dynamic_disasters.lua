@@ -1373,6 +1373,7 @@ end
 ---@param declare_war boolean #If war should be declared between the owner of the armies and the owner of the region where they'll spawn.
 ---@param total_armies integer #Amount of armies to spawn. If not provided, it'll spawn 1.
 ---@param disaster_name string #Name of the disaster that will use this army.
+---@return boolean #If at least one army has been spawned, or all armies failed to spawn due to invalid coordinates.
 function dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, unit_count, declare_war, total_armies, disaster_name)
 
     -- total_armies shouldn't be nil, but if it is assume we want a single army
@@ -1380,9 +1381,29 @@ function dynamic_disasters:create_scenario_force(faction_key, region_key, army_t
         total_armies = 1
     end
 
+    local army_spawn = false;
+
     for i = 1, total_armies do
-        local pos_x, pos_y = cm:find_valid_spawn_location_for_character_from_settlement(faction_key, region_key, false, true, 10)
         local unit_list = self:generate_random_army(army_template, unit_count, disaster_name)
+        local pos_x, pos_y = cm:find_valid_spawn_location_for_character_from_settlement(faction_key, region_key, false, true, 5)
+
+        -- In case no more valid positions are found, retry with a bigger radious.
+        if pos_x == -1 or pos_y == -1 then
+            out("Frodo45127: Armies failed to spawn. Retrying with bigger radious.");
+            pos_x, pos_y = cm:find_valid_spawn_location_for_character_from_settlement(faction_key, region_key, false, true, 10)
+        end
+
+        -- In case no more valid positions are found, retry with a much bigger radious.
+        if pos_x == -1 or pos_y == -1 then
+            out("Frodo45127: Armies failed to spawn. Retrying with much bigger radious.");
+            pos_x, pos_y = cm:find_valid_spawn_location_for_character_from_settlement(faction_key, region_key, false, true, 15)
+        end
+
+        -- If they're still invalid, we cannot spawn the army anymore.
+        if pos_x == -1 or pos_y == -1 then
+            out("Frodo45127: Armies failed to spawn again. Returning without trying again.");
+            break;
+        end
 
         cm:create_force(
             faction_key,
@@ -1399,17 +1420,21 @@ function dynamic_disasters:create_scenario_force(faction_key, region_key, army_t
                 cm:add_experience_to_units_commanded_by_character(character, cm:random_number(7, 3))
             end
         )
+
+        -- If we manage to spawn at least one army, take it as a win.
+        army_spawn = true;
     end
 
     if declare_war then
         local invasion_faction = cm:get_faction(faction_key)
         local region_owning_faction = cm:get_region(region_key):owning_faction()
         if not region_owning_faction == false and region_owning_faction:is_null_interface() == false then
-            out("Frodo: Trying to declare war between "..faction_key.." and "..region_owning_faction:name() .. " due to army spawn.")
-            endgame:declare_war(invasion_faction, region_owning_faction)
+            out("Frodo45127: Trying to declare war between " .. faction_key .. " and ".. region_owning_faction:name() .. " due to army spawn.")
+            endgame:declare_war(faction_key, region_owning_faction:name())
         end
     end
 
+    return army_spawn;
 end
 
 -- Function to spawn armies at specific coordinates on the campaign map. This ensures the spawn position is valid within 15 hex of the coordinates.
@@ -1422,6 +1447,7 @@ end
 ---@param declare_war boolean #If war should be declared between the owner of the armies and the owner of the region where they'll spawn.
 ---@param total_armies integer #Amount of armies to spawn. If not provided, it'll spawn 1.
 ---@param disaster_name string #Name of the disaster that will use this army.
+---@return boolean #If at least one army has been spawned, or all armies failed to spawn due to invalid coordinates.
 function dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, coords, army_template, unit_count, declare_war, total_armies, disaster_name)
 
     -- total_armies shouldn't be nil, but if it is assume we want a single army
@@ -1429,9 +1455,29 @@ function dynamic_disasters:create_scenario_force_at_coords(faction_key, region_k
         total_armies = 1
     end
 
+    local army_spawn = false;
+
     for i = 1, total_armies do
         local unit_list = self:generate_random_army(army_template, unit_count, disaster_name)
-        local x, y = cm:find_valid_spawn_location_for_character_from_position(faction_key, coords[1], coords[2], false, 15);
+        local x, y = cm:find_valid_spawn_location_for_character_from_position(faction_key, coords[1], coords[2], false, 5);
+
+        -- In case no more valid positions are found, retry with a bigger radious.
+        if pos_x == -1 or pos_y == -1 then
+            out("Frodo45127: Armies failed to spawn. Retrying with bigger radious.");
+            pos_x, pos_y = cm:find_valid_spawn_location_for_character_from_position(faction_key, coords[1], coords[2], false, 10);
+        end
+
+        -- In case no more valid positions are found, retry with a much bigger radious.
+        if pos_x == -1 or pos_y == -1 then
+            out("Frodo45127: Armies failed to spawn. Retrying with much bigger radious.");
+            pos_x, pos_y = cm:find_valid_spawn_location_for_character_from_position(faction_key, coords[1], coords[2], false, 15);
+        end
+
+        -- If they're still invalid, we cannot spawn the army anymore.
+        if pos_x == -1 or pos_y == -1 then
+            out("Frodo45127: Armies failed to spawn again. Returning without trying again.");
+            break;
+        end
 
         cm:create_force(
             faction_key,
@@ -1448,16 +1494,21 @@ function dynamic_disasters:create_scenario_force_at_coords(faction_key, region_k
                 cm:add_experience_to_units_commanded_by_character(character, cm:random_number(7, 3))
             end
         )
+
+        -- If we manage to spawn at least one army, take it as a win.
+        army_spawn = true;
     end
 
     if declare_war then
         local invasion_faction = cm:get_faction(faction_key)
         local region_owning_faction = cm:get_region(region_key):owning_faction()
         if not region_owning_faction == false and region_owning_faction:is_null_interface() == false then
-            out("Frodo: Trying to declare war between "..faction_key.." and "..region_owning_faction:name() .. " due to army spawn.")
-            endgame:declare_war(invasion_faction, region_owning_faction)
+            out("Frodo45127: Trying to declare war between "..faction_key.." and "..region_owning_faction:name() .. " due to army spawn.")
+            endgame:declare_war(faction_key, region_owning_faction:name())
         end
     end
+
+    return army_spawn;
 end
 
 -- Function to reveal a bunch of regions for the players, if they can't see them yet.
