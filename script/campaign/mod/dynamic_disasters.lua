@@ -591,6 +591,163 @@ dynamic_disasters = {
 
                 --Vehicles
                 wh3_dlc20_chs_mon_warshrine = 1,
+            },
+            lategame_humans_only = {
+
+                --Infantry
+                wh_main_chs_inf_chosen_0 = 6,
+                wh_main_chs_inf_chosen_1 = 6,
+                wh_dlc01_chs_inf_chosen_2 = 6,
+                wh_dlc06_chs_inf_aspiring_champions_0 = 2, -- They're not really monsters but they're a low entity unit like monsters
+
+                --Cavalry
+                wh_dlc01_chs_cav_gorebeast_chariot = 1,
+                wh_main_chs_cav_chaos_knights_0 = 2,
+                wh_main_chs_cav_chaos_knights_1 = 2,
+
+                --Artillery
+                wh_main_chs_art_hellcannon = 1,
+
+                --Vehicles
+                wh3_dlc20_chs_mon_warshrine = 1,
+            },
+            lategame_daemons_only = {
+
+                --Infantry
+                wh_dlc01_chs_inf_forsaken_0 = 4,
+                wh_main_chs_mon_chaos_spawn = 4,
+
+                --Vehicles
+                wh3_dlc20_chs_mon_warshrine = 1,
+            },
+            lategame_beasts_and_daemons = {
+
+                --Monsters
+                wh_main_chs_mon_trolls = 3,
+                wh_dlc01_chs_mon_trolls_1 = 3,
+                wh_main_chs_mon_chaos_spawn = 4,
+                wh_main_chs_mon_giant = 2,
+                wh_dlc01_chs_mon_dragon_ogre = 6,
+                wh_dlc01_chs_mon_dragon_ogre_shaggoth = 6,
+
+                --Vehicles
+                wh3_dlc20_chs_mon_warshrine = 1,
+            },
+        },
+        khorne = {
+            lategame = {
+
+                --Infantry
+                wh3_dlc20_chs_inf_chosen_mkho = 6,
+                wh3_dlc20_chs_inf_chosen_mkho_dualweapons = 6,
+                wh3_main_kho_inf_bloodletters_1 = 6,
+
+                --Cavalry
+                wh3_dlc20_chs_cav_chaos_knights_mkho = 2,
+                wh3_dlc20_chs_cav_chaos_knights_mkho_lances = 2,
+                wh3_main_kho_cav_bloodcrushers_0 = 2,
+                wh3_main_kho_cav_skullcrushers_0 = 2,
+                wh3_main_kho_cav_gorebeast_chariot = 1,
+
+                --Monsters
+                wh3_main_kho_mon_spawn_of_khorne_0 = 2,
+                wh3_main_kho_mon_khornataurs_0 = 1,
+                wh3_main_kho_mon_khornataurs_1 = 1,
+                wh3_main_kho_mon_bloodthirster_0 = 1,
+                wh3_main_kho_mon_soul_grinder_0 = 1,
+
+                --Artillery
+                wh3_main_kho_veh_skullcannon_0 = 1,
+
+                --Vehicles
+                wh3_dlc20_chs_mon_warshrine_mkho = 1,
+                wh3_main_kho_veh_blood_shrine_0 = 1,
+            },
+            lategame_humans_only = {
+
+                --Infantry
+                wh3_dlc20_chs_inf_chosen_mkho = 6,
+                wh3_dlc20_chs_inf_chosen_mkho_dualweapons = 6,
+
+                --Cavalry
+                wh3_dlc20_chs_cav_chaos_knights_mkho = 2,
+                wh3_dlc20_chs_cav_chaos_knights_mkho_lances = 2,
+                wh3_main_kho_cav_skullcrushers_0 = 2,
+                wh3_main_kho_cav_gorebeast_chariot = 1,
+
+                --Vehicles
+                wh3_dlc20_chs_mon_warshrine_mkho = 1,
+            },
+            lategame_daemons_only = {
+
+                --Infantry
+                wh3_main_kho_inf_bloodletters_1 = 6,
+
+                --Cavalry
+                wh3_main_kho_cav_bloodcrushers_0 = 2,
+
+                --Monsters
+                wh3_main_kho_mon_spawn_of_khorne_0 = 2,
+                wh3_main_kho_mon_khornataurs_0 = 1,
+                wh3_main_kho_mon_khornataurs_1 = 1,
+                wh3_main_kho_mon_bloodthirster_0 = 1,
+                wh3_main_kho_mon_soul_grinder_0 = 1,
+
+                --Artillery
+                wh3_main_kho_veh_skullcannon_0 = 1,
+
+                --Vehicles
+                wh3_main_kho_veh_blood_shrine_0 = 1,
+            }
+        },
+        nurgle = {
+            lategame = {
+
+                --Infantry
+                wh3_dlc20_chs_inf_chosen_mnur = 6,
+                wh3_dlc20_chs_inf_chosen_mnur_greatweapons = 6,
+                wh3_main_nur_inf_plaguebearers_1 = 6,
+
+                --Cavalry
+                wh3_dlc20_chs_cav_chaos_knights_mnur = 2,
+                wh3_dlc20_chs_cav_chaos_knights_mnur_lances = 2,
+
+                --Monsters
+                wh3_main_nur_mon_spawn_of_nurgle_0 = 2,
+                wh3_main_nur_cav_plague_drones_0 = 1,
+                wh3_main_nur_cav_plague_drones_1 = 1,
+                wh3_main_nur_mon_great_unclean_one_0 = 1,
+
+                --Vehicles
+                wh3_dlc20_chs_mon_warshrine_mnur = 1,
+                wh3_main_nur_mon_soul_grinder_0 = 1,
+            },
+            lategame_humans_only = {
+
+                --Infantry
+                wh3_dlc20_chs_inf_chosen_mnur = 6,
+                wh3_dlc20_chs_inf_chosen_mnur_greatweapons = 6,
+
+                --Cavalry
+                wh3_dlc20_chs_cav_chaos_knights_mnur = 2,
+                wh3_dlc20_chs_cav_chaos_knights_mnur_lances = 2,
+
+                --Vehicles
+                wh3_dlc20_chs_mon_warshrine_mnur = 1,
+            },
+            lategame_daemons_only = {
+
+                --Infantry
+                wh3_main_nur_inf_plaguebearers_1 = 6,
+
+                --Monsters
+                wh3_main_nur_mon_spawn_of_nurgle_0 = 2,
+                wh3_main_nur_cav_plague_drones_0 = 1,
+                wh3_main_nur_cav_plague_drones_1 = 1,
+                wh3_main_nur_mon_great_unclean_one_0 = 1,
+
+                --Vehicles
+                wh3_main_nur_mon_soul_grinder_0 = 1,
             }
         },
         tzeentch = {
@@ -679,6 +836,105 @@ dynamic_disasters = {
                 wh3_main_tze_mon_flamers_0 = 2,
                 wh3_main_tze_mon_exalted_flamers_0 = 1,
                 wh3_main_tze_mon_soul_grinder_0 = 1,
+            },
+            lategame_humans_only = {
+
+                --Melee Infantry
+                wh3_dlc20_chs_inf_chosen_mtze = 6,
+                wh3_dlc20_chs_inf_chosen_mtze_halberds = 6,
+
+                --Cavalry
+                wh3_dlc20_chs_cav_marauder_horsemen_mtze_javelins = 2,
+                wh3_dlc20_chs_cav_chaos_chariot_mtze = 2,
+                wh3_dlc20_chs_cav_chaos_knights_mtze_lances = 2,
+                wh3_main_tze_cav_chaos_knights_0 = 1,
+                wh3_main_tze_cav_doom_knights_0 = 2,
+            },
+            lategame_daemons_only = {
+
+                --Melee Infantry
+                wh3_main_tze_inf_forsaken_0 = 4,
+
+                --Ranged Infantry
+                wh3_main_tze_inf_pink_horrors_0 = 2,
+                wh3_main_tze_inf_pink_horrors_1 = 4,
+
+                --Cavalry
+                wh3_main_tze_veh_burning_chariot_0 = 2,
+
+                --Monsters
+                wh3_main_tze_mon_spawn_of_tzeentch_0 = 2,
+                wh3_dlc20_chs_mon_warshrine_mtze = 1,
+                wh3_main_tze_mon_lord_of_change_0 = 1,
+
+                --Artillery
+                wh3_main_tze_mon_flamers_0 = 2,
+                wh3_main_tze_mon_exalted_flamers_0 = 1,
+                wh3_main_tze_mon_soul_grinder_0 = 1,
+            }
+        },
+        slaanesh = {
+            lategame = {
+
+                --Infantry
+                wh3_dlc20_chs_inf_chosen_msla = 6,
+                wh3_dlc20_chs_inf_chosen_msla_hellscourges = 6,
+                wh3_main_sla_inf_daemonette_1 = 6,
+
+                --Cavalry
+                wh3_dlc20_chs_cav_chaos_knights_msla = 2,
+                wh3_dlc20_chs_cav_chaos_knights_msla_lances = 2,
+                wh3_main_sla_cav_hellstriders_0 = 2,
+                wh3_main_sla_cav_hellstriders_1 = 2,
+                wh3_main_sla_cav_seekers_of_slaanesh_0 = 2,
+                wh3_main_sla_cav_heartseekers_of_slaanesh_0 = 2,
+                wh3_main_sla_veh_hellflayer_0 = 2,
+                wh3_main_sla_veh_seeker_chariot_0 = 2,
+                wh3_main_sla_veh_exalted_seeker_chariot_0 = 2,
+
+                --Monsters
+                wh3_main_sla_mon_spawn_of_slaanesh_0 = 2,
+                wh3_main_sla_mon_keeper_of_secrets_0 = 1,
+                wh3_main_sla_mon_fiends_of_slaanesh_0 = 1,
+
+                --Vehicles
+                wh3_dlc20_chs_mon_warshrine_msla = 1,
+                wh3_main_sla_mon_soul_grinder_0 = 1,
+            },
+            lategame_humans_only = {
+
+                --Infantry
+                wh3_dlc20_chs_inf_chosen_msla = 6,
+                wh3_dlc20_chs_inf_chosen_msla_hellscourges = 6,
+
+                --Cavalry
+                wh3_dlc20_chs_cav_chaos_knights_msla = 2,
+                wh3_dlc20_chs_cav_chaos_knights_msla_lances = 2,
+                wh3_main_sla_cav_hellstriders_0 = 2,
+                wh3_main_sla_cav_hellstriders_1 = 2,
+
+                --Vehicles
+                wh3_dlc20_chs_mon_warshrine_msla = 1,
+            },
+            lategame_daemons_only = {
+
+                --Infantry
+                wh3_main_sla_inf_daemonette_1 = 6,
+
+                --Cavalry
+                wh3_main_sla_cav_seekers_of_slaanesh_0 = 2,
+                wh3_main_sla_cav_heartseekers_of_slaanesh_0 = 2,
+                wh3_main_sla_veh_hellflayer_0 = 2,
+                wh3_main_sla_veh_seeker_chariot_0 = 2,
+                wh3_main_sla_veh_exalted_seeker_chariot_0 = 2,
+
+                --Monsters
+                wh3_main_sla_mon_spawn_of_slaanesh_0 = 2,
+                wh3_main_sla_mon_keeper_of_secrets_0 = 1,
+                wh3_main_sla_mon_fiends_of_slaanesh_0 = 1,
+
+                --Vehicles
+                wh3_main_sla_mon_soul_grinder_0 = 1,
             }
         },
     }
