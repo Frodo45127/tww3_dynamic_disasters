@@ -1476,8 +1476,8 @@ end
 ---@param factions table #List of faction keys that must sign peace, if they're at war.
 ---@param force_alliance boolean #Force a military alliance between both factions.
 function dynamic_disasters:force_peace_between_factions(factions, force_alliance)
-    for _, src_faction_key in pairs(self.settings.factions) do
-        for _, dest_faction_key in pairs(self.settings.factions) do
+    for _, src_faction_key in pairs(factions) do
+        for _, dest_faction_key in pairs(factions) do
             if src_faction_key ~= dest_faction_key then
                 cm:force_make_peace(src_faction_key, dest_faction_key);
 
