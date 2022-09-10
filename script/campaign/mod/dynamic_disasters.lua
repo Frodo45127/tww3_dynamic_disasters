@@ -1550,13 +1550,13 @@ function dynamic_disasters:create_scenario_force_at_coords(faction_key, region_k
 
         -- In case no more valid positions are found, retry with a bigger radious.
         if pos_x == -1 or pos_y == -1 then
-            out("Frodo45127: Armies failed to spawn near X:" .. coords[1] .. ", Y:" .. coods[2] .. ". Retrying with bigger radious.");
+            out("Frodo45127: Armies failed to spawn near X:" .. coords[1] .. ", Y:" .. coords[2] .. ". Retrying with bigger radious.");
             pos_x, pos_y = cm:find_valid_spawn_location_for_character_from_position(faction_key, coords[1], coords[2], false, 10);
         end
 
         -- In case no more valid positions are found, retry with a much bigger radious.
         if pos_x == -1 or pos_y == -1 then
-            out("Frodo45127: Armies failed to spawn near X:" .. coords[1] .. ", Y:" .. coods[2] .. ". Retrying with much bigger radious.");
+            out("Frodo45127: Armies failed to spawn near X:" .. coords[1] .. ", Y:" .. coords[2] .. ". Retrying with much bigger radious.");
             pos_x, pos_y = cm:find_valid_spawn_location_for_character_from_position(faction_key, coords[1], coords[2], false, 15);
         end
 
