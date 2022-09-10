@@ -40,7 +40,7 @@ mct_dyn_dis_waaagh_enable_tooltip	Enable/Disable the "Da Biggest Waaagh" disaste
 mct_dyn_dis_wild_hunt_enable	Enable "The Wild Hunt" disaster (Vanilla)	true
 mct_dyn_dis_wild_hunt_enable_tooltip	Enable/Disable the "The Wild Hunt" disaster (Vanilla). \\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
 mct_dyn_dis_raiding_parties_enable	Enable "Raiding Parties" disaster	true
-mct_dyn_dis_raiding_parties_enable_tooltip	Enable/Disable the "Raiding Parties" disaster. \\n\\nThe seas around the world are plagued with Dark Elf Slavers, Norscan Raiders and Vampires from the Deep. Just... don't attrack their attention.\\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
+mct_dyn_dis_raiding_parties_enable_tooltip	Enable/Disable the "Raiding Parties" disaster. \\n\\nThe seas around the world are plagued with Dark Elf Slavers, Norscan Raiders and Vampires from the Deep. Just... don't attract their attention.\\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
 incidents_localised_title_fro_dyn_dis_raiding_parties_warning	Black and Tattered Sails	true
 incidents_localised_description_fro_dyn_dis_raiding_parties_warning	Black and tattered sails have been spotted on the horizon. We don't know yet where will they attack. Prepare yourself.	true
 incidents_localised_title_fro_dyn_dis_raiding_parties_trigger	Pirates!	true
@@ -89,3 +89,13 @@ mct_dyn_dis_debug	Enable Debug Mode	true
 mct_dyn_dis_debug_tooltip	Enable/Disable debug mode.\\n\\nIn debug mode, all disasters trigger instantly, and all timers between warnings/phases/invasions/repetitions are reduced to 1 turn. Only affects disasters that support it.	true
 mct_dyn_dis_max_turn_value	Maximum turn	true
 mct_dyn_dis_max_turn_value_tooltip	Maximum turn for this disaster to trigger. If the disaster has not yet triggered when reaching this turn, it'll trigger if none of the requeriments are unfulfilled. \\nSet to 0 to allow the disaster to trigger normally based on its requeriments.	true
+mct_dyn_dis_disable_vanilla_endgames	Disable Vanilla Endgames	true
+mct_dyn_dis_disable_vanilla_endgames_tooltip	This setting toggles the vanilla endgame logic on and off. If you uncheck it, vanilla disasters may trigger twice, once by the endgames logic, and once by this mod.	true
+effects_description_fro_dyn_dis_chaos_corruption_mapwide	Chaos corruption: %+n	true
+effect_bundles_localised_title_fro_dyn_dis_chaos_invasion_global_effects	Flow of the Polar Gates	true
+missions_localised_description_dyn_dis_grudge_too_far_we_ran_out_of_book_1	The Dwarfs have declared war onto the whole world! Defeat them and make the incredible famed wealth of the Karaz-Ankor yours!	false
+missions_localised_title_dyn_dis_grudge_too_far_we_ran_out_of_book_1	The Wealth of the Karaz-Ankor	false
+missions_localised_description_dyn_dis_grudge_too_far_we_ran_out_of_book_2	After thousands of years, the Dwarven holds are ready. The long lost holds will be retaken! The book will be empty of Grudges!	false
+missions_localised_title_dyn_dis_grudge_too_far_we_ran_out_of_book_2	The End of an Era	false
+missions_localised_title_dyn_dis_chaos_invasion_endtimes_unfolding_1	End Times Unfolding	false
+missions_localised_description_dyn_dis_chaos_invasion_endtimes_unfolding_1	Placeholder	false

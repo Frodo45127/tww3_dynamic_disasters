@@ -11,3 +11,5 @@ fro_dyn_dis_chianchi_assault_daemonic_invasion_trigger	 	 	disaster.png	faction	
 fro_dyn_dis_chianchi_assault_daemonic_invasion_invader_buffs	 	 	disaster.png	faction	1	false	false	false
 fro_dyn_dis_great_uprising_global_effects	 	 	disaster.png	faction	1	true	false	false
 fro_dyn_dis_great_uprising_attacker_buffs	 	 	disaster.png	faction	1	false	false	false
+fro_dyn_dis_chaos_invasion_global_effects	 	 	disaster.png	faction	1	true	false	false
+fro_dyn_dis_chaos_invasion_attacker_buffs	 	 	disaster.png	faction	1	false	false	false

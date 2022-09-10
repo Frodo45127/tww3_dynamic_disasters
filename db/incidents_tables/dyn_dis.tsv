@@ -18,8 +18,6 @@ fro_dyn_dis_great_uprising_stage_5_trigger	skv/victory	false	true	Disaster		true
 fro_dyn_dis_great_uprising_finish_before_stage_1	skv/settlement_lost	false	true	Disaster		false
 fro_dyn_dis_great_uprising_finish	skv/settlement_lost	false	true	Disaster		false
 fro_dyn_dis_raiding_parties_early_end	cst/sea_monster_attack	false	true	Disaster		false
-fro_dyn_dis_chaos_invasion_stage_1_warning	cst/sea_monster_attack	false	true	Disaster		false
-fro_dyn_dis_chaos_invasion_stage_1_trigger	cst/sea_monster_attack	false	true	Disaster		false
 fro_dyn_dis_chaos_invasion_stage_2_trigger	cst/sea_monster_attack	false	true	Disaster		false
 fro_dyn_dis_chaos_invasion_stage_3_trigger	cst/sea_monster_attack	false	true	Disaster		false
 fro_dyn_dis_chaos_invasion_finish_before_stage_1	cst/sea_monster_attack	false	true	Disaster		false
