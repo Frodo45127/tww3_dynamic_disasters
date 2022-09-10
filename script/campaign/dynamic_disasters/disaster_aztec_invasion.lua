@@ -27,6 +27,9 @@
         - Finish:
             - All lizard factions destroyed.
 
+    Ideas:
+        - Stage the invasion into New world, southlands, old world, and cathay stages.
+
 ]]
 
 -- Status list for this disaster.

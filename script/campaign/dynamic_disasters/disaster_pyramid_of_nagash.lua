@@ -13,6 +13,9 @@
         - Finish:
             - Take the piramid or destroy its owner.
 
+
+    Ideas:
+        - Resurrect Nagash using the nagash mod.
 ]]
 
 -- Status list for this disaster.
