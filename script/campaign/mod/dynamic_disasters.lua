@@ -995,7 +995,9 @@ function dynamic_disasters:load_from_mct(mct)
     local dynamic_disasters_disable_vanilla_endgames = mod:get_option_by_key("dynamic_disasters_disable_vanilla_endgames")
     local dynamic_disasters_disable_vanilla_endgames_setting = dynamic_disasters_disable_vanilla_endgames:get_finalized_setting()
     self.settings.disable_vanilla_endgames = dynamic_disasters_disable_vanilla_endgames_setting
-    endgame.settings.endgame_enabled = not self.settings.disable_vanilla_endgames;
+    if endgame ~= nil then
+        endgame.settings.endgame_enabled = not self.settings.disable_vanilla_endgames;
+    end
 
     local dynamic_disasters_debug = mod:get_option_by_key("dynamic_disasters_debug")
     local dynamic_disasters_debug_setting = dynamic_disasters_debug:get_finalized_setting()
@@ -1209,8 +1211,10 @@ cm:add_first_tick_callback(
 
         -- There's a thing going on with two different victory conditions getting triggered (it bugs out the victory missions panel)
         -- so we need to make sure that none of the vanilla endgames are triggered before allowing this to trigger victory conditions.
-        if endgame.settings.endgame_enabled == true then
-            dynamic_disasters.settings.victory_condition_triggered = true;
+        if endgame ~= nil then
+            if endgame.settings.endgame_enabled == true then
+                dynamic_disasters.settings.victory_condition_triggered = true;
+            end
         end
 
         -- Listener for evaluating if a disaster can be started or not. Triggered at the begining of each turn.
