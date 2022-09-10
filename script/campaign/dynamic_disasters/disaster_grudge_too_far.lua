@@ -39,12 +39,18 @@ disaster_grudge_too_far = {
             type = "CONTROL_N_REGIONS_FROM",
             conditions = {
                 "override_text mission_text_text_mis_activity_control_n_regions_satrapy_including_at_least_n"
+            },
+            payloads = {
+                "money 25000"
             }
         },
         {
             type = "DESTROY_FACTION",
             conditions = {
                 "confederation_valid"
+            },
+            payloads = {
+                "money 50000"
             }
         }
     },
@@ -89,14 +95,18 @@ disaster_grudge_too_far = {
             "wh_main_dwf_karak_norn",
             "wh_main_dwf_karak_hirn",
             "wh_main_dwf_karak_azul",
-            "wh_main_dwf_karak_ziflin"
+            "wh_main_dwf_karak_ziflin",
+
+            -- Not in the vanilla disaster.
+            "wh2_main_dwf_spine_of_sotek_dwarfs",
+            "wh2_main_dwf_greybeards_prospectors",
         },
-        region_count_halved = 0,
         regions = {}
 	},
     early_warning_incident_key = "wh3_main_ie_incident_endgame_grudge_too_far_early_warning",
 	early_warning_effects_key = "wh3_main_ie_scripted_endgame_early_warning",
     invasion_incident_key = "wh3_main_ie_incident_endgame_grudge_too_far",
+    endgame_mission_name = "we_ran_out_of_book",
     invader_buffs_effects_key = "wh3_main_ie_scripted_endgame_grudge_too_far",
 	ai_personality = "wh3_combi_dwarf_endgame",
 }
@@ -114,7 +124,11 @@ local potential_dwarfs = {
 	wh_main_dwf_karak_norn = "wh3_main_combi_region_karak_norn",
 	wh_main_dwf_karak_hirn = "wh3_main_combi_region_karak_hirn",
 	wh_main_dwf_karak_azul = "wh3_main_combi_region_karak_azul",
-	wh_main_dwf_karak_ziflin = "wh3_main_combi_region_karak_ziflin"
+	wh_main_dwf_karak_ziflin = "wh3_main_combi_region_karak_ziflin",
+
+    -- Not in the vanilla disaster.
+    wh2_main_dwf_spine_of_sotek_dwarfs = "wh3_main_combi_region_mine_of_the_bearded_skulls",
+    wh2_main_dwf_greybeards_prospectors = "wh3_main_combi_region_vulture_mountain",
 }
 
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
@@ -138,22 +152,7 @@ function disaster_grudge_too_far:set_status(status)
         );
     end
 
-    if self.settings.status == STATUS_STARTED then
-
-        -- Listener to end the disaster.
-        core:add_listener(
-            "GrudgeTooFarEnd",
-            "WorldStartRound",
-            function ()
-                return self:check_end_disaster_conditions()
-            end,
-            function()
-                self:trigger_end_disaster();
-                core:remove_listener("GrudgeTooFarEnd")
-            end,
-            true
-        );
-    end
+    -- Once we triggered the disaster, ending it is controlled by two missions, so we don't need to listen for an ending.
 end
 
 -- Function to trigger the early warning before the disaster.
@@ -177,13 +176,15 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
 		local invasion_faction = cm:get_faction(faction_key)
 
         local army_count = math.floor(self.settings.army_count_per_province * self.settings.difficulty_mod);
-		dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.unit_count, true, army_count, self.name)
+		dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.unit_count, false, army_count, self.name)
 
         -- In the case of Karak Izor, also spawn armies in Karak Eight Peaks if it controls it.
         if faction_key == "wh_main_dwf_karak_izor" then
             local karak_eight_peaks_region = cm:get_region("wh3_main_combi_region_karak_eight_peaks");
 			if karak_eight_peaks_region:owning_faction():name() == faction_key then
-				dynamic_disasters:create_scenario_force(faction_key, "wh3_main_combi_region_karak_eight_peaks", self.settings.army_template, self.settings.unit_count, true, army_count, self.name)
+				dynamic_disasters:create_scenario_force(faction_key, "wh3_main_combi_region_karak_eight_peaks", self.settings.army_template, self.settings.unit_count, false, army_count, self.name)
+                dynamic_disasters:declare_war_for_owners_and_neightbours(invasion_faction, { "wh3_main_combi_region_karak_eight_peaks" }, true, { "wh_main_sc_dwf_dwarfs" })
+                table.insert(self.settings.regions, region_key);
 			end
 		end
 
@@ -199,15 +200,15 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
 		endgame:no_peace_no_confederation_only_war(faction_key)
 		dynamic_disasters:declare_war_for_owners_and_neightbours(invasion_faction, { region_key }, true, { "wh_main_sc_dwf_dwarfs" })
 
-		cm:apply_effect_bundle(self.settings.invader_buffs_effects_key, faction_key, 0)
+		cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)
+        table.insert(self.settings.regions, region_key);
 	end
 
     -- Force an alliance between all dwarfen holds.
     dynamic_disasters:force_peace_between_factions(self.settings.factions, true);
 
     -- If we got regions, prepare the victory mission/disaster end data.
-    self.settings.region_count_halved = math.floor((#self.settings.regions / 2) + 0.5)
-    table.insert(self.objectives[1].conditions, "total " .. self.settings.region_count_halved)
+    table.insert(self.objectives[1].conditions, "total " .. math.ceil(#self.settings.regions * 0.65))
 	for i = 1, #self.settings.regions do
 		table.insert(self.objectives[1].conditions, "region " .. self.settings.regions[i])
 	end
@@ -219,20 +220,17 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
     dynamic_disasters:reveal_regions(self.settings.regions);
 
     -- Trigger either the victory mission, or just the related incident.
-    if dynamic_disasters.settings.victory_condition_triggered == false then
-        dynamic_disasters:add_victory_condition(self.invasion_incident_key, self.objectives, self.settings.regions[1], nil)
-    else
-        dynamic_disasters:execute_payload(self.invasion_incident_key, nil, 0, nil);
-    end
-
+    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.invasion_incident_key, self.settings.regions[1], self.settings.factions[1], self:trigger_end_disaster())
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_dwf_dwarfs")
     self:set_status(STATUS_STARTED);
 end
 
 -- Function to trigger cleanup stuff after the invasion is over.
 function disaster_grudge_too_far:trigger_end_disaster()
-    out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
-    dynamic_disasters:finish_disaster(self);
+    if self.settings.started == true then
+        out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
+        dynamic_disasters:finish_disaster(self);
+    end
 end
 
 --- Function to check if the disaster custom conditions are valid and can be trigger.
@@ -285,50 +283,6 @@ function disaster_grudge_too_far:check_start_disaster_conditions()
     end
 
     return false;
-end
-
---- Function to check if the conditions to declare the disaster as "finished" are fulfilled.
----@return boolean If the disaster will be finished or not.
-function disaster_grudge_too_far:check_end_disaster_conditions()
-
-    -- The objective is to control a few dwarven settlements, or kill the dwafs.
-    -- We only need one player to do it, so check each player independently.
-    for _, human_faction_key in pairs(cm:get_human_factions()) do
-        local controlled_regions = 0;
-        local human_faction = cm:get_region(human_faction_key);
-
-        for _, region_key in pairs(self.settings.regions) do
-            local region = cm:get_region(region_key);
-            if not region == false and region:is_null_interface() == false then
-                local region_owner = region:owning_faction();
-                if region_owner:name() == human_faction_key or region_owner:is_ally_vassal_or_client_state_of(human_faction) then
-                    controlled_regions = controlled_regions + 1;
-                end
-            end
-        end
-
-        -- If a human controls the required amount of provinces, end the disaster.
-        if controlled_regions >= self.settings.region_count_halved then
-            return true
-        end
-    end
-
-    -- If we got no factions to even spawn, consider it finished. This is a saveguard, should never be executed if all works correctly.
-    if #self.settings.factions == 0 then
-        return true;
-    end
-
-    -- Also check if all Dwarves are dead.
-    local attackers_still_alive = false;
-    for _, faction_key in pairs(self.settings.factions) do
-        local faction = cm:get_faction(faction_key);
-        if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false then
-            attackers_still_alive = true;
-            break;
-        end
-    end
-
-    return not attackers_still_alive;
 end
 
 return disaster_grudge_too_far
