@@ -188,10 +188,10 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
 			end
 		end
 
-		-- Give the invasion region to the invader if it isn't owned by them or a human
+		-- Give the invasion region to the invader if it isn't owned by them or a human, or by another dwarf.
 		local region = cm:get_region(region_key)
 		local region_owner = region:owning_faction()
-		if region_owner == false or region_owner:is_null_interface() or (region_owner:name() ~= faction_key and region_owner:is_human() == false) then
+		if region_owner == false or region_owner:is_null_interface() or (region_owner:name() ~= faction_key and region_owner:is_human() == false and region_owner:subculture() ~= "wh_main_sc_dwf_dwarfs") then
 			cm:transfer_region_to_faction(region_key, faction_key)
 		end
 
