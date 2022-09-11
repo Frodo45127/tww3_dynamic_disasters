@@ -505,15 +505,12 @@ disaster_chaos_invasion = {
         --wh3_main_sla_seducers_of_slaanesh = {},
     },
 
-    stage_1_warning_title = "event_feed_strings_text_wh_event_feed_string_scripted_event_chaos_invasion_early_primary_detail",
-    stage_1_warning_description = "event_feed_strings_text_wh_event_feed_string_scripted_event_chaos_invasion_early_secondary_detail",
-    stage_1_event_title = "event_feed_strings_text_wh_event_feed_string_scripted_event_chaos_invasion_mid_primary_detail",
-    stage_1_event_description = "event_feed_strings_text_wh_event_feed_string_scripted_event_chaos_invasion_mid_secondary_detail",
-    stage_2_event_title = "event_feed_strings_text_wh_event_feed_string_scripted_event_chaos_invasion_end_primary_detail",
-    stage_2_event_description = "event_feed_strings_text_wh_event_feed_string_scripted_event_chaos_invasion_end_secondary_detail",
-    stage_2_incident_key = "fro_dyn_dis_chaos_invasion_stage_2_trigger",
-    finish_before_stage_1_event_key = "fro_dyn_dis_chaos_invasion_finish_before_stage_1",
-    finish_event_key = "fro_dyn_dis_chaos_invasion_finish",
+    stage_early_warning_incident_key = "dyn_dis_chaos_invasion_stage_early_warning",
+    stage_1_incident_key = "dyn_dis_chaos_invasion_stage_1_trigger",
+    stage_2_incident_key = "dyn_dis_chaos_invasion_stage_2_trigger",
+    stage_3_incident_key = "dyn_dis_chaos_invasion_stage_3_trigger",
+    finish_before_stage_1_event_key = "dyn_dis_chaos_invasion_finish_before_stage_1",
+    finish_event_key = "dyn_dis_chaos_invasion_finish",
 
     endgame_mission_name = "endtimes_unfolding",
 
@@ -612,12 +609,8 @@ function disaster_chaos_invasion:trigger()
         self.settings.stage_1_delay = 1;
     end
 
-    local human_factions = cm:get_human_factions();
-    for i = 1, #human_factions do
-        cm:show_message_event(human_factions[i], self.stage_1_warning_title, "", self.stage_1_warning_description, true, 29);
-    end
-
     -- Initialize listeners.
+    dynamic_disasters:execute_payload(self.stage_early_warning_incident_key, nil, self.settings.stage_1_delay, nil);
     self:set_status(STATUS_TRIGGERED);
 end
 
@@ -648,11 +641,7 @@ function disaster_chaos_invasion:trigger_stage_1()
     dynamic_disasters:force_peace_between_factions(self.settings.factions, true);
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
-    local human_factions = cm:get_human_factions();
-    for i = 1, #human_factions do
-        cm:show_message_event(human_factions[i], self.stage_1_event_title, "", self.stage_1_event_description, true, 30);
-    end
-
+    dynamic_disasters:execute_payload(self.stage_1_incident_key, self.effects_global_key, self.settings.stage_2_delay, nil);
     self:trigger_chaos_effects(self.settings.stage_2_delay);
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_chs_chaos")
     cm:register_instant_movie("Warhammer/chs_rises");
@@ -758,11 +747,8 @@ function disaster_chaos_invasion:trigger_stage_2()
 
     -- Trigger the end game mission. TODO: Put the effect into an incident.
     dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.stage_2_incident_key, nil, self.settings.factions[1], self:trigger_end_disaster())
-    local human_factions = cm:get_human_factions()
-    for i = 1, #human_factions do
-        --cm:show_message_event(human_factions[i], self.stage_2_event_title, "", self.stage_2_event_description, true, 31);
-    end
 
+    dynamic_disasters:execute_payload(self.stage_2_incident_key, self.effects_global_key, self.settings.stage_3_delay, nil);
     self:trigger_chaos_effects(self.settings.stage_3_delay);
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_chs_chaos")
     cm:register_instant_movie("Warhammer/chs_invasion");
@@ -849,11 +835,14 @@ end
 function disaster_chaos_invasion:trigger_chaos_effects(duration)
     local faction_list = cm:model():world():faction_list()
 
-    -- Apply the corruption effects to all alive factions.
-    -- TODO: Apply this to players through incident/payload, so they can actually see it.
+  -- Apply the corruption effects to all alive factions, except humans.
+    -- Humans get this effect via payload with effect.
     for i = 0, faction_list:num_items() - 1 do
         local faction = faction_list:item_at(i)
-        cm:apply_effect_bundle(self.effects_global_key, faction:name(), duration)
+
+        if not faction:is_dead() and faction:is_human() == false then
+            cm:apply_effect_bundle(self.effects_global_key, faction:name(), duration)
+        end
     end
 
     -- Apply attackers buffs to all alive attackers.
