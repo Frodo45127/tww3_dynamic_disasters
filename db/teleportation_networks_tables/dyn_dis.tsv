@@ -1,0 +1,3 @@
+key	campaign	traveller_requirements	permitted_agents	travel_time
+#teleportation_networks_tables;0;db/teleportation_networks_tables/dyn_dis				
+dyn_dis_chaos_invasion_network	wh3_main_combi	any	all_agents	0
