@@ -51,6 +51,9 @@ disaster_aztec_invasion = {
             type = "DESTROY_FACTION",
             conditions = {
                 "confederation_valid"
+            },
+            payloads = {
+                "money 50000"
             }
         }
     },
@@ -66,6 +69,7 @@ disaster_aztec_invasion = {
         is_endgame = true,                  -- If the disaster is an endgame.
         min_turn = 100,                     -- Minimum turn required for the disaster to trigger.
         max_turn = 0,                       -- If the disaster hasn't trigger at this turn, we try to trigger it. Set to 0 to not check for max turn. Used only for some disasters.
+        status = 0,                         -- Current status of the disaster. Used to re-initialize the disaster correctly on reload.
         last_triggered_turn = 0,            -- Turn when the disaster was last triggerd.
         last_finished_turn = 0,             -- Turn when the disaster was last finished.
         wait_turns_between_repeats = 0,     -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
@@ -75,13 +79,15 @@ disaster_aztec_invasion = {
         },
 
         -- Disaster-specific data.
-        second_warning_delay = 1,
-        invasion_delay = 1,
         army_template = {
             lizardmen = "lategame"
         },
-        base_army_unit_count = 19,
-        potential_attack_factions = {       -- Factions that will receive the attacking armies.
+        unit_count = 19,
+
+        second_warning_delay = 1,
+        invasion_delay = 1,
+
+        factions = {                        -- Factions that will receive the attacking armies.
             "wh2_main_lzd_hexoatl",                     -- Mazda
             "wh2_main_lzd_last_defenders",              -- Kroq-Gar
             "wh2_dlc12_lzd_cult_of_sotek",              -- Tehenhauin
@@ -90,12 +96,14 @@ disaster_aztec_invasion = {
             "wh2_dlc13_lzd_spirits_of_the_jungle",      -- Nakai
             "wh2_dlc17_lzd_oxyotl",                     -- Oxyotl
         }
-
     },
 
     first_warning_event_key = "fro_dyn_dis_aztec_invasion_warning_1",
     second_warning_event_key = "fro_dyn_dis_aztec_invasion_warning_2",
-    invasion_event_key = "fro_dyn_dis_aztec_invasion_trigger",
+    invasion_incident_key = "fro_dyn_dis_aztec_invasion_trigger",
+    endgame_mission_name = "we_ran_out_of_book",
+    invader_buffs_effects_key = "fro_dyn_dis_aztec_invasion_trigger_invader_buffs",
+    finish_early_incident_key = "dyn_dis_aztec_invasion_early_end",
     ai_personality = "fro_dyn_dis_wh3_combi_lizardmen_endgame",
 }
 
@@ -807,29 +815,21 @@ function disaster_aztec_invasion:set_status(status)
                 return cm:turn_number() == self.settings.last_triggered_turn + self.settings.second_warning_delay + self.settings.invasion_delay
             end,
             function()
-                self:trigger_aztec_invasion();
+
+                -- Update the potential factions removing the confederated ones and check if we still have factions to use.
+                self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
+                if #self.settings.factions == 0 then
+                    dynamic_disasters:execute_payload(self.finish_early_incident_key, nil, 0, nil);
+                else
+                    self:trigger_aztec_invasion();
+                end
                 core:remove_listener("DisasterAztecInvasionAztecInvasion")
             end,
             true
         );
     end
 
-    if self.settings.status == STATUS_STARTED then
-
-        -- Listener to end the invasion.
-        core:add_listener(
-            "DisasterAztecInvasionEnd",
-            "WorldStartRound",
-            function ()
-                return self:check_end_disaster_conditions()
-            end,
-            function()
-                self:trigger_end_disaster();
-                core:remove_listener("DisasterAztecInvasionEnd")
-            end,
-            true
-        );
-    end
+    -- Once we triggered the disaster, ending it is controlled by a mission, so we don't need to listen for an ending.
 end
 
 -- Function to trigger the disaster.
@@ -868,10 +868,7 @@ end
 
 -- Function to trigger the invasion itself.
 function disaster_aztec_invasion:trigger_aztec_invasion()
-
-    -- Trigger all the stuff related to the invasion (missions, effects,...).
     out("Frodo45127: Disaster: " .. self.name .. ". Triggering invasion.");
-    cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_lzd_lizardmen")
 
     -- Get all the coastal regions (as in region with a port) owned by the player.
     local attack_vectors = {}
@@ -882,18 +879,20 @@ function disaster_aztec_invasion:trigger_aztec_invasion()
 
         for _, land_region in pairs(sea_region_data.coastal_regions) do
             local region = cm:get_region(land_region)
-            local region_owner = region:owning_faction()
+            if not region == false and region:is_null_interface() == false then
+                local region_owner = region:owning_faction()
 
-            -- Do not attack lizardmen. Attack everyone else.
-            if region_owner:is_null_interface() == false and region_owner:subculture() ~= "wh2_main_sc_lzd_lizardmen" and region_owner:name() ~= "rebels" then
-                attack_vectors[sea_region] = attack_vectors[sea_region] + 1;
+                -- Do not attack lizardmen. Attack everyone else.
+                if not region_owner == false and region_owner:is_null_interface() == false and region_owner:subculture() ~= "wh2_main_sc_lzd_lizardmen" and region_owner:name() ~= "rebels" then
+                    attack_vectors[sea_region] = attack_vectors[sea_region] + 1;
+                end
             end
         end
     end
 
     -- Once we have the attack vectors, create the invasion forces.
     -- Both, the areas attacked and the amount of armies to spawn are based on campaign difficulty.
-    local attacker_faction = self.settings.potential_attack_factions[math.random(1, #self.settings.potential_attack_factions)];
+    local attacker_faction = self.settings.factions[math.random(1, #self.settings.factions)];
     for sea_region, weight in pairs(attack_vectors) do
         out("Frodo45127: Sea Region: " .. sea_region .. ". weight: " .. tostring(weight));
 
@@ -915,27 +914,23 @@ function disaster_aztec_invasion:trigger_aztec_invasion()
             -- Spawn armies at sea, scaling them with the amount of coastal regions the sea region borders.
             for i = 1, #dyn_dis_sea_potential_attack_vectors[sea_region].spawn_positions do
                 local spawn_pos = dyn_dis_sea_potential_attack_vectors[sea_region].spawn_positions[i];
-                dynamic_disasters:create_scenario_force_at_coords(attacker_faction, dyn_dis_sea_potential_attack_vectors[sea_region].coastal_regions[1], spawn_pos, self.settings.army_template, self.settings.base_army_unit_count, true, armies_to_spawn_in_each_spawn_point, self.name);
+                dynamic_disasters:create_scenario_force_at_coords(attacker_faction, dyn_dis_sea_potential_attack_vectors[sea_region].coastal_regions[1], spawn_pos, self.settings.army_template, self.settings.unit_count, false, armies_to_spawn_in_each_spawn_point, self.name);
             end
 
             -- Change attacker for the next region.
-            attacker_faction = self.settings.potential_attack_factions[math.random(1, #self.settings.potential_attack_factions)];
+            attacker_faction = self.settings.factions[math.random(1, #self.settings.factions)];
         end
     end
 
     -- Trigger wars and faction buffs/AI changes for attackers. Do this after spawning armies so it only affects alive/spawned factions.
-    for _, faction_key in pairs(self.settings.potential_attack_factions) do
+    for _, faction_key in pairs(self.settings.factions) do
         local faction = cm:get_faction(faction_key);
-        if faction:is_null_interface() == false and not faction:is_dead() then
+        if not faction == false and faction:is_null_interface() == false and not faction:is_dead() then
 
-            -- Change their AI to something more aggressive.
+            -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
             cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
-
-            -- Apply buffs to the attackers, so they can at least push one province into player territory.
-            cm:apply_effect_bundle("fro_dyn_dis_aztec_invasion_trigger_invader_buffs", faction_key, 10)
-
-            -- Declare war on EVERY human, and disable diplomacy.
             endgame:no_peace_no_confederation_only_war(faction_key)
+            cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 10)
 
             -- Make every attacking faction go full retard against the owner of the coastal provinces.
             for sea_region, weight in pairs(attack_vectors) do
@@ -946,37 +941,26 @@ function disaster_aztec_invasion:trigger_aztec_invasion()
         end
     end
 
-    -- Make sure every attacker is at peace with each other.
-    for _, src_faction_key in pairs(self.settings.potential_attack_factions) do
-        for _, dest_faction_key in pairs(self.settings.potential_attack_factions) do
-            if src_faction_key ~= dest_faction_key then
-                cm:force_make_peace(src_faction_key, dest_faction_key);
-            end
-        end
+    -- Force an alliance between all lizardmen.
+    dynamic_disasters:force_peace_between_factions(self.settings.factions, true);
 
-        -- Also, make sure they're added to the victory conditions.
-        table.insert(self.objectives[1].conditions, "faction " .. src_faction_key)
+    -- Prepare the victory mission/disaster end data.
+    for _, faction_key in pairs(self.settings.factions) do
+        table.insert(self.objectives[1].conditions, "faction " .. faction_key)
     end
 
-    -- Trigger the victory condition, if needed.
-    if dynamic_disasters.settings.victory_condition_triggered == false then
-        dynamic_disasters:add_victory_condition(self.invasion_event_key, self.objectives, nil, nil)
-        local human_factions = cm:get_human_factions()
-        for i = 1, #human_factions do
-            cm:apply_effect_bundle(self.invasion_event_key, human_factions[i], 10)
-        end
-    else
-        dynamic_disasters:execute_payload(self.invasion_event_key, self.invasion_event_key, 10, nil);
-    end
-
-    -- Set the invasions status to started.
+    -- Trigger all the stuff related to the invasion (missions, effects,...).
+    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.invasion_incident_key, nil, self.settings.factions[1], self:trigger_end_disaster())
+    cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_lzd_lizardmen")
     self:set_status(STATUS_STARTED);
 end
 
 -- Function to trigger cleanup stuff after the invasion is over.
 function disaster_aztec_invasion:trigger_end_disaster()
-    out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
-    dynamic_disasters:finish_disaster(self);
+    if self.settings.started == true then
+        out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
+        dynamic_disasters:finish_disaster(self);
+    end
 end
 
 --- Function to check if the disaster custom conditions are valid and can be trigger.
@@ -984,20 +968,25 @@ end
 function disaster_aztec_invasion:check_start_disaster_conditions()
 
     -- Update the potential factions removing the confederated ones.
-    self.settings.potential_attack_factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.potential_attack_factions);
+    self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
+
+    -- Do not start if we don't have attackers.
+    if #self.settings.factions == 0 then
+        return false;
+    end
 
     -- Check if any of the attackers if actually alive.
     local attackers_still_alive = false;
-    for _, faction_key in pairs(self.settings.potential_attack_factions) do
+    for _, faction_key in pairs(self.settings.factions) do
         local faction = cm:get_faction(faction_key);
-        if faction:is_null_interface() == false and faction:is_dead() == false then
+        if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false then
             attackers_still_alive = true;
             break;
         end
     end
 
-    -- Do not start if we don't have attackers.
-    if #self.settings.potential_attack_factions == 0 or attackers_still_alive == false then
+    -- Do not start if we don't have any alive attackers.
+    if attackers_still_alive == false then
         return false;
     end
 
@@ -1011,15 +1000,10 @@ function disaster_aztec_invasion:check_start_disaster_conditions()
         return true;
     end
 
-    -- Base chance: 1/200 turns (0.5%).
     local base_chance = 0.005;
-
-    -- Increase the change of starting based on how many attackers are already dead.
-    for _, faction_key in pairs(self.settings.potential_attack_factions) do
+    for _, faction_key in pairs(self.settings.factions) do
         local faction = cm:get_faction(faction_key);
-        if faction:is_null_interface() == false and faction:is_dead() then
-
-            -- Increase in 0.5% the chance of triggering for each dead attacker.
+        if not faction == false and faction:is_null_interface() == false and faction:is_dead() then
             base_chance = base_chance + 0.005;
         end
     end
@@ -1029,25 +1013,6 @@ function disaster_aztec_invasion:check_start_disaster_conditions()
     end
 
     return false;
-end
-
---- Function to check if the conditions to declare the disaster as "finished" are fulfilled.
----@return boolean If the disaster will be finished or not.
-function disaster_aztec_invasion:check_end_disaster_conditions()
-
-    -- Update the potential factions removing the confederated ones.
-    self.settings.potential_attack_factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.potential_attack_factions);
-
-    local all_attackers_dead = true;
-
-    for _, faction_key in pairs(self.settings.potential_attack_factions) do
-        local faction = cm:get_faction(faction_key);
-        if faction ~= false and not faction:is_dead() then
-            all_attackers_dead = false;
-        end
-    end
-
-    return all_attackers_dead;
 end
 
 return disaster_aztec_invasion

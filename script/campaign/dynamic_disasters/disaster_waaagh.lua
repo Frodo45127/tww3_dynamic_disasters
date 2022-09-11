@@ -247,7 +247,7 @@ function disaster_waaagh:check_start_disaster_conditions()
     local base_chance = 0.005;
     for _, faction_key in pairs(self.settings.factions) do
         local faction = cm:get_faction(faction_key);
-        if faction ~= false and faction:is_dead() then
+        if not faction == false and faction:is_null_interface() == false and faction:is_dead() then
             base_chance = base_chance + 0.005;
         end
     end
