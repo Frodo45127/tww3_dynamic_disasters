@@ -6,7 +6,10 @@
 
 -- Global Dynamic Disasters manager object, to keep track of all disasters.
 dynamic_disasters = {
-    settings = {
+    settings = {},                              -- Settings. To be populated later on.
+    disasters = {},                             -- List of disasters. This is populated on first tick.
+
+    default_settings = {                        -- Default settings for the manager.
         enabled = true,                         -- If the entire Dynamic Disasters system is enabled.
         debug = false,                          -- Debug mode. Forces all disasters to trigger and all in-between phase timers are reduced to 1 turn.
         disable_vanilla_endgames = true,        -- If this should disable the vanilla endgames, to avoid duplicated disasters. TODO: Fix issues with missions getting overwritten due to this.
@@ -17,7 +20,6 @@ dynamic_disasters = {
         order_factions_swap = {},               -- List of factions that, due to a disaster, have changed sides to the order-tide.
         chaos_factions_swap = {},               -- List of factions that, due to a disaster, have changed sides to the chaos-tide.
     },
-    disasters = {},                             -- List of disasters. This is populated on first tick.
 
     -- List of weigthed units used by the manager.
     --
@@ -957,6 +959,19 @@ local mandatory_settings = {
     campaigns = {},                     -- Campaigns this disaster works on.
 }
 
+-- Function to setup the save/load from savegame logic for items.
+--
+-- Pretty much a reusable function to load data from save and set it to be saved on the next save.
+---@param item table #Object/Table to save. It MUST CONTAIN a settings node, as that's what it really gets saved.
+---@param save_key string #Unique key to identify the saved data.
+local function setup_save(item, save_key)
+    local old_data = cm:get_saved_value(save_key);
+    if old_data ~= nil then
+       item.settings = old_data;
+    end
+    cm:set_saved_value(save_key, item.settings);
+end
+
 --[[
     MCT Helpers, so the users can configure the disasters as they want.
 ]]--
@@ -1038,107 +1053,125 @@ end
     End of MCT Helpers.
 ]]--
 
--- Function to setup the save/load from savegame logic for items.
---
--- Pretty much a reusable function to load data from save and set it to be saved on the next save.
----@param item table #Object/Table to save. It MUST CONTAIN a settings node, as that's what it really gets saved.
----@param save_key string #Unique key to identify the saved data.
-local function setup_save(item, save_key)
-    local old_data = cm:get_saved_value(save_key);
-    if old_data ~= nil then
-       item.settings = old_data;
-    end
-    cm:set_saved_value(save_key, item.settings);
-end
-
 -- Initialise the disasters available, reading the files from the dynamic_disasters folder preparing the manager.
 --
 -- Extended from endgames.lua to keep things more or less compatible.
-cm:add_first_tick_callback(
-    function()
+function dynamic_disasters:initialize()
 
-        -- Look for dynamic disaster files and load them into the framework
-        local disaster_files = core:get_filepaths_from_folder("/script/campaign/dynamic_disasters/", "*.lua")
-        out("####################")
-        out("Frodo45127: Loading the following disasters from /script/campaign/dynamic_disasters/:")
-        local disasters_loaded = {}
-        local env = core:get_env()
+    -- Look for dynamic disaster files and load them into the framework
+    local disaster_files = core:get_filepaths_from_folder("/script/campaign/dynamic_disasters/", "*.lua")
+    out("####################")
+    out("Frodo45127: Loading the following disasters from /script/campaign/dynamic_disasters/:")
+    local disasters_loaded = {}
+    local env = core:get_env()
 
-        for i = 1, #disaster_files do
-            local disaster_filepath = disaster_files[i]
-            local disaster_name = tostring(string.sub(disaster_filepath, 35, (string.len(disaster_filepath)-4)))
+    for i = 1, #disaster_files do
+        local disaster_filepath = disaster_files[i]
+        local disaster_name = tostring(string.sub(disaster_filepath, 35, (string.len(disaster_filepath)-4)))
 
-            -- Make sure the file is loaded correctly, skip its inclusion if not
-            local loaded_file, load_error = loadfile(disaster_filepath)
-            if loaded_file then
+        -- Make sure the file is loaded correctly, skip its inclusion if not
+        local loaded_file, load_error = loadfile(disaster_filepath)
+        if loaded_file then
 
-                -- Make sure the file is set as loaded
-                package.loaded[disaster_filepath] = true
+            -- Make sure the file is set as loaded
+            package.loaded[disaster_filepath] = true
 
-                -- Set the environment of the Lua chunk to the global environment
-                -- Note to future me: removing this makes the disasters unable to load core listeners. Do not remove it.
-                setfenv(loaded_file, env)
+            -- Set the environment of the Lua chunk to the global environment
+            -- Note to future me: removing this makes the disasters unable to load core listeners. Do not remove it.
+            setfenv(loaded_file, env)
 
-                -- Execute the loaded Lua chunk so the functions within are registered
-                local disaster_executed_successfully, result = pcall(loaded_file)
-                if not disaster_executed_successfully then
-                    out("\tFailed to execute loaded disaster file [" .. disaster_name .. "], error is: " .. tostring(result))
-                else
-                    -- Add the disaster to our loaded disasters list.
-                    out("\t"..disaster_name.." loaded successfully")
-                    table.insert(disasters_loaded, result)
-                end
-
-            -- If the disaster failed to load, report it.
+            -- Execute the loaded Lua chunk so the functions within are registered
+            local disaster_executed_successfully, result = pcall(loaded_file)
+            if not disaster_executed_successfully then
+                out("\tFailed to execute loaded disaster file [" .. disaster_name .. "], error is: " .. tostring(result))
             else
-                out("\tFailed to load disaster file [" .. disaster_name .. "], error is: " .. tostring(load_error) .. ". Will attempt to require() this file to generate a more meaningful error message:")
-                local path_no_lua =  tostring(string.sub(disaster_filepath, 0, (string.len(disaster_filepath)-4)))
-                local require_result, require_error = pcall(require, path_no_lua)
-
-                if require_result then
-                    out("\tWARNING: require() seemed to be able to load file [" .. disaster_filepath .. "] with filename [" .. disaster_name .. "], where loadfile failed? Maybe the scenario is loaded, maybe it isn't - proceed with caution!")
-                else
-                    -- strip tab and newline characters from error string
-                    out("\t\t" .. string.gsub(string.gsub(require_error, "\t", ""), "\n", ""))
-                end
-
+                -- Add the disaster to our loaded disasters list.
+                out("\t"..disaster_name.." loaded successfully")
+                table.insert(disasters_loaded, result)
             end
+
+        -- If the disaster failed to load, report it.
+        else
+            out("\tFailed to load disaster file [" .. disaster_name .. "], error is: " .. tostring(load_error) .. ". Will attempt to require() this file to generate a more meaningful error message:")
+            local path_no_lua =  tostring(string.sub(disaster_filepath, 0, (string.len(disaster_filepath)-4)))
+            local require_result, require_error = pcall(require, path_no_lua)
+
+            if require_result then
+                out("\tWARNING: require() seemed to be able to load file [" .. disaster_filepath .. "] with filename [" .. disaster_name .. "], where loadfile failed? Maybe the scenario is loaded, maybe it isn't - proceed with caution!")
+            else
+                -- strip tab and newline characters from error string
+                out("\t\t" .. string.gsub(string.gsub(require_error, "\t", ""), "\n", ""))
+            end
+
         end
+    end
 
-        -- Once loaded, we need to check if the disaster is available for our campaign/faction.
-        local campaign_key = cm:get_campaign_name();
-        local human_factions = cm:get_human_factions();
-        for _, disaster in pairs(disasters_loaded) do
-            local disaster_is_valid = true;
+    -- Once loaded, we need to check if the disaster is available for our campaign/faction.
+    local campaign_key = cm:get_campaign_name();
+    local human_factions = cm:get_human_factions();
+    for _, disaster in pairs(disasters_loaded) do
+        out("\tFrodo45127: Trying to load disaster: " .. disaster.name .. ".")
+        local disaster_is_valid = true;
 
-            -- Make sure its valid for all human factions.
-            for _, faction_name in pairs(human_factions) do
-                local faction = cm:get_faction(faction_name);
+        -- Make sure its valid for all human factions.
+        for _, faction_name in pairs(human_factions) do
+            local faction = cm:get_faction(faction_name);
 
-                -- Check that it has all the required settings, and initialize them in case it has them missing.
-                for setting, value in pairs(mandatory_settings) do
-                    if disaster.settings[setting] == nil then
-                        disaster.settings[setting] = value;
-                        out("\tDisaster: "..disaster.name..". Missing setting: ".. setting .. ". Initializing to default value.")
-                    end
+            -- Initialize all missing settings to default values, to stop disasters from breaking on updates due to missing settings.
+            for setting, value in pairs(disaster.default_settings) do
+                if disaster.settings[setting] == nil then
+                    disaster.settings[setting] = value;
+                    out("\tFrodo45127: Disaster: "..disaster.name..". Missing disaster setting: ".. setting .. ". Initializing to default value.")
                 end
+            end
 
-                -- Check that the disaster supports the campaign we're loading into.
-                -- Each disaster must manually specify which campaign map supports, as it will probably need custom tweaks for each map.
-                local allowed_in_campaign = false;
-                for _, campaign_supported in pairs(disaster.settings.campaigns) do
-                    if campaign_supported == campaign_key then
-                        allowed_in_campaign = true;
-                        break;
-                    end
+            -- Check that it has all the required settings, and initialize them in case it has them missing.
+            for setting, value in pairs(mandatory_settings) do
+                if disaster.settings[setting] == nil then
+                    disaster.settings[setting] = value;
+                    out("\tFrodo45127: Disaster: "..disaster.name..". Missing mandatory setting: ".. setting .. ". Initializing to default value.")
                 end
+            end
 
-                if allowed_in_campaign then
+            -- Check that the disaster supports the campaign we're loading into.
+            -- Each disaster must manually specify which campaign map supports, as it will probably need custom tweaks for each map.
+            local allowed_in_campaign = false;
+            for _, campaign_supported in pairs(disaster.settings.campaigns) do
+                if campaign_supported == campaign_key then
+                    allowed_in_campaign = true;
+                    break;
+                end
+            end
 
-                    -- Global disasters may be blacklisted for certain subcultures.
-                    if disaster.is_global == true then
-                        local allowed = true;
+            if allowed_in_campaign then
 
+                -- Global disasters may be blacklisted for certain subcultures.
+                if disaster.is_global == true then
+                    local allowed = true;
+
+                    for _, subculture in pairs(disaster.denied_for_sc) do
+                        if subculture == faction:subculture() then
+                            allowed = false;
+                            break;
+                        end
+                    end
+
+                    if allowed == false then
+                        disaster_is_valid = false;
+                    end
+
+                -- If the disaster is not global, check if it's allowed and not denied for your subculture.
+                else
+                    local allowed = false;
+
+                    for _, subculture in pairs(disaster.allowed_for_sc) do
+                        if subculture == faction:subculture() then
+                            allowed = true;
+                            break;
+                        end
+                    end
+
+                    if allowed == true then
                         for _, subculture in pairs(disaster.denied_for_sc) do
                             if subculture == faction:subculture() then
                                 allowed = false;
@@ -1149,86 +1182,86 @@ cm:add_first_tick_callback(
                         if allowed == false then
                             disaster_is_valid = false;
                         end
-
-                    -- If the disaster is not global, check if it's allowed and not denied for your subculture.
-                    else
-                        local allowed = false;
-
-                        for _, subculture in pairs(disaster.allowed_for_sc) do
-                            if subculture == faction:subculture() then
-                                allowed = true;
-                                break;
-                            end
-                        end
-
-                        if allowed == true then
-                            for _, subculture in pairs(disaster.denied_for_sc) do
-                                if subculture == faction:subculture() then
-                                    allowed = false;
-                                    break;
-                                end
-                            end
-
-                            if allowed == false then
-                                disaster_is_valid = false;
-                            end
-                        end
                     end
-                else
-                    disaster_is_valid = false;
                 end
-            end
-
-            if disaster_is_valid then
-                table.insert(dynamic_disasters.disasters, disaster)
+            else
+                disaster_is_valid = false;
             end
         end
 
-        if #dynamic_disasters.disasters > 0 then
-            out(#dynamic_disasters.disasters.." total disasters loaded successfully.")
-            out("####################")
-        else
-            out("0 disasters loaded.")
-            out("####################")
-            return
+        if disaster_is_valid then
+            table.insert(self.disasters, disaster)
         end
-
-        -- Once all disasters are loaded, get their settings from the mct if available.
-        if get_mct then
-            dynamic_disasters:load_from_mct(get_mct());
-        end
-
-        -- Once all the disasters are loaded, setup saving-restoring data from save.
-        setup_save(dynamic_disasters, "dynamic_disasters_settings")
-        for _, disaster in ipairs(dynamic_disasters.disasters) do
-            setup_save(disaster, disaster.name .. "_settings");
-
-            -- Make sure to initialize listeners of already in-progress disasters.
-            if disaster.settings.started == true then
-                disaster:set_status(disaster.settings.status);
-            end
-        end
-
-        -- There's a thing going on with two different victory conditions getting triggered (it bugs out the victory missions panel)
-        -- so we need to make sure that none of the vanilla endgames are triggered before allowing this to trigger victory conditions.
-        if endgame ~= nil then
-            if endgame.settings.endgame_enabled == true then
-                dynamic_disasters.settings.victory_condition_triggered = true;
-            end
-        end
-
-        -- Listener for evaluating if a disaster can be started or not. Triggered at the begining of each turn.
-        core:add_listener(
-            "ScriptEventMaybeDisasterTime",
-            "WorldStartRound",
-            true,
-            function ()
-                return dynamic_disasters:process_disasters()
-            end,
-            true
-        );
     end
-)
+
+    if #self.disasters > 0 then
+        out(#self.disasters.." total disasters loaded successfully.")
+        out("####################")
+    else
+        out("0 disasters loaded.")
+        out("####################")
+        return
+    end
+
+    -- Once all disasters are loaded, get their settings from the mct if available.
+    if get_mct then
+        self:load_from_mct(get_mct());
+    end
+
+    -- Once all the disasters are loaded, setup saving-restoring data from save.
+    setup_save(self, "dynamic_disasters_settings")
+    for _, disaster in ipairs(self.disasters) do
+        setup_save(disaster, disaster.name .. "_settings");
+
+        -- Initialize all missing settings to default values, to stop disasters from breaking on updates due to missing settings.
+        for setting, value in pairs(disaster.default_settings) do
+            if disaster.settings[setting] == nil then
+                disaster.settings[setting] = value;
+                out("\tFrodo45127: Disaster: "..disaster.name..". Missing disaster setting: ".. setting .. ". Initializing to default value.")
+            end
+        end
+
+        -- Check that it has all the required settings, and initialize them in case it has them missing.
+        for setting, value in pairs(mandatory_settings) do
+            if disaster.settings[setting] == nil then
+                disaster.settings[setting] = value;
+                out("\tFrodo45127: Disaster: "..disaster.name..". Missing mandatory setting: ".. setting .. ". Initializing to default value.")
+            end
+        end
+
+        -- Make sure to initialize listeners of already in-progress disasters.
+        if disaster.settings.started == true then
+            disaster:set_status(disaster.settings.status);
+        end
+    end
+
+    -- Once it loads, make sure to initialize new settings, so they're properly baked into the save.
+    for setting, value in pairs(self.default_settings) do
+        if self.settings[setting] == nil then
+            self.settings[setting] = value;
+            out("\tFrodo45127: Disaster's manager missing setting: ".. setting .. ". Initializing to default value.")
+        end
+    end
+
+    -- There's a thing going on with two different victory conditions getting triggered (it bugs out the victory missions panel)
+    -- so we need to make sure that none of the vanilla endgames are triggered before allowing this to trigger victory conditions.
+    if endgame ~= nil then
+        if endgame.settings.endgame_enabled == true then
+            self.settings.victory_condition_triggered = true;
+        end
+    end
+
+    -- Listener for evaluating if a disaster can be started or not. Triggered at the begining of each turn.
+    core:add_listener(
+        "ScriptEventMaybeDisasterTime",
+        "WorldStartRound",
+        true,
+        function ()
+            return self:process_disasters()
+        end,
+        true
+    );
+end
 
 -- Function to process all the disasters available and trigger them when they can be triggered.
 --
@@ -1919,3 +1952,10 @@ function dynamic_disasters:is_chaos_faction(faction_key)
 
     return is_chaos_faction;
 end
+
+-- Once everything is initialized, initialize the whole mod on first tick.
+cm:add_first_tick_callback(
+    function ()
+        dynamic_disasters:initialize()
+    end
+)

@@ -99,7 +99,8 @@ disaster_the_great_uprising = {
     },
 
     -- Settings of the disaster that will be stored in a save.
-    settings = {
+    settings = {},
+    default_settings = {
 
         -- Common data for all disasters.
         enabled = true,                     -- If the disaster is enabled or not.

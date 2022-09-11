@@ -60,7 +60,8 @@ disaster_pyramid_of_nagash = {
     },
 
     -- Settings of the disaster that will be stored in a save.
-	settings = {
+	settings = {},
+    default_settings = {
         enabled = true,                     -- If the disaster is enabled or not.
         started = false,                    -- If the disaster has been started.
         finished = false,                   -- If the disaster has been finished.

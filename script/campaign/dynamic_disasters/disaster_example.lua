@@ -16,23 +16,25 @@ disaster_example = {
 
     -- Values for categorizing the disaster.
     is_global = false;
-    allowed_for_sc = { "wh3_main_sc_cth_cathay" },
+    allowed_for_sc = {},
     denied_for_sc = {},
 
     -- Settings of the disaster that will be stored in a save.
-    settings = {
+    settings = {},
+    default_settings = {
 
         -- Common data for all disasters.
         enabled = false,                    -- If the disaster is enabled or not.
         started = false,                    -- If the disaster has been started.
         finished = false,                   -- If the disaster has been finished.
-        repeteable = true,                  -- If the disaster can be repeated.
+        repeteable = false,                 -- If the disaster can be repeated.
         is_endgame = false,                 -- If the disaster is an endgame.
-        min_turn = 30,                      -- Minimum turn required for the disaster to trigger.
+        min_turn = 60,                      -- Minimum turn required for the disaster to trigger.
+        max_turn = 0,                       -- If the disaster hasn't trigger at this turn, we try to trigger it. Set to 0 to not check for max turn. Used only for some disasters.
         status = 0,                         -- Current status of the disaster. Used to re-initialize the disaster correctly on reload.
         last_triggered_turn = 0,            -- Turn when the disaster was last triggerd.
         last_finished_turn = 0,             -- Turn when the disaster was last finished.
-        wait_turns_between_repeats = 5,     -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
+        wait_turns_between_repeats = 0,     -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
         difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
         campaigns = {                       -- Campaigns this disaster works on.
             "main_warhammer",
@@ -65,7 +67,10 @@ end
 --
 -- It has to call the dynamic_disasters:finish_disaster(self) at the end.
 function disaster_example:trigger_end_disaster()
-    dynamic_disasters:finish_disaster(self);
+    if self.settings.started == true then
+        out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
+        dynamic_disasters:finish_disaster(self);
+    end
 end
 
 -- Function to check if the disaster conditions are valid and can be trigger.

@@ -42,7 +42,8 @@ disaster_example = {
     denied_for_sc = {},
 
     -- Settings of the disaster that will be stored in a save.
-    settings = {
+    settings = {},
+    default_settings = {
 
         -- Common data for all disasters.
         enabled = false,                    -- If the disaster is enabled or not.
