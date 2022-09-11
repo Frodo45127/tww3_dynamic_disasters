@@ -763,8 +763,10 @@ end
 
 -- Function to trigger cleanup stuff after the invasion is over.
 function disaster_the_great_uprising:trigger_end_disaster()
-    out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
-    dynamic_disasters:finish_disaster(self);
+    if self.settings.started == true then
+        out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
+        dynamic_disasters:finish_disaster(self);
+    end
 end
 
 --- Function to check if the disaster custom conditions are valid and can be trigger.

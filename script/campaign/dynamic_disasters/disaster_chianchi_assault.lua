@@ -47,6 +47,7 @@ disaster_chianchi_assault = {
         repeteable = true,                  -- If the disaster can be repeated.
         is_endgame = false,                 -- If the disaster is an endgame.
         min_turn = 30,                      -- Minimum turn required for the disaster to trigger.
+        max_turn = 0,                       -- If the disaster hasn't trigger at this turn, we try to trigger it. Set to 0 to not check for max turn. Used only for some disasters.
         status = 0,                         -- Current status of the disaster. Used to re-initialize the disaster correctly on reload.
         last_triggered_turn = 0,            -- Turn when the disaster was last triggerd.
         last_finished_turn = 0,             -- Turn when the disaster was last finished.
@@ -253,26 +254,21 @@ end
 function disaster_chianchi_assault:trigger_wall_attack_reinforcement()
     out("Frodo45127: Disaster: " .. self.name .. ". Triggering bastion attack.");
 
-    -- Trigger all the stuff related to the invasion (missions, effects,...).
-    cm:activate_music_trigger("ScriptedEvent_Negative", "wh3_main_sc_tze_tzeentch")
-    dynamic_disasters:execute_payload(self.first_attack_event_key, nil, 0, nil);
-
     -- For each gate, spawn a few Vilich armies.
     local armies_to_spawn_per_gate = math.floor(1 * math.ceil(self.settings.difficulty_mod));
     for _, location in pairs(Bastion.spawn_locations_by_gate) do
         local spawn_pos = location.spawn_locations[math.random(1, #location.spawn_locations)]
         dynamic_disasters:create_scenario_force_at_coords(self.settings.faction, location.gate_key, spawn_pos, self.settings.army_template, self.settings.base_army_unit_count, true, armies_to_spawn_per_gate, self.name)
     end
+
+    -- Trigger all the stuff related to the invasion (missions, effects,...).
+    dynamic_disasters:execute_payload(self.first_attack_event_key, nil, 0, nil);
+    cm:activate_music_trigger("ScriptedEvent_Negative", "wh3_main_sc_tze_tzeentch")
 end
 
 -- Function to trigger a full daemonic invasion through the gates of the Great Bastion.
 function disaster_chianchi_assault:trigger_full_daemonic_invasion()
     out("Frodo45127: Disaster: " .. self.name .. ". Triggering daemonic invasion.");
-
-    -- Trigger all the stuff related to the invasion (missions, effects,...).
-    cm:activate_music_trigger("ScriptedEvent_Negative", "wh3_main_sc_tze_tzeentch")
-    dynamic_disasters:execute_payload(self.second_attack_event_key, nil, 0, nil);
-
 
     -- On the initial trigger of the invasion, spawn at least 3 more armies to kickstart the invasion.
     local armies_to_spawn_per_gate = math.floor(1 * math.ceil(self.settings.difficulty_mod));
@@ -292,14 +288,18 @@ function disaster_chianchi_assault:trigger_full_daemonic_invasion()
         dynamic_disasters:declare_war_for_owners_and_neightbours(faction, Bastion.cathay_bastion_regions, false, {"wh_main_sc_chs_chaos", "wh_dlc08_sc_nor_norsca"});
     end
 
-    -- Initialize listeners.
+    -- Trigger all the stuff related to the invasion (missions, effects,...).
+    dynamic_disasters:execute_payload(self.second_attack_event_key, nil, 0, nil);
+    cm:activate_music_trigger("ScriptedEvent_Negative", "wh3_main_sc_tze_tzeentch")
     self:set_status(STATUS_FULL_INVASION);
 end
 
 -- Function to trigger cleanup stuff after the invasion is over.
 function disaster_chianchi_assault:trigger_end_disaster()
-    out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
-    dynamic_disasters:finish_disaster(self);
+    if self.settings.started == true then
+        out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
+        dynamic_disasters:finish_disaster(self);
+    end
 end
 
 --- Function to check if the disaster custom conditions are valid and can be trigger.
