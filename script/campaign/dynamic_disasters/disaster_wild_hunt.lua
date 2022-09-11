@@ -95,7 +95,7 @@ disaster_wild_hunt = {
             "wh2_dlc16_wef_sisters_of_twilight",
 
             -- Not in the vanilla disaster.
-            "wh3_dlc21_wef_spirits_of_shanlin,"
+            "wh3_dlc21_wef_spirits_of_shanlin",
         },
 
 		regions = {},
@@ -185,7 +185,7 @@ function disaster_wild_hunt:trigger_the_wild_hunt()
             if oak_of_ages_region:owning_faction():name() == faction_key then
                 dynamic_disasters:create_scenario_force(faction_key, "wh3_main_combi_region_the_oak_of_ages", self.settings.army_template, self.settings.unit_count, false, army_count, self.name)
                 dynamic_disasters:declare_war_for_owners_and_neightbours(invasion_faction, { "wh3_main_combi_region_the_oak_of_ages" }, true, { "wh_dlc05_sc_wef_wood_elves" })
-                table.insert(self.settings.regions, region_key);
+                table.insert(self.settings.regions, "wh3_main_combi_region_the_oak_of_ages");
             end
         end
 
