@@ -91,6 +91,7 @@ disaster_pyramid_of_nagash = {
 		incident_key = "wh3_main_ie_incident_endgame_black_pyramid_tomb_kings",
 		faction_bundle = "wh3_main_ie_scripted_endgame_black_pyramid_faction_tomb_kings",
 		region_bundle = "wh3_main_ie_scripted_endgame_black_pyramid_region_tomb_kings",
+		finish_early_incident_key = "dyn_dis_pyramid_of_nagash_tomb_kings_early_end",
 		ai_personality = "wh3_combi_tombking_endgame",
 		subculture = "wh2_dlc09_sc_tmb_tomb_kings",
 		music = "wh2_dlc09_sc_tmb_tomb_kings",
@@ -104,6 +105,7 @@ disaster_pyramid_of_nagash = {
 		faction_bundle = "wh3_main_ie_scripted_endgame_black_pyramid_faction_vampires",
 		region_bundle = "wh3_main_ie_scripted_endgame_black_pyramid_region_vampires",
 		ai_personality = "wh3_combi_vampire_endgame",
+		finish_early_incident_key = "dyn_dis_pyramid_of_nagash_vampires_early_end",
 		subculture = "wh_main_sc_vmp_vampire_counts",
 		music = "wh_main_sc_vmp_vampire_counts",
 		army_template = {
@@ -115,7 +117,6 @@ disaster_pyramid_of_nagash = {
     early_warning_incident_key = "wh3_main_ie_incident_endgame_black_pyramid_early_warning",
 	early_warning_effects_key = "wh3_main_ie_scripted_endgame_early_warning",
 	endgame_mission_name = "guess_whos_back",
-	finish_early_incident_key = "dyn_dis_pyramid_of_nagash_early_end",
 }
 
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
@@ -153,7 +154,7 @@ function disaster_pyramid_of_nagash:set_status(status)
 				end
 
                 if sentinels_available == false then
-                    dynamic_disasters:execute_payload(self.finish_early_incident_key, nil, 0, nil);
+                    dynamic_disasters:execute_payload(self.settings.faction_data.finish_early_incident_key, nil, 0, nil);
                 else
                     self:trigger_resurection_of_nagash();
                 end
