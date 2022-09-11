@@ -100,6 +100,7 @@ disaster_grudge_too_far = {
             -- Not in the vanilla disaster.
             "wh2_main_dwf_spine_of_sotek_dwarfs",
             "wh2_main_dwf_greybeards_prospectors",
+            "wh2_dlc15_dwf_clan_helhein",
         },
         regions = {}
 	},
@@ -130,6 +131,7 @@ local potential_dwarfs = {
     -- Not in the vanilla disaster.
     wh2_main_dwf_spine_of_sotek_dwarfs = "wh3_main_combi_region_mine_of_the_bearded_skulls",
     wh2_main_dwf_greybeards_prospectors = "wh3_main_combi_region_vulture_mountain",
+    wh2_dlc15_dwf_clan_helhein = "wh3_main_combi_region_ash_ridge_mountains",
 }
 
 -- Function to set the status of the disaster, initializing the needed listeners in the process.

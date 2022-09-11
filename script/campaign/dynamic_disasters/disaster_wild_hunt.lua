@@ -19,6 +19,9 @@
         - Finish:
             - A certain amount of Sacred Forest regions controled, or all Wood Elfs factions destroyed.
 
+    Ideas:
+        - Add The enchanted forest, Gaen Vale and the Sacred Pools to make this disaster more world-wide.
+
 ]]
 
 -- Status list for this disaster.
@@ -90,7 +93,8 @@ disaster_wild_hunt = {
             "wh2_dlc16_wef_drycha",
             "wh2_dlc16_wef_sisters_of_twilight",
 
-            -- Not in the vanilla disaster. TODO: Add the missing forests here.
+            -- Not in the vanilla disaster.
+            "wh3_dlc21_wef_spirits_of_shanlin,"
         },
 
 		regions = {},
@@ -113,9 +117,10 @@ local potential_wood_elves = {
 	wh2_main_wef_bowmen_of_oreon = "wh3_main_combi_region_oreons_camp",
 	wh_dlc05_wef_argwylon = "wh3_main_combi_region_waterfall_palace",
 	wh2_dlc16_wef_drycha = "wh3_main_combi_region_gryphon_wood",
-	wh2_dlc16_wef_sisters_of_twilight = "wh3_main_combi_region_the_witchwood"
+	wh2_dlc16_wef_sisters_of_twilight = "wh3_main_combi_region_the_witchwood",
 
-    -- TODO: Add minor factions and missing regions.
+    -- Not in the vanilla disaster.
+    wh3_dlc21_wef_spirits_of_shanlin = "wh3_main_combi_region_jungles_of_chian",
 }
 
 -- Function to set the status of the disaster, initializing the needed listeners in the process.

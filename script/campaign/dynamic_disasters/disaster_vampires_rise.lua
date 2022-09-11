@@ -74,13 +74,21 @@ disaster_vampires_rise = {
         early_warning_delay = 10,
 
        factions = {
-            "wh_main_vmp_schwartzhafen",
-            "wh_main_vmp_vampire_counts",
-            "wh2_dlc11_vmp_the_barrow_legion",
-            "wh3_main_vmp_caravan_of_blue_roses",
-            "wh_main_vmp_mousillon",
+            "wh_main_vmp_schwartzhafen",            -- Vlad/Isabella.
+            "wh_main_vmp_vampire_counts",           -- Manfred
+            "wh2_dlc11_vmp_the_barrow_legion",      -- Heinrich Kemmler
+            "wh3_main_vmp_caravan_of_blue_roses",   -- Helman Ghorst
+            "wh_main_vmp_mousillon",                -- The Red Duke
 
-            -- TODO: Add the missing vampire factions.
+            -- Minor Factions
+            "wh_main_vmp_waldenhof",
+            "wh2_main_vmp_the_silver_host",
+            "wh2_main_vmp_strygos_empire",
+            "wh2_main_vmp_necrarch_brotherhood",
+            "wh3_main_ie_vmp_sires_of_mourkain",
+            "wh3_main_vmp_lahmian_sisterhood",
+            "wh3_main_vmp_nagashizzar",
+            "wh3_dlc21_vmp_jiangshi_rebels",
         },
 
         regions = {},
@@ -100,9 +108,17 @@ local potential_vampires = {
 	wh_main_vmp_vampire_counts = "wh3_main_combi_region_ka_sabar",
 	wh2_dlc11_vmp_the_barrow_legion = "wh3_main_combi_region_blackstone_post",
 	wh3_main_vmp_caravan_of_blue_roses = "wh3_main_combi_region_the_haunted_forest",
-	wh_main_vmp_mousillon = "wh3_main_combi_region_mousillon"
+	wh_main_vmp_mousillon = "wh3_main_combi_region_mousillon",
 
-    -- TODO: Add the missing vampire factions.
+    -- Minor Factions
+    wh_main_vmp_waldenhof = "wh3_main_combi_region_castle_templehof",
+    wh2_main_vmp_the_silver_host = "wh3_main_combi_region_lahmia",
+    wh2_main_vmp_strygos_empire = "wh3_main_combi_region_al_haikk",
+    wh2_main_vmp_necrarch_brotherhood = "wh3_main_combi_region_springs_of_eternal_life",
+    wh3_main_ie_vmp_sires_of_mourkain = "wh3_main_combi_region_morgheim",
+    wh3_main_vmp_lahmian_sisterhood = "wh3_main_combi_region_silver_pinnacle",
+    wh3_main_vmp_nagashizzar = "wh3_main_combi_region_nagashizzar", -- Not in the combi map, but fuck all.
+    wh3_dlc21_vmp_jiangshi_rebels = "wh3_main_combi_region_nonchang",
 }
 
 -- Function to set the status of the disaster, initializing the needed listeners in the process.

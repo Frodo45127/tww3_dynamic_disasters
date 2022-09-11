@@ -72,13 +72,39 @@ disaster_waaagh = {
         early_warning_delay = 10,
 
         factions = {
-            "wh_main_grn_greenskins",
-            "wh_main_grn_orcs_of_the_bloody_hand",
-            "wh2_dlc15_grn_broken_axe",
-            "wh2_dlc15_grn_bonerattlaz",
-            "wh_main_grn_crooked_moon"
+            "wh_main_grn_greenskins",                       -- Grimgor Ironhide
+            "wh_main_grn_orcs_of_the_bloody_hand",          -- Wurrzag, The Greath Prophet
+            "wh2_dlc15_grn_broken_axe",                     -- Grom, The Paunch
+            "wh2_dlc15_grn_bonerattlaz",                    -- Azhag, The Butcher
+            "wh_main_grn_crooked_moon",                     -- Skarsnik
 
             -- TODO: Add the rest of the Greenskin factions here.
+            "wh_main_grn_top_knotz",
+            "wh_main_grn_teef_snatchaz",
+            "wh_main_grn_skullsmasherz",
+            "wh_main_grn_skull-takerz",
+            "wh_main_grn_scabby_eye",
+            "wh_main_grn_red_fangs",
+            "wh_main_grn_red_eye",
+            "wh_main_grn_necksnappers",
+            "wh_main_grn_broken_nose",
+            "wh_main_grn_bloody_spearz",
+            "wh_main_grn_black_venom",
+            "wh_dlc03_grn_black_pit",
+            "wh3_main_grn_tusked_sunz",
+            "wh3_main_grn_slaves_of_zharr",
+            "wh3_main_grn_moon_howlerz",
+            --"wh3_main_grn_drippin_fangs", -- Not in the starting map.
+            "wh3_main_grn_dimned_sun",
+            "wh3_main_grn_dark_land_orcs",
+            "wh3_main_grn_da_cage_breakaz",
+            "wh2_main_grn_blue_vipers",
+            "wh2_main_grn_arachnos",
+            "wh2_dlc16_grn_naggaroth_orcs",
+            "wh2_dlc16_grn_creeping_death",
+            "wh2_dlc15_grn_skull_crag",
+            "wh2_dlc14_grn_red_cloud",
+            "wh2_dlc12_grn_leaf_cutterz_tribe",
         },
 
         regions = {},
@@ -94,8 +120,39 @@ disaster_waaagh = {
 }
 
 local potential_greenskins = {
-    wh_main_grn_necksnappers = "wh3_main_combi_region_black_crag",
-    -- TODO: Add factions and regions.
+    wh_main_grn_greenskins = "wh3_main_combi_region_sabre_mountain",
+    wh_main_grn_orcs_of_the_bloody_hand = "wh3_main_combi_region_ekrund",
+    wh2_dlc15_grn_broken_axe = "wh3_main_combi_region_massif_orcal",
+    wh2_dlc15_grn_bonerattlaz = "wh3_main_combi_region_khazid_irkulaz",
+    wh_main_grn_crooked_moon = "wh3_main_combi_region_mount_gunbad",
+
+    -- Non-playable.
+    wh_main_grn_top_knotz = "wh3_main_combi_region_galbaraz",
+    wh_main_grn_teef_snatchaz = "wh3_main_combi_region_dragonhorn_mines",
+    wh_main_grn_skullsmasherz = "wh3_main_combi_region_grung_zint",
+    wh_main_grn_skull_takerz = "wh3_main_combi_region_fort_soll", -- These ones are the turn 1 attackers for Gelt.
+    wh_main_grn_scabby_eye = "wh3_main_combi_region_barag_dawazbag",
+    wh_main_grn_red_fangs = "wh3_main_combi_region_karak_azgal",
+    wh_main_grn_red_eye = "wh3_main_combi_region_grom_peak",
+    wh_main_grn_necksnappers = "wh3_main_combi_region_karak_eight_peaks",
+    wh_main_grn_broken_nose = "wh3_main_combi_region_karak_izor",
+    wh_main_grn_bloody_spearz = "wh3_main_combi_region_the_high_place",
+    wh_main_grn_black_venom = "wh3_main_combi_region_steingart",
+    wh_dlc03_grn_black_pit = "wh3_main_combi_region_the_black_pit",
+    wh3_main_grn_tusked_sunz = "wh3_main_combi_region_blizzardpeak",
+    wh3_main_grn_slaves_of_zharr = "wh3_main_combi_region_uzkulak",
+    wh3_main_grn_moon_howlerz = "wh3_main_combi_region_darkhold",
+    --wh3_main_grn_drippin_fangs = "wh3_main_combi_region_darkhold", -- Not in the starting map.
+    wh3_main_grn_dimned_sun = "wh3_main_combi_region_kunlan",
+    wh3_main_grn_dark_land_orcs = "wh3_main_combi_region_zharr_naggrund",
+    wh3_main_grn_da_cage_breakaz = "wh3_main_combi_region_nagrar",
+    wh2_main_grn_blue_vipers = "wh3_main_combi_region_pahuax",
+    wh2_main_grn_arachnos = "wh3_main_combi_region_mount_arachnos",
+    wh2_dlc16_grn_naggaroth_orcs = "wh3_main_combi_region_rothkar_spire",
+    wh2_dlc16_grn_creeping_death = "wh3_main_combi_region_forest_of_gloom",
+    wh2_dlc15_grn_skull_crag = "wh3_main_combi_region_shrine_of_loec",
+    wh2_dlc14_grn_red_cloud = "wh3_main_combi_region_brionne",
+    wh2_dlc12_grn_leaf_cutterz_tribe = "wh3_main_combi_region_cuexotl",
 }
 
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
@@ -150,22 +207,31 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
 		local faction = cm:get_faction(faction_key)
 		local region_key = nil
 
+        -- Seriously????
+        local faction_key_fixed = faction_key;
+        if faction_key == "wh_main_grn_skull-takerz" then
+            faction_key_fixed = "wh_main_grn_skull_takerz";
+        end
+
         -- Try to spawn the armies on the faction leader, or if it's dead, on their capital.
-    	if faction:faction_leader():has_region() then
-			region_key = faction:faction_leader():region():name()
+        local faction_leader = faction:faction_leader();
+    	if not faction_leader == nil and faction_leader:has_region() then
+			region_key = faction_leader:region():name()
 		elseif faction:has_home_region() then
 			region_key = faction:home_region():name()
         else
 
             -- On this situation, either the faction is dead or homeless with some armies running around.
-            -- So we spawn the armies in their original settlements.
-            region_key = potential_greenskins[faction_key];
+            -- So we spawn the armies in their original settlements. Note that some factions do not have one.
+            region_key = potential_greenskins[faction_key_fixed];
+            if not region_key == nil then
 
             -- Transfer the region only if it's their original one.
-            local region = cm:get_region(region_key)
-            local region_owner = region:owning_faction()
-            if region_owner == false or region_owner:is_null_interface() or (region_owner:name() ~= faction_key and region_owner:is_human() == false and region_owner:subculture() ~= "wh_main_sc_grn_greenskins") then
-                cm:transfer_region_to_faction(region_key, faction_key)
+                local region = cm:get_region(region_key)
+                local region_owner = region:owning_faction()
+                if region_owner == false or region_owner:is_null_interface() or (region_owner:name() ~= faction_key and region_owner:is_human() == false and region_owner:subculture() ~= "wh_main_sc_grn_greenskins") then
+                    cm:transfer_region_to_faction(region_key, faction_key)
+                end
             end
 		end
 
