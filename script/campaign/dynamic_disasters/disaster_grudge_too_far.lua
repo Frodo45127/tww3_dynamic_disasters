@@ -271,7 +271,7 @@ function disaster_grudge_too_far:check_start_disaster_conditions()
     end
 
     local base_chance = 0.005;
-    for faction_key, _ in pairs(potential_dwarfs) do
+    for _, faction_key in pairs(self.settings.factions) do
         local faction = cm:get_faction(faction_key);
         if faction ~= false and faction:is_dead() then
             base_chance = base_chance + 0.005;
