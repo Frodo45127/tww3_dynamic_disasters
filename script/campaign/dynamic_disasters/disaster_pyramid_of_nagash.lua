@@ -243,7 +243,7 @@ function disaster_pyramid_of_nagash:trigger_resurection_of_nagash()
     dynamic_disasters:reveal_regions({ self.region_key });
 
     -- Trigger either the victory mission, or just the related incident.
-    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.settings.faction_data.incident_key, self.region_key, self.settings.faction_data.faction_key, self:trigger_end_disaster())
+    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.settings.faction_data.incident_key, self.region_key, self.settings.faction_data.faction_key, function () self:trigger_end_disaster() end)
     cm:activate_music_trigger("ScriptedEvent_Negative", self.settings.faction_data.music)
     self:set_status(STATUS_STARTED);
 end

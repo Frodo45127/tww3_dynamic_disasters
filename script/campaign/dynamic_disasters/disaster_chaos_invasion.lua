@@ -747,7 +747,7 @@ function disaster_chaos_invasion:trigger_stage_2()
     end
 
     -- Trigger the end game mission. TODO: Put the effect into an incident.
-    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.stage_2_incident_key, nil, self.settings.factions[1], self:trigger_end_disaster())
+    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.stage_2_incident_key, nil, self.settings.factions[1], function () self:trigger_end_disaster() end)
 
     dynamic_disasters:execute_payload(self.stage_2_incident_key, self.effects_global_key, self.settings.stage_3_delay, nil);
     self:trigger_chaos_effects(self.settings.stage_3_delay);

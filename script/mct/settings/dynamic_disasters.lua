@@ -50,21 +50,21 @@ aztec_invasion_min_turn_value:set_text(loc_prefix.."min_turn_value", true)
 aztec_invasion_min_turn_value:set_tooltip_text(loc_prefix.."min_turn_value_tooltip", true)
 aztec_invasion_min_turn_value:slider_set_min_max(10, 400)
 aztec_invasion_min_turn_value:set_default_value(100)
-aztec_invasion_min_turn_value:slider_set_step_size(1)
+aztec_invasion_min_turn_value:slider_set_step_size(10)
 
 local aztec_invasion_max_turn_value = mod:add_new_option("aztec_invasion_max_turn_value", "slider")
 aztec_invasion_max_turn_value:set_text(loc_prefix.."max_turn_value", true)
 aztec_invasion_max_turn_value:set_tooltip_text(loc_prefix.."max_turn_value_tooltip", true)
 aztec_invasion_max_turn_value:slider_set_min_max(0, 600)
 aztec_invasion_max_turn_value:set_default_value(0)
-aztec_invasion_max_turn_value:slider_set_step_size(1)
+aztec_invasion_max_turn_value:slider_set_step_size(10)
 
 local aztec_invasion_difficulty_mod = mod:add_new_option("aztec_invasion_difficulty_mod", "slider")
 aztec_invasion_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)
 aztec_invasion_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_tooltip", true)
 aztec_invasion_difficulty_mod:slider_set_min_max(10, 500)
 aztec_invasion_difficulty_mod:set_default_value(150)
-aztec_invasion_difficulty_mod:slider_set_step_size(1)
+aztec_invasion_difficulty_mod:slider_set_step_size(10)
 local d = mod:add_new_option("d1", "dummy")
 d:set_text(" ");
 
@@ -84,14 +84,14 @@ raiding_parties_min_turn_value:set_text(loc_prefix.."min_turn_value", true)
 raiding_parties_min_turn_value:set_tooltip_text(loc_prefix.."min_turn_value_tooltip", true)
 raiding_parties_min_turn_value:slider_set_min_max(10, 400)
 raiding_parties_min_turn_value:set_default_value(30)
-raiding_parties_min_turn_value:slider_set_step_size(1)
+raiding_parties_min_turn_value:slider_set_step_size(10)
 
 local raiding_parties_difficulty_mod = mod:add_new_option("raiding_parties_difficulty_mod", "slider")
 raiding_parties_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)
 raiding_parties_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_tooltip", true)
 raiding_parties_difficulty_mod:slider_set_min_max(10, 500)
 raiding_parties_difficulty_mod:set_default_value(150)
-raiding_parties_difficulty_mod:slider_set_step_size(1)
+raiding_parties_difficulty_mod:slider_set_step_size(10)
 
 --[[
     Chi'an Chi Assault Config
@@ -106,14 +106,14 @@ chianchi_assault_min_turn_value:set_text(loc_prefix.."min_turn_value", true)
 chianchi_assault_min_turn_value:set_tooltip_text(loc_prefix.."min_turn_value_tooltip", true)
 chianchi_assault_min_turn_value:slider_set_min_max(10, 400)
 chianchi_assault_min_turn_value:set_default_value(30)   -- This should teach people the Geat Bastion MUST BE DEFENDED.
-chianchi_assault_min_turn_value:slider_set_step_size(1)
+chianchi_assault_min_turn_value:slider_set_step_size(10)
 
 local chianchi_assault_difficulty_mod = mod:add_new_option("chianchi_assault_difficulty_mod", "slider")
 chianchi_assault_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)
 chianchi_assault_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_tooltip", true)
 chianchi_assault_difficulty_mod:slider_set_min_max(10, 500)
 chianchi_assault_difficulty_mod:set_default_value(150)
-chianchi_assault_difficulty_mod:slider_set_step_size(1)
+chianchi_assault_difficulty_mod:slider_set_step_size(10)
 
 --[[
     The Great Ascendancy Config
@@ -142,12 +142,47 @@ the_great_uprising_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)
 the_great_uprising_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_tooltip", true)
 the_great_uprising_difficulty_mod:slider_set_min_max(10, 500)
 the_great_uprising_difficulty_mod:set_default_value(150)
-the_great_uprising_difficulty_mod:slider_set_step_size(1)
+the_great_uprising_difficulty_mod:slider_set_step_size(13)
 local d = mod:add_new_option("d3", "dummy")
 d:set_text(" ");
 
 local d = mod:add_new_option("d4", "dummy")
 d:set_text(" ");
+
+--[[
+    Chaos Invasion Config
+]]
+local chaos_invasion_enable = mod:add_new_option("chaos_invasion_enable", "checkbox")
+chaos_invasion_enable:set_default_value(true)
+chaos_invasion_enable:set_text(loc_prefix.."chaos_invasion_enable", true)
+chaos_invasion_enable:set_tooltip_text(loc_prefix.."chaos_invasion_enable_tooltip", true)
+
+local chaos_invasion_min_turn_value = mod:add_new_option("chaos_invasion_min_turn_value", "slider")
+chaos_invasion_min_turn_value:set_text(loc_prefix.."min_turn_value", true)
+chaos_invasion_min_turn_value:set_tooltip_text(loc_prefix.."min_turn_value_tooltip", true)
+chaos_invasion_min_turn_value:slider_set_min_max(10, 400)
+chaos_invasion_min_turn_value:set_default_value(100)
+chaos_invasion_min_turn_value:slider_set_step_size(10)
+
+local chaos_invasion_max_turn_value = mod:add_new_option("chaos_invasion_max_turn_value", "slider")
+chaos_invasion_max_turn_value:set_text(loc_prefix.."max_turn_value", true)
+chaos_invasion_max_turn_value:set_tooltip_text(loc_prefix.."max_turn_value_tooltip", true)
+chaos_invasion_max_turn_value:slider_set_min_max(0, 600)
+chaos_invasion_max_turn_value:set_default_value(0)
+chaos_invasion_max_turn_value:slider_set_step_size(10)
+
+local chaos_invasion_difficulty_mod = mod:add_new_option("chaos_invasion_difficulty_mod", "slider")
+chaos_invasion_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)
+chaos_invasion_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_tooltip", true)
+chaos_invasion_difficulty_mod:slider_set_min_max(10, 500)
+chaos_invasion_difficulty_mod:set_default_value(150)
+chaos_invasion_difficulty_mod:slider_set_step_size(10)
+local d = mod:add_new_option("d99", "dummy")
+d:set_text(" ");
+
+local d = mod:add_new_option("d98", "dummy")
+d:set_text(" ");
+
 
 --[[
     Vanilla Grudge Too Far Config
@@ -162,21 +197,21 @@ grudge_too_far_min_turn_value:set_text(loc_prefix.."min_turn_value", true)
 grudge_too_far_min_turn_value:set_tooltip_text(loc_prefix.."min_turn_value_tooltip", true)
 grudge_too_far_min_turn_value:slider_set_min_max(10, 400)
 grudge_too_far_min_turn_value:set_default_value(100)
-grudge_too_far_min_turn_value:slider_set_step_size(1)
+grudge_too_far_min_turn_value:slider_set_step_size(10)
 
 local grudge_too_far_max_turn_value = mod:add_new_option("grudge_too_far_max_turn_value", "slider")
 grudge_too_far_max_turn_value:set_text(loc_prefix.."max_turn_value", true)
 grudge_too_far_max_turn_value:set_tooltip_text(loc_prefix.."max_turn_value_tooltip", true)
 grudge_too_far_max_turn_value:slider_set_min_max(0, 600)
 grudge_too_far_max_turn_value:set_default_value(0)
-grudge_too_far_max_turn_value:slider_set_step_size(1)
+grudge_too_far_max_turn_value:slider_set_step_size(10)
 
 local grudge_too_far_difficulty_mod = mod:add_new_option("grudge_too_far_difficulty_mod", "slider")
 grudge_too_far_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)
 grudge_too_far_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_tooltip", true)
 grudge_too_far_difficulty_mod:slider_set_min_max(10, 500)
 grudge_too_far_difficulty_mod:set_default_value(150)
-grudge_too_far_difficulty_mod:slider_set_step_size(1)
+grudge_too_far_difficulty_mod:slider_set_step_size(10)
 
 local d = mod:add_new_option("d5", "dummy")
 d:set_text(" ");
@@ -197,21 +232,21 @@ pyramid_of_nagash_min_turn_value:set_text(loc_prefix.."min_turn_value", true)
 pyramid_of_nagash_min_turn_value:set_tooltip_text(loc_prefix.."min_turn_value_tooltip", true)
 pyramid_of_nagash_min_turn_value:slider_set_min_max(10, 400)
 pyramid_of_nagash_min_turn_value:set_default_value(100)
-pyramid_of_nagash_min_turn_value:slider_set_step_size(1)
+pyramid_of_nagash_min_turn_value:slider_set_step_size(10)
 
 local pyramid_of_nagash_max_turn_value = mod:add_new_option("pyramid_of_nagash_max_turn_value", "slider")
 pyramid_of_nagash_max_turn_value:set_text(loc_prefix.."max_turn_value", true)
 pyramid_of_nagash_max_turn_value:set_tooltip_text(loc_prefix.."max_turn_value_tooltip", true)
 pyramid_of_nagash_max_turn_value:slider_set_min_max(0, 600)
 pyramid_of_nagash_max_turn_value:set_default_value(0)
-pyramid_of_nagash_max_turn_value:slider_set_step_size(1)
+pyramid_of_nagash_max_turn_value:slider_set_step_size(10)
 
 local pyramid_of_nagash_difficulty_mod = mod:add_new_option("pyramid_of_nagash_difficulty_mod", "slider")
 pyramid_of_nagash_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)
 pyramid_of_nagash_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_tooltip", true)
 pyramid_of_nagash_difficulty_mod:slider_set_min_max(10, 500)
 pyramid_of_nagash_difficulty_mod:set_default_value(150)
-pyramid_of_nagash_difficulty_mod:slider_set_step_size(1)
+pyramid_of_nagash_difficulty_mod:slider_set_step_size(10)
 
 local d = mod:add_new_option("d7", "dummy")
 d:set_text(" ");
@@ -232,21 +267,21 @@ vampires_rise_min_turn_value:set_text(loc_prefix.."min_turn_value", true)
 vampires_rise_min_turn_value:set_tooltip_text(loc_prefix.."min_turn_value_tooltip", true)
 vampires_rise_min_turn_value:slider_set_min_max(10, 400)
 vampires_rise_min_turn_value:set_default_value(100)
-vampires_rise_min_turn_value:slider_set_step_size(1)
+vampires_rise_min_turn_value:slider_set_step_size(10)
 
 local vampires_rise_max_turn_value = mod:add_new_option("vampires_rise_max_turn_value", "slider")
 vampires_rise_max_turn_value:set_text(loc_prefix.."max_turn_value", true)
 vampires_rise_max_turn_value:set_tooltip_text(loc_prefix.."max_turn_value_tooltip", true)
 vampires_rise_max_turn_value:slider_set_min_max(0, 600)
 vampires_rise_max_turn_value:set_default_value(0)
-vampires_rise_max_turn_value:slider_set_step_size(1)
+vampires_rise_max_turn_value:slider_set_step_size(10)
 
 local vampires_rise_difficulty_mod = mod:add_new_option("vampires_rise_difficulty_mod", "slider")
 vampires_rise_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)
 vampires_rise_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_tooltip", true)
 vampires_rise_difficulty_mod:slider_set_min_max(10, 500)
 vampires_rise_difficulty_mod:set_default_value(150)
-vampires_rise_difficulty_mod:slider_set_step_size(1)
+vampires_rise_difficulty_mod:slider_set_step_size(10)
 
 local d = mod:add_new_option("d9", "dummy")
 d:set_text(" ");
@@ -267,21 +302,21 @@ waaagh_min_turn_value:set_text(loc_prefix.."min_turn_value", true)
 waaagh_min_turn_value:set_tooltip_text(loc_prefix.."min_turn_value_tooltip", true)
 waaagh_min_turn_value:slider_set_min_max(10, 400)
 waaagh_min_turn_value:set_default_value(100)
-waaagh_min_turn_value:slider_set_step_size(1)
+waaagh_min_turn_value:slider_set_step_size(10)
 
 local waaagh_max_turn_value = mod:add_new_option("waaagh_max_turn_value", "slider")
 waaagh_max_turn_value:set_text(loc_prefix.."max_turn_value", true)
 waaagh_max_turn_value:set_tooltip_text(loc_prefix.."max_turn_value_tooltip", true)
 waaagh_max_turn_value:slider_set_min_max(0, 600)
 waaagh_max_turn_value:set_default_value(0)
-waaagh_max_turn_value:slider_set_step_size(1)
+waaagh_max_turn_value:slider_set_step_size(10)
 
 local waaagh_difficulty_mod = mod:add_new_option("waaagh_difficulty_mod", "slider")
 waaagh_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)
 waaagh_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_tooltip", true)
 waaagh_difficulty_mod:slider_set_min_max(10, 500)
 waaagh_difficulty_mod:set_default_value(150)
-waaagh_difficulty_mod:slider_set_step_size(1)
+waaagh_difficulty_mod:slider_set_step_size(10)
 
 local d = mod:add_new_option("d11", "dummy")
 d:set_text(" ");
@@ -302,21 +337,21 @@ wild_hunt_min_turn_value:set_text(loc_prefix.."min_turn_value", true)
 wild_hunt_min_turn_value:set_tooltip_text(loc_prefix.."min_turn_value_tooltip", true)
 wild_hunt_min_turn_value:slider_set_min_max(10, 400)
 wild_hunt_min_turn_value:set_default_value(100)
-wild_hunt_min_turn_value:slider_set_step_size(1)
+wild_hunt_min_turn_value:slider_set_step_size(10)
 
 local wild_hunt_max_turn_value = mod:add_new_option("wild_hunt_max_turn_value", "slider")
 wild_hunt_max_turn_value:set_text(loc_prefix.."max_turn_value", true)
 wild_hunt_max_turn_value:set_tooltip_text(loc_prefix.."max_turn_value_tooltip", true)
 wild_hunt_max_turn_value:slider_set_min_max(0, 600)
 wild_hunt_max_turn_value:set_default_value(0)
-wild_hunt_max_turn_value:slider_set_step_size(1)
+wild_hunt_max_turn_value:slider_set_step_size(10)
 
 local wild_hunt_difficulty_mod = mod:add_new_option("wild_hunt_difficulty_mod", "slider")
 wild_hunt_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)
 wild_hunt_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_tooltip", true)
 wild_hunt_difficulty_mod:slider_set_min_max(10, 500)
 wild_hunt_difficulty_mod:set_default_value(150)
-wild_hunt_difficulty_mod:slider_set_step_size(1)
+wild_hunt_difficulty_mod:slider_set_step_size(10)
 
 local d = mod:add_new_option("d13", "dummy")
 d:set_text(" ");

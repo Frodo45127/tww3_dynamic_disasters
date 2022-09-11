@@ -232,7 +232,7 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
     dynamic_disasters:reveal_regions(self.settings.regions);
 
     -- Trigger either the victory mission, or just the related incident.
-    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.invasion_incident_key, self.settings.regions[1], self.settings.factions[1], self:trigger_end_disaster())
+    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.invasion_incident_key, self.settings.regions[1], self.settings.factions[1], function () self:trigger_end_disaster() end)
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_dwf_dwarfs")
     self:set_status(STATUS_STARTED);
 end

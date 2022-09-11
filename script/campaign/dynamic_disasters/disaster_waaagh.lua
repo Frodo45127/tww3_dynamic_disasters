@@ -261,7 +261,7 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
     dynamic_disasters:reveal_regions(self.settings.regions);
 
     -- Trigger either the victory mission, or just the related incident.
-    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.invasion_incident_key, self.settings.regions[1], self.settings.factions[1], self:trigger_end_disaster())
+    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.invasion_incident_key, self.settings.regions[1], self.settings.factions[1], function () self:trigger_end_disaster() end)
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_grn_greenskins")
     self:set_status(STATUS_STARTED);
 end
