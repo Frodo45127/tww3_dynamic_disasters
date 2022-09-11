@@ -89,6 +89,7 @@ disaster_waaagh = {
     invasion_incident_key = "wh3_main_ie_incident_endgame_waaagh",
     endgame_mission_name = "da_biggest_and_badest_waaagh",
     invader_buffs_effects_key = "wh3_main_ie_scripted_endgame_waaagh",
+    finish_early_incident_key = "dyn_dis_waaagh_early_end",
 	ai_personality = "wh3_combi_greenskin_endgame",
 }
 
@@ -111,7 +112,14 @@ function disaster_waaagh:set_status(status)
                 return cm:turn_number() == self.settings.last_triggered_turn + self.settings.early_warning_delay
             end,
             function()
-                self:trigger_da_biggest_waaagh();
+
+                -- Update the potential factions removing the confederated ones and check if we still have factions to use.
+                self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
+                if #self.settings.factions == 0 then
+                    dynamic_disasters:execute_payload(self.finish_early_incident_key, nil, 0, nil);
+                else
+                    self:trigger_da_biggest_waaagh();
+                end
                 core:remove_listener("WaaaghStart")
             end,
             true

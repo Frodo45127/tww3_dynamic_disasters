@@ -115,6 +115,7 @@ disaster_pyramid_of_nagash = {
     early_warning_incident_key = "wh3_main_ie_incident_endgame_black_pyramid_early_warning",
 	early_warning_effects_key = "wh3_main_ie_scripted_endgame_early_warning",
 	endgame_mission_name = "guess_whos_back",
+	finish_early_incident_key = "dyn_dis_pyramid_of_nagash_early_end",
 }
 
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
@@ -131,7 +132,31 @@ function disaster_pyramid_of_nagash:set_status(status)
 	            return cm:turn_number() == self.settings.last_triggered_turn + self.settings.early_warning_delay
 	        end,
 	        function()
-	            self:trigger_resurection_of_nagash();
+
+                -- Check if the sentinels are available to use.
+    			local sentinels_available = true;
+    			local region = cm:get_region(self.region_key)
+				local region_owner = region:owning_faction();
+				if region:is_abandoned() or
+					region_owner:is_human() or
+					(
+						region_owner:is_human() == false and
+						region_owner:subculture() ~= "wh2_dlc09_sc_tmb_tomb_kings" and
+						region_owner:subculture() ~= "wh_main_sc_vmp_vampire_counts"
+					) then
+
+					-- The disaster cannot begin if we need the sentinels to spawn and they've been confederated.
+					local faction = cm:get_faction("wh2_dlc09_tmb_the_sentinels");
+				    if faction == false or faction:is_null_interface() == true or faction:was_confederated() == true then
+				    	sentinels_available = false;
+				    end
+				end
+
+                if sentinels_available == false then
+                    dynamic_disasters:execute_payload(self.finish_early_incident_key, nil, 0, nil);
+                else
+                    self:trigger_resurection_of_nagash();
+                end
 	            core:remove_listener("PyramidOfNagashStart")
 	        end,
 	        true

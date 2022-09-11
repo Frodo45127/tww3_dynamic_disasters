@@ -108,6 +108,7 @@ disaster_grudge_too_far = {
     invasion_incident_key = "wh3_main_ie_incident_endgame_grudge_too_far",
     endgame_mission_name = "we_ran_out_of_book",
     invader_buffs_effects_key = "wh3_main_ie_scripted_endgame_grudge_too_far",
+    finish_early_incident_key = "dyn_dis_grudge_too_far_early_end",
 	ai_personality = "wh3_combi_dwarf_endgame",
 }
 
@@ -144,8 +145,16 @@ function disaster_grudge_too_far:set_status(status)
             function()
                 return cm:turn_number() == self.settings.last_triggered_turn + self.settings.early_warning_delay
             end,
+
             function()
-                self:trigger_second_great_beard_war();
+
+                -- Update the potential factions removing the confederated ones and check if we still have factions to use.
+                self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
+                if #self.settings.factions == 0 then
+                    dynamic_disasters:execute_payload(self.finish_early_incident_key, nil, 0, nil);
+                else
+                    self:trigger_second_great_beard_war();
+                end
                 core:remove_listener("GrudgeTooFarStart")
             end,
             true

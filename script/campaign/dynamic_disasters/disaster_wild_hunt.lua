@@ -101,6 +101,7 @@ disaster_wild_hunt = {
     invasion_incident_key = "wh3_main_ie_incident_endgame_wild_hunt",
     endgame_mission_name = "and_so_the_wild_hunt_begun",
     invader_buffs_effects_key = "wh3_main_ie_scripted_endgame_wild_hunt",
+    finish_early_incident_key = "dyn_dis_wild_hunt_early_end",
     ai_personality = "wh3_combi_woodelf_endgame",
 }
 
@@ -131,7 +132,14 @@ function disaster_wild_hunt:set_status(status)
                 return cm:turn_number() == self.settings.last_triggered_turn + self.settings.early_warning_delay
             end,
             function()
-                self:trigger_the_wild_hunt();
+
+                -- Update the potential factions removing the confederated ones and check if we still have factions to use.
+                self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
+                if #self.settings.factions == 0 then
+                    dynamic_disasters:execute_payload(self.finish_early_incident_key, nil, 0, nil);
+                else
+                    self:trigger_the_wild_hunt();
+                end
                 core:remove_listener("TheWildHuntStart")
             end,
             true
