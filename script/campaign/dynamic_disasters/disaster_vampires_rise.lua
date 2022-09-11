@@ -1,19 +1,23 @@
 --[[
     Vampires Rise, By CA.
 
-    Disaster ported from the endgames disasters. Vampires go full retard.
+    Disaster ported from the endgames disasters. Vampires go full retard. Extended functionality and fixes added.
+
+    Classified as Endgame, can trigger final mission. Supports debug mode.
 
     Requirements:
-        - Random chance (0.005)
-        - +0.005 for each vampire faction that has been wiped out.
+        - Random chance: 0.5% (1/200 turns).
+        - +0.5% for each Vampire faction that has been wiped out (not confederated).
         - At least turn 100 (so the player has already "prepared").
     Effects:
         - Trigger/Early Warning:
             - "The end is nigh" message
         - Invasion:
-            - One major vampire faction recover his capitals and spawn a lot of armies.
+            - All major and minor non-confederated vampire factions declare war on owner of attacked provinces and adjacent regions.
+            - All major and minor non-confederated vampire factions gets disabled diplomacy and full-retard AI.
+            - If no other disaster has triggered a Victory Condition yet, this will trigger one.
         - Finish:
-            - A certain amount of vampire capitals controled.
+            - All vampire factions destroyed.
 
 ]]
 
@@ -29,20 +33,64 @@ disaster_vampires_rise = {
     allowed_for_sc = {},
     denied_for_sc = { "wh_main_sc_vmp_vampire_counts" },
 
-	settings = {
+    -- If the disaster is an endgame scenario, define here the objectives to pass to the function that creates the victory condition.
+    objectives = {
+        {
+            type = "DESTROY_FACTION",
+            conditions = {
+                "confederation_valid"
+            },
+            payloads = {
+                "money 50000"
+            }
+        }
+    },
+
+    -- Settings of the disaster that will be stored in a save.
+    settings = {
+        enabled = true,                     -- If the disaster is enabled or not.
+        started = false,                    -- If the disaster has been started.
+        finished = false,                   -- If the disaster has been finished.
+        repeteable = false,                 -- If the disaster can be repeated.
+        is_endgame = true,                  -- If the disaster is an endgame.
+        min_turn = 100,                     -- Minimum turn required for the disaster to trigger.
+        max_turn = 0,                       -- If the disaster hasn't trigger at this turn, we try to trigger it. Set to 0 to not check for max turn. Used only for some disasters.
+        status = 0,                         -- Current status of the disaster. Used to re-initialize the disaster correctly on reload.
+        last_triggered_turn = 0,            -- Turn when the disaster was last triggerd.
+        last_finished_turn = 0,             -- Turn when the disaster was last finished.
+        wait_turns_between_repeats = 0,     -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
+        difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
         campaigns = {                       -- Campaigns this disaster works on.
             "main_warhammer",
         },
+
+        --Disaster-specific data.
 		army_template = {
 			vampires = "lategame"
 		},
-		base_army_count = 4, -- Number of armies that spawn in each vampire homeland when the event fires.
-		unit_count = 19,
+
+        army_count_per_province = 4,
+        unit_count = 19,
         early_warning_delay = 10,
+
+       factions = {
+            "wh_main_vmp_schwartzhafen",
+            "wh_main_vmp_vampire_counts",
+            "wh2_dlc11_vmp_the_barrow_legion",
+            "wh3_main_vmp_caravan_of_blue_roses",
+            "wh_main_vmp_mousillon",
+
+            -- TODO: Add the missing vampire factions.
+        },
+
+        regions = {},
 	},
 
     early_warning_incident_key = "wh3_main_ie_incident_endgame_vampires_rise_early_warning",
     early_warning_effects_key = "wh3_main_ie_scripted_endgame_early_warning",
+    invasion_incident_key = "wh3_main_ie_incident_endgame_vampires_rise",
+    endgame_mission_name = "planet_of_the_dead",
+    invader_buffs_effects_key = "wh3_main_ie_scripted_endgame_vampires_rise",
 	ai_personality = "wh3_combi_vampire_endgame",
 }
 
@@ -52,6 +100,8 @@ local potential_vampires = {
 	wh2_dlc11_vmp_the_barrow_legion = "wh3_main_combi_region_blackstone_post",
 	wh3_main_vmp_caravan_of_blue_roses = "wh3_main_combi_region_the_haunted_forest",
 	wh_main_vmp_mousillon = "wh3_main_combi_region_mousillon"
+
+    -- TODO: Add the missing vampire factions.
 }
 
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
@@ -75,24 +125,10 @@ function disaster_vampires_rise:set_status(status)
         );
     end
 
-    if self.settings.status == STATUS_STARTED then
-
-        -- Listener to end the invasion.
-        core:add_listener(
-            "VampiresRiseEnd",
-            "WorldStartRound",
-            function ()
-                return self:check_end_disaster_conditions()
-            end,
-            function()
-                self:trigger_end_disaster();
-                core:remove_listener("VampiresRiseEnd")
-            end,
-            true
-        );
-    end
+    -- Once we triggered the disaster, ending it is controlled by two missions, so we don't need to listen for an ending.
 end
 
+-- Function to trigger the early warning before the disaster.
 function disaster_vampires_rise:trigger()
 
     -- Debug mode support.
@@ -106,49 +142,36 @@ function disaster_vampires_rise:trigger()
     self:set_status(STATUS_TRIGGERED);
 end
 
+-- Function to trigger the disaster.
 function disaster_vampires_rise:trigger_the_great_vampiric_war()
-
-	local vampire_factions = {}
-	
-	for faction_key, region_key in pairs(potential_vampires) do
+    for _, faction_key in pairs(self.settings.factions) do
+        local region_key = potential_vampires[faction_key];
 		local faction = cm:get_faction(faction_key)
-		if not faction:is_human() and not (faction:was_confederated() and faction:can_be_human()) then
-			table.insert(vampire_factions, faction_key)
-			dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.unit_count, true, math.floor(self.settings.base_army_count*self.settings.difficulty_mod), self.name)
-			endgame:no_peace_no_confederation_only_war(faction_key)
-			cm:apply_effect_bundle("wh3_main_ie_scripted_endgame_vampires_rise", faction_key, 0)
-			cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
-            dynamic_disasters:declare_war_for_owners_and_neightbours(faction, { region_key }, true, { "wh_main_sc_vmp_vampire_counts" })
-		end
+
+        local army_count = math.floor(self.settings.army_count_per_province * self.settings.difficulty_mod);
+        dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.unit_count, false, army_count, self.name)
+
+        cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
+        endgame:no_peace_no_confederation_only_war(faction_key)
+        dynamic_disasters:declare_war_for_owners_and_neightbours(faction, { region_key }, true, { "wh_main_sc_vmp_vampire_counts" })
+
+        cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)
+        table.insert(self.settings.regions, region_key);
 	end
 
-	local human_factions = cm:get_human_factions()
-	local objectives = {
-		{
-            type = "DESTROY_FACTION",
-            conditions = {
-                "confederation_valid"
-            }
-		}
-	}
+    -- Force an alliance between all dwarfen holds.
+    dynamic_disasters:force_peace_between_factions(self.settings.factions, true);
 
-    -- If we got not factions, stop the disaster.
-    if #vampire_factions == 0 then
-        self:trigger_end_disaster();
-        return
+    -- If we got regions, prepare the victory mission/disaster end data.
+    for i = 1, #self.settings.factions do
+        table.insert(self.objectives[1].conditions, "faction " .. self.settings.factions[i])
     end
 
-	for i = 1, #vampire_factions do
-		table.insert(objectives[1].conditions, "faction "..vampire_factions[i])
-	end
+    -- Reveal all regions subject to capture.
+    dynamic_disasters:reveal_regions(self.settings.regions);
 
-	local incident_key = "wh3_main_ie_incident_endgame_vampires_rise"
-    if dynamic_disasters.settings.victory_condition_triggered == false then
-        dynamic_disasters:add_victory_condition(incident_key, objectives, nil, vampire_factions[1])
-    else
-        dynamic_disasters:execute_payload(incident_key, nil, 0, nil);
-    end
-
+    -- Trigger either the victory mission, or just the related incident.
+    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.invasion_incident_key, self.settings.regions[1], self.settings.factions[1], self:trigger_end_disaster())
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_vmp_vampire_counts")
     self:set_status(STATUS_STARTED);
 end
@@ -156,13 +179,38 @@ end
 
 -- Function to trigger cleanup stuff after the invasion is over.
 function disaster_vampires_rise:trigger_end_disaster()
-    out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
-    dynamic_disasters:finish_disaster(self);
+    if self.settings.started == true then
+        out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
+        dynamic_disasters:finish_disaster(self);
+    end
 end
 
 --- Function to check if the disaster custom conditions are valid and can be trigger.
 ---@return boolean If the disaster will be triggered or not.
 function disaster_vampires_rise:check_start_disaster_conditions()
+
+    -- Update the potential factions removing the confederated ones.
+    self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
+
+    -- Do not start if we don't have attackers.
+    if #self.settings.factions == 0 then
+        return false;
+    end
+
+    -- Check if any of the attackers if actually alive.
+    local attackers_still_alive = false;
+    for _, faction_key in pairs(self.settings.factions) do
+        local faction = cm:get_faction(faction_key);
+        if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false then
+            attackers_still_alive = true;
+            break;
+        end
+    end
+
+    -- Do not start if we don't have any alive attackers.
+    if attackers_still_alive == false then
+        return false;
+    end
 
     -- Debug mode support.
     if dynamic_disasters.settings.debug == true then
@@ -184,27 +232,6 @@ function disaster_vampires_rise:check_start_disaster_conditions()
 
     if math.random() < base_chance then
         return true;
-    end
-
-    return false;
-end
-
---- Function to check if the conditions to declare the disaster as "finished" are fulfilled.
----@return boolean If the disaster will be finished or not.
-function disaster_vampires_rise:check_end_disaster_conditions()
-    local controlled_regions = 0;
-
-    for _, region_key in pairs(potential_vampires) do
-        local region = cm:get_region(region_key);
-
-        -- TODO: check for allies too.
-        if region ~= false and region:owning_faction():is_human() then
-            controlled_regions = controlled_regions + 1;
-        end
-    end
-
-    if controlled_regions >= #potential_vampires then
-        return true
     end
 
     return false;

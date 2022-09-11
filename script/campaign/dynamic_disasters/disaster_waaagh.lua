@@ -80,6 +80,8 @@ disaster_waaagh = {
 
             -- TODO: Add the rest of the Greenskin factions here.
         },
+
+        regions = {},
 	},
 
     early_warning_incident_key = "wh3_main_ie_incident_endgame_waaagh_early_warning",
@@ -168,6 +170,7 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
 			endgame:no_peace_no_confederation_only_war(faction_key)
             dynamic_disasters:declare_war_for_owners_and_neightbours(faction, { region_key }, true, { "wh_main_sc_grn_greenskins" })
 			cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)
+            table.insert(self.settings.regions, region_key);
 		end
 	end
 
@@ -183,7 +186,7 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
     dynamic_disasters:reveal_regions(self.settings.regions);
 
     -- Trigger either the victory mission, or just the related incident.
-    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.invasion_incident_key, nil, self.settings.factions[1], self:trigger_end_disaster())
+    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.invasion_incident_key, self.settings.regions[1], self.settings.factions[1], self:trigger_end_disaster())
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_grn_greenskins")
     self:set_status(STATUS_STARTED);
 end

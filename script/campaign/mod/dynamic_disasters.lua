@@ -1513,7 +1513,6 @@ function dynamic_disasters:create_scenario_force(faction_key, region_key, army_t
     end
 
     if declare_war then
-        local invasion_faction = cm:get_faction(faction_key)
         local region_owning_faction = cm:get_region(region_key):owning_faction()
         if not region_owning_faction == false and region_owning_faction:is_null_interface() == false then
             out("Frodo45127: Trying to declare war between " .. faction_key .. " and ".. region_owning_faction:name() .. " due to army spawn.")
@@ -1587,7 +1586,6 @@ function dynamic_disasters:create_scenario_force_at_coords(faction_key, region_k
     end
 
     if declare_war then
-        local invasion_faction = cm:get_faction(faction_key)
         local region_owning_faction = cm:get_region(region_key):owning_faction()
         if not region_owning_faction == false and region_owning_faction:is_null_interface() == false then
             out("Frodo45127: Trying to declare war between "..faction_key.." and "..region_owning_faction:name() .. " due to army spawn.")
