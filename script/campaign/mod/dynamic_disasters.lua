@@ -1657,7 +1657,34 @@ function dynamic_disasters:declare_war(attacker_key, defender_key, invite_attack
         end
         if attacker_key ~= defender_key and cm:get_faction(attacker_key):at_war_with(defender_faction) == false then
             out("Frodo45127: Declaring war between "..attacker_key.." and "..defender_key)
-            cm:force_declare_war(attacker_key, defender_key, invite_attacker_allies, invite_defender_allies)
+            if invite_defender_allies == true then
+
+                -- Note: if you're an ally of a defender (can't be of an attacker, and if it's, it's a bug in the disaster because all attackers must be already in war with the player)
+                -- inviting defender allies at the beginning of your turn will bug out the camera. To avoid that, if a human is an ally we manually declare war on each of the allies,
+                -- without inviting them. If there are no human allies there is no problem.
+                local human_is_allied_of_defender = false;
+                local human_factions = cm:get_human_factions();
+                for _, human_faction_key in pairs(human_factions) do
+                    local human_faction = cm:get_faction(human_faction_key);
+                    if defender_faction:allied_with(human_faction) then
+                        human_is_allied_of_defender = true;
+                        break;
+                    end
+                end
+
+                if human_is_allied_of_defender == true then
+                    local allied_factions = defender_faction:factions_allied_with();
+                    for i = 0, allied_factions:num_items() - 1 do
+                        local defender_faction_ally = allied_factions:item_at(i);
+                        cm:force_declare_war(attacker_key, defender_faction_ally:name(), invite_attacker_allies, false)
+                    end
+                    cm:force_declare_war(attacker_key, defender_key, invite_attacker_allies, false)
+                else
+                    cm:force_declare_war(attacker_key, defender_key, invite_attacker_allies, invite_defender_allies)
+                end
+            else
+                cm:force_declare_war(attacker_key, defender_key, invite_attacker_allies, invite_defender_allies)
+            end
         end
     end
 end
