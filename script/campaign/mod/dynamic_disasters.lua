@@ -16,9 +16,6 @@ dynamic_disasters = {
         victory_condition_triggered = false,    -- If a disaster has already triggered a victory condition, as we can't have two at the same time.
         max_endgames_at_the_same_time = 4,      -- Max amount of endgame crisis one can trigger at the same time, to space them out a bit.
         currently_running_endgames = 0,         -- Amount of currently running endgames.
-
-        order_factions_swap = {},               -- List of factions that, due to a disaster, have changed sides to the order-tide.
-        chaos_factions_swap = {},               -- List of factions that, due to a disaster, have changed sides to the chaos-tide.
     },
 
     -- List of weigthed units used by the manager.
@@ -1375,7 +1372,8 @@ end
 ---@param target_region_key string #Optional. Key of a region to zoom in.
 ---@param target_faction_key string #Optional. Key of a faction to zoom in.
 ---@param success_callback function #Optional. Function to trigger when the mission is completed.
-function dynamic_disasters:add_mission(objectives, can_be_victory, disaster_name, mission_name, incident_key, target_region_key, target_faction_key, success_callback)
+---@param do_not_trigger_incident boolean #Optional. If true the related incident will not be triggered, so it's up to you to trigger it manually later and trigger the mission with it..
+function dynamic_disasters:add_mission(objectives, can_be_victory, disaster_name, mission_name, incident_key, target_region_key, target_faction_key, success_callback, do_not_trigger_incident)
     local target_region_cqi = 0;
     local target_faction_cqi = 0;
 
@@ -1390,16 +1388,18 @@ function dynamic_disasters:add_mission(objectives, can_be_victory, disaster_name
     local human_factions = cm:get_human_factions()
     for i = 1, #human_factions do
         dynamic_disasters:add_mission_listener(human_factions[i], objectives, can_be_victory, disaster_name, mission_name, incident_key, success_callback)
-        cm:trigger_incident_with_targets(
-            cm:get_faction(human_factions[i]):command_queue_index(),
-            incident_key,
-            target_faction_cqi,
-            0,
-            0,
-            0,
-            target_region_cqi,
-            0
-        )
+        if not do_not_trigger_incident == true then
+            cm:trigger_incident_with_targets(
+                cm:get_faction(human_factions[i]):command_queue_index(),
+                incident_key,
+                target_faction_cqi,
+                0,
+                0,
+                0,
+                target_region_cqi,
+                0
+            )
+        end
     end
 end
 
@@ -1852,37 +1852,6 @@ function dynamic_disasters:is_order_faction(faction_key)
         return false;
     end
 
-    -- Check the list of factions that for one reason or another swapped sides to order.
-    local is_order_faction = false;
-    if #self.order_factions_swap > 0 then
-        for i = 1, #self.order_factions_swap do
-            if self.order_factions_swap[i] == faction_key then
-                is_order_faction = true;
-                break;
-            end
-        end
-    end
-
-    if is_order_faction == true then
-        return true;
-    end
-
-    -- Check the list of factions that for one reason or another swapped sides to chaos, just in case it was an order faction that moved to chaos.
-    local is_chaos_faction = false;
-    if #self.chaos_factions_swap > 0 then
-        for i = 1, #self.chaos_factions_swap do
-            if self.chaos_factions_swap[i] == faction_key then
-                is_chaos_faction = true;
-                break;
-            end
-        end
-    end
-
-    if is_chaos_faction == true then
-        return false;
-    end
-
-    -- If our faction didn't swapped sides, check it's subculture.
     local subcultures = {
         "wh2_main_sc_hef_high_elves",
         "wh2_main_sc_lzd_lizardmen",
@@ -1924,37 +1893,6 @@ function dynamic_disasters:is_chaos_faction(faction_key)
         return false;
     end
 
-    -- Check the list of factions that for one reason or another swapped sides to chaos.
-    local is_chaos_faction = false;
-    if #self.chaos_factions_swap > 0 then
-        for i = 1, #self.chaos_factions_swap do
-            if self.chaos_factions_swap[i] == faction_key then
-                is_chaos_faction = true;
-                break;
-            end
-        end
-    end
-
-    if is_chaos_faction == true then
-        return true;
-    end
-
-    -- Check the list of factions that for one reason or another swapped sides to order.
-    local is_order_faction = false;
-    if #self.order_factions_swap > 0 then
-        for i = 1, #self.order_factions_swap do
-            if self.order_factions_swap[i] == faction_key then
-                is_order_faction = true;
-                break;
-            end
-        end
-    end
-
-    if is_order_faction == true then
-        return false;
-    end
-
-    -- If our faction didn't swapped sides, check it's subculture.
     local subcultures = {
         "wh2_main_rogue_chaos",
         "wh2_main_sc_def_dark_elves",
