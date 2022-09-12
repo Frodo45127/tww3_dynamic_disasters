@@ -1493,12 +1493,23 @@ end
 ---@param declare_war boolean #If war should be declared between the owner of the armies and the owner of the region where they'll spawn.
 ---@param total_armies integer #Amount of armies to spawn. If not provided, it'll spawn 1.
 ---@param disaster_name string #Name of the disaster that will use this army.
+---@param success_callback function #Optional. Custom success callback.
 ---@return boolean #If at least one army has been spawned, or all armies failed to spawn due to invalid coordinates.
-function dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, unit_count, declare_war, total_armies, disaster_name)
+function dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, unit_count, declare_war, total_armies, disaster_name, success_callback)
 
     -- total_armies shouldn't be nil, but if it is assume we want a single army
     if total_armies == nil then
         total_armies = 1
+    end
+
+    if success_callback == nil then
+        success_callback = function(cqi)
+            local character = cm:char_lookup_str(cqi)
+            cm:apply_effect_bundle_to_characters_force("wh_main_bundle_military_upkeep_free_force", cqi, 0)
+            cm:apply_effect_bundle_to_characters_force("wh3_main_ie_scripted_endgame_force_immune_to_regionless_attrition", cqi, 5)
+            cm:add_agent_experience(character, cm:random_number(25, 15), true)
+            cm:add_experience_to_units_commanded_by_character(character, cm:random_number(7, 3))
+        end
     end
 
     local army_spawn = false;
@@ -1532,13 +1543,7 @@ function dynamic_disasters:create_scenario_force(faction_key, region_key, army_t
             pos_x,
             pos_y,
             false,
-            function(cqi)
-                local character = cm:char_lookup_str(cqi)
-                cm:apply_effect_bundle_to_characters_force("wh_main_bundle_military_upkeep_free_force", cqi, 0)
-                cm:apply_effect_bundle_to_characters_force("wh3_main_ie_scripted_endgame_force_immune_to_regionless_attrition", cqi, 5)
-                cm:add_agent_experience(character, cm:random_number(25, 15), true)
-                cm:add_experience_to_units_commanded_by_character(character, cm:random_number(7, 3))
-            end
+            success_callback
         )
 
         -- If we manage to spawn at least one army, take it as a win.
@@ -1566,12 +1571,23 @@ end
 ---@param declare_war boolean #If war should be declared between the owner of the armies and the owner of the region where they'll spawn.
 ---@param total_armies integer #Amount of armies to spawn. If not provided, it'll spawn 1.
 ---@param disaster_name string #Name of the disaster that will use this army.
+---@param success_callback function #Optional. Custom success callback.
 ---@return boolean #If at least one army has been spawned, or all armies failed to spawn due to invalid coordinates.
-function dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, coords, army_template, unit_count, declare_war, total_armies, disaster_name)
+function dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, coords, army_template, unit_count, declare_war, total_armies, disaster_name, success_callback)
 
     -- total_armies shouldn't be nil, but if it is assume we want a single army
     if total_armies == nil then
         total_armies = 1
+    end
+
+    if success_callback == nil then
+        success_callback = function(cqi)
+            local character = cm:char_lookup_str(cqi)
+            cm:apply_effect_bundle_to_characters_force("wh_main_bundle_military_upkeep_free_force", cqi, 0)
+            cm:apply_effect_bundle_to_characters_force("wh3_main_ie_scripted_endgame_force_immune_to_regionless_attrition", cqi, 5)
+            cm:add_agent_experience(character, cm:random_number(25, 15), true)
+            cm:add_experience_to_units_commanded_by_character(character, cm:random_number(7, 3))
+        end
     end
 
     local army_spawn = false;
@@ -1605,13 +1621,7 @@ function dynamic_disasters:create_scenario_force_at_coords(faction_key, region_k
             pos_x,
             pos_y,
             false,
-            function(cqi)
-                local character = cm:char_lookup_str(cqi)
-                cm:apply_effect_bundle_to_characters_force("wh_main_bundle_military_upkeep_free_force", cqi, 0)
-                cm:apply_effect_bundle_to_characters_force("wh3_main_ie_scripted_endgame_force_immune_to_regionless_attrition", cqi, 5)
-                cm:add_agent_experience(character, cm:random_number(25, 15), true)
-                cm:add_experience_to_units_commanded_by_character(character, cm:random_number(7, 3))
-            end
+            success_callback
         )
 
         -- If we manage to spawn at least one army, take it as a win.

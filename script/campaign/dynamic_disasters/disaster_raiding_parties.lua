@@ -348,7 +348,7 @@ function disaster_raiding_parties:trigger_raiding_parties()
         -- Spawn armies at sea.
         for i = 1, #dyn_dis_sea_potential_attack_vectors[sea_region].spawn_positions do
             local spawn_pos = dyn_dis_sea_potential_attack_vectors[sea_region].spawn_positions[i];
-            dynamic_disasters:create_scenario_force_at_coords(self.settings.faction, dyn_dis_sea_potential_attack_vectors[sea_region].coastal_regions[1], spawn_pos, self.settings.army_template, self.settings.unit_count, false, armies_to_spawn_in_each_spawn_point, self.name);
+            dynamic_disasters:create_scenario_force_at_coords(self.settings.faction, dyn_dis_sea_potential_attack_vectors[sea_region].coastal_regions[1], spawn_pos, self.settings.army_template, self.settings.unit_count, false, armies_to_spawn_in_each_spawn_point, self.name, self.spawn_armies_callback);
         end
     end
 
@@ -363,6 +363,30 @@ function disaster_raiding_parties:trigger_raiding_parties()
     cm:apply_effect_bundle(self.invader_buffs_effects_key, self.settings.faction, 10)
     dynamic_disasters:execute_payload(self.raiding_event_key, nil, 0, dyn_dis_sea_potential_attack_vectors[first_sea_region].coastal_regions[1]);
     cm:activate_music_trigger("ScriptedEvent_Negative", self.settings.subculture)
+end
+
+function disaster_raiding_parties:spawn_armies_callback(cqi)
+    out("Frodo45127: Callback for force " .. tostring(cqi))
+    cm:apply_effect_bundle_to_characters_force("wh_main_bundle_military_upkeep_free_force", cqi, 0)
+    local general = cm:get_character_by_cqi(cqi)
+    local invasion = invasion_manager:get_invasion(cqi)
+
+    if not invasion then
+        invasion = invasion_manager:new_invasion_from_existing_force(tostring(cqi), general:military_force())
+    end
+
+    local m_x = general:logical_position_x()
+    local m_y = general:logical_position_y()
+
+    invasion:apply_effect("wh_main_bundle_military_upkeep_free_force", -1)
+
+    local coords = {{x = m_x, y = m_y},{x = m_x, y = m_y}}
+    invasion:set_target("PATROL", coords, nil)
+    invasion:add_aggro_radius(5)
+    if invasion:has_target() then
+        out.design("\t\tBastion: Setting invasion with general [" .. common.get_localised_string(general:get_forename()) .. "] to be stationary")
+        invasion:start_invasion(nil, true, false, false)
+    end
 end
 
 -- Function to trigger cleanup stuff after the invasion is over.
