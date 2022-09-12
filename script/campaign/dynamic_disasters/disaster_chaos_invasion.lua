@@ -886,10 +886,10 @@ end
 function disaster_chaos_invasion:trigger()
     out("Frodo45127: Disaster: " .. self.name .. ". Triggering first warning.");
 
-    if dynamic_disasters.settings.debug == false then
-        self.settings.stage_1_delay = math.random(8, 12);
-    else
+    if dynamic_disasters.settings.debug == true then
         self.settings.stage_1_delay = 1;
+    else
+        self.settings.stage_1_delay = math.random(8, 12);
     end
 
     -- Initialize listeners.
@@ -901,10 +901,10 @@ end
 function disaster_chaos_invasion:trigger_stage_1()
     out("Frodo45127: Disaster: " .. self.name .. ". Triggering stage 1.");
 
-    if dynamic_disasters.settings.debug == false then
-        self.settings.stage_2_delay = math.random(6, 10);
-    else
+    if dynamic_disasters.settings.debug == true then
         self.settings.stage_2_delay = 1;
+    else
+        self.settings.stage_2_delay = math.random(6, 10);
     end
 
     -- Spawn all the initial chaos armies.
@@ -938,10 +938,10 @@ end
 -- Function to trigger the second stage of the Chaos Invasion.
 function disaster_chaos_invasion:trigger_stage_2()
 
-    if dynamic_disasters.settings.debug == false then
-        self.settings.stage_3_delay = math.random(6, 10);
-    else
+    if dynamic_disasters.settings.debug == true then
         self.settings.stage_3_delay = 1;
+    else
+        self.settings.stage_3_delay = math.random(6, 10);
     end
 
     -- Spawn all the stage 2 chaos armies. This is where hell breaks loose... literally.

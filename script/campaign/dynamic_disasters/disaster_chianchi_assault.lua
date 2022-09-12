@@ -220,14 +220,14 @@ function disaster_chianchi_assault:trigger()
     out("Frodo45127: Starting disaster: " .. self.name);
 
     -- Recalculate the delays to trigger this after the initial warning.
-    if dynamic_disasters.settings.debug == false then
-        self.settings.warning_delay = math.random(2, 3);
-        self.settings.reinforcements_delay = math.random(self.settings.warning_delay, 6);
-        self.settings.wait_turns_between_repeats = 5;
-    else
+    if dynamic_disasters.settings.debug == true then
         self.settings.warning_delay = 1;
         self.settings.reinforcements_delay = 1;
         self.settings.wait_turns_between_repeats = 1;
+    else
+        self.settings.warning_delay = math.random(2, 3);
+        self.settings.reinforcements_delay = math.random(self.settings.warning_delay, 6);
+        self.settings.wait_turns_between_repeats = 5;
     end
 
     -- Set the army difficulty based on game turn.

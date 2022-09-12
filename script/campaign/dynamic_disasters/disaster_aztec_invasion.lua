@@ -846,10 +846,10 @@ end
 function disaster_aztec_invasion:trigger_first_warning()
     out("Frodo45127: Disaster: " .. self.name .. ". Triggering first warning.");
 
-    if dynamic_disasters.settings.debug == false then
-        self.settings.second_warning_delay = math.random(3, 6);
-    else
+    if dynamic_disasters.settings.debug == true then
         self.settings.second_warning_delay = 1;
+    else
+        self.settings.second_warning_delay = math.random(3, 6);
     end
 
     dynamic_disasters:execute_payload(self.first_warning_event_key, self.first_warning_event_key, self.settings.second_warning_delay, nil);
@@ -859,10 +859,10 @@ end
 function disaster_aztec_invasion:trigger_second_warning()
     out("Frodo45127: Disaster: " .. self.name .. ". Triggering second warning.");
 
-    if dynamic_disasters.settings.debug == false then
-        self.settings.invasion_delay = math.random(3, 6);
-    else
+    if dynamic_disasters.settings.debug == true then
         self.settings.invasion_delay = 1;
+    else
+        self.settings.invasion_delay = math.random(3, 6);
     end
 
     dynamic_disasters:execute_payload(self.second_warning_event_key, self.second_warning_event_key, self.settings.invasion_delay, nil);

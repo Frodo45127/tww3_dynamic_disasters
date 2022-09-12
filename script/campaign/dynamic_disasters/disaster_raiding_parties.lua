@@ -302,14 +302,14 @@ function disaster_raiding_parties:trigger()
     out("Frodo45127: Starting disaster: " .. self.name);
 
     -- Recalculate the delay for further executions.
-    if dynamic_disasters.settings.debug == false then
-        self.settings.warning_delay = math.random(4, 10);
-        self.settings.grace_period = self.settings.warning_delay + 6;
-        self.settings.wait_turns_between_repeats = self.settings.grace_period + 4;
-    else
+    if dynamic_disasters.settings.debug == true then
         self.settings.warning_delay = 1;
         self.settings.grace_period = 5; -- Keep this a few turns ahead to test if the AI actually works.
         self.settings.wait_turns_between_repeats = 1;
+    else
+        self.settings.warning_delay = math.random(4, 10);
+        self.settings.grace_period = self.settings.warning_delay + 6;
+        self.settings.wait_turns_between_repeats = self.settings.grace_period + 4;
     end
 
     dynamic_disasters:execute_payload(self.warning_event_key, nil, 0, nil);

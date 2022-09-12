@@ -485,10 +485,10 @@ function disaster_the_great_uprising:trigger()
     out("Frodo45127: Starting disaster: " .. self.name);
 
     -- Recalculate the delay to trigger this.
-    if dynamic_disasters.settings.debug == false then
-        self.settings.stage_1_delay = math.random(6, 10);
-    else
+    if dynamic_disasters.settings.debug == true then
         self.settings.stage_1_delay = 1;
+    else
+        self.settings.stage_1_delay = math.random(6, 10);
     end
 
     -- Initialize listeners.
@@ -498,10 +498,10 @@ end
 
 -- Function to trigger the first stage of the Great Uprising.
 function disaster_the_great_uprising:trigger_stage_1()
-    if dynamic_disasters.settings.debug == false then
-        self.settings.stage_2_delay = math.random(6, 10);
-    else
+    if dynamic_disasters.settings.debug == true then
         self.settings.stage_2_delay = 1;
+    else
+        self.settings.stage_2_delay = math.random(6, 10);
     end
 
     -- Spawn a few Skryre armies in Estalia, Tilea and Sartosa. Enough so they're able to expand next.
@@ -533,10 +533,10 @@ end
 -- Function to trigger the second stage of the Great Uprising.
 function disaster_the_great_uprising:trigger_stage_2()
 
-    if dynamic_disasters.settings.debug == false then
-        self.settings.stage_3_delay = math.random(4, 7);
-    else
+    if dynamic_disasters.settings.debug == true then
         self.settings.stage_3_delay = 1;
+    else
+        self.settings.stage_3_delay = math.random(4, 7);
     end
 
     -- Spawn a few armies in the Empire, the northern coast of Araby and Cathay.
@@ -590,10 +590,10 @@ end
 -- Function to trigger the third stage of the Great Uprising.
 function disaster_the_great_uprising:trigger_stage_3()
 
-    if dynamic_disasters.settings.debug == false then
-        self.settings.stage_4_delay = math.random(4, 6);
-    else
+    if dynamic_disasters.settings.debug == true then
         self.settings.stage_4_delay = 1;
+    else
+        self.settings.stage_4_delay = math.random(4, 6);
     end
 
     -- Spawn a few armies in Lustria.
@@ -621,10 +621,10 @@ end
 -- Function to trigger the fourth stage of the Great Uprising.
 function disaster_the_great_uprising:trigger_stage_4()
 
-    if dynamic_disasters.settings.debug == false then
-        self.settings.stage_5_delay = math.random(6, 10);
-    else
+    if dynamic_disasters.settings.debug == true then
         self.settings.stage_5_delay = 1;
+    else
+        self.settings.stage_5_delay = math.random(6, 10);
     end
 
     -- Spawn a few armies along the Karak Ankor.

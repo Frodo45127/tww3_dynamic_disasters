@@ -172,10 +172,10 @@ end
 function disaster_grudge_too_far:trigger()
 
     -- Debug mode support.
-    if dynamic_disasters.settings.debug == false then
-        self.settings.early_warning_delay = math.random(8, 12);
-    else
+    if dynamic_disasters.settings.debug == true then
         self.settings.early_warning_delay = 1;
+    else
+        self.settings.early_warning_delay = math.random(8, 12);
     end
 
     dynamic_disasters:execute_payload(self.early_warning_incident_key, self.early_warning_effects_key, self.settings.early_warning_delay, nil);
