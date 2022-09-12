@@ -50,13 +50,21 @@
             - Trigger "Chaos Invasion" (Sarthorael's spawn) video.
             - Give all non player-controlled dark fortresses to chaos armies, if they're not yet owned by a chaos army.
             - Rifts:
-                - Spawn respawnable rifts across the Borthern and Southern chaos wastes.
+                - Spawn respawnable rifts across the Northern and Southern chaos wastes.
                 - Spawn respawnable rifts on all provinces that reach at least 75 of any chaos corruption.
                 - Spawn armies from rifts once every (10 / difficulty_multiplier) turns.
+
         - Stage 3a:
             -
 
         - Stage 3b:
+        - Stage Y:
+            - If player is Cathay, Empire, Bretonia, Vampires, High Elves or Dark Elves, trigger a dilemma to become a vassal of chaos:
+                - If rejected, continue as normal.
+                - If accepted:
+                    - Receive ancillaries of the chaos gods.
+                    - Sign peace with all chaos factions and restore diplomacy with them.
+                    - Disable diplomacy with every other faction. No more diplo for you, traitor.
 
         - Stage X:
             - If Gaen Vale, Asurian's Temple, Tor Elyr and White Tower of Hoeth are either in hands of Chaos, Norsca, or in Ruins:
@@ -527,26 +535,63 @@ disaster_chaos_invasion = {
     };
     teleportation_nodes_chaos_wastes = {
         "dyn_dis_wh3_dlc20_combi_province_frigid_wasteland",
-        "dyn_dis_wh3_main_combi_province_eastern_great_bastion",
     },
-    teleportation_nodes_norsca = {},
-    teleportation_nodes_cathay = {},
-    teleportation_nodes_old_world = {},
-    teleportation_nodes_mountains_of_mourne = {},
-    teleportation_nodes_mountains_dark_lands = {},
-    teleportation_nodes_mountains_southlands = {},
-    teleportation_nodes_mountains_lustria = {},
-    teleportation_nodes_mountains_naggaroth = {},
+    teleportation_nodes_norsca = {
+        "dyn_dis_wh3_main_combi_province_albion",
+
+    },
+    teleportation_nodes_cathay = {
+        "dyn_dis_wh3_main_combi_province_broken_lands_of_tian_li",
+        "dyn_dis_wh3_main_combi_province_celestial_lake",
+        "dyn_dis_wh3_main_combi_province_celestial_riverlands",
+        "dyn_dis_wh3_main_combi_province_central_great_bastion",
+        "dyn_dis_wh3_main_combi_province_eastern_great_bastion",
+        "dyn_dis_wh3_main_combi_province_mount_li",
+        "dyn_dis_wh3_main_combi_province_nongchang_basin",
+        "dyn_dis_wh3_main_combi_province_warpstone_desert",
+        "dyn_dis_wh3_main_combi_province_wastelands_of_jinshen",
+        "dyn_dis_wh3_main_combi_province_western_great_bastion",
+
+    },
+    teleportation_nodes_old_world = {
+        "dyn_dis_wh3_main_combi_province_argwylon",
+        "dyn_dis_wh3_main_combi_province_averland",
+        "dyn_dis_wh3_main_combi_province_carcassonne",
+        "dyn_dis_wh3_main_combi_province_eastern_border_princes",
+        "dyn_dis_wh3_main_combi_province_eastern_oblast",
+        "dyn_dis_wh3_main_combi_province_forest_of_gloom",
+        "dyn_dis_wh3_main_combi_province_stirland",
+        "dyn_dis_wh3_main_combi_province_nordland",
+        "dyn_dis_wh3_main_combi_province_northern_sylvania",
+        "dyn_dis_wh3_main_combi_province_northern_worlds_edge_mountains",
+        "dyn_dis_wh3_main_combi_province_ostermark",
+        "dyn_dis_wh3_main_combi_province_ostland",
+        "dyn_dis_wh3_main_combi_province_western_oblast",
+        "dyn_dis_wh3_main_combi_province_wissenland",
+        "dyn_dis_wh3_main_combi_province_yn_edri_eternos",
+    },
+    teleportation_nodes_mountains_of_mourne = {
+
+    },
+    teleportation_nodes_mountains_dark_lands = {
+        "dyn_dis_wh3_main_combi_province_gnoblar_country",
+    },
+    teleportation_nodes_mountains_southlands = {
+
+    },
+    teleportation_nodes_mountains_lustria = {
+        "dyn_dis_wh3_main_combi_province_vampire_coast",
+    },
+    teleportation_nodes_mountains_naggaroth = {
+
+    },
 
     teleportation_nodes_ulthuan = {
         "dyn_dis_wh3_dlc20_combi_province_middle_mountains",
-        "dyn_dis_wh3_main_combi_province_albion",
         "dyn_dis_wh3_main_combi_province_ancient_giant_lands",
-        "dyn_dis_wh3_main_combi_province_argwylon",
         "dyn_dis_wh3_main_combi_province_ashen_coast",
         "dyn_dis_wh3_main_combi_province_atalan_mountains",
         "dyn_dis_wh3_main_combi_province_avelorn",
-        "dyn_dis_wh3_main_combi_province_averland",
         "dyn_dis_wh3_main_combi_province_axe_bite_pass",
         "dyn_dis_wh3_main_combi_province_aymara_swamps",
         "dyn_dis_wh3_main_combi_province_barrier_idols",
@@ -559,13 +604,8 @@ disaster_chaos_invasion = {
         "dyn_dis_wh3_main_combi_province_blood_river_valley",
         "dyn_dis_wh3_main_combi_province_bloodfire_falls",
         "dyn_dis_wh3_main_combi_province_bone_road",
-        "dyn_dis_wh3_main_combi_province_broken_lands_of_tian_li",
         "dyn_dis_wh3_main_combi_province_broken_teeth",
         "dyn_dis_wh3_main_combi_province_caledor",
-        "dyn_dis_wh3_main_combi_province_carcassonne",
-        "dyn_dis_wh3_main_combi_province_celestial_lake",
-        "dyn_dis_wh3_main_combi_province_celestial_riverlands",
-        "dyn_dis_wh3_main_combi_province_central_great_bastion",
         "dyn_dis_wh3_main_combi_province_central_jungles",
         "dyn_dis_wh3_main_combi_province_chimera_plateau",
         "dyn_dis_wh3_main_combi_province_chrace",
@@ -583,9 +623,7 @@ disaster_chaos_invasion = {
         "dyn_dis_wh3_main_combi_province_doom_glades",
         "dyn_dis_wh3_main_combi_province_eagle_gate",
         "dyn_dis_wh3_main_combi_province_eastern_badlands",
-        "dyn_dis_wh3_main_combi_province_eastern_border_princes",
         "dyn_dis_wh3_main_combi_province_eastern_colonies",
-        "dyn_dis_wh3_main_combi_province_eastern_oblast",
         "dyn_dis_wh3_main_combi_province_eastern_steppes",
         "dyn_dis_wh3_main_combi_province_eataine",
         "dyn_dis_wh3_main_combi_province_eight_peaks",
@@ -593,12 +631,10 @@ disaster_chaos_invasion = {
         "dyn_dis_wh3_main_combi_province_estalia",
         "dyn_dis_wh3_main_combi_province_forest_of_arden",
         "dyn_dis_wh3_main_combi_province_forest_of_chalons",
-        "dyn_dis_wh3_main_combi_province_forest_of_gloom",
         "dyn_dis_wh3_main_combi_province_forests_of_the_moon",
         "dyn_dis_wh3_main_combi_province_gash_kadrak",
         "dyn_dis_wh3_main_combi_province_gianthome_mountains",
         "dyn_dis_wh3_main_combi_province_gisoreux_gap",
-        "dyn_dis_wh3_main_combi_province_gnoblar_country",
         "dyn_dis_wh3_main_combi_province_goromadny_mountains",
         "dyn_dis_wh3_main_combi_province_granite_hills",
         "dyn_dis_wh3_main_combi_province_great_desert_of_araby",
@@ -635,22 +671,16 @@ disaster_chaos_invasion = {
         "dyn_dis_wh3_main_combi_province_middenland",
         "dyn_dis_wh3_main_combi_province_mootland",
         "dyn_dis_wh3_main_combi_province_mosquito_swamps",
-        "dyn_dis_wh3_main_combi_province_mount_li",
         "dyn_dis_wh3_main_combi_province_mountains_of_hel",
         "dyn_dis_wh3_main_combi_province_mountains_of_mourn",
         "dyn_dis_wh3_main_combi_province_mountains_of_naglfari",
         "dyn_dis_wh3_main_combi_province_mouth_of_ruin",
         "dyn_dis_wh3_main_combi_province_nagarythe",
-        "dyn_dis_wh3_main_combi_province_nongchang_basin",
-        "dyn_dis_wh3_main_combi_province_nordland",
+
         "dyn_dis_wh3_main_combi_province_northern_grey_mountains",
-        "dyn_dis_wh3_main_combi_province_northern_sylvania",
         "dyn_dis_wh3_main_combi_province_northern_wastes",
-        "dyn_dis_wh3_main_combi_province_northern_worlds_edge_mountains",
         "dyn_dis_wh3_main_combi_province_northern_yvresse",
         "dyn_dis_wh3_main_combi_province_obsidian_peaks",
-        "dyn_dis_wh3_main_combi_province_ostermark",
-        "dyn_dis_wh3_main_combi_province_ostland",
         "dyn_dis_wh3_main_combi_province_path_to_the_east",
         "dyn_dis_wh3_main_combi_province_peak_pass",
         "dyn_dis_wh3_main_combi_province_phoenix_gate",
@@ -679,7 +709,6 @@ disaster_chaos_invasion = {
         "dyn_dis_wh3_main_combi_province_southlands_worlds_edge_mountains",
         "dyn_dis_wh3_main_combi_province_spine_of_sotek",
         "dyn_dis_wh3_main_combi_province_spiteful_peaks",
-        "dyn_dis_wh3_main_combi_province_stirland",
         "dyn_dis_wh3_main_combi_province_stonesky_foothills",
         "dyn_dis_wh3_main_combi_province_talabecland",
         "dyn_dis_wh3_main_combi_province_talsyn",
@@ -736,24 +765,25 @@ disaster_chaos_invasion = {
         "dyn_dis_wh3_main_combi_province_troll_country",
         "dyn_dis_wh3_main_combi_province_trollheim_mountains",
         "dyn_dis_wh3_main_combi_province_unicorn_gate",
-        "dyn_dis_wh3_main_combi_province_vampire_coast",
+
         "dyn_dis_wh3_main_combi_province_vanaheim_mountains",
         "dyn_dis_wh3_main_combi_province_volcanic_islands",
-        "dyn_dis_wh3_main_combi_province_warpstone_desert",
-        "dyn_dis_wh3_main_combi_province_wastelands_of_jinshen",
         "dyn_dis_wh3_main_combi_province_western_badlands",
         "dyn_dis_wh3_main_combi_province_western_border_princes",
-        "dyn_dis_wh3_main_combi_province_western_great_bastion",
         "dyn_dis_wh3_main_combi_province_western_jungles",
-        "dyn_dis_wh3_main_combi_province_western_oblast",
         "dyn_dis_wh3_main_combi_province_winters_teeth_pass",
-        "dyn_dis_wh3_main_combi_province_wissenland",
         "dyn_dis_wh3_main_combi_province_wydrioth",
         "dyn_dis_wh3_main_combi_province_wyrm_pass",
-        "dyn_dis_wh3_main_combi_province_yn_edri_eternos",
         "dyn_dis_wh3_main_combi_province_zorn_uzkul",
     },
 
+    favoured_corruptions = {
+        FavouredCorruptionKhorne = "wh3_main_teleportation_node_template_kho",
+        FavouredCorruptionSlaanesh = "wh3_main_teleportation_node_template_sla",
+        FavouredCorruptionTzeentch = "wh3_main_teleportation_node_template_tze",
+        FavouredCorruptionNurgle = "wh3_main_teleportation_node_template_nur",
+        FavouredCorruptionUndivided = "dyn_dis_wh3_main_teleportation_node_template_undivided",
+    },
 
     stage_early_warning_incident_key = "dyn_dis_chaos_invasion_stage_early_warning",
     stage_1_incident_key = "dyn_dis_chaos_invasion_stage_1_trigger",
@@ -893,9 +923,11 @@ function disaster_chaos_invasion:trigger_stage_1()
     -- Further down the line they may fight each other, but for now we need them to push.
     dynamic_disasters:force_peace_between_factions(self.settings.factions, true);
 
+    -- Trigger the chaos-related effects
+    self:trigger_chaos_effects(self.settings.stage_2_delay);
+
     -- Trigger all the stuff related to the invasion (missions, effects,...).
     dynamic_disasters:execute_payload(self.stage_1_incident_key, self.effects_global_key, self.settings.stage_2_delay, nil);
-    self:trigger_chaos_effects(self.settings.stage_2_delay);
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_chs_chaos")
     cm:register_instant_movie("Warhammer/chs_rises");
 
@@ -971,8 +1003,8 @@ function disaster_chaos_invasion:trigger_stage_2()
                         };
 
                         if not region_owner == false and region_owner:is_null_interface() == false then
-                            for i = 1, #ignored_subcultures_for_transfer do
-                                if region_owner:subculture() == ignored_subcultures_for_transfer[i] then
+                            for j = 1, #ignored_subcultures_for_transfer do
+                                if region_owner:subculture() == ignored_subcultures_for_transfer[j] then
                                     is_not_owned_by_ignored = false;
                                     break;
                                 end
@@ -1001,10 +1033,12 @@ function disaster_chaos_invasion:trigger_stage_2()
         table.insert(self.objectives[1].conditions, "faction " .. faction_key)
     end
 
+    -- Trigger the chaos-related effects
+    self:trigger_chaos_effects(self.settings.stage_3_delay);
+
     -- Trigger the end game mission.
     dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.stage_2_incident_key, nil, self.settings.factions[1], function () self:trigger_end_disaster() end, true)
     dynamic_disasters:execute_payload(self.stage_2_incident_key, self.effects_global_key, self.settings.stage_3_delay, nil);
-    self:trigger_chaos_effects(self.settings.stage_3_delay);
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_chs_chaos")
     cm:register_instant_movie("Warhammer/chs_invasion");
 
@@ -1022,17 +1056,87 @@ end
 
 -- Function to trigger the opening of the Chaos Wastes rifts.
 ---@param nodes table #Numeric-indexed table with the list of node keys to open.
-function disaster_chaos_invasion:open_teleportation_nodes(nodes)
+---@param percentage float? #Optional. Percentage of the closed nodes of the nodes provided that we're going to open. Accepts values 0-1.
+function disaster_chaos_invasion:open_teleportation_nodes(nodes, percentage)
+    if percentage == nil or percentage > 1 then
+        percentage = 1.0;
+    end
+
     local world = cm:model():world();
     local network = world:teleportation_network_system():lookup_network(self.teleportation_network);
+    local closed_nodes = network:closed_nodes();
+    local available_nodes = {};
 
-    for i = 1, #nodes do
-        if network:is_node_closed(nodes[i]) == true then
+    -- Get all the closed nodes and their coordinates, so we only have to deal with closed ones.
+    for i = 0, closed_nodes:num_items() - 1 do
+        local current_closed_node = closed_nodes:item_at(i);
 
-            --TODO Try to open nodes with corruptions that buff faction owners.
-            cm:teleportation_network_open_node(nodes[i], self.teleportation_nodes_templates[math.random(#self.teleportation_nodes_templates)]);
+        if current_closed_node:template_key() == "" then
+            local x, y = current_closed_node:position();
+            table.insert(available_nodes, {current_closed_node:key(), x, y});
+        end;
+    end;
+
+    -- Sort them randomly.
+    available_nodes = cm:random_sort(available_nodes);
+
+    local max_nodes_open = #nodes * percentage;
+    for i = 1, max_nodes_open do
+        if available_nodes[i] == nil then
+
+            --Try to open nodes with corruptions that buff faction owners.
+            local region = world:region_data_at_position(available_nodes[i][2], available_nodes[i][3]):region();
+            if not region == false and region:is_null_interface() == false then
+                local corruption = false;
+                local faction = region:owning_faction()
+                if not faction == false and faction:is_null_interface() == false then
+                    corruption = self:favoured_corruption_for_faction(faction);
+                end
+
+                local template = nil;
+                if corruption == false then
+                    template = self.teleportation_nodes_templates[math.random(#self.teleportation_nodes_templates)];
+                else
+                    template = self.teleportation_nodes_templates[corruption];
+                end
+
+                cm:teleportation_network_open_node(nodes[i], template);
+            end;
+        else
+            break;
         end
     end;
+end
+
+-- Get the corruption settings table for a given faction, based on which faction set that faction appears in.
+---@param faction FACTION_SCRIPT_INTERFACE #Faction object
+---@return false|string #False in case of failure to get corruption, pooled resource key of the corruption if ok.
+function disaster_chaos_invasion:favoured_corruption_for_faction(faction)
+    local valid_corruptions_count = 0
+    local pooled_resource = nil
+    local valid_corruptions_string = ""
+
+    for set_key, resource in pairs(self.favoured_corruptions) do
+        if faction:is_contained_in_faction_set(set_key) then
+            valid_corruptions_count = valid_corruptions_count + 1
+            pooled_resource = resource
+            valid_corruptions_string = valid_corruptions_string .. set_key .. ", "
+        end
+    end
+
+    if valid_corruptions_count > 1 then
+        script_error(string.format(
+            "ERROR: Faction '%s' was found to be valid in multiple preferred corruption sets: {%s}. A faction should only ever be contained within one of these sets.",
+            faction:name(), valid_corruptions_string))
+        return false
+    elseif valid_corruptions_count == 0 then
+        script_error(string.format(
+            "ERROR: Faction '%s' wasn't valid for any preferred corruption set. Check that the faction sets for corruption preference cover this faction. Cannot apply post-battle corruption swing.",
+            faction:name(), valid_corruptions_string))
+        return false
+    end
+
+    return pooled_resource
 end
 
 -- Function to trigger the effects related with each stage of the chaos invasion.
@@ -1152,19 +1256,19 @@ function disaster_chaos_invasion:check_end_disaster_conditions()
 
         -- Update the list of available factions.
         self.settings.stage_2_data.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.stage_2_data.factions);
-        local all_attackers_unavailable = true;
+        local all_attackers_unavailable_stage_2 = true;
 
         if #self.settings.stage_2_data.factions > 0 then
             for _, faction_key in pairs(self.settings.stage_2_data.factions) do
                 local faction = cm:get_faction(faction_key);
                 if not faction == false and faction:is_null_interface() == false and faction:was_confederated() == false then
-                    all_attackers_unavailable = false;
+                    all_attackers_unavailable_stage_2 = false;
                     break;
                 end
             end
         end
 
-        return all_attackers_unavailable;
+        return all_attackers_unavailable_stage_2;
     end
 
     return false;

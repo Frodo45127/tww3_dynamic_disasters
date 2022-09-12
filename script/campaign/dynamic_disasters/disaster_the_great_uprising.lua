@@ -869,7 +869,6 @@ function disaster_the_great_uprising:check_end_disaster_conditions()
         return all_attackers_unavailable_stage_4;
     end
 
-
     -- If we're about to trigger Stage 5, make sure Clan Mors is still alive.
     if self.settings.status == STATUS_STAGE_4 then
         self.settings.factions_stage_5_karaz_a_karak = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions_stage_5_karaz_a_karak);
