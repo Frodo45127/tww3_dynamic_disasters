@@ -260,25 +260,17 @@ function disaster_raiding_parties:trigger_raiding_parties()
     local template = "earlygame";
     if current_turn < 50 then
         template = "earlygame";
-    end
-
-    if current_turn >= 50 and current_turn < 100 then
+    elseif current_turn >= 50 and current_turn < 100 then
         template = "midgame";
-    end
-
-    if current_turn >= 100 then
+    elseif current_turn >= 100 then
         template = "lategame";
     end
 
     if self.settings.subculture == "wh2_dlc11_sc_cst_vampire_coast" then
         self.settings.army_template.vampire_coast = template;
-    end
-
-    if self.settings.subculture == "wh_dlc08_sc_nor_norsca" then
+    elseif self.settings.subculture == "wh_dlc08_sc_nor_norsca" then
         self.settings.army_template.norsca = template;
-    end
-
-    if self.settings.subculture == "wh2_main_sc_def_dark_elves" then
+    elseif self.settings.subculture == "wh2_main_sc_def_dark_elves" then
         self.settings.army_template.dark_elves = template;
     end
 
