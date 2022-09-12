@@ -1115,17 +1115,16 @@ function dynamic_disasters:initialize()
             local faction = cm:get_faction(faction_name);
 
             -- Initialize all missing settings to default values, to stop disasters from breaking on updates due to missing settings.
-            for setting, value in pairs(disaster.default_settings) do
-                if disaster.settings[setting] == nil then
-                    disaster.settings[setting] = value;
-                    out("\tFrodo45127: Disaster: "..disaster.name..". Missing disaster setting: ".. setting .. ". Initializing to default value.")
-                end
-            end
+            disaster.settings = table.copy(disaster.default_settings);
 
             -- Check that it has all the required settings, and initialize them in case it has them missing.
             for setting, value in pairs(mandatory_settings) do
                 if disaster.settings[setting] == nil then
-                    disaster.settings[setting] = value;
+                    if is_table(value) then
+                        disaster.settings[setting] = table.copy(value);
+                    else
+                        disaster.settings[setting] = value;
+                    end
                     out("\tFrodo45127: Disaster: "..disaster.name..". Missing mandatory setting: ".. setting .. ". Initializing to default value.")
                 end
             end
@@ -1213,7 +1212,11 @@ function dynamic_disasters:initialize()
         -- Initialize all missing settings to default values, to stop disasters from breaking on updates due to missing settings.
         for setting, value in pairs(disaster.default_settings) do
             if disaster.settings[setting] == nil then
-                disaster.settings[setting] = value;
+                if is_table(value) then
+                    disaster.settings[setting] = table.copy(value);
+                else
+                    disaster.settings[setting] = value;
+                end
                 out("\tFrodo45127: Disaster: "..disaster.name..". Missing disaster setting: ".. setting .. ". Initializing to default value.")
             end
         end
@@ -1221,7 +1224,11 @@ function dynamic_disasters:initialize()
         -- Check that it has all the required settings, and initialize them in case it has them missing.
         for setting, value in pairs(mandatory_settings) do
             if disaster.settings[setting] == nil then
-                disaster.settings[setting] = value;
+                if is_table(value) then
+                    disaster.settings[setting] = table.copy(value);
+                else
+                    disaster.settings[setting] = value;
+                end
                 out("\tFrodo45127: Disaster: "..disaster.name..". Missing mandatory setting: ".. setting .. ". Initializing to default value.")
             end
         end
@@ -1235,7 +1242,11 @@ function dynamic_disasters:initialize()
     -- Once it loads, make sure to initialize new settings, so they're properly baked into the save.
     for setting, value in pairs(self.default_settings) do
         if self.settings[setting] == nil then
-            self.settings[setting] = value;
+            if is_table(value) then
+                self.settings[setting] = table.copy(value);
+            else
+                self.settings[setting] = value;
+            end
             out("\tFrodo45127: Disaster's manager missing setting: ".. setting .. ". Initializing to default value.")
         end
     end

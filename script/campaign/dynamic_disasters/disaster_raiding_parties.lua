@@ -28,6 +28,7 @@
 
 -- Status list for this disaster.
 local STATUS_TRIGGERED = 1;
+local STATUS_STARTED = 2;
 
 -- Object representing the disaster.
 disaster_raiding_parties = {
@@ -63,6 +64,7 @@ disaster_raiding_parties = {
         army_template = {},
         unit_count = 19,
         warning_delay = 1,
+        grace_period = 1,
 
         faction = "",
         subculture = "",
@@ -87,7 +89,10 @@ disaster_raiding_parties = {
                 "wh_dlc08_nor_norsca",                  -- Wulfrik
                 "wh_dlc08_nor_wintertooth",             -- Throgg
             },
-        }
+        },
+
+        cqis = {},                                   -- List of invader's cqi, so we can track them and release them when needed.
+        targets = {},                                -- List of regions/factions to invade.
     },
     warning_event_key = "fro_dyn_dis_raiding_parties_warning",
     raiding_event_key = "fro_dyn_dis_raiding_parties_trigger",
@@ -219,11 +224,73 @@ function disaster_raiding_parties:set_status(status)
             function()
                 if self:update_alive() == false then
                     dynamic_disasters:execute_payload(self.finish_early_incident_key, nil, 0, nil);
+                    self:trigger_end_disaster();
                 else
                     self:trigger_raiding_parties();
                 end
-                self:trigger_end_disaster();
                 core:remove_listener("RaidingPartiesWarning")
+            end,
+            true
+        );
+    end
+
+    if self.settings.status == STATUS_STARTED then
+
+        -- Listener to know when to free the AI armies.
+        core:add_listener(
+            "RaidingPartiesFreeArmies",
+            "WorldStartRound",
+            function()
+                return cm:turn_number() <= self.settings.last_triggered_turn + self.settings.grace_period
+            end,
+            function()
+                local indexes_to_delete = {};
+                for i = 1, #self.settings.cqis do
+                    local cqi = self.settings.cqis[i];
+                    local invasion = invasion_manager:get_invasion(tostring(cqi))
+
+                    if invasion == nil or invasion == false then
+                        out("\tFrodo45127: Army with cqi " .. cqi .. " has not been found on an invasion. Probably released after reaching its target. Queued for deletion from the disaster data.")
+                        table.insert(indexes_to_delete, i);
+                    elseif invasion:has_target() == false then
+                        out("\tFrodo45127: Army with cqi " .. cqi .. " has no target. Releasing.")
+                        invasion:release();
+                        table.insert(indexes_to_delete, i);
+                    end
+                end
+
+                -- To delete, reverse the table, because I don't know how reindexing works in lua. Doing it in reverse guarantees us that we're removing bottom to top.
+                reverse = {}
+                for i = #indexes_to_delete, 1, -1 do
+                    reverse[#reverse+1] = indexes_to_delete[i]
+                end
+                indexes_to_delete = reverse
+
+                for i = 1, #indexes_to_delete do
+                    local index = indexes_to_delete[i]
+                    table.remove(self.settings.cqis, index)
+                    table.remove(self.settings.targets, index)
+                end
+
+                out("\tFrodo45127: Remaining armies: " .. #self.settings.cqis .. ".")
+
+                -- If we don't have more factions or we reached the end of the grace period, release the armies and end the disaster.
+                if #self.settings.cqis == 0 or cm:turn_number() == self.settings.last_triggered_turn + self.settings.grace_period then
+                    if #self.settings.cqis > 0 then
+                        for i = 1, #self.settings.cqis do
+                            local cqi = self.settings.cqis[i];
+                            local invasion = invasion_manager:get_invasion(tostring(cqi))
+
+                            out("\tFrodo45127: Releasing all " .. #self.settings.cqis .. " remaining armies.")
+                            if not invasion == nil or invasion == false then
+                                invasion:release();
+                            end
+                        end
+                    end
+
+                    self:trigger_end_disaster();
+                    core:remove_listener("RaidingPartiesFreeArmies")
+                end
             end,
             true
         );
@@ -237,9 +304,11 @@ function disaster_raiding_parties:trigger()
     -- Recalculate the delay for further executions.
     if dynamic_disasters.settings.debug == false then
         self.settings.warning_delay = math.random(4, 10);
-        self.settings.wait_turns_between_repeats = self.settings.warning_delay + 10;
+        self.settings.grace_period = self.settings.warning_delay + 6;
+        self.settings.wait_turns_between_repeats = self.settings.grace_period + 4;
     else
         self.settings.warning_delay = 1;
+        self.settings.grace_period = 5; -- Keep this a few turns ahead to test if the AI actually works.
         self.settings.wait_turns_between_repeats = 1;
     end
 
@@ -274,9 +343,12 @@ function disaster_raiding_parties:trigger_raiding_parties()
         self.settings.army_template.dark_elves = template;
     end
 
+    -- Reset the invasion data from the previous invasion, if any.
+    self.settings.cqis = {};
+    self.settings.targets = {};
+
     -- Get all the coastal regions (as in region with a port) to attack by weight.
     local attack_vectors = {};
-    local avg = 0;
     local count = 0;
 
     -- Calculate the weight of each attack region.
@@ -303,21 +375,16 @@ function disaster_raiding_parties:trigger_raiding_parties()
                     end
                 end
             end
-
-            avg = avg + attack_vectors[coast];
         end
     end
 
-    -- Once we have the attack vectors, create the invasion forces.
+    -- Get the regions sorted by value, so we can then pick just from the first half.
     local coasts_to_attack = {};
-    local average = avg / count;
-
-    -- Get the regions only from the ones with more weight, so it doesn't only focus on the player.
-    for coast, weight in pairs(attack_vectors) do
-        if weight >= average then
-            table.insert(coasts_to_attack, coast);
-        end
+    for vector, _ in pairs(attack_vectors) do
+        table.insert(coasts_to_attack, vector)
     end
+
+    table.sort(coasts_to_attack, function(a, b) return attack_vectors[a] > attack_vectors[b] end)
 
     -- If no coast to attack has been found, just cancel the attack.
     local faction = cm:get_faction(self.settings.faction);
@@ -328,7 +395,8 @@ function disaster_raiding_parties:trigger_raiding_parties()
     end
 
     -- Get the region at random from the top half of the coasts.
-    local coast_to_attack = coasts_to_attack[math.random(1, #coasts_to_attack)];
+    out("Frodo45127: We have " .. #coasts_to_attack .. " coasts to attack. Using only the upper half.");
+    local coast_to_attack = coasts_to_attack[math.random(1, math.ceil(#coasts_to_attack / 2))];
     local first_sea_region = nil;
     for _, sea_region in pairs(potential_coasts[coast_to_attack]) do
         first_sea_region = sea_region;
@@ -340,15 +408,18 @@ function disaster_raiding_parties:trigger_raiding_parties()
             scale = dyn_dis_sea_potential_attack_vectors[sea_region].scale;
         end
 
-        -- Armies calculation.
-        local armies_to_spawn = math.ceil(self.settings.difficulty_mod) * math.ceil(#dyn_dis_sea_potential_attack_vectors[sea_region].coastal_regions * 0.5) * scale;
-        local armies_to_spawn_in_each_spawn_point = armies_to_spawn / #dyn_dis_sea_potential_attack_vectors[sea_region].spawn_positions;
-        out("Frodo45127: Armies to spawn: " .. tostring(armies_to_spawn_in_each_spawn_point) .. " per region.");
-
         -- Spawn armies at sea.
-        for i = 1, #dyn_dis_sea_potential_attack_vectors[sea_region].spawn_positions do
-            local spawn_pos = dyn_dis_sea_potential_attack_vectors[sea_region].spawn_positions[i];
-            dynamic_disasters:create_scenario_force_at_coords(self.settings.faction, dyn_dis_sea_potential_attack_vectors[sea_region].coastal_regions[1], spawn_pos, self.settings.army_template, self.settings.unit_count, false, armies_to_spawn_in_each_spawn_point, self.name, self.spawn_armies_callback);
+        for i = 1, #dyn_dis_sea_potential_attack_vectors[sea_region].coastal_regions do
+
+            -- Armies calculation, per province.
+            local region_key = dyn_dis_sea_potential_attack_vectors[sea_region].coastal_regions[i];
+            local army_count = math.floor(math.random(1, math.ceil(self.settings.difficulty_mod)));
+            local spawn_pos = dyn_dis_sea_potential_attack_vectors[sea_region].spawn_positions[math.random(#dyn_dis_sea_potential_attack_vectors[sea_region].spawn_positions)];
+            out("Frodo45127: Armies to spawn: " .. tostring(army_count) .. " for " .. region_key .. " region, spawn pos X: " .. spawn_pos[1] .. ", Y: " .. spawn_pos[2] .. ".");
+
+            -- Store the region for invasion controls.
+            table.insert(self.settings.targets, region_key)
+            dynamic_disasters:create_scenario_force_at_coords(self.settings.faction, region_key, spawn_pos, self.settings.army_template, self.settings.unit_count, false, army_count, self.name, spawn_armies_callback);
         end
     end
 
@@ -363,29 +434,49 @@ function disaster_raiding_parties:trigger_raiding_parties()
     cm:apply_effect_bundle(self.invader_buffs_effects_key, self.settings.faction, 10)
     dynamic_disasters:execute_payload(self.raiding_event_key, nil, 0, dyn_dis_sea_potential_attack_vectors[first_sea_region].coastal_regions[1]);
     cm:activate_music_trigger("ScriptedEvent_Negative", self.settings.subculture)
+    self:set_status(STATUS_STARTED);
 end
 
-function disaster_raiding_parties:spawn_armies_callback(cqi)
-    out("Frodo45127: Callback for force " .. tostring(cqi))
-    cm:apply_effect_bundle_to_characters_force("wh_main_bundle_military_upkeep_free_force", cqi, 0)
-    local general = cm:get_character_by_cqi(cqi)
-    local invasion = invasion_manager:get_invasion(cqi)
+-- Callback function to pass to a create_force function. It ties the spawned army to an invasion force and force it to attack an specific settlement.
+---@param cqi integer #CQI of the army.
+function spawn_armies_callback(cqi)
+    out("Frodo45127: Callback for force " .. tostring(cqi) .. " triggered.")
 
-    if not invasion then
-        invasion = invasion_manager:new_invasion_from_existing_force(tostring(cqi), general:military_force())
+    cm:apply_effect_bundle_to_characters_force("wh_main_bundle_military_upkeep_free_force", cqi, 0)
+
+    local general = cm:get_character_by_cqi(cqi)
+    local invasion = invasion_manager:new_invasion_from_existing_force(tostring(cqi), general:military_force())
+
+    if invasion == nil or invasion == false then
+        return
     end
 
-    local m_x = general:logical_position_x()
-    local m_y = general:logical_position_y()
+    -- Store all the disaster's cqis, so we can free them later.
+    for i = 1, #dynamic_disasters.disasters do
+        local disaster = dynamic_disasters.disasters[i];
+        if disaster.name == "raiding_parties" then
+            out("\tFrodo45127: Army with cqi " .. cqi .. " created and added to the invasions force.")
+            table.insert(disaster.settings.cqis, cqi);
 
-    invasion:apply_effect("wh_main_bundle_military_upkeep_free_force", -1)
+            local region_key = disaster.settings.targets[#disaster.settings.targets];
+            local region = cm:get_region(region_key);
 
-    local coords = {{x = m_x, y = m_y},{x = m_x, y = m_y}}
-    invasion:set_target("PATROL", coords, nil)
-    invasion:add_aggro_radius(5)
-    if invasion:has_target() then
-        out.design("\t\tBastion: Setting invasion with general [" .. common.get_localised_string(general:get_forename()) .. "] to be stationary")
-        invasion:start_invasion(nil, true, false, false)
+            if not region == false and region:is_null_interface() == false then
+                local faction = region:owning_faction();
+                local faction_key = nil;
+                if not faction == false and faction:is_null_interface() == false and faction:name() ~= "rebels" and faction:name() ~= disaster.settings.faction then
+                    faction_key = faction:name();
+                end
+
+                invasion:set_target("REGION", region_key, faction_key);
+                invasion:add_aggro_radius(15)
+
+                if invasion:has_target() then
+                    out.design("\t\tFrodo45127: Setting invasion with general [" .. common.get_localised_string(general:get_forename()) .. "] to attack " .. region_key .. ".")
+                    invasion:start_invasion(nil, false, false, false)
+                end
+            end
+        end
     end
 end
 
