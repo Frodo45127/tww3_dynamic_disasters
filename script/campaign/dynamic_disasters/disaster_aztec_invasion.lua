@@ -821,6 +821,7 @@ function disaster_aztec_invasion:set_status(status)
                 self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
                 if #self.settings.factions == 0 then
                     dynamic_disasters:execute_payload(self.finish_early_incident_key, nil, 0, nil);
+                    self:trigger_end_disaster()
                 else
                     self:trigger_aztec_invasion();
                 end
@@ -951,7 +952,7 @@ function disaster_aztec_invasion:trigger_aztec_invasion()
     end
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
-    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.invasion_incident_key, nil, self.settings.factions[1], function () self:trigger_end_disaster() end)
+    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.invasion_incident_key, nil, self.settings.factions[1], function () self:trigger_end_disaster() end, false)
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_lzd_lizardmen")
     self:set_status(STATUS_STARTED);
 end

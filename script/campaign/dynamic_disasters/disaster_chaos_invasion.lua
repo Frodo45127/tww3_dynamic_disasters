@@ -840,7 +840,6 @@ function disaster_chaos_invasion:set_status(status)
             function()
                 if self:check_end_disaster_conditions() == true then
                     dynamic_disasters:execute_payload(self.finish_event_key, nil, 0, nil);
-                    self:trigger_end_disaster();
                 else
                     self:trigger_stage_3();
                 end

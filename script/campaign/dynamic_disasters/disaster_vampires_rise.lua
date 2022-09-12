@@ -141,6 +141,7 @@ function disaster_vampires_rise:set_status(status)
                 self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
                 if #self.settings.factions == 0 then
                     dynamic_disasters:execute_payload(self.finish_early_incident_key, nil, 0, nil);
+                    self:trigger_end_disaster()
                 else
                     self:trigger_the_great_vampiric_war();
                 end
@@ -196,7 +197,7 @@ function disaster_vampires_rise:trigger_the_great_vampiric_war()
     dynamic_disasters:reveal_regions(self.settings.regions);
 
     -- Trigger either the victory mission, or just the related incident.
-    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.invasion_incident_key, self.settings.regions[1], self.settings.factions[1], function () self:trigger_end_disaster() end)
+    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.invasion_incident_key, self.settings.regions[1], self.settings.factions[1], function () self:trigger_end_disaster() end, false)
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_vmp_vampire_counts")
     self:set_status(STATUS_STARTED);
 end
