@@ -535,10 +535,36 @@ disaster_chaos_invasion = {
     };
     teleportation_nodes_chaos_wastes = {
         "dyn_dis_wh3_dlc20_combi_province_frigid_wasteland",
+        "dyn_dis_wh3_main_combi_province_bloodfire_falls",
+        "dyn_dis_wh3_main_combi_province_chimera_plateau",
+        "dyn_dis_wh3_main_combi_province_eastern_steppes",
+        "dyn_dis_wh3_main_combi_province_ironfrost_glacier",
+        "dyn_dis_wh3_main_combi_province_kdatha",
+        "dyn_dis_wh3_main_combi_province_northern_wastes",
+        "dyn_dis_wh3_main_combi_province_plain_of_illusions",
+        "dyn_dis_wh3_main_combi_province_stonesky_foothills",
+        "dyn_dis_wh3_main_combi_province_the_abyssal_glacier",
+        "dyn_dis_wh3_main_combi_province_the_blood_marshes",
+        "dyn_dis_wh3_main_combi_province_the_cold_mires",
+        "dyn_dis_wh3_main_combi_province_the_daemonium_hills",
+        "dyn_dis_wh3_main_combi_province_the_eternal_lagoon",
+        "dyn_dis_wh3_main_combi_province_the_ice_fire_plains",
+        "dyn_dis_wh3_main_combi_province_the_noisome_tumour",
+        "dyn_dis_wh3_main_combi_province_the_red_wastes",
+        "dyn_dis_wh3_main_combi_province_the_shard_lands",
+        "dyn_dis_wh3_main_combi_province_the_skull_road",
+        "dyn_dis_wh3_main_combi_province_the_southern_wastes",
     },
     teleportation_nodes_norsca = {
         "dyn_dis_wh3_main_combi_province_albion",
-
+        "dyn_dis_wh3_main_combi_province_gianthome_mountains",
+        "dyn_dis_wh3_main_combi_province_goromadny_mountains",
+        "dyn_dis_wh3_main_combi_province_helspire_mountains",
+        "dyn_dis_wh3_main_combi_province_ice_tooth_mountains",
+        "dyn_dis_wh3_main_combi_province_mountains_of_hel",
+        "dyn_dis_wh3_main_combi_province_mountains_of_naglfari",
+        "dyn_dis_wh3_main_combi_province_trollheim_mountains",
+        "dyn_dis_wh3_main_combi_province_vanaheim_mountains",
     },
     teleportation_nodes_cathay = {
         "dyn_dis_wh3_main_combi_province_broken_lands_of_tian_li",
@@ -546,235 +572,200 @@ disaster_chaos_invasion = {
         "dyn_dis_wh3_main_combi_province_celestial_riverlands",
         "dyn_dis_wh3_main_combi_province_central_great_bastion",
         "dyn_dis_wh3_main_combi_province_eastern_great_bastion",
+        "dyn_dis_wh3_main_combi_province_forests_of_the_moon",
+        "dyn_dis_wh3_main_combi_province_jade_river_delta",
+        "dyn_dis_wh3_main_combi_province_jungles_of_chian",
+        "dyn_dis_wh3_main_combi_province_gunpowder_road",
+        "dyn_dis_wh3_main_combi_province_imperial_road",
+        "dyn_dis_wh3_main_combi_province_lands_of_stone_and_steel",
         "dyn_dis_wh3_main_combi_province_mount_li",
         "dyn_dis_wh3_main_combi_province_nongchang_basin",
+        "dyn_dis_wh3_main_combi_province_plains_of_xen",
+        "dyn_dis_wh3_main_combi_province_serpent_estuary",
+        "dyn_dis_wh3_main_combi_province_the_great_canal",
         "dyn_dis_wh3_main_combi_province_warpstone_desert",
         "dyn_dis_wh3_main_combi_province_wastelands_of_jinshen",
         "dyn_dis_wh3_main_combi_province_western_great_bastion",
-
     },
     teleportation_nodes_old_world = {
+        "dyn_dis_wh3_dlc20_combi_province_middle_mountains",
         "dyn_dis_wh3_main_combi_province_argwylon",
         "dyn_dis_wh3_main_combi_province_averland",
-        "dyn_dis_wh3_main_combi_province_carcassonne",
-        "dyn_dis_wh3_main_combi_province_eastern_border_princes",
-        "dyn_dis_wh3_main_combi_province_eastern_oblast",
-        "dyn_dis_wh3_main_combi_province_forest_of_gloom",
-        "dyn_dis_wh3_main_combi_province_stirland",
-        "dyn_dis_wh3_main_combi_province_nordland",
-        "dyn_dis_wh3_main_combi_province_northern_sylvania",
-        "dyn_dis_wh3_main_combi_province_northern_worlds_edge_mountains",
-        "dyn_dis_wh3_main_combi_province_ostermark",
-        "dyn_dis_wh3_main_combi_province_ostland",
-        "dyn_dis_wh3_main_combi_province_western_oblast",
-        "dyn_dis_wh3_main_combi_province_wissenland",
-        "dyn_dis_wh3_main_combi_province_yn_edri_eternos",
-    },
-    teleportation_nodes_mountains_of_mourne = {
-
-    },
-    teleportation_nodes_mountains_dark_lands = {
-        "dyn_dis_wh3_main_combi_province_gnoblar_country",
-    },
-    teleportation_nodes_mountains_southlands = {
-
-    },
-    teleportation_nodes_mountains_lustria = {
-        "dyn_dis_wh3_main_combi_province_vampire_coast",
-    },
-    teleportation_nodes_mountains_naggaroth = {
-
-    },
-
-    teleportation_nodes_ulthuan = {
-        "dyn_dis_wh3_dlc20_combi_province_middle_mountains",
-        "dyn_dis_wh3_main_combi_province_ancient_giant_lands",
-        "dyn_dis_wh3_main_combi_province_ashen_coast",
-        "dyn_dis_wh3_main_combi_province_atalan_mountains",
-        "dyn_dis_wh3_main_combi_province_avelorn",
         "dyn_dis_wh3_main_combi_province_axe_bite_pass",
-        "dyn_dis_wh3_main_combi_province_aymara_swamps",
-        "dyn_dis_wh3_main_combi_province_barrier_idols",
         "dyn_dis_wh3_main_combi_province_barrows_of_cuileux",
         "dyn_dis_wh3_main_combi_province_bastonne",
         "dyn_dis_wh3_main_combi_province_black_blood_pass",
         "dyn_dis_wh3_main_combi_province_black_mountains",
         "dyn_dis_wh3_main_combi_province_black_water",
-        "dyn_dis_wh3_main_combi_province_blightwater",
         "dyn_dis_wh3_main_combi_province_blood_river_valley",
-        "dyn_dis_wh3_main_combi_province_bloodfire_falls",
-        "dyn_dis_wh3_main_combi_province_bone_road",
-        "dyn_dis_wh3_main_combi_province_broken_teeth",
-        "dyn_dis_wh3_main_combi_province_caledor",
-        "dyn_dis_wh3_main_combi_province_central_jungles",
-        "dyn_dis_wh3_main_combi_province_chimera_plateau",
-        "dyn_dis_wh3_main_combi_province_chrace",
-        "dyn_dis_wh3_main_combi_province_coast_of_araby",
+        "dyn_dis_wh3_main_combi_province_carcassonne",
         "dyn_dis_wh3_main_combi_province_coast_of_lyonesse",
-        "dyn_dis_wh3_main_combi_province_copper_desert",
-        "dyn_dis_wh3_main_combi_province_cothique",
-        "dyn_dis_wh3_main_combi_province_crater_of_the_waking_dead",
-        "dyn_dis_wh3_main_combi_province_culchan_plains",
-        "dyn_dis_wh3_main_combi_province_dawns_landing",
         "dyn_dis_wh3_main_combi_province_deadrock_gap",
-        "dyn_dis_wh3_main_combi_province_deadwood",
         "dyn_dis_wh3_main_combi_province_death_pass",
-        "dyn_dis_wh3_main_combi_province_devils_backbone",
         "dyn_dis_wh3_main_combi_province_doom_glades",
-        "dyn_dis_wh3_main_combi_province_eagle_gate",
-        "dyn_dis_wh3_main_combi_province_eastern_badlands",
-        "dyn_dis_wh3_main_combi_province_eastern_colonies",
-        "dyn_dis_wh3_main_combi_province_eastern_steppes",
-        "dyn_dis_wh3_main_combi_province_eataine",
-        "dyn_dis_wh3_main_combi_province_eight_peaks",
-        "dyn_dis_wh3_main_combi_province_ellyrion",
+        "dyn_dis_wh3_main_combi_province_eastern_border_princes",
+        "dyn_dis_wh3_main_combi_province_eastern_oblast",
         "dyn_dis_wh3_main_combi_province_estalia",
         "dyn_dis_wh3_main_combi_province_forest_of_arden",
         "dyn_dis_wh3_main_combi_province_forest_of_chalons",
-        "dyn_dis_wh3_main_combi_province_forests_of_the_moon",
-        "dyn_dis_wh3_main_combi_province_gash_kadrak",
-        "dyn_dis_wh3_main_combi_province_gianthome_mountains",
+        "dyn_dis_wh3_main_combi_province_forest_of_gloom",
         "dyn_dis_wh3_main_combi_province_gisoreux_gap",
-        "dyn_dis_wh3_main_combi_province_goromadny_mountains",
-        "dyn_dis_wh3_main_combi_province_granite_hills",
-        "dyn_dis_wh3_main_combi_province_great_desert_of_araby",
-        "dyn_dis_wh3_main_combi_province_great_mortis_delta",
-        "dyn_dis_wh3_main_combi_province_griffon_gate",
         "dyn_dis_wh3_main_combi_province_gryphon_wood",
-        "dyn_dis_wh3_main_combi_province_gunpowder_road",
-        "dyn_dis_wh3_main_combi_province_headhunters_jungle",
-        "dyn_dis_wh3_main_combi_province_heart_of_the_jungle",
-        "dyn_dis_wh3_main_combi_province_helspire_mountains",
         "dyn_dis_wh3_main_combi_province_hochland",
-        "dyn_dis_wh3_main_combi_province_ice_tooth_mountains",
-        "dyn_dis_wh3_main_combi_province_imperial_road",
-        "dyn_dis_wh3_main_combi_province_iron_coast",
-        "dyn_dis_wh3_main_combi_province_iron_foothills",
-        "dyn_dis_wh3_main_combi_province_iron_mountains",
-        "dyn_dis_wh3_main_combi_province_ironfrost_glacier",
-        "dyn_dis_wh3_main_combi_province_ironsand_desert",
         "dyn_dis_wh3_main_combi_province_irrana_mountains",
-        "dyn_dis_wh3_main_combi_province_isthmus_of_lustria",
-        "dyn_dis_wh3_main_combi_province_ivory_road",
-        "dyn_dis_wh3_main_combi_province_jade_river_delta",
-        "dyn_dis_wh3_main_combi_province_jungles_of_chian",
-        "dyn_dis_wh3_main_combi_province_jungles_of_green_mist",
-        "dyn_dis_wh3_main_combi_province_jungles_of_pahualaxa",
-        "dyn_dis_wh3_main_combi_province_kdatha",
-        "dyn_dis_wh3_main_combi_province_kingdom_of_beasts",
-        "dyn_dis_wh3_main_combi_province_land_of_assassins",
-        "dyn_dis_wh3_main_combi_province_land_of_the_dead",
-        "dyn_dis_wh3_main_combi_province_land_of_the_dervishes",
-        "dyn_dis_wh3_main_combi_province_lands_of_stone_and_steel",
+        "dyn_dis_wh3_main_combi_province_stirland",
         "dyn_dis_wh3_main_combi_province_marches_of_couronne",
-        "dyn_dis_wh3_main_combi_province_marshes_of_madness",
         "dyn_dis_wh3_main_combi_province_middenland",
+        "dyn_dis_wh3_main_combi_province_the_misty_hills",
         "dyn_dis_wh3_main_combi_province_mootland",
-        "dyn_dis_wh3_main_combi_province_mosquito_swamps",
-        "dyn_dis_wh3_main_combi_province_mountains_of_hel",
-        "dyn_dis_wh3_main_combi_province_mountains_of_mourn",
-        "dyn_dis_wh3_main_combi_province_mountains_of_naglfari",
-        "dyn_dis_wh3_main_combi_province_mouth_of_ruin",
-        "dyn_dis_wh3_main_combi_province_nagarythe",
-
+        "dyn_dis_wh3_main_combi_province_nordland",
         "dyn_dis_wh3_main_combi_province_northern_grey_mountains",
-        "dyn_dis_wh3_main_combi_province_northern_wastes",
-        "dyn_dis_wh3_main_combi_province_northern_yvresse",
-        "dyn_dis_wh3_main_combi_province_obsidian_peaks",
-        "dyn_dis_wh3_main_combi_province_path_to_the_east",
+        "dyn_dis_wh3_main_combi_province_northern_sylvania",
+        "dyn_dis_wh3_main_combi_province_northern_worlds_edge_mountains",
+        "dyn_dis_wh3_main_combi_province_ostermark",
+        "dyn_dis_wh3_main_combi_province_ostland",
         "dyn_dis_wh3_main_combi_province_peak_pass",
-        "dyn_dis_wh3_main_combi_province_phoenix_gate",
         "dyn_dis_wh3_main_combi_province_pirates_current",
-        "dyn_dis_wh3_main_combi_province_plain_of_illusions",
-        "dyn_dis_wh3_main_combi_province_plains_of_xen",
-        "dyn_dis_wh3_main_combi_province_red_desert",
         "dyn_dis_wh3_main_combi_province_reikland",
         "dyn_dis_wh3_main_combi_province_rib_peaks",
         "dyn_dis_wh3_main_combi_province_river_brienne",
         "dyn_dis_wh3_main_combi_province_river_lynsk",
-        "dyn_dis_wh3_main_combi_province_river_qurveza",
         "dyn_dis_wh3_main_combi_province_river_urskoy",
-        "dyn_dis_wh3_main_combi_province_saphery",
-        "dyn_dis_wh3_main_combi_province_scorpion_coast",
-        "dyn_dis_wh3_main_combi_province_serpent_estuary",
-        "dyn_dis_wh3_main_combi_province_shifting_sands",
         "dyn_dis_wh3_main_combi_province_solland",
-        "dyn_dis_wh3_main_combi_province_southern_badlands",
         "dyn_dis_wh3_main_combi_province_southern_grey_mountains",
-        "dyn_dis_wh3_main_combi_province_southern_jungles",
         "dyn_dis_wh3_main_combi_province_southern_oblast",
         "dyn_dis_wh3_main_combi_province_southern_sylvania",
-        "dyn_dis_wh3_main_combi_province_southern_worlds_edge_mountains",
-        "dyn_dis_wh3_main_combi_province_southern_yvresse",
-        "dyn_dis_wh3_main_combi_province_southlands_worlds_edge_mountains",
-        "dyn_dis_wh3_main_combi_province_spine_of_sotek",
-        "dyn_dis_wh3_main_combi_province_spiteful_peaks",
-        "dyn_dis_wh3_main_combi_province_stonesky_foothills",
         "dyn_dis_wh3_main_combi_province_talabecland",
         "dyn_dis_wh3_main_combi_province_talsyn",
-        "dyn_dis_wh3_main_combi_province_the_abyssal_glacier",
-        "dyn_dis_wh3_main_combi_province_the_black_flood",
-        "dyn_dis_wh3_main_combi_province_the_blasted_wastes",
-        "dyn_dis_wh3_main_combi_province_the_bleak_coast",
-        "dyn_dis_wh3_main_combi_province_the_blighted_marshes",
-        "dyn_dis_wh3_main_combi_province_the_blood_marshes",
-        "dyn_dis_wh3_main_combi_province_the_broken_lands",
-        "dyn_dis_wh3_main_combi_province_the_capes",
-        "dyn_dis_wh3_main_combi_province_the_clawed_coast",
-        "dyn_dis_wh3_main_combi_province_the_cold_mires",
-        "dyn_dis_wh3_main_combi_province_the_cracked_land",
-        "dyn_dis_wh3_main_combi_province_the_creeping_jungle",
         "dyn_dis_wh3_main_combi_province_the_cursed_city",
-        "dyn_dis_wh3_main_combi_province_the_daemonium_hills",
-        "dyn_dis_wh3_main_combi_province_the_desolation_of_azgorh",
-        "dyn_dis_wh3_main_combi_province_the_dragon_isles",
-        "dyn_dis_wh3_main_combi_province_the_eternal_lagoon",
-        "dyn_dis_wh3_main_combi_province_the_golden_pass",
-        "dyn_dis_wh3_main_combi_province_the_great_canal",
-        "dyn_dis_wh3_main_combi_province_the_great_ocean",
-        "dyn_dis_wh3_main_combi_province_the_gwangee_valley",
-        "dyn_dis_wh3_main_combi_province_the_haunted_forest",
-        "dyn_dis_wh3_main_combi_province_the_howling_wastes",
-        "dyn_dis_wh3_main_combi_province_the_ice_fire_plains",
-        "dyn_dis_wh3_main_combi_province_the_isthmus_coast",
-        "dyn_dis_wh3_main_combi_province_the_jungles_of_the_gods",
-        "dyn_dis_wh3_main_combi_province_the_lost_valley",
-        "dyn_dis_wh3_main_combi_province_the_maw",
-        "dyn_dis_wh3_main_combi_province_the_misty_hills",
-        "dyn_dis_wh3_main_combi_province_the_night_forest_road",
-        "dyn_dis_wh3_main_combi_province_the_noisome_tumour",
-        "dyn_dis_wh3_main_combi_province_the_plain_of_bones",
-        "dyn_dis_wh3_main_combi_province_the_plain_of_zharr",
-        "dyn_dis_wh3_main_combi_province_the_red_wastes",
-        "dyn_dis_wh3_main_combi_province_the_road_of_skulls",
-        "dyn_dis_wh3_main_combi_province_the_sacred_pools",
-        "dyn_dis_wh3_main_combi_province_the_shard_lands",
         "dyn_dis_wh3_main_combi_province_the_silver_road",
-        "dyn_dis_wh3_main_combi_province_the_skull_road",
-        "dyn_dis_wh3_main_combi_province_the_southern_wastes",
-        "dyn_dis_wh3_main_combi_province_the_turtle_isles",
         "dyn_dis_wh3_main_combi_province_the_vaults",
         "dyn_dis_wh3_main_combi_province_the_wasteland",
         "dyn_dis_wh3_main_combi_province_the_witchs_wood",
-        "dyn_dis_wh3_main_combi_province_the_witchwood",
-        "dyn_dis_wh3_main_combi_province_the_wolf_lands",
         "dyn_dis_wh3_main_combi_province_tilea",
-        "dyn_dis_wh3_main_combi_province_tiranoc",
-        "dyn_dis_wh3_main_combi_province_titan_peaks",
         "dyn_dis_wh3_main_combi_province_torgovann",
         "dyn_dis_wh3_main_combi_province_troll_country",
-        "dyn_dis_wh3_main_combi_province_trollheim_mountains",
-        "dyn_dis_wh3_main_combi_province_unicorn_gate",
-
-        "dyn_dis_wh3_main_combi_province_vanaheim_mountains",
-        "dyn_dis_wh3_main_combi_province_volcanic_islands",
-        "dyn_dis_wh3_main_combi_province_western_badlands",
         "dyn_dis_wh3_main_combi_province_western_border_princes",
-        "dyn_dis_wh3_main_combi_province_western_jungles",
+        "dyn_dis_wh3_main_combi_province_western_oblast",
+        "dyn_dis_wh3_main_combi_province_wissenland",
         "dyn_dis_wh3_main_combi_province_winters_teeth_pass",
         "dyn_dis_wh3_main_combi_province_wydrioth",
-        "dyn_dis_wh3_main_combi_province_wyrm_pass",
+        "dyn_dis_wh3_main_combi_province_yn_edri_eternos",
+    },
+    teleportation_nodes_mountains_of_mourne = {
+        "dyn_dis_wh3_main_combi_province_ancient_giant_lands",
+        "dyn_dis_wh3_main_combi_province_bone_road",
+        "dyn_dis_wh3_main_combi_province_gash_kadrak",
+        "dyn_dis_wh3_main_combi_province_ivory_road",
+        "dyn_dis_wh3_main_combi_province_mountains_of_mourn",
+        "dyn_dis_wh3_main_combi_province_path_to_the_east",
+        "dyn_dis_wh3_main_combi_province_the_maw",
+        "dyn_dis_wh3_main_combi_province_titan_peaks",
+    },
+    teleportation_nodes_mountains_dark_lands = {
+        "dyn_dis_wh3_main_combi_province_broken_teeth",
+        "dyn_dis_wh3_main_combi_province_gnoblar_country",
+        "dyn_dis_wh3_main_combi_province_the_blasted_wastes",
+        "dyn_dis_wh3_main_combi_province_the_desolation_of_azgorh",
+        "dyn_dis_wh3_main_combi_province_the_dragon_isles",
+        "dyn_dis_wh3_main_combi_province_the_haunted_forest",
+        "dyn_dis_wh3_main_combi_province_the_howling_wastes",
+        "dyn_dis_wh3_main_combi_province_the_plain_of_bones",
+        "dyn_dis_wh3_main_combi_province_the_plain_of_zharr",
+        "dyn_dis_wh3_main_combi_province_the_wolf_lands",
         "dyn_dis_wh3_main_combi_province_zorn_uzkul",
+    },
+    teleportation_nodes_mountains_southlands = {
+        "dyn_dis_wh3_main_combi_province_atalan_mountains",
+        "dyn_dis_wh3_main_combi_province_barrier_idols",
+        "dyn_dis_wh3_main_combi_province_blightwater",
+        "dyn_dis_wh3_main_combi_province_central_jungles",
+        "dyn_dis_wh3_main_combi_province_coast_of_araby",
+        "dyn_dis_wh3_main_combi_province_crater_of_the_waking_dead",
+        "dyn_dis_wh3_main_combi_province_dawns_landing",
+        "dyn_dis_wh3_main_combi_province_devils_backbone",
+        "dyn_dis_wh3_main_combi_province_eastern_badlands",
+        "dyn_dis_wh3_main_combi_province_eastern_colonies",
+        "dyn_dis_wh3_main_combi_province_eight_peaks",
+        "dyn_dis_wh3_main_combi_province_great_desert_of_araby",
+        "dyn_dis_wh3_main_combi_province_great_mortis_delta",
+        "dyn_dis_wh3_main_combi_province_heart_of_the_jungle",
+        "dyn_dis_wh3_main_combi_province_kingdom_of_beasts",
+        "dyn_dis_wh3_main_combi_province_land_of_assassins",
+        "dyn_dis_wh3_main_combi_province_land_of_the_dead",
+        "dyn_dis_wh3_main_combi_province_land_of_the_dervishes",
+        "dyn_dis_wh3_main_combi_province_marshes_of_madness",
+        "dyn_dis_wh3_main_combi_province_shifting_sands",
+        "dyn_dis_wh3_main_combi_province_southern_badlands",
+        "dyn_dis_wh3_main_combi_province_southern_jungles",
+        "dyn_dis_wh3_main_combi_province_southern_worlds_edge_mountains",
+        "dyn_dis_wh3_main_combi_province_southlands_worlds_edge_mountains",
+        "dyn_dis_wh3_main_combi_province_the_cracked_land",
+        "dyn_dis_wh3_main_combi_province_the_golden_pass",
+        "dyn_dis_wh3_main_combi_province_the_jungles_of_the_gods",
+        "dyn_dis_wh3_main_combi_province_western_badlands",
+        "dyn_dis_wh3_main_combi_province_western_jungles",
+    },
+    teleportation_nodes_mountains_lustria = {
+        "dyn_dis_wh3_main_combi_province_aymara_swamps",
+        "dyn_dis_wh3_main_combi_province_copper_desert",
+        "dyn_dis_wh3_main_combi_province_culchan_plains",
+        "dyn_dis_wh3_main_combi_province_headhunters_jungle",
+        "dyn_dis_wh3_main_combi_province_isthmus_of_lustria",
+        "dyn_dis_wh3_main_combi_province_jungles_of_green_mist",
+        "dyn_dis_wh3_main_combi_province_jungles_of_pahualaxa",
+        "dyn_dis_wh3_main_combi_province_mosquito_swamps",
+        "dyn_dis_wh3_main_combi_province_river_qurveza",
+        "dyn_dis_wh3_main_combi_province_scorpion_coast",
+        "dyn_dis_wh3_main_combi_province_spine_of_sotek",
+        "dyn_dis_wh3_main_combi_province_the_capes",
+        "dyn_dis_wh3_main_combi_province_the_creeping_jungle",
+        "dyn_dis_wh3_main_combi_province_the_gwangee_valley",
+        "dyn_dis_wh3_main_combi_province_the_isthmus_coast",
+        "dyn_dis_wh3_main_combi_province_the_lost_valley",
+        "dyn_dis_wh3_main_combi_province_the_night_forest_road",
+        "dyn_dis_wh3_main_combi_province_the_sacred_pools",
+        "dyn_dis_wh3_main_combi_province_the_turtle_isles",
+        "dyn_dis_wh3_main_combi_province_vampire_coast",
+        "dyn_dis_wh3_main_combi_province_volcanic_islands",
+    },
+    teleportation_nodes_mountains_naggaroth = {
+        "dyn_dis_wh3_main_combi_province_ashen_coast",
+        "dyn_dis_wh3_main_combi_province_deadwood",
+        "dyn_dis_wh3_main_combi_province_granite_hills",
+        "dyn_dis_wh3_main_combi_province_iron_coast",
+        "dyn_dis_wh3_main_combi_province_iron_foothills",
+        "dyn_dis_wh3_main_combi_province_iron_mountains",
+        "dyn_dis_wh3_main_combi_province_ironsand_desert",
+        "dyn_dis_wh3_main_combi_province_obsidian_peaks",
+        "dyn_dis_wh3_main_combi_province_red_desert",
+        "dyn_dis_wh3_main_combi_province_spiteful_peaks",
+        "dyn_dis_wh3_main_combi_province_the_black_flood",
+        "dyn_dis_wh3_main_combi_province_the_bleak_coast",
+        "dyn_dis_wh3_main_combi_province_the_blighted_marshes",
+        "dyn_dis_wh3_main_combi_province_the_broken_lands",
+        "dyn_dis_wh3_main_combi_province_the_clawed_coast",
+        "dyn_dis_wh3_main_combi_province_the_road_of_skulls",
+        "dyn_dis_wh3_main_combi_province_the_witchwood",
+    },
+    teleportation_nodes_ulthuan = {
+        "dyn_dis_wh3_main_combi_province_avelorn",
+        "dyn_dis_wh3_main_combi_province_caledor",
+        "dyn_dis_wh3_main_combi_province_chrace",
+        "dyn_dis_wh3_main_combi_province_cothique",
+        "dyn_dis_wh3_main_combi_province_eagle_gate",
+        "dyn_dis_wh3_main_combi_province_eataine",
+        "dyn_dis_wh3_main_combi_province_ellyrion",
+        "dyn_dis_wh3_main_combi_province_griffon_gate",
+        "dyn_dis_wh3_main_combi_province_nagarythe",
+        "dyn_dis_wh3_main_combi_province_northern_yvresse",
+        "dyn_dis_wh3_main_combi_province_phoenix_gate",
+        "dyn_dis_wh3_main_combi_province_saphery",
+        "dyn_dis_wh3_main_combi_province_southern_yvresse",
+        "dyn_dis_wh3_main_combi_province_the_great_ocean",
+        "dyn_dis_wh3_main_combi_province_tiranoc",
+        "dyn_dis_wh3_main_combi_province_unicorn_gate",
+        "dyn_dis_wh3_main_combi_province_wyrm_pass", -- This province doesn't even exist...
     },
 
     favoured_corruptions = {
@@ -782,7 +773,7 @@ disaster_chaos_invasion = {
         FavouredCorruptionSlaanesh = "wh3_main_teleportation_node_template_sla",
         FavouredCorruptionTzeentch = "wh3_main_teleportation_node_template_tze",
         FavouredCorruptionNurgle = "wh3_main_teleportation_node_template_nur",
-        FavouredCorruptionUndivided = "dyn_dis_wh3_main_teleportation_node_template_undivided",
+        --FavouredCorruptionUndivided = "dyn_dis_wh3_main_teleportation_node_template_undivided",
     },
 
     stage_early_warning_incident_key = "dyn_dis_chaos_invasion_stage_early_warning",
@@ -1024,8 +1015,18 @@ function disaster_chaos_invasion:trigger_stage_2()
     -- Further down the line they may fight each other, but for now we need them to push.
     dynamic_disasters:force_peace_between_factions(self.settings.factions, true);
 
-    -- Open the rifts on the chaos wastes.
+    -- Open the rifts on the chaos wastes and norsca.
     self:open_teleportation_nodes(self.teleportation_nodes_chaos_wastes);
+    self:open_teleportation_nodes(self.teleportation_nodes_norsca);
+
+    -- Testing stuff.
+    self:open_teleportation_nodes(self.teleportation_nodes_cathay);
+    self:open_teleportation_nodes(self.teleportation_nodes_old_world);
+    self:open_teleportation_nodes(self.teleportation_nodes_mountains_of_mourne);
+    self:open_teleportation_nodes(self.teleportation_nodes_mountains_dark_lands);
+    self:open_teleportation_nodes(self.teleportation_nodes_mountains_southlands);
+    self:open_teleportation_nodes(self.teleportation_nodes_mountains_lustria);
+    self:open_teleportation_nodes(self.teleportation_nodes_mountains_naggaroth);
     self:open_teleportation_nodes(self.teleportation_nodes_ulthuan);
 
     -- Prepare the final mission objectives.
@@ -1058,7 +1059,8 @@ end
 ---@param nodes table #Numeric-indexed table with the list of node keys to open.
 ---@param percentage float? #Optional. Percentage of the closed nodes of the nodes provided that we're going to open. Accepts values 0-1.
 function disaster_chaos_invasion:open_teleportation_nodes(nodes, percentage)
-    if percentage == nil or percentage > 1 then
+    out("Frodo45127: Opening rifts.");
+    if percentage == nil or percentage > 1 or percentage < 0.1 then
         percentage = 1.0;
     end
 
@@ -1081,8 +1083,9 @@ function disaster_chaos_invasion:open_teleportation_nodes(nodes, percentage)
     available_nodes = cm:random_sort(available_nodes);
 
     local max_nodes_open = #nodes * percentage;
+    out("Frodo45127: Rifts to open: " .. max_nodes_open .. ".");
     for i = 1, max_nodes_open do
-        if available_nodes[i] == nil then
+        if available_nodes[i] then
 
             --Try to open nodes with corruptions that buff faction owners.
             local region = world:region_data_at_position(available_nodes[i][2], available_nodes[i][3]):region();
@@ -1093,11 +1096,12 @@ function disaster_chaos_invasion:open_teleportation_nodes(nodes, percentage)
                     corruption = self:favoured_corruption_for_faction(faction);
                 end
 
+                out("Frodo45127: region: " .. region:name() .. ", faction: " .. faction:name() .. ", corruption: " .. tostring(corruption) .. ".")
                 local template = nil;
                 if corruption == false then
                     template = self.teleportation_nodes_templates[math.random(#self.teleportation_nodes_templates)];
                 else
-                    template = self.teleportation_nodes_templates[corruption];
+                    template = corruption;
                 end
 
                 cm:teleportation_network_open_node(nodes[i], template);
@@ -1125,14 +1129,10 @@ function disaster_chaos_invasion:favoured_corruption_for_faction(faction)
     end
 
     if valid_corruptions_count > 1 then
-        script_error(string.format(
-            "ERROR: Faction '%s' was found to be valid in multiple preferred corruption sets: {%s}. A faction should only ever be contained within one of these sets.",
-            faction:name(), valid_corruptions_string))
+        out("Frodo45127: Faction '" .. faction:name() .. "' was found to be valid in multiple preferred corruption sets: " .. tostring(valid_corruptions_string) .. ". A faction should only ever be contained within one of these sets.")
         return false
     elseif valid_corruptions_count == 0 then
-        script_error(string.format(
-            "ERROR: Faction '%s' wasn't valid for any preferred corruption set. Check that the faction sets for corruption preference cover this faction. Cannot apply post-battle corruption swing.",
-            faction:name(), valid_corruptions_string))
+        out("Frodo45127: No corruptions found for faction " .. faction:name() .. ".")
         return false
     end
 
