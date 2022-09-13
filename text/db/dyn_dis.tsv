@@ -90,7 +90,7 @@ mct_dyn_dis_debug_tooltip	Enable/Disable debug mode.\\n\\nIn debug mode, all dis
 mct_dyn_dis_max_turn_value	Maximum turn	true
 mct_dyn_dis_max_turn_value_tooltip	Maximum turn for this disaster to trigger. If the disaster has not yet triggered when reaching this turn, it'll trigger if none of the requeriments are unfulfilled. \\nSet to 0 to allow the disaster to trigger normally based on its requeriments.	true
 mct_dyn_dis_disable_vanilla_endgames	Disable Vanilla Endgames	true
-mct_dyn_dis_disable_vanilla_endgames_tooltip	This setting toggles the vanilla endgame logic on and off. If you uncheck it, vanilla disasters may trigger twice, once by the endgames logic, and once by this mod.	true
+mct_dyn_dis_disable_vanilla_endgames_tooltip	NOTE: This may cause bugs if switched on and off in the middle of a campaign! \\n\\nThis setting toggles the vanilla endgame logic on and off. If you uncheck it, vanilla disasters may trigger twice, once by the endgames logic, and once by this mod.	true
 effects_description_fro_dyn_dis_chaos_corruption_mapwide	Chaos corruption: %+n	true
 effect_bundles_localised_title_fro_dyn_dis_chaos_invasion_global_effects	Flow of the Polar Gates	true
 missions_localised_description_dyn_dis_grudge_too_far_we_ran_out_of_book_1	The Dwarfs have declared war onto the whole world! Defeat them and make the incredible famed wealth of the Karaz-Ankor yours!	true
@@ -98,21 +98,21 @@ missions_localised_title_dyn_dis_grudge_too_far_we_ran_out_of_book_1	The Wealth 
 missions_localised_description_dyn_dis_grudge_too_far_we_ran_out_of_book_2	After thousands of years, the Dwarven holds are ready. The long lost holds will be retaken! The book will be empty of Grudges!	true
 missions_localised_title_dyn_dis_grudge_too_far_we_ran_out_of_book_2	The End of an Era	true
 missions_localised_title_dyn_dis_chaos_invasion_endtimes_unfolding_1	End Times Unfolding	true
-missions_localised_description_dyn_dis_chaos_invasion_endtimes_unfolding_1	Placeholder	true
-missions_localised_description_dyn_dis_aztec_invasion_d_day_1	Placeholder	true
+missions_localised_description_dyn_dis_chaos_invasion_endtimes_unfolding_1	The Chaos Gods have made their move. Now... make yours.	true
+missions_localised_description_dyn_dis_aztec_invasion_d_day_1	The Slanns of Lustria have finally deciphered the Great Plan of the Old Gods. And you're not on it.	true
 missions_localised_title_dyn_dis_aztec_invasion_d_day_1	Breaking of the Great Plan	true
 missions_localised_title_dyn_dis_pyramid_of_nagash_guess_whos_back_1	Assault to the Black Pyramid!	true
-missions_localised_description_dyn_dis_pyramid_of_nagash_guess_whos_back_1	Placeholder	true
-missions_localised_description_dyn_dis_pyramid_of_nagash_guess_whos_back_2	Placeholder	true
+missions_localised_description_dyn_dis_pyramid_of_nagash_guess_whos_back_1	The Pyramid of Nagash must be taken away from their current occupiers, of the world will be turned into a land of dead.	true
+missions_localised_description_dyn_dis_pyramid_of_nagash_guess_whos_back_2	The Black Pyramid of Nagash has been awaken! Kill the beings performing that horrible ritual before dead covers the world!	true
 missions_localised_title_dyn_dis_pyramid_of_nagash_guess_whos_back_2	The End of the Great Necromancer	true
 missions_localised_title_dyn_dis_vampires_rise_planet_of_the_dead_1	Give Rest to the Dead	true
-missions_localised_description_dyn_dis_vampires_rise_planet_of_the_dead_1	Placeholder	true
-missions_localised_description_dyn_dis_waaagh_da_biggest_and_badest_waaagh_1	Placeholder	true
+missions_localised_description_dyn_dis_vampires_rise_planet_of_the_dead_1	Death and decay taints the Winds of Magic. Will you leave it stay like that, or will you resist the Tide of Death?	true
+missions_localised_description_dyn_dis_waaagh_da_biggest_and_badest_waaagh_1	The Greenskin Hordes have assembled the bigger waaaghs ever seen since time immemorial. Would you be able to resist the Green Tide?	true
 missions_localised_title_dyn_dis_waaagh_da_biggest_and_badest_waaagh_1	The Biggest and Badest Waaagh!	true
 missions_localised_title_dyn_dis_wild_hunt_and_so_the_wild_hunt_begun_1	Burn the Oak Tree!	true
 missions_localised_description_dyn_dis_wild_hunt_and_so_the_wild_hunt_begun_1	And incinerate all that is Amber!	true
 missions_localised_title_dyn_dis_wild_hunt_and_so_the_wild_hunt_begun_2	The Hunt for the Wild Hunt	true
-missions_localised_description_dyn_dis_wild_hunt_and_so_the_wild_hunt_begun_2	Placeholder	true
+missions_localised_description_dyn_dis_wild_hunt_and_so_the_wild_hunt_begun_2	For ages, Orion and his Wild Hunt have terrified the forces of the Old World. It's time the Hunters become the hunted.	true
 incidents_localised_title_dyn_dis_grudge_too_far_early_end	Free Drinks for Everyone!	true
 incidents_localised_description_dyn_dis_grudge_too_far_early_end	Seems like thanks to some large shipments of Bugman's Ale, courtesy of a mysterious patron, the Dwarfs have calm down... for now.	true
 incidents_localised_title_dyn_dis_pyramid_of_nagash_tomb_kings_early_end	The Black Pyramid back to normal	true
@@ -127,7 +127,7 @@ incidents_localised_title_dyn_dis_wild_hunt_early_end	The Forests Calm Down	true
 incidents_localised_description_dyn_dis_wild_hunt_early_end	The great pressure that came from the Great Forests of the world is gone... for now.	true
 incidents_localised_title_dyn_dis_aztec_invasion_early_end	Allucination!	true
 incidents_localised_description_dyn_dis_aztec_invasion_early_end	After waiting in fear, it seems those ships of stone were no more than a mere allucination. Trade has resume... for now.	true
-incidents_localised_title_dyn_dis_chaos_invasion_stage_2_trigger	The Great Chaos Invasion of or Age Begins!	true
+incidents_localised_title_dyn_dis_chaos_invasion_stage_2_trigger	The Great Chaos Invasion of our Age Begins!	true
 incidents_localised_description_dyn_dis_chaos_invasion_stage_2_trigger	The Old World despairs, for Archaon the Everchosen, Champion of Chaos, has come and with him the End Times!\\n\\nOnce a Templar Priest of Sigmar, Archaon uncovered a terrible secret which drove him to reject his faith and pledge himself to the Gods of Chaos. In their service, he has devoted himself to the world’s destruction, defeating all challengers and rising to a position of dominance over all in the Chaos Wastes, achieving the ultimate accolade - his dark coronation as the Everchosen; the vessel through which the Dark Gods unite their followers to turn the world into a Realm of Chaos. It is to his banner that the Warriors of Chaos have been flocking, and it is his malign will that now drives them forth in a terrible wave of destruction destined to sweep all before it.\\n\\nThe earth groans beneath the iron-shod feet of Archaon’s numberless horde, and with him comes death. Is there any champion of the Old World mighty enough to withstand the Lord of the End Times?	true
 incidents_localised_title_dyn_dis_chaos_invasion_stage_1_trigger	The Rise of Chaos	true
 incidents_localised_description_dyn_dis_chaos_invasion_stage_1_trigger	Dire tidings from the North!\\n\\nThe tendrils of Chaos writhe and reach out from the accursed wastes, tainting the land and sowing dissent. Their corrupt forces wax ever stronger, and now their agents are abroad, spreading the foul corruption of their malign Gods.\\n\\nOn their heels come bands of marauding warriors led by the most zealous of the Chaos Lords, eager to wreak destruction in the name of the Ruinous Powers. And all the while, ever more warriors flock to some focal point in the Chaos Wastes, a nexus of power which transcends their petty rivalries and impels them to join with the numberless horde.\\n\\nDoom approaches, and it is only in strength that any hope may be found!	true
@@ -135,9 +135,11 @@ incidents_localised_title_dyn_dis_chaos_invasion_stage_early_warning	Chaos Stirs
 incidents_localised_description_dyn_dis_chaos_invasion_stage_early_warning	Storm clouds gather in the North. There are rumours that the barbarous tribes residing in the shadow of Chaos have ceased striving against each other for the attention of the Dark Gods and are instead banding together. Suckling at the teat of Chaos, the hordes grow in strength. It seems only a matter of time before the dam breaks and a tide of ruin bursts forth to engulf the Old World, corrupting or destroying all in its path.\\n\\nMarshal your strength, nurture the sinews of war, build your walls high, gather warriors to your banner and temper them in the crucible of battle, so that when the time comes you may yet weather the storm!	true
 incidents_localised_title_dyn_dis_chaos_invasion_stage_3_trigger	Placeholder	true
 incidents_localised_description_dyn_dis_chaos_invasion_stage_3_trigger	Placeholder	true
-incidents_localised_title_dyn_dis_chaos_invasion_finish_before_stage_1	Placeholder	true
-incidents_localised_description_dyn_dis_chaos_invasion_finish_before_stage_1	Placeholder	true
-incidents_localised_title_dyn_dis_chaos_invasion_finish	Placeholder	true
-incidents_localised_description_dyn_dis_chaos_invasion_finish	Placeholder	true
+incidents_localised_title_dyn_dis_chaos_invasion_finish_before_stage_1	Chaos Receeds	true
+incidents_localised_description_dyn_dis_chaos_invasion_finish_before_stage_1	It seems whatever menace was uniting the northern tribes in the chaos wastes it's gone... for now.	true
+incidents_localised_title_dyn_dis_chaos_invasion_finish	An Age of Peace?	true
+incidents_localised_description_dyn_dis_chaos_invasion_finish	As the last of the Chaos hordes is scoured from the face of the world, an awful silence descends. More than a silence; an absence of sound which echoes the all-consuming void without. All creation is stilled, breath held in anticipation of the final cataclysm.\\n\\nThen, tentatively, gently, life reasserts itself. Not in a grand way to echo those who sought to end everything, but in the small ways which of themselves are life. Birdsong pierces the silence, hesitant at first, then swelling; a defiant hymn to creation, borne on a soft wind that sifts dust onto the scattered corpses littering the bloody plain of battle. And the spell is broken. Bloodied veterans, survivors, refugees - all draw breath into their aching lungs and weep at the taste and smell of victory, peace, and life.\\n\\nYet what is life if not the constant striving of one against the other? After all, every hedgerow is a bloody battleground, every plant a murderer, every creature red in tooth and claw. Even as the weak raise their eyes to a golden future, the wise are glancing about to see who will make the first move in seizing it for themselves. The shield of civilisation which turned aside the deadly thrust of Chaos is now a heavy and cumbersome thing. Those who are first to cast it aside will be quickest with their blades, and a knife in the back is surest of all. Comrades who stood shoulder-to-shoulder in the shield wall now step apart and take each other’s measure. Alliances begin to unravel and the storm clouds gather once more.	true
 mct_dyn_dis_chaos_invasion_enable	Enable "Chaos Invasion" disaster	true
 mct_dyn_dis_wild_hunt_enable_tooltip	Enable/Disable the "The Wild Hunt" disaster (Vanilla). \\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
+missions_localised_title_dyn_dis_the_great_uprising_the_great_ascendancy_1	The Great Ascendancy	true
+missions_localised_description_dyn_dis_the_great_uprising_the_great_ascendancy_1	The Plan of the Skaven has been revealed. For their Great Ascendancy, the world will be turn to ruins! Would you be able to resist the onslaugh?	true
