@@ -1015,6 +1015,9 @@ function dynamic_disasters:load_from_mct(mct)
     local dynamic_disasters_debug_setting = dynamic_disasters_debug:get_finalized_setting()
     self.settings.debug = dynamic_disasters_debug_setting
 
+    --DEBUG: force debug mode to false for people who got it bugged out.
+    self.settings.debug = false
+
     local dynamic_disasters_max_simul = mod:get_option_by_key("dynamic_disasters_max_simul")
     local dynamic_disasters_max_simul_setting = dynamic_disasters_max_simul:get_finalized_setting()
     self.settings.max_endgames_at_the_same_time = dynamic_disasters_max_simul_setting
@@ -1250,6 +1253,9 @@ function dynamic_disasters:initialize()
             out("\tFrodo45127: Disaster's manager missing setting: ".. setting .. ". Initializing to default value.")
         end
     end
+
+    --DEBUG: Force-disable debug mode to get it working normally for people who got it bugged out.
+    self.settings.debug = false;
 
     -- There's a thing going on with two different victory conditions getting triggered (it bugs out the victory missions panel)
     -- so we need to make sure that none of the vanilla endgames are triggered before allowing this to trigger victory conditions.
