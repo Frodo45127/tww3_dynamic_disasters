@@ -953,7 +953,6 @@ local mandatory_settings = {
     last_finished_turn = 0,             -- Turn when the disaster was last finished.
     wait_turns_between_repeats = 0,     -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
     difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
-    campaigns = {},                     -- Campaigns this disaster works on.
 }
 
 -- Function to setup the save/load from savegame logic for items.
@@ -964,7 +963,7 @@ local mandatory_settings = {
 local function setup_save(item, save_key)
     local old_data = cm:get_saved_value(save_key);
     if old_data ~= nil then
-       item.settings = old_data;
+       item.settings = table.copy(old_data);
     end
     cm:set_saved_value(save_key, item.settings);
 end
@@ -1117,25 +1116,10 @@ function dynamic_disasters:initialize()
         for _, faction_name in pairs(human_factions) do
             local faction = cm:get_faction(faction_name);
 
-            -- Initialize all missing settings to default values, to stop disasters from breaking on updates due to missing settings.
-            disaster.settings = table.copy(disaster.default_settings);
-
-            -- Check that it has all the required settings, and initialize them in case it has them missing.
-            for setting, value in pairs(mandatory_settings) do
-                if disaster.settings[setting] == nil then
-                    if is_table(value) then
-                        disaster.settings[setting] = table.copy(value);
-                    else
-                        disaster.settings[setting] = value;
-                    end
-                    out("\tFrodo45127: Disaster: "..disaster.name..". Missing mandatory setting: ".. setting .. ". Initializing to default value.")
-                end
-            end
-
             -- Check that the disaster supports the campaign we're loading into.
             -- Each disaster must manually specify which campaign map supports, as it will probably need custom tweaks for each map.
             local allowed_in_campaign = false;
-            for _, campaign_supported in pairs(disaster.settings.campaigns) do
+            for _, campaign_supported in pairs(disaster.campaigns) do
                 if campaign_supported == campaign_key then
                     allowed_in_campaign = true;
                     break;
@@ -1202,17 +1186,12 @@ function dynamic_disasters:initialize()
         return
     end
 
-    -- Once all disasters are loaded, get their settings from the mct if available.
-    if get_mct then
-        self:load_from_mct(get_mct());
-    end
-
     -- Once all the disasters are loaded, setup saving-restoring data from save.
     setup_save(self, "dynamic_disasters_settings")
     for _, disaster in ipairs(self.disasters) do
         setup_save(disaster, disaster.name .. "_settings");
 
-        -- Initialize all missing settings to default values, to stop disasters from breaking on updates due to missing settings.
+        -- Initialize all missing disaster-specific settings on older saves to default values, to stop disasters from breaking on updates due to missing settings.
         for setting, value in pairs(disaster.default_settings) do
             if disaster.settings[setting] == nil then
                 if is_table(value) then
@@ -1224,7 +1203,7 @@ function dynamic_disasters:initialize()
             end
         end
 
-        -- Check that it has all the required settings, and initialize them in case it has them missing.
+        -- Initialize all missing mandatory settings on older saves to default values, to stop disasters from breaking on updates due to missing mandatory settings.
         for setting, value in pairs(mandatory_settings) do
             if disaster.settings[setting] == nil then
                 if is_table(value) then
@@ -1263,6 +1242,11 @@ function dynamic_disasters:initialize()
         if endgame.settings.endgame_enabled == true then
             self.settings.victory_condition_triggered = true;
         end
+    end
+
+    -- Once all disasters are loaded, get their settings from the mct if available and apply it to them.
+    if get_mct then
+        self:load_from_mct(get_mct());
     end
 
     -- Listener for evaluating if a disaster can be started or not. Triggered at the begining of each turn.

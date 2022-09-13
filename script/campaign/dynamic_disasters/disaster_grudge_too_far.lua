@@ -32,6 +32,9 @@ disaster_grudge_too_far = {
     is_global = true;
     allowed_for_sc = {},
     denied_for_sc = { "wh_main_sc_dwf_dwarfs" },
+    campaigns = {                       -- Campaigns this disaster works on.
+        "main_warhammer",
+    },
 
     -- If the disaster is an endgame scenario, define here the objectives to pass to the function that creates the victory condition.
     objectives = {
@@ -70,9 +73,6 @@ disaster_grudge_too_far = {
         last_finished_turn = 0,             -- Turn when the disaster was last finished.
         wait_turns_between_repeats = 0,     -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
         difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
-        campaigns = {                       -- Campaigns this disaster works on.
-            "main_warhammer",
-        },
 
         --Disaster-specific data.
 		army_template = {

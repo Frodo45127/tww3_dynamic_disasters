@@ -31,7 +31,7 @@ faction_stats_tracker = {
 local function setup_save(item, save_key)
     local old_data = cm:get_saved_value(save_key);
     if old_data ~= nil then
-       item.stats = old_data;
+       item.stats = table.copy(old_data);;
     end
     cm:set_saved_value(save_key, item.stats);
 end

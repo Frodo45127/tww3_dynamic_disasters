@@ -36,6 +36,9 @@ disaster_chianchi_assault = {
     is_global = false;
     allowed_for_sc = { "wh3_main_sc_cth_cathay" },
     denied_for_sc = {},
+    campaigns = {                       -- Campaigns this disaster works on.
+        "main_warhammer",
+    },
 
     -- Settings of the disaster that will be stored in a save.
     settings = {},
@@ -54,9 +57,6 @@ disaster_chianchi_assault = {
         last_finished_turn = 0,             -- Turn when the disaster was last finished.
         wait_turns_between_repeats = 1,     -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
         difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
-        campaigns = {                       -- Campaigns this disaster works on.
-            "main_warhammer",
-        },
 
         -- Disaster-specific data.
         warning_delay = 1,

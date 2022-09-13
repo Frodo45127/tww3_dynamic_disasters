@@ -35,6 +35,9 @@ disaster_wild_hunt = {
     is_global = true;
     allowed_for_sc = {},
     denied_for_sc = { "wh_dlc05_sc_wef_wood_elves" },
+    campaigns = {                       -- Campaigns this disaster works on.
+        "main_warhammer",
+    },
 
     -- If the disaster is an endgame scenario, define here the objectives to pass to the function that creates the victory condition.
     objectives = {
@@ -73,9 +76,6 @@ disaster_wild_hunt = {
         last_finished_turn = 0,             -- Turn when the disaster was last finished.
         wait_turns_between_repeats = 0,     -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
         difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
-        campaigns = {                       -- Campaigns this disaster works on.
-            "main_warhammer",
-        },
 
 		army_template = {
 			wood_elves = "lategame"
