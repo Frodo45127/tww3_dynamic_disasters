@@ -335,6 +335,7 @@ function disaster_raiding_parties:trigger_raiding_parties()
         template = "lategame";
     end
 
+    self.settings.army_template = {};
     if self.settings.subculture == "wh2_dlc11_sc_cst_vampire_coast" then
         self.settings.army_template.vampire_coast = template;
     elseif self.settings.subculture == "wh_dlc08_sc_nor_norsca" then
