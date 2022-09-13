@@ -78,9 +78,9 @@ effect_bundles_localised_title_fro_dyn_dis_great_uprising_global_effects	The Gre
 effects_description_fro_dyn_dis_skaven_corruption_mapwide	Skaven corruption: %+n	true
 effects_description_fro_dyn_dis_storm_of_magic_all_factions	Possibility of Storms of Magic across the whole world.	true
 incidents_localised_title_fro_dyn_dis_great_uprising_finish_before_stage_1	The Skaven menace is no more!	true
-incidents_localised_title_fro_dyn_dis_great_uprising_finish	Morrslieb recedes! The Skaven menace is no more!	true
+incidents_localised_title_fro_dyn_dis_great_uprising_finish	Morrslieb recedes!	true
 incidents_localised_description_fro_dyn_dis_great_uprising_finish_before_stage_1	Morrslieb seems to have gone back to its normal size. It seems we will never know what caused such phenomenom.	true
-incidents_localised_description_fro_dyn_dis_great_uprising_finish	After all that destruction, and without the Grey Seers to keep it close, Morrslieb has returned to its natural orbit. The world has been saved.... for now.	true
+incidents_localised_description_fro_dyn_dis_great_uprising_finish	After all that destruction, Morrslieb has returned to its natural orbit.	true
 mct_dyn_dis_max_simul	Max Concurrent Endgames	true
 mct_dyn_dis_max_simul_tooltip	Maximum amount of concurrent endgame disasters that can be run at the same time.	true
 incidents_localised_title_fro_dyn_dis_raiding_parties_early_end	Bless Manaan!	true
