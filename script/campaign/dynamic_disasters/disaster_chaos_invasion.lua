@@ -15,7 +15,7 @@
         - Stage 1:
             - If Archaon has been confederated, end the disaster here.
             - If not:
-                - Targets:
+                - Targets (TODO: Force them to try to get to the targets):
                     - Archaon: Kislev, Praag, Erenburg.
                     - Sigvald: No particular target, just buildup of forces.
                     - Kholek: Zharr Naggrund, Firemouth.
@@ -26,7 +26,7 @@
                 - Trigger "Chaos Rises" video.
                 - Wait 6-10 turns for more info.
         - Stage 2:
-            - Targets:
+            - Targets (TODO: Force them to try to get to the targets):
                 - Archaon: Kislev, Praag, Erenburg (Reinforcements).
                 - Sigvald: No particular target, just buildup of forces (Reinforcements).
                 - Kholek: Zharr Naggrund, Firemouth (Reinforcements).
@@ -48,72 +48,42 @@
             - Each attacker faction declares war on all non-chaos/non vassal of chaos owners of said provinces and on all its neightbours.
             - Trigger "Flow of the Polar Gates" incident (global chaos corruption).
             - Trigger "Chaos Invasion" (Sarthorael's spawn) video.
-            - Give all non player-controlled dark fortresses to chaos armies, if they're not yet owned by a chaos army.
-            - Rifts:
+            - Give all non player-controlled dark fortresses to chaos armies, if they're not yet owned by a chaos army (Maybe tweak this to only give fortresses owned by norsca?).
+
+
+    -- Reference for the timeline: https://warhammerfantasy.fandom.com/wiki/End_Times_Timeline#Appendix_1_-_Chronology_of_the_End_Times
+    Not Yet Implemented:
+        - Stage 2:
+            - If player is Cathay, improve pressure in the bastion's thread.
+            - If player is not Cathay and the Bastion still stands, spawn a few of Vilich armies to take it down.
+            - (TODO: for another update, because belakor's rifts are broken even in the vanilla game)Rifts:
                 - Spawn respawnable rifts across the Northern and Southern chaos wastes.
                 - Spawn respawnable rifts on all provinces that reach at least 75 of any chaos corruption.
                 - Spawn armies from rifts once every (10 / difficulty_multiplier) turns.
 
         - Stage 3a:
-            -
-
+            - If Gaen Vale, Asurian's Temple, Tor Elyr and White Tower of Hoeth are either in hands of Chaos, Norsca, or in Ruins:
+                - Trigger "Ulthuan's Fall", which has the following effects.
+                - "Hide" the vortex, either by removing the VFX or by hiding that sea on a Terrain Patch.
+                - Spawn rifts across all provinces of the world, regardless of corruption level.
+                - Spawn pure daemonic armies at the chaos wastes, with them respawning every (20 / difficulty_multiplier) turns.
+                - Give mission to "restore" the Vortex by taking back Gaen Vale, Asurian's Temple, Tor Elyr and White Tower of Hoeth
+                - When the mission is completed, stop global chaos buffs and rift respawn outside the chaos wastes.
+                - Give INCARNATION trait to certain characters (maybe).
         - Stage 3b:
-        - Stage Y:
             - If player is Cathay, Empire, Bretonia, Vampires, High Elves or Dark Elves, trigger a dilemma to become a vassal of chaos:
                 - If rejected, continue as normal.
                 - If accepted:
                     - Receive ancillaries of the chaos gods.
                     - Sign peace with all chaos factions and restore diplomacy with them.
                     - Disable diplomacy with every other faction. No more diplo for you, traitor.
+        - Stage 3a:
+            - If Grimgor is alive, trigger a separate disaster of him marching against Cathay.
 
-        - Stage X:
-            - If Gaen Vale, Asurian's Temple, Tor Elyr and White Tower of Hoeth are either in hands of Chaos, Norsca, or in Ruins:
-                - Trigger "Ulthuan's Fall", which has the following effects.
-                    - "Hide" the vortex, either by removing the VFX or by hiding that sea on a Terrain Patch.
-                    - Spawn rifts across all provinces of the world, regardless of corruption level.
-                    - Give mission to "restore" the Vortex by taking back Gaen Vale, Asurian's Temple, Tor Elyr and White Tower of Hoeth
-                    - When the mission is completed, stop global chaos buffs.
-
-
-
-    -- Reference: https://warhammerfantasy.fandom.com/wiki/End_Times_Timeline#Appendix_1_-_Chronology_of_the_End_Times
-    Ideas:
-        - Force-vasallize any remaining norscan tribe by their closest chaos character. We need a chaos-tide.
-        - Spawn rifts?
-
-        - Second wave (only if kislev is still alive):
-            - Spawn armies of Kairos near bretonia (year of misfortune).
-            - Small global chaos corruptionincrease.
-            - Force-vasalize any non-confederated and non-vasalized norscan tribe into specific chaos lords.
-            - If chaos corruption goes above 75, spawn a rift on a province.
-                - Said rift will spawn daemon armies each 10 turns + 1 an initial one.
-            - Find Surtha Ek, attack kislev with him + multiple norscan armies from vasalized factions.
-        - Second.5 wave (if vilich is usable);
-            - If player is not cathayan, spawn a few armies to simulate vilich's attack to the great bastion.
-            - If player is cathayan, increase a lot the bastion thread for the rest of the disaster.
-        - Second.55 wave:
-            - If Chaos captures all dark fortresses, you have a 50 countdown timer.
-                - Put static reinforcements on ALL DARK FORTRESSES (1 ARMY OF EACH GOD?).
-                - Take at least one back, or they'll open a great rift of Chaos and all will go to hell.
-        - Third wave (only if NKari can be used):
-            - Buff Nkari, give him armies and buff its corruption in the whole donut.
-            - Message about the vortex dissapearing.
-            - If player is the high elves, spawn a few armies near the gates, so they're used.
-        - If chaos takes a certain amount of territories on Ulthuan:
-            - Remove the vortex?
-            - Spawn daemonic armies at random provinces.
-            - Spawn big daemonic armies north and south poles.
-            - Give INCARNATION trait to certain characters?
-            - SINK THE FUCKING DONUT, HIDING IT IN THE SHROUD.
-
-        Stupid ideas and integrations:
-            - If Miao Ying/Zharina are dead, vasalize them to Nkari/Azzazel.
-            - If Naggarond is dead, vasalize them to Valkia.
-            - If the high elves are dead, vasalize them to NKari.
-            - If the empire is dead, vasalize it to Nurgle.
-            - If grimgor is alive, trigger a separate disaster of him marching against Cathay.
-            - Give the player (and every faction) a choice to swap sides and become part of the chaos tide, as a vassal of one of the chaos gods.
-                - As an incentive, you may be able to recruit chaos armies and maybe get access to warband?
+        - Stage 4:
+            - If chaos keeps all dark fortresses, trigger some kind of event about getting the favourt of the 4 chaos gods (TBD).
+            - Put static reinforcements on all dark fortresses (1 army of each god).
+            - Trigger an endgame event (you lose) if chaos keeps the fortresses for too long.
 ]]
 
 -- Status list for this disaster.
@@ -862,7 +832,7 @@ function disaster_chaos_invasion:set_status(status)
                 if self:check_end_disaster_conditions() == true then
                     dynamic_disasters:execute_payload(self.finish_event_key, nil, 0, nil);
                 else
-                    self:trigger_stage_3();
+                    --self:trigger_stage_3();
                 end
                 core:remove_listener("ChaosInvasionStage3")
             end,
@@ -1016,18 +986,18 @@ function disaster_chaos_invasion:trigger_stage_2()
     dynamic_disasters:force_peace_between_factions(self.settings.factions, true);
 
     -- Open the rifts on the chaos wastes and norsca.
-    self:open_teleportation_nodes(self.teleportation_nodes_chaos_wastes);
-    self:open_teleportation_nodes(self.teleportation_nodes_norsca);
+    --self:open_teleportation_nodes(self.teleportation_nodes_chaos_wastes);
+    --self:open_teleportation_nodes(self.teleportation_nodes_norsca);
 
     -- Testing stuff.
-    self:open_teleportation_nodes(self.teleportation_nodes_cathay);
-    self:open_teleportation_nodes(self.teleportation_nodes_old_world);
-    self:open_teleportation_nodes(self.teleportation_nodes_mountains_of_mourne);
-    self:open_teleportation_nodes(self.teleportation_nodes_mountains_dark_lands);
-    self:open_teleportation_nodes(self.teleportation_nodes_mountains_southlands);
-    self:open_teleportation_nodes(self.teleportation_nodes_mountains_lustria);
-    self:open_teleportation_nodes(self.teleportation_nodes_mountains_naggaroth);
-    self:open_teleportation_nodes(self.teleportation_nodes_ulthuan);
+    --self:open_teleportation_nodes(self.teleportation_nodes_cathay);
+    --self:open_teleportation_nodes(self.teleportation_nodes_old_world);
+    --self:open_teleportation_nodes(self.teleportation_nodes_mountains_of_mourne);
+    --self:open_teleportation_nodes(self.teleportation_nodes_mountains_dark_lands);
+    --self:open_teleportation_nodes(self.teleportation_nodes_mountains_southlands);
+    --self:open_teleportation_nodes(self.teleportation_nodes_mountains_lustria);
+    --self:open_teleportation_nodes(self.teleportation_nodes_mountains_naggaroth);
+    --self:open_teleportation_nodes(self.teleportation_nodes_ulthuan);
 
     -- Prepare the final mission objectives.
     for _, faction_key in pairs(self.settings.factions) do
