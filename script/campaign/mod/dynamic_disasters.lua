@@ -1852,6 +1852,42 @@ function dynamic_disasters:declare_war_on_adjacent_region_owners(faction, base_r
     end
 end
 
+-- This function kills a faction without the killin being reported in the events.
+---@param faction_key string #Key of the faction to kill.
+function dynamic_disasters:kill_faction_silently(faction_key)
+
+    --check the faction key is a string
+    if not is_string(faction_key) then
+        script_error("ERROR: kill_faction() called but supplied region key [" .. tostring(faction_key) .. "] is not a string");
+        return false;
+    end;
+
+    local faction = cm:model():world():faction_by_key(faction_key);
+
+    if faction:is_null_interface() == false then
+        cm:disable_event_feed_events(true, "wh_event_category_conquest", "", "")
+        cm:disable_event_feed_events(true, "wh_event_category_diplomacy", "", "")
+
+        cm:kill_all_armies_for_faction(faction);
+
+        local region_list = faction:region_list();
+
+        for j = 0, region_list:num_items() - 1 do
+            local region = region_list:item_at(j):name();
+            cm:set_region_abandoned(region);
+        end;
+
+        cm:callback(
+            function()
+                cm:disable_event_feed_events(false, "wh_event_category_conquest", "", "");
+                cm:disable_event_feed_events(false, "wh_event_category_diplomacy", "", "");
+            end,
+            0.5
+        );
+    end;
+end;
+
+
 -- Function to determine if a faction is currently considered an order faction or not.
 ---@param faction_key string #Faction key to check.
 ---@return boolean #If the faction is considered an order faction or not. Returns false if the key is invalid.
