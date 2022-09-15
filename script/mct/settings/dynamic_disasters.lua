@@ -177,8 +177,11 @@ chaos_invasion_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_toolt
 chaos_invasion_difficulty_mod:slider_set_min_max(10, 500)
 chaos_invasion_difficulty_mod:set_default_value(150)
 chaos_invasion_difficulty_mod:slider_set_step_size(10)
-local d = mod:add_new_option("d99", "dummy")
-d:set_text(" ");
+
+local chaos_invasion_enable_rifts = mod:add_new_option("chaos_invasion_enable_rifts", "checkbox")
+chaos_invasion_enable_rifts:set_default_value(true)
+chaos_invasion_enable_rifts:set_text(loc_prefix.."chaos_invasion_enable_rifts", true)
+chaos_invasion_enable_rifts:set_tooltip_text(loc_prefix.."chaos_invasion_enable_rifts_tooltip", true)
 
 local d = mod:add_new_option("d98", "dummy")
 d:set_text(" ");

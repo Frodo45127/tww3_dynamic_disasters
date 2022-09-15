@@ -953,6 +953,7 @@ local mandatory_settings = {
     last_finished_turn = 0,             -- Turn when the disaster was last finished.
     wait_turns_between_repeats = 0,     -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
     difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
+    mct_settings = {}                   -- Extra settings this disaster may pull from MCT.
 }
 
 -- Function to setup the save/load from savegame logic for items.
@@ -1044,6 +1045,19 @@ function dynamic_disasters:load_from_mct(mct)
         if not difficulty_mod == false then
             local difficulty_mod_setting = difficulty_mod:get_finalized_setting();
             disaster.settings.difficulty_mod = difficulty_mod_setting / 100;
+        end
+
+        for i = 1, #disaster.settings.mct_settings do
+            local setting = disaster.name .. "_" .. disaster.settings.mct_settings[i];
+            out("Frodo45127: Trying to get setting " .. setting .. " from the MCT.")
+
+            local option = mod:get_option_by_key(setting);
+            if not option == false then
+                local value = option:get_finalized_setting();
+                disaster.settings[disaster.settings.mct_settings[i]] = value;
+
+                out("Frodo45127: Setting " .. disaster.settings.mct_settings[i] .. " for disaster " .. disaster.name .. " to ".. tostring(value) .. ".")
+            end
         end
     end
 end

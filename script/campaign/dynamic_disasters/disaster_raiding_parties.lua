@@ -313,7 +313,7 @@ function disaster_raiding_parties:trigger()
         self.settings.wait_turns_between_repeats = self.settings.grace_period + 4;
     end
 
-    dynamic_disasters:execute_payload(self.warning_event_key, self.warning_effect_key, 0, nil);
+    dynamic_disasters:execute_payload(self.warning_event_key, self.warning_effect_key, self.settings.warning_delay, nil);
     self:set_status(STATUS_TRIGGERED);
 end
 

@@ -493,7 +493,7 @@ function disaster_the_great_uprising:trigger()
     end
 
     -- Initialize listeners.
-    dynamic_disasters:execute_payload(self.stage_1_warning_event_key, self.stage_1_warning_effect_key, 0, nil);
+    dynamic_disasters:execute_payload(self.stage_1_warning_event_key, self.stage_1_warning_effect_key, self.settings.stage_1_delay, nil);
     self:set_status(STATUS_TRIGGERED);
 end
 

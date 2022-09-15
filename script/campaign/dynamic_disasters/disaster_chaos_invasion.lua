@@ -152,8 +152,12 @@ disaster_chaos_invasion = {
         last_finished_turn = 0,             -- Turn when the disaster was last finished.
         wait_turns_between_repeats = 0,     -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
         difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
+        mct_settings = {                    -- Extra settings this disaster may pull from MCT.
+            "enable_rifts",
+        },
 
         -- Disaster-specific data.
+        enable_rifts = true,
         base_army_unit_count = 19,
         stage_1_delay = 1,
         stage_2_delay = 1,
@@ -876,7 +880,7 @@ function disaster_chaos_invasion:set_status(status)
         "ChaosInvasionRespawnRiftsChaosWastes",
         "WorldStartRound",
         function()
-            return self.settings.started and self.settings.status >= STATUS_STAGE_2 and (cm:random_number(5) == 1 or dynamic_disasters.settings.debug);
+            return self.settings.started and self.settings.status >= STATUS_STAGE_2 and self.settings.enable_rifts and (cm:random_number(5) == 1 or dynamic_disasters.settings.debug);
         end,
         function()
             out("Frodo45127: Respawning rifts at random on provinces with at least 75% chaos corruption.");
@@ -1310,27 +1314,30 @@ function disaster_chaos_invasion:trigger_stage_2()
     -- Further down the line they may fight each other, but for now we need them to push.
     dynamic_disasters:force_peace_between_factions(self.settings.factions, true);
 
-    -- Open the rifts on the chaos wastes and norsca.
-    local percentage = 0.5 + (self.settings.difficulty_mod / 10);
-    local min_chaos = 50;
-    --local percentage = 1;
-    --local min_chaos = 0;
-    self:open_teleportation_nodes(self.teleportation_nodes_chaos_wastes, percentage, min_chaos);
-    self:open_teleportation_nodes(self.teleportation_nodes_norsca, percentage, min_chaos);
+    if self.settings.enable_rifts then
 
-    -- Testing stuff.
-    --self:open_teleportation_nodes(self.teleportation_nodes_cathay, percentage, min_chaos);
-    --self:open_teleportation_nodes(self.teleportation_nodes_old_world, percentage, min_chaos);
-    --self:open_teleportation_nodes(self.teleportation_nodes_mountains_of_mourne, percentage, min_chaos);
-    --self:open_teleportation_nodes(self.teleportation_nodes_dark_lands, percentage, min_chaos);
-    --self:open_teleportation_nodes(self.teleportation_nodes_southlands, percentage, min_chaos);
-    --self:open_teleportation_nodes(self.teleportation_nodes_lustria, percentage, min_chaos);
-    --self:open_teleportation_nodes(self.teleportation_nodes_naggaroth, percentage, min_chaos);
-    --self:open_teleportation_nodes(self.teleportation_nodes_ulthuan, percentage, min_chaos);
+        -- Open the rifts on the chaos wastes and norsca.
+        local percentage = 0.5 + (self.settings.difficulty_mod / 10);
+        local min_chaos = 50;
+        --local percentage = 1;
+        --local min_chaos = 0;
+        self:open_teleportation_nodes(self.teleportation_nodes_chaos_wastes, percentage, min_chaos);
+        self:open_teleportation_nodes(self.teleportation_nodes_norsca, percentage, min_chaos);
 
-    -- Prepare the final mission objectives.
-    for _, faction_key in pairs(self.settings.factions) do
-        table.insert(self.objectives[1].conditions, "faction " .. faction_key)
+        -- Testing stuff.
+        --self:open_teleportation_nodes(self.teleportation_nodes_cathay, percentage, min_chaos);
+        --self:open_teleportation_nodes(self.teleportation_nodes_old_world, percentage, min_chaos);
+        --self:open_teleportation_nodes(self.teleportation_nodes_mountains_of_mourne, percentage, min_chaos);
+        --self:open_teleportation_nodes(self.teleportation_nodes_dark_lands, percentage, min_chaos);
+        --self:open_teleportation_nodes(self.teleportation_nodes_southlands, percentage, min_chaos);
+        --self:open_teleportation_nodes(self.teleportation_nodes_lustria, percentage, min_chaos);
+        --self:open_teleportation_nodes(self.teleportation_nodes_naggaroth, percentage, min_chaos);
+        --self:open_teleportation_nodes(self.teleportation_nodes_ulthuan, percentage, min_chaos);
+
+        -- Prepare the final mission objectives.
+        for _, faction_key in pairs(self.settings.factions) do
+            table.insert(self.objectives[1].conditions, "faction " .. faction_key)
+        end
     end
 
     -- Trigger the chaos-related effects
