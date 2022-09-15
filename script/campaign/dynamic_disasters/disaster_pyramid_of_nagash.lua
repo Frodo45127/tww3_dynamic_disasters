@@ -243,6 +243,9 @@ function disaster_pyramid_of_nagash:trigger_resurection_of_nagash()
     -- Reveal all regions subject to capture.
     dynamic_disasters:reveal_regions({ self.region_key });
 
+	-- Make the Black Pyramid fly!
+	cm:override_building_chain_display("wh2_dlc09_special_settlement_pyramid_of_nagash_tmb", "wh2_dlc09_special_settlement_pyramid_of_nagash_floating");
+
     -- Trigger either the victory mission, or just the related incident.
     dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.settings.faction_data.incident_key, self.region_key, self.settings.faction_data.faction_key, function () self:trigger_end_disaster() end, false)
     cm:activate_music_trigger("ScriptedEvent_Negative", self.settings.faction_data.music)
