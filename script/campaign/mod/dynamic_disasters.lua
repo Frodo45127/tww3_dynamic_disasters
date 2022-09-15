@@ -1374,9 +1374,9 @@ function dynamic_disasters:execute_payload(incident_key, effect_bundle_key, dura
         end
 
         -- This doesn't work.
-        --if region_key ~= nil then
-        --    incident_builder:set_region(region_key);
-        --end
+        if region_key ~= nil then
+            incident_builder:add_target("default", cm:get_region(region_key));
+        end
 
         incident_builder:set_payload(payload_builder)
         cm:launch_custom_incident_from_builder(incident_builder, cm:get_faction(human_factions[i]))
