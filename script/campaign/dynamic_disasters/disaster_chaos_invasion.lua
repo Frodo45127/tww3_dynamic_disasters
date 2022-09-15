@@ -1002,7 +1002,7 @@ function disaster_chaos_invasion:set_status(status)
 
             invasion_manager:kill_invasion_by_key("ChaosInvasionRiftClosureArmy");
 
-            for k, v in pairs(self.rift_closure_force_data) do
+            for _, v in pairs(self.rift_closure_force_data) do
                 dynamic_disasters:kill_faction_silently(v[1]);
             end;
 
@@ -1498,31 +1498,31 @@ function disaster_chaos_invasion:get_chaos_trait_name(from_realm, to_realm, subc
     end
 
     local trait = "wh3_main_trait_realm_" .. realm;
-    if culture == "wh3_main_sc_kho_khorne" or faction_key == "wh3_dlc20_chs_valkia" then
+    if subculture == "wh3_main_sc_kho_khorne" or faction_key == "wh3_dlc20_chs_valkia" then
         if realm == "khorne" then
             return false;
         end;
 
         trait = trait .. "_daemons";
-    elseif culture == "wh3_main_sc_nur_nurgle" or faction_key == "wh3_dlc20_chs_festus" then
+    elseif subculture == "wh3_main_sc_nur_nurgle" or faction_key == "wh3_dlc20_chs_festus" then
         if realm == "nurgle" then
             return false;
         end;
 
         trait = trait .. "_daemons";
-    elseif culture == "wh3_main_sc_sla_slaanesh" or faction_key == "wh3_dlc20_chs_azazel" then
+    elseif subculture == "wh3_main_sc_sla_slaanesh" or faction_key == "wh3_dlc20_chs_azazel" then
         if realm == "slaanesh" then
             return false;
         end;
 
         trait = trait .. "_daemons";
-    elseif culture == "wh3_main_sc_tze_tzeentch" or faction_key == "wh3_dlc20_chs_vilitch" then
+    elseif subculture == "wh3_main_sc_tze_tzeentch" or faction_key == "wh3_dlc20_chs_vilitch" then
         if realm == "tzeentch" then
             return false;
         end;
 
         trait = trait .. "_daemons";
-    elseif culture == "wh3_main_sc_dae_daemons" or faction_key == "wh3_main_chs_shadow_legion" then
+    elseif subculture == "wh3_main_sc_dae_daemons" or faction_key == "wh3_main_chs_shadow_legion" then
         trait = trait .. "_daemons";
     end;
 
