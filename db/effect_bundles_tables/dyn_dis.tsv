@@ -13,3 +13,11 @@ fro_dyn_dis_great_uprising_global_effects	 	 	disaster.png	faction	1	true	false	
 fro_dyn_dis_great_uprising_attacker_buffs	 	 	disaster.png	faction	1	false	false	false
 fro_dyn_dis_chaos_invasion_global_effects	 	 	disaster.png	faction	1	true	false	false
 fro_dyn_dis_chaos_invasion_attacker_buffs	 	 	disaster.png	faction	1	false	false	false
+dyn_dis_chaos_invasion_stage_early_warning			disaster.png	faction	1	true	false	true
+dyn_dis_grudge_too_far_early_warning			disaster.png	faction	1	true	false	true
+dyn_dis_black_pyramid_early_warning			disaster.png	faction	1	true	false	true
+dyn_dis_raiding_parties_early_warning			disaster.png	faction	1	true	false	true
+dyn_dis_the_great_uprising_early_warning			disaster.png	faction	1	true	false	true
+dyn_dis_vampires_rise_early_warning			disaster.png	faction	1	true	false	true
+dyn_dis_waaagh_early_warning			disaster.png	faction	1	true	false	true
+dyn_dis_wild_hunt_early_warning			disaster.png	faction	1	true	false	true

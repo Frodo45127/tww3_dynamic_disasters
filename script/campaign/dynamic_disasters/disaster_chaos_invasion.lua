@@ -1179,7 +1179,7 @@ function disaster_chaos_invasion:trigger()
     end
 
     -- Initialize listeners.
-    dynamic_disasters:execute_payload(self.stage_early_warning_incident_key, nil, self.settings.stage_1_delay, nil);
+    dynamic_disasters:execute_payload(self.stage_early_warning_incident_key, self.stage_early_warning_incident_key, self.settings.stage_1_delay, nil);
     self:set_status(STATUS_TRIGGERED);
 end
 

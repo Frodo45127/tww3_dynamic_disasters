@@ -278,6 +278,7 @@ disaster_the_great_uprising = {
     },
 
     stage_1_warning_event_key = "fro_dyn_dis_great_uprising_stage_1_warning",
+    stage_1_warning_effect_key = "dyn_dis_the_great_uprising_early_warning",
     stage_1_event_key = "fro_dyn_dis_great_uprising_stage_1_trigger",
     stage_2_event_key = "fro_dyn_dis_great_uprising_stage_2_trigger",
     stage_3_event_key = "fro_dyn_dis_great_uprising_stage_3_trigger",
@@ -492,7 +493,7 @@ function disaster_the_great_uprising:trigger()
     end
 
     -- Initialize listeners.
-    dynamic_disasters:execute_payload(self.stage_1_warning_event_key, nil, 0, nil);
+    dynamic_disasters:execute_payload(self.stage_1_warning_event_key, self.stage_1_warning_effect_key, 0, nil);
     self:set_status(STATUS_TRIGGERED);
 end
 

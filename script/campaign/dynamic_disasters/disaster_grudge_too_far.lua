@@ -106,7 +106,7 @@ disaster_grudge_too_far = {
         regions = {}
 	},
     early_warning_incident_key = "wh3_main_ie_incident_endgame_grudge_too_far_early_warning",
-	early_warning_effects_key = "wh3_main_ie_scripted_endgame_early_warning",
+	early_warning_effects_key = "dyn_dis_grudge_too_far_early_warning",
     invasion_incident_key = "wh3_main_ie_incident_endgame_grudge_too_far",
     endgame_mission_name = "we_ran_out_of_book",
     invader_buffs_effects_key = "wh3_main_ie_scripted_endgame_grudge_too_far",

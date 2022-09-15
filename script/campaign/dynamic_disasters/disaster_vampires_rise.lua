@@ -96,7 +96,7 @@ disaster_vampires_rise = {
 	},
 
     early_warning_incident_key = "wh3_main_ie_incident_endgame_vampires_rise_early_warning",
-    early_warning_effects_key = "wh3_main_ie_scripted_endgame_early_warning",
+    early_warning_effects_key = "dyn_dis_vampires_rise_early_warning",
     invasion_incident_key = "wh3_main_ie_incident_endgame_vampires_rise",
     endgame_mission_name = "planet_of_the_dead",
     invader_buffs_effects_key = "wh3_main_ie_scripted_endgame_vampires_rise",

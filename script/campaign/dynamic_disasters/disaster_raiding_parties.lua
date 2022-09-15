@@ -95,6 +95,7 @@ disaster_raiding_parties = {
         targets = {},                                -- List of regions/factions to invade.
     },
     warning_event_key = "fro_dyn_dis_raiding_parties_warning",
+    warning_effect_key = "dyn_dis_raiding_parties_early_warning",
     raiding_event_key = "fro_dyn_dis_raiding_parties_trigger",
     invader_buffs_effects_key = "fro_dyn_dis_raiding_parties_invader_buffs",
     finish_early_incident_key = "fro_dyn_dis_raiding_parties_early_end",
@@ -312,7 +313,7 @@ function disaster_raiding_parties:trigger()
         self.settings.wait_turns_between_repeats = self.settings.grace_period + 4;
     end
 
-    dynamic_disasters:execute_payload(self.warning_event_key, nil, 0, nil);
+    dynamic_disasters:execute_payload(self.warning_event_key, self.warning_effect_key, 0, nil);
     self:set_status(STATUS_TRIGGERED);
 end
 

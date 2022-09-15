@@ -112,7 +112,7 @@ disaster_waaagh = {
 	},
 
     early_warning_incident_key = "wh3_main_ie_incident_endgame_waaagh_early_warning",
-    early_warning_effects_key = "wh3_main_ie_scripted_endgame_early_warning",
+    early_warning_effects_key = "dyn_dis_waaagh_early_warning",
     invasion_incident_key = "wh3_main_ie_incident_endgame_waaagh",
     endgame_mission_name = "da_biggest_and_badest_waaagh",
     invader_buffs_effects_key = "wh3_main_ie_scripted_endgame_waaagh",

@@ -116,7 +116,7 @@ disaster_pyramid_of_nagash = {
 
 	region_key = "wh3_main_combi_region_black_pyramid_of_nagash",
     early_warning_incident_key = "wh3_main_ie_incident_endgame_black_pyramid_early_warning",
-	early_warning_effects_key = "wh3_main_ie_scripted_endgame_early_warning",
+	early_warning_effects_key = "dyn_dis_black_pyramid_early_warning",
 	endgame_mission_name = "guess_whos_back",
 }
 
