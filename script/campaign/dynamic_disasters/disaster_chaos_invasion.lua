@@ -48,7 +48,15 @@
             - Each attacker faction declares war on all non-chaos/non vassal of chaos owners of said provinces and on all its neightbours.
             - Trigger "Flow of the Polar Gates" incident (global chaos corruption).
             - Trigger "Chaos Invasion" (Sarthorael's spawn) video.
-            - Give all non player-controlled dark fortresses to chaos armies, if they're not yet owned by a chaos army (Maybe tweak this to only give fortresses owned by norsca?).
+            - Give all non player-controlled dark fortresses to chaos armies, if they're owned by norsca.
+            - Rifts:
+                - Spawn respawnable rifts across the Northern and Southern chaos wastes.
+                - Spawn respawnable rifts on all provinces that reach at least 75 of any chaos corruption.
+                - Rifts change chaos god depending on the region owner.
+                - Rifts have a (50% + (self.settings.difficulty_mod * 10)) chance to spawn an army each turns.
+                - Spawned armies belong either to the faction that owns the Rift (if demonic) or to Archaon.
+                - If a character travels through a rift, it has a chance of receiving the trait for being on the related realm too long.
+
 
 
     -- Reference for the timeline: https://warhammerfantasy.fandom.com/wiki/End_Times_Timeline#Appendix_1_-_Chronology_of_the_End_Times
@@ -56,11 +64,6 @@
         - Stage 2:
             - If player is Cathay, improve pressure in the bastion's thread.
             - If player is not Cathay and the Bastion still stands, spawn a few of Vilich armies to take it down.
-            - (TODO: for another update, because belakor's rifts are broken even in the vanilla game)Rifts:
-                - Spawn respawnable rifts across the Northern and Southern chaos wastes.
-                - Spawn respawnable rifts on all provinces that reach at least 75 of any chaos corruption.
-                - Spawn armies from rifts once every (10 / difficulty_multiplier) turns.
-
         - Stage 3a:
             - If Gaen Vale, Asurian's Temple, Tor Elyr and White Tower of Hoeth are either in hands of Chaos, Norsca, or in Ruins:
                 - Trigger "Ulthuan's Fall", which has the following effects.
@@ -509,7 +512,14 @@ disaster_chaos_invasion = {
         "wh3_main_teleportation_node_template_nur",
         "wh3_main_teleportation_node_template_sla",
         "wh3_main_teleportation_node_template_tze"
-    };
+    },
+
+    teleportation_nodes_realm_by_templates = {
+        wh3_main_teleportation_node_template_kho = "khorne",
+        wh3_main_teleportation_node_template_nur = "nurgle",
+        wh3_main_teleportation_node_template_sla = "slaanesh",
+        wh3_main_teleportation_node_template_tze = "tzeentch"
+    },
 
     teleportation_nodes_defender_army_templates = {
         wh3_main_teleportation_node_template_kho = {
@@ -1001,6 +1011,85 @@ function disaster_chaos_invasion:set_status(status)
         false
     );
 
+    -- Listener to assign debuff traits to travelers of the rifts.
+    core:add_listener(
+        "ChaosInvasionRiftArmyTravelCompleted",
+        "TeleportationNetworkMoveCompleted",
+        function(context)
+            local character = context:character():character();
+            local faction = character:faction();
+            return faction:is_human() and context:from_record():network_key() == self.teleportation_network;
+        end,
+        function(context)
+            local character = context:character():character();
+            local faction = character:faction();
+
+            local network = cm:model():world():teleportation_network_system():lookup_network(self.teleportation_network)
+            local from_node_key = context:from_key()
+            local to_node_key = context:to_key()
+            local from_template_key = network:lookup_open_node(from_node_key):template_key()
+            local to_template_key = network:lookup_open_node(to_node_key):template_key()
+
+            -- If we're trying to travel through the Chaos Realms, you get a chance of receiving a trait.
+            if math.random() < 0.1 or dynamic_disasters.settings.debug then
+                local from_realm = self.teleportation_nodes_realm_by_templates[from_template_key];
+                local to_realm = self.teleportation_nodes_realm_by_templates[to_template_key];
+
+                out("Frodo45127: Trying to add chaos realm trait. Possible realms: " .. tostring(from_realm) .. " and " .. to_realm .. ".");
+                local trait_name = self:get_chaos_trait_name(from_realm, to_realm, faction:subculture(), faction:name());
+                if trait_name then
+
+                    out("Frodo45127: Trait to add: " .. tostring(trait_name) .. ".");
+                    cm:force_add_trait(cm:char_lookup_str(character), trait_name, true, 3);
+                end;
+            end
+        end,
+        true
+    );
+
+    -- Listener to remove debuff traits to travelers of the rifts.
+    core:add_listener(
+        "ChaosInvasionRiftTraitRemover",
+        "CharacterTurnEnd",
+        function(context)
+            local character = context:character();
+            local faction = character:faction();
+            return faction:is_human();
+        end,
+        function(context)
+            local character = context:character();
+            local faction = character:faction();
+
+            -- If we're in a settlement and we have a Chaos Realm trait, you get a chance of removing it.
+            -- We can also remove it if we have a building with the trait removal thing, but nobody builds those.
+            if character:in_settlement() then
+                local value = character:region():bonus_values():scripted_value("chaos_realm_trait_removal", "value");
+                if value > 0 or character:region():is_province_capital() then
+                    for _, realm in pairs(self.teleportation_nodes_realm_by_templates) do
+                        if cm:random_number(100) <= value or dynamic_disasters.settings.debug then
+
+                            -- Reduce 1 level or remove the trait.
+                            local trait_name = self:get_chaos_trait_name(realm, realm, faction:subculture(), faction:name());
+                            out("Frodo45127: Tying to remove chaos realm trait " .. tostring(trait_name));
+
+                            if trait_name then
+                                local num_points = math.min(character:trait_points(trait_name), 9);
+
+                                cm:force_remove_trait(cm:char_lookup_str(character), trait_name);
+
+                                if num_points / 3 > 1 and not trait_name:find("_daemons") then
+                                    cm:force_add_trait(cm:char_lookup_str(character), trait_name, false, (math.floor(num_points / 3 - 1)) * 3);
+                                end;
+                            end;
+
+                        end;
+                    end;
+                end;
+            end;
+        end,
+        true
+    );
+
     -- Listener that need to be initialized after the disaster is triggered.
     if self.settings.status == STATUS_TRIGGERED then
 
@@ -1396,6 +1485,49 @@ function disaster_chaos_invasion:generate_rift_closure_battle(character, node_te
         false
     );
 end
+
+-- This function returns the proper trait for debuffing armies traveling the chaos realms.
+---@param from_realm string #Realm corresponding to the entry rift.
+---@param to_realm string #Realm corresponding to the exit rift.
+---@param subculture string #Subculture key. If it's daemonic, it'll not receive their own trait.
+---@param faction_key string #Faction key. Optional, to specify daemonic factions that don't match by subculture with one of the four chaos gods.
+function disaster_chaos_invasion:get_chaos_trait_name(from_realm, to_realm, subculture, faction_key)
+    local realm = from_realm;
+    if math.random() >= 0.5 then
+        realm = to_realm;
+    end
+
+    local trait = "wh3_main_trait_realm_" .. realm;
+    if culture == "wh3_main_sc_kho_khorne" or faction_key == "wh3_dlc20_chs_valkia" then
+        if realm == "khorne" then
+            return false;
+        end;
+
+        trait = trait .. "_daemons";
+    elseif culture == "wh3_main_sc_nur_nurgle" or faction_key == "wh3_dlc20_chs_festus" then
+        if realm == "nurgle" then
+            return false;
+        end;
+
+        trait = trait .. "_daemons";
+    elseif culture == "wh3_main_sc_sla_slaanesh" or faction_key == "wh3_dlc20_chs_azazel" then
+        if realm == "slaanesh" then
+            return false;
+        end;
+
+        trait = trait .. "_daemons";
+    elseif culture == "wh3_main_sc_tze_tzeentch" or faction_key == "wh3_dlc20_chs_vilitch" then
+        if realm == "tzeentch" then
+            return false;
+        end;
+
+        trait = trait .. "_daemons";
+    elseif culture == "wh3_main_sc_dae_daemons" or faction_key == "wh3_main_chs_shadow_legion" then
+        trait = trait .. "_daemons";
+    end;
+
+    return trait;
+end;
 
 -- Get the corruption settings table for a given faction, based on which faction set that faction appears in.
 ---@param faction FACTION_SCRIPT_INTERFACE #Faction object
