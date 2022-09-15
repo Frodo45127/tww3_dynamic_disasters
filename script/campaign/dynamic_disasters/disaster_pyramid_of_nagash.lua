@@ -241,7 +241,7 @@ function disaster_pyramid_of_nagash:trigger_resurection_of_nagash()
     table.insert(self.objectives[2].conditions, "faction " .. self.settings.faction_data.faction_key)
 
     -- Reveal all regions subject to capture.
-    dynamic_disasters:reveal_regions({ self.region_key });
+    dynamic_disasters:prepare_reveal_regions({ self.region_key });
 
 	-- Make the Black Pyramid fly!
 	cm:override_building_chain_display("wh2_dlc09_special_settlement_pyramid_of_nagash_tmb", "wh2_dlc09_special_settlement_pyramid_of_nagash_floating");

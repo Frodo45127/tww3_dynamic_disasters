@@ -18,6 +18,8 @@ dynamic_disasters = {
         currently_running_endgames = 0,         -- Amount of currently running endgames.
     },
 
+    regions_to_reveal = {},                     -- List of regions to reveal after processing disasters.
+
     -- List of weigthed units used by the manager.
     --
     -- If you make a mod adding units and want them to appear in disaster-created armies, add them here with a weight.
@@ -1331,6 +1333,9 @@ function dynamic_disasters:process_disasters()
             end
         end
     end
+
+    -- Trigger the region reveal of all disasters together. Otherwise it bugs out for all but the last one.
+    self:reveal_regions(nil);
 end
 
 -- Function to cleanup after a disaster has finished.
@@ -1654,15 +1659,33 @@ function dynamic_disasters:create_scenario_force_at_coords(faction_key, region_k
     return army_spawn;
 end
 
+-- Function add a bunch of regions to the list of revealed regions when disasters are processed.
+---@param regions table #List of land region keys.
+function dynamic_disasters:prepare_reveal_regions(regions)
+    for i = 1, #regions do
+        table.insert(self.regions_to_reveal, regions[i]);
+    end
+end
+
 -- Function to reveal a bunch of regions for the players, if they can't see them yet.
+--
+-- NOTE: instead of this, use `dynamic_disasters:prepare_reveal_regions(regions)`. This gets bugged if multiple disasters trigger it at the same turn.
 ---@param regions table #List of land region keys.
 function dynamic_disasters:reveal_regions(regions)
+    if not regions == nil then
+        self.regions_to_reveal = table.copy(regions)
+    end
+
     local human_factions = cm:get_human_factions()
     for i = 1, #human_factions do
-        for i2 = 1, #regions do
-            cm:make_region_visible_in_shroud(human_factions[i], regions[i2]);
+        for i2 = 1, #self.regions_to_reveal do
+
+            out("Frodo45127: Lifting shroud from region: " .. self.regions_to_reveal[i2] .. ".");
+            cm:make_region_visible_in_shroud(human_factions[i], self.regions_to_reveal[i2]);
         end
     end
+
+    self.regions_to_reveal = {}
 end
 
 -- Function to declare wars between factions.
