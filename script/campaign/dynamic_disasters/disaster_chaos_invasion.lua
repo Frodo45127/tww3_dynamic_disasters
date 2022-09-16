@@ -53,7 +53,7 @@
                 - Spawn respawnable rifts across the Northern and Southern chaos wastes.
                 - Spawn respawnable rifts on all provinces that reach at least 75 of any chaos corruption.
                 - Rifts change chaos god depending on the region owner.
-                - Rifts have a (50% + (self.settings.difficulty_mod * 10)) chance to spawn an army each turns.
+                - Rifts have a (10% + (self.settings.difficulty_mod * 10)) chance to spawn an army each turns.
                 - Spawned armies belong either to the faction that owns the Rift (if demonic) or to Archaon.
                 - If a character travels through a rift, it has a chance of receiving the trait for being on the related realm too long.
 
@@ -823,7 +823,7 @@ function disaster_chaos_invasion:set_status(status)
             local default_owner = "wh_main_chs_chaos";
 
             for i = 0, open_nodes:num_items() - 1 do
-                if (math.random() > (0.5 + (self.settings.difficulty_mod / 10)) or dynamic_disasters.settings.debug) then
+                if (math.random() > (0.1 + (self.settings.difficulty_mod / 10)) or dynamic_disasters.settings.debug) then
                     local current_node = open_nodes:item_at(i);
                     local x, y = current_node:position();
                     local region_data = world:region_data_at_position(x, y);
