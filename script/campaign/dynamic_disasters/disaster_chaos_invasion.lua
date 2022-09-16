@@ -875,7 +875,7 @@ function disaster_chaos_invasion:set_status(status)
         true
     );
 
-    -- Listener to respawn rifts chaos wasteland rifts after closing them.
+    -- Listener to respawn rifts chaos wasteland and norsca rifts after closing them.
     core:add_listener(
         "ChaosInvasionRespawnRiftsChaosWastes",
         "WorldStartRound",
@@ -885,7 +885,9 @@ function disaster_chaos_invasion:set_status(status)
         function()
             out("Frodo45127: Respawning rifts at random on provinces with at least 75% chaos corruption.");
             local percentage = 0.5 + (self.settings.difficulty_mod / 10);
-            self:open_teleportation_nodes(self.teleportation_nodes_chaos_wastes, percentage, 75)
+            local min_chaos = 75;
+            self:open_teleportation_nodes(self.teleportation_nodes_chaos_wastes, percentage, min_chaos)
+            self:open_teleportation_nodes(self.teleportation_nodes_norsca, percentage, min_chaos);
         end,
         true
     );
