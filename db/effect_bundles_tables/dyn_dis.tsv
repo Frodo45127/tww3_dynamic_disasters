@@ -21,3 +21,7 @@ dyn_dis_the_great_uprising_early_warning			disaster.png	faction	1	true	false	tru
 dyn_dis_vampires_rise_early_warning			disaster.png	faction	1	true	false	true
 dyn_dis_waaagh_early_warning			disaster.png	faction	1	true	false	true
 dyn_dis_wild_hunt_early_warning			disaster.png	faction	1	true	false	true
+dyn_dis_chaos_invasion_rift_chance_of_reward_khorne			attribute_mark_khorne.png	faction	1	false	false	true
+dyn_dis_chaos_invasion_rift_chance_of_reward_nurgle			attribute_mark_nurgle.png	faction	1	false	false	true
+dyn_dis_chaos_invasion_rift_chance_of_reward_slaanesh			attribute_mark_slaanesh.png	faction	1	false	false	true
+dyn_dis_chaos_invasion_rift_chance_of_reward_tzeentch			attribute_mark_tzeentch.png	faction	1	false	false	true

@@ -1,0 +1,6 @@
+key	faction_key	campaign_key	agent_key	subculture	for_army	for_navy	agent_subtype_key
+#character_skill_node_sets_tables;0;db/character_skill_node_sets_tables/dyn_dis							
+dyn_dis_skill_node_set_chs_daemon_prince_khorne			general		false	false	dyn_dis_wh3_kho_cha_daemon_prince_of_khorne
+dyn_dis_skill_node_set_chs_daemon_prince_nurgle			general		false	false	dyn_dis_wh3_nur_cha_daemon_prince_of_nurgle
+dyn_dis_skill_node_set_chs_daemon_prince_slaanesh			general		false	false	dyn_dis_wh3_sla_cha_daemon_prince_of_slaanesh
+dyn_dis_skill_node_set_chs_daemon_prince_tzeentch			general		false	false	dyn_dis_wh3_tze_cha_daemon_prince_of_tzeentch

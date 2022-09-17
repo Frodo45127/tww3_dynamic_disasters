@@ -162,3 +162,27 @@ effect_bundles_localised_title_dyn_dis_wild_hunt_early_warning	The Hunters Prepa
 effect_bundles_localised_description_dyn_dis_wild_hunt_early_warning	There is an ominous pressure coming from the Great Forests of the world.... Prepare for the worst.	true
 mct_dyn_dis_chaos_invasion_enable_rifts	Enable Chaos Rifts	true
 mct_dyn_dis_chaos_invasion_enable_rifts_tooltip	Enable/Disable the spawning of Chaos Rifts. \\n\\nChaos rifts are required for the later disaster stages, so if you disable them the disaster events will stop at stage two, after spawning all related armies to chaos factions.	true
+dilemmas_localised_title_dyn_dis_chaos_invasion_rift_dilemma_khorne	A Daemon Prince at sight!	true
+dilemmas_localised_description_dyn_dis_chaos_invasion_rift_dilemma_khorne	While traversing through the Realms of Chaos, your scouts bring news of a Khornate Horde lead by a Daemon Prince, deep into the Realm of the Blood God. You could ignore it and continue your journey, but... what kind of incredible weapons may this Daemon Prince posess? And are you strong enough to take him down? Whatever you do, remember: nobody comes back the same from a Realm of Chaos, if it even comes back.	true
+cdir_events_dilemma_choice_details_localised_choice_label_dyn_dis_chaos_invasion_rift_dilemma_khorneSCRIPTED_1	Attack the Daemon Prince	true
+cdir_events_dilemma_choice_details_localised_choice_label_dyn_dis_chaos_invasion_rift_dilemma_khorneSCRIPTED_2	Ignore It	true
+dilemmas_localised_title_dyn_dis_chaos_invasion_rift_dilemma_nurgle	A Daemon Prince at sight!	true
+dilemmas_localised_description_dyn_dis_chaos_invasion_rift_dilemma_nurgle	While traversing through the Realms of Chaos, your scouts bring news of a Nurglite Horde lead by a Daemon Prince, deep into the Realm of the Plague Lord. You could ignore it and continue your journey, but... what kind of incredible treasures may this Daemon Prince posess? And are you strong enough to take him down? Whatever you do, remember: nobody comes back the same from a Realm of Chaos, if it even comes back.	true
+cdir_events_dilemma_choice_details_localised_choice_label_dyn_dis_chaos_invasion_rift_dilemma_nurgleSCRIPTED_1	Attack the Daemon Prince	true
+cdir_events_dilemma_choice_details_localised_choice_label_dyn_dis_chaos_invasion_rift_dilemma_nurgleSCRIPTED_2	Ignore It	true
+dilemmas_localised_title_dyn_dis_chaos_invasion_rift_dilemma_slaanesh	A Daemon Prince at sight!	true
+dilemmas_localised_description_dyn_dis_chaos_invasion_rift_dilemma_slaanesh	While traversing through the Realms of Chaos, your scouts bring news of a Slaaneshi Horde lead by a Daemon Prince, deep into the Realm of the Dark Prince. You could ignore it and continue your journey, but... what kind of incredible treasures may this Daemon Prince posess? And are you strong enough to take him down? Whatever you do, remember: nobody comes back the same from a Realm of Chaos, if it even comes back.	true
+cdir_events_dilemma_choice_details_localised_choice_label_dyn_dis_chaos_invasion_rift_dilemma_slaaneshSCRIPTED_1	Attack the Daemon Prince	true
+cdir_events_dilemma_choice_details_localised_choice_label_dyn_dis_chaos_invasion_rift_dilemma_slaaneshSCRIPTED_2	Ignore It	true
+dilemmas_localised_title_dyn_dis_chaos_invasion_rift_dilemma_tzeentch	A Daemon Prince at sight!	true
+dilemmas_localised_description_dyn_dis_chaos_invasion_rift_dilemma_tzeentch	While traversing through the Realms of Chaos, your scouts bring news of a Tzeenchian Horde lead by a Daemon Prince, deep into the Realm of the Changer of Ways. You could ignore it and continue your journey, but... what kind of incredible treasures may this Daemon Prince posess? And are you strong enough to take him down? Whatever you do, remember: nobody comes back the same from a Realm of Chaos, if it even comes back.	true
+cdir_events_dilemma_choice_details_localised_choice_label_dyn_dis_chaos_invasion_rift_dilemma_tzeentchSCRIPTED_1	Attack the Daemon Prince	true
+cdir_events_dilemma_choice_details_localised_choice_label_dyn_dis_chaos_invasion_rift_dilemma_tzeentchSCRIPTED_2	Ignore It	true
+effect_bundles_localised_title_dyn_dis_chaos_invasion_rift_chance_of_reward_khorne	Treasures from the Realm of Khorne	true
+effect_bundles_localised_title_dyn_dis_chaos_invasion_rift_chance_of_reward_nurgle	Treasures from the Realm of Nurgle	true
+effect_bundles_localised_title_dyn_dis_chaos_invasion_rift_chance_of_reward_slaanesh	Treasures from the Realm of Slaanesh	true
+effect_bundles_localised_title_dyn_dis_chaos_invasion_rift_chance_of_reward_tzeentch	Treasures from the Realm of Tzeench	true
+effect_bundles_localised_description_dyn_dis_chaos_invasion_rift_chance_of_reward_khorne	You can find the bloodier weapons in the realm of the Blood God... but everything comes at a price.	true
+effect_bundles_localised_description_dyn_dis_chaos_invasion_rift_chance_of_reward_nurgle	You can find the most horrific diseases in the realm of the Plague Lord... but everything comes at a price.	true
+effect_bundles_localised_description_dyn_dis_chaos_invasion_rift_chance_of_reward_slaanesh	You can find the most pleasant surprises in the realm of the Dark Prince... but everything comes at a price.	true
+effect_bundles_localised_description_dyn_dis_chaos_invasion_rift_chance_of_reward_tzeentch	You can find the most interesting mysteries in the realm of the Changer of Ways... but everything comes at a price.	true

@@ -163,6 +163,34 @@ disaster_chaos_invasion = {
         stage_2_delay = 1,
         stage_3_delay = 1,
 
+        -- Rewards for the different chaos realms battles.
+        khorne_realm_rewards = {
+            "wh3_main_anc_weapon_gilellions_soulnetter",
+            "wh3_main_anc_weapon_skars_kraken_killer",
+            "wh3_main_anc_weapon_the_bane_spear",
+            "wh3_main_anc_weapon_chainsword"
+        },
+
+        nurgle_realm_rewards = {
+            --"wh3_main_anc_weapon_gilellions_soulnetter",
+            --"wh3_main_anc_weapon_skars_kraken_killer",
+            --"wh3_main_anc_weapon_the_bane_spear",
+            --"wh3_main_anc_weapon_chainsword"
+        },
+
+        slaanesh_realm_rewards = {
+            "wh3_main_anc_follower_the_dark_princes_paramour",
+            "wh3_main_anc_follower_personal_sycophant",
+            "wh3_main_anc_weapon_slaaneshs_blade"
+        },
+
+        tzeench_realm_rewards = {
+            --"wh3_main_anc_weapon_gilellions_soulnetter",
+            --"wh3_main_anc_weapon_skars_kraken_killer",
+            --"wh3_main_anc_weapon_the_bane_spear",
+            --"wh3_main_anc_weapon_chainsword"
+        },
+
         -- List of Chaos factions that will participate in the invasion.
         factions = {
             "wh_main_chs_chaos",                    -- Archaon
@@ -799,6 +827,15 @@ disaster_chaos_invasion = {
     finish_event_key = "dyn_dis_chaos_invasion_finish",
 
     endgame_mission_name = "endtimes_unfolding",
+    battle_in_rift_khorne_dilemma_key = "dyn_dis_chaos_invasion_rift_dilemma_khorne",
+    battle_in_rift_nurgle_dilemma_key = "dyn_dis_chaos_invasion_rift_dilemma_nurgle",
+    battle_in_rift_slaanesh_dilemma_key = "dyn_dis_chaos_invasion_rift_dilemma_slaanesh",
+    battle_in_rift_tzeentch_dilemma_key = "dyn_dis_chaos_invasion_rift_dilemma_tzeentch",
+
+    battle_in_rift_khorne_effect_key = "dyn_dis_chaos_invasion_rift_chance_of_reward_khorne",
+    battle_in_rift_nurgle_effect_key = "dyn_dis_chaos_invasion_rift_chance_of_reward_nurgle",
+    battle_in_rift_slaanesh_effect_key = "dyn_dis_chaos_invasion_rift_chance_of_reward_slaanesh",
+    battle_in_rift_tzeentch_effect_key = "dyn_dis_chaos_invasion_rift_chance_of_reward_tzeentch",
 
     attacker_buffs_key = "fro_dyn_dis_chaos_invasion_attacker_buffs",
     effects_global_key = "fro_dyn_dis_chaos_invasion_global_effects",
@@ -1014,7 +1051,143 @@ function disaster_chaos_invasion:set_status(status)
 
             cm:set_saved_value("ChaosInvasionRiftClosureBattleActive", false);
         end,
-        false
+        true
+    );
+
+    -- Listener to check if the character ran a way from a "closing rift" battle and cleanup accordingly.
+    core:add_listener(
+        "ChaosInvasionRiftClosingBattleCleanupAfterRetreat",
+        "CharacterWithdrewFromBattle",
+        function(context)
+            return cm:get_saved_value("ChaosInvasionRiftClosureBattleActive");
+        end,
+        function(context)
+            out("Frodo45127: Listener ChaosInvasionRiftClosingBattleCleanupAfterRetreat triggered.")
+            invasion_manager:kill_invasion_by_key("ChaosInvasionRiftClosureArmy");
+
+            for _, v in pairs(self.rift_closure_force_data) do
+                dynamic_disasters:kill_faction_silently(v[1]);
+            end;
+
+            cm:set_saved_value("ChaosInvasionRiftClosureBattleActive", false);
+        end,
+        true
+    );
+
+    -- Listener to cleanup after a battle of event on a rift. Similar to the closing rift one, but it closes both nodes of the network.
+    core:add_listener(
+        "ChaosInvasionRiftEventBattleCleanup",
+        "BattleCompleted",
+        function()
+            return cm:get_saved_value("ChaosInvasionRiftEventBattleActive");
+        end,
+        function()
+            local node_details = cm:get_saved_value("ChaosInvasionRiftEventBattleActive");
+            local char_cqi = node_details[3];
+            local char = cm:get_character_by_cqi(char_cqi);
+
+            -- If we won, give use an special chaos-infused item and close both source and destination nodes.
+            if cm:pending_battle_cache_attacker_victory() then
+                cm:teleportation_network_close_node(node_details[1][1]);
+                cm:teleportation_network_close_node(node_details[2][1]);
+
+                -- Disable this battle so it doesn't come up again.
+                local reward = nil;
+                local template = node_details[4];
+                if template == "wh3_main_teleportation_node_template_kho" then
+                    reward_index = math.random(#self.settings.khorne_realm_rewards);
+                    reward = self.settings.khorne_realm_rewards[reward_index];
+                    table.remove(self.settings.khorne_realm_rewards, reward_index);
+                elseif template == "wh3_main_teleportation_node_template_nur" then
+                    reward_index = math.random(#self.settings.nurgle_realm_rewards);
+                    reward = self.settings.nurgle_realm_rewards[reward_index];
+                    table.remove(self.settings.nurgle_realm_rewards, reward_index);
+                elseif template == "wh3_main_teleportation_node_template_sla" then
+                    reward_index = math.random(#self.settings.slaanesh_realm_rewards);
+                    reward = self.settings.slaanesh_realm_rewards[reward_index];
+                    table.remove(self.settings.slaanesh_realm_rewards, reward_index);
+                elseif template == "wh3_main_teleportation_node_template_tze" then
+                    reward_index = math.random(#self.settings.tzeench_realm_rewards);
+                    reward = self.settings.tzeench_realm_rewards[reward_index];
+                    table.remove(self.settings.tzeench_realm_rewards, reward_index);
+                end
+
+                if char then
+                    core:trigger_event("ScriptEventRiftClosureBattleWon", char);
+                end;
+
+                -- Pick an item from the ones available in the chaos realm, and give it to the character.
+                -- If the character is alive, give it to him. If he/she died in battle, give it to the faction.
+                -- NOTE: while we should check for item availability in the map, we don't. Because I've heard some chaos races receive these.
+                if char then
+                    cm:force_add_ancillary(char, reward, true, false)
+                else
+                    cm:add_ancillary_to_faction(cm:get_faction(node_details[6]), reward, false)
+                end
+            end;
+
+            -- Regardless of the result, give the character a debuff if it doesn't has one yet and it survived.
+            if not char == false then
+                if node_details[5] == false then
+                    local realm = self.teleportation_nodes_realm_by_templates[node_details[4]];
+                    local faction = char:faction();
+
+                    out("Frodo45127: Event battle fough. Trying to add chaos realm trait from " .. tostring(realm) .. ".");
+                    local trait_name = self:get_chaos_trait_name(realm, faction:subculture(), faction:name());
+                    if trait_name then
+
+                        out("Frodo45127: Trait to add: " .. tostring(trait_name) .. ".");
+                        cm:force_add_trait(cm:char_lookup_str(char), trait_name, true, 3);
+                    end;
+                end
+            end
+
+            invasion_manager:kill_invasion_by_key("ChaosInvasionRiftClosureArmy");
+
+            for _, v in pairs(self.rift_closure_force_data) do
+                dynamic_disasters:kill_faction_silently(v[1]);
+            end;
+
+            cm:set_saved_value("ChaosInvasionRiftEventBattleActive", false);
+        end,
+        true
+    );
+
+    -- Listener to check if the character ran a way from a Daemon Prince in a rift and cleanup accordingly.
+    core:add_listener(
+        "ChaosInvasionRiftEventBattleCleanupAfterRetreat",
+        "CharacterWithdrewFromBattle",
+        function(context)
+            return cm:get_saved_value("ChaosInvasionRiftEventBattleActive");
+        end,
+        function(context)
+            local node_details = cm:get_saved_value("ChaosInvasionRiftEventBattleActive");
+            local char_cqi = node_details[3];
+            local char = cm:get_character_by_cqi(char_cqi);
+
+            -- If the coward ran away AFTER meeting the enemy army, apply a debuff trait anyway.
+            if node_details[5] == false then
+                local realm = self.teleportation_nodes_realm_by_templates[node_details[4]];
+                local faction = char:faction();
+
+                out("Frodo45127: Ran away from event battle. Trying to add chaos realm trait from " .. tostring(realm) .. ".");
+                local trait_name = self:get_chaos_trait_name(realm, faction:subculture(), faction:name());
+                if trait_name then
+
+                    out("Frodo45127: Trait to add: " .. tostring(trait_name) .. ".");
+                    cm:force_add_trait(cm:char_lookup_str(char), trait_name, true, 3);
+                end;
+            end
+
+            invasion_manager:kill_invasion_by_key("ChaosInvasionRiftClosureArmy");
+
+            for _, v in pairs(self.rift_closure_force_data) do
+                dynamic_disasters:kill_faction_silently(v[1]);
+            end;
+
+            cm:set_saved_value("ChaosInvasionRiftEventBattleActive", false);
+        end,
+        true
     );
 
     -- Listener to assign debuff traits to travelers of the rifts.
@@ -1034,21 +1207,137 @@ function disaster_chaos_invasion:set_status(status)
             local from_node_key = context:from_key()
             local to_node_key = context:to_key()
             local from_template_key = network:lookup_open_node(from_node_key):template_key()
-            local to_template_key = network:lookup_open_node(to_node_key):template_key()
+            local to_node = network:lookup_open_node(to_node_key);
+            local to_template_key = to_node:template_key()
+            local trait_received = false;
+
+            -- Precalculate the template to get.
+            local template = from_template_key;
+            if math.random() > 0.5 then
+                template = to_template_key;
+            end
 
             -- If we're trying to travel through the Chaos Realms, you get a chance of receiving a trait.
-            if math.random() < 0.1 or dynamic_disasters.settings.debug then
-                local from_realm = self.teleportation_nodes_realm_by_templates[from_template_key];
-                local to_realm = self.teleportation_nodes_realm_by_templates[to_template_key];
+            if math.random() <= 0.1 or dynamic_disasters.settings.debug then
+                local realm = self.teleportation_nodes_realm_by_templates[template];
 
-                out("Frodo45127: Trying to add chaos realm trait. Possible realms: " .. tostring(from_realm) .. " and " .. to_realm .. ".");
-                local trait_name = self:get_chaos_trait_name(from_realm, to_realm, faction:subculture(), faction:name());
+                out("Frodo45127: Trying to add chaos realm trait. Realm: " .. tostring(realm) .. ".");
+                local trait_name = self:get_chaos_trait_name(realm, faction:subculture(), faction:name());
                 if trait_name then
 
                     out("Frodo45127: Trait to add: " .. tostring(trait_name) .. ".");
                     cm:force_add_trait(cm:char_lookup_str(character), trait_name, true, 3);
+                    trait_received = true;
                 end;
             end
+
+            -- If we're lucky, trigger a dilemma to choose between fight a battle and get an artifact, or just ran away.
+            if math.random() <= 0.1 or dynamic_disasters.settings.debug then
+                out("Frodo45127: dilemma key to to use mid-journey on the chaos realms: " .. tostring(dilemma_key) .. ".")
+
+                local dilemma_key = nil;
+                local effect_key = nil;
+                if template == "wh3_main_teleportation_node_template_kho" and #self.settings.khorne_realm_rewards > 0 then
+                    dilemma_key = self.battle_in_rift_khorne_dilemma_key;
+                    effect_key = self.battle_in_rift_khorne_effect_key;
+                elseif template == "wh3_main_teleportation_node_template_nur" and #self.settings.nurgle_realm_rewards > 0 then
+                    dilemma_key = self.battle_in_rift_nurgle_dilemma_key;
+                    effect_key = self.battle_in_rift_nurgle_effect_key;
+                elseif template == "wh3_main_teleportation_node_template_sla" and #self.settings.slaanesh_realm_rewards > 0 then
+                    dilemma_key = self.battle_in_rift_slaanesh_dilemma_key;
+                    effect_key = self.battle_in_rift_slaanesh_effect_key;
+                elseif template == "wh3_main_teleportation_node_template_tze" and #self.settings.tzeench_realm_rewards > 0 then
+                    dilemma_key = self.battle_in_rift_tzeentch_dilemma_key;
+                    effect_key = self.battle_in_rift_tzeentch_effect_key;
+                end
+
+                -- Only trigger a dilemma if we have rewards for the selected realm.
+                if dilemma_key then
+                    core:add_listener(
+                        "ChaosInvasionRiftDilemma" .. faction:name(),
+                        "DilemmaChoiceMadeEvent",
+                        function (context)
+                            return context:faction():is_human() and context:dilemma() == dilemma_key
+                        end,
+                        function (context)
+                            local choice = context:choice();
+
+                            -- If we want to fight, then we do the same as with normal closure battles, but we also need to change the battlefield to a RoC one.
+                            if choice == 0 then
+
+                                -- Store the fact that we're fighting an special battle, so we can clean up after it later.
+                                local from_data = {from_node_key, from_template_key}
+                                local to_data = {to_node_key, to_template_key}
+                                local x, y = to_node:position();
+                                local faction_key = context:faction():name();
+
+                                cm:set_saved_value("ChaosInvasionRiftEventBattleActive", {from_data, to_data, character:command_queue_index(), template, trait_received, faction_key});
+
+                                -- Generate the battle against a Daemon Prince. This handles generating the armies and triggering the battle.
+                                local general = nil;
+                                if template == "wh3_main_teleportation_node_template_kho" then
+                                    general = "dyn_dis_wh3_kho_cha_daemon_prince_of_khorne";
+                                elseif template == "wh3_main_teleportation_node_template_nur" then
+                                    general = "dyn_dis_wh3_nur_cha_daemon_prince_of_nurgle";
+                                elseif template == "wh3_main_teleportation_node_template_sla" then
+                                    general = "dyn_dis_wh3_sla_cha_daemon_prince_of_slaanesh";
+                                else -- Tzeench is our backup.
+                                    general = "dyn_dis_wh3_tze_cha_daemon_prince_of_tzeentch";
+                                end
+
+                                -- Mute these events so we don't get notifications for the event battle factions.
+                                cm:disable_event_feed_events(true, "wh_event_category_diplomacy", "", "");
+                                cm:disable_event_feed_events(true, "wh_event_category_character", "", "");
+
+                                -- Generate and trigger the battle.
+                                self:generate_rift_closure_battle(character, template, true, general, 20);
+
+                            -- If we ran away, do nothing. If we didn't venture more than neccessary in the chaos realms, we're ok.
+                            else
+                                return
+                            end
+                        end,
+                        false
+                    );
+
+                    -- Setup the choice's payloads.
+                    local choices = {
+                        {
+                            effect_bundle = effect_key
+                        },
+                        ""
+                    };
+
+                    dynamic_disasters:trigger_dilemma(faction, dilemma_key, choices)
+                end
+            end
+        end,
+        true
+    );
+
+   -- Listener to setup Chaos Realm battles.
+    core:add_listener(
+        "ChaosInvasionRiftEventPendingBattle",
+        "PendingBattle",
+        function()
+            return cm:get_saved_value("ChaosInvasionRiftEventBattleActive");
+        end,
+        function()
+            local battle_data = cm:get_saved_value("ChaosInvasionRiftEventBattleActive");
+            local template = battle_data[4];
+
+            out("Frodo45127: Template chosen for rift battle: " .. tostring(template) .. ".")
+
+            if template == "wh3_main_teleportation_node_template_kho" then
+                cm:pending_battle_add_scripted_tile_upgrade_tag("dyn_dis_chaos_invasion_realm_battle_kho");
+            elseif template == "wh3_main_teleportation_node_template_nur" then
+                cm:pending_battle_add_scripted_tile_upgrade_tag("dyn_dis_chaos_invasion_realm_battle_nur");
+            elseif template == "wh3_main_teleportation_node_template_sla" then
+                cm:pending_battle_add_scripted_tile_upgrade_tag("dyn_dis_chaos_invasion_realm_battle_sla");
+            else -- Tzeench is our backup.
+                cm:pending_battle_add_scripted_tile_upgrade_tag("dyn_dis_chaos_invasion_realm_battle_tze");
+            end
+            cm:update_pending_battle();
         end,
         true
     );
@@ -1075,7 +1364,7 @@ function disaster_chaos_invasion:set_status(status)
                         if cm:random_number(100) <= value or dynamic_disasters.settings.debug then
 
                             -- Reduce 1 level or remove the trait.
-                            local trait_name = self:get_chaos_trait_name(realm, realm, faction:subculture(), faction:name());
+                            local trait_name = self:get_chaos_trait_name(realm, faction:subculture(), faction:name());
                             out("Frodo45127: Tying to remove chaos realm trait " .. tostring(trait_name));
 
                             if trait_name then
@@ -1457,21 +1746,38 @@ end
 -- This function generates and triggers a rift closure battle.
 ---@param character CHARACTER_SCRIPT_INTERFACE #Character object to attack with the generated army.
 ---@param node_template string #Node template key.
-function disaster_chaos_invasion:generate_rift_closure_battle(character, node_template)
+---@param attacker_is_defender boolean #Optional. If the attacker must be setup as defender.
+---@param defender_general_subtype string #Optional. If provided, the defender's army will be commanded by this general.
+---@param unit_count integer #Optional. Amount of units in the spawned army.
+function disaster_chaos_invasion:generate_rift_closure_battle(character, node_template, attacker_is_defender, defender_general_subtype, unit_count)
+    if attacker_is_defender == nil then
+        attacker_is_defender = false;
+    end
+
+    if unit_count == nil then
+        unit_count = math.random(14, 20);
+    end
+
     local mf = character:military_force();
     local faction = character:faction();
     local faction_name = faction:name();
 
     local rift_closure_battle_faction = self.rift_closure_force_data[node_template][1];
-    local rift_closure_battle_units = dynamic_disasters:generate_random_army(self.teleportation_nodes_defender_army_templates[node_template], math.random(14, 20), self.rift_closure_force_data[node_template][2]);
+    local rift_closure_battle_units = dynamic_disasters:generate_random_army(self.teleportation_nodes_defender_army_templates[node_template], unit_count, self.rift_closure_force_data[node_template][2]);
 
     -- guard against invasion already existing
     invasion_manager:kill_invasion_by_key("ChaosInvasionRiftClosureArmy");
 
     -- Spawn the invasion, declare war on them and force them to do an attack of oportunity.
+    ---@type invasion
     local invasion_1 = invasion_manager:new_invasion("ChaosInvasionRiftClosureArmy", rift_closure_battle_faction, rift_closure_battle_units, {character:logical_position_x(), character:logical_position_y()});
     invasion_1:set_target("CHARACTER", character:command_queue_index(), faction_name);
     invasion_1:apply_effect("wh_main_bundle_military_upkeep_free_force", -1);
+
+    if type(defender_general_subtype) == "string" then
+        invasion_1:create_general(true, defender_general_subtype, nil, nil, nil, nil);
+    end
+
     invasion_1:start_invasion(
         function(context2)
             core:add_listener(
@@ -1481,8 +1787,18 @@ function disaster_chaos_invasion:generate_rift_closure_battle(character, node_te
                     return context:character():faction():name() == rift_closure_battle_faction;
                 end,
                 function()
-                    cm:set_force_has_retreated_this_turn(mf);
-                    cm:force_attack_of_opportunity(context2:get_general():military_force():command_queue_index(), mf:command_queue_index(), false);
+                    local attacker_mf = context2:get_general():military_force()
+                    local attacker_cqi = attacker_mf:command_queue_index();             -- Invader.
+                    local defender_cqi = mf:command_queue_index();                      -- Player.
+
+                    -- Lock the AI army so it doesn't run away.
+                    cm:set_force_has_retreated_this_turn(attacker_mf);
+                    if attacker_is_defender then
+                        cm:force_attack_of_opportunity(defender_cqi, attacker_cqi, false);
+                    else
+                        cm:force_attack_of_opportunity(attacker_cqi, defender_cqi, false);
+                    end
+
                 end,
                 false
             );
@@ -1496,16 +1812,10 @@ function disaster_chaos_invasion:generate_rift_closure_battle(character, node_te
 end
 
 -- This function returns the proper trait for debuffing armies traveling the chaos realms.
----@param from_realm string #Realm corresponding to the entry rift.
----@param to_realm string #Realm corresponding to the exit rift.
+---@param realm string #Realm corresponding to one of the rifts we're taversing.
 ---@param subculture string #Subculture key. If it's daemonic, it'll not receive their own trait.
 ---@param faction_key string #Faction key. Optional, to specify daemonic factions that don't match by subculture with one of the four chaos gods.
-function disaster_chaos_invasion:get_chaos_trait_name(from_realm, to_realm, subculture, faction_key)
-    local realm = from_realm;
-    if math.random() >= 0.5 then
-        realm = to_realm;
-    end
-
+function disaster_chaos_invasion:get_chaos_trait_name(realm, subculture, faction_key)
     local trait = "wh3_main_trait_realm_" .. realm;
     if subculture == "wh3_main_sc_kho_khorne" or faction_key == "wh3_dlc20_chs_valkia" then
         if realm == "khorne" then

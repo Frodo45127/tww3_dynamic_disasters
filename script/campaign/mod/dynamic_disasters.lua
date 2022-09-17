@@ -1383,6 +1383,38 @@ function dynamic_disasters:execute_payload(incident_key, effect_bundle_key, dura
     end
 end
 
+-- Function to trigger a dilemma with the provided choices and payloads.
+---@param faction FACTION_SCRIPT_INTERFACE #Faction object of the faction that will receive the dilemma.
+---@param dilemma_key string #Key for the dilemma this function will trigger. Must exists in the DB.
+---@param choices string #Key for the dilemma this function will trigger. Must exists in the DB and be ordered in the table.
+function dynamic_disasters:trigger_dilemma(faction, dilemma_key, choices)
+
+    local dilemma_builder = cm:create_dilemma_builder(dilemma_key);
+    local payload_builder = cm:create_payload();
+
+    for i = 1, #choices do
+        if i == 5 then
+            break;
+        end
+
+        local payloads = choices[i];
+        if is_table(payloads) == true then
+            for payload_type, payload_data in pairs(payloads) do
+                if payload_type == "effect_bundle" then
+                    payload_builder:effect_bundle_to_faction(payload_data);
+
+                end
+            end
+        end
+
+        dilemma_builder:add_choice_payload("SCRIPTED_" .. i, payload_builder);
+        payload_builder:clear();
+    end
+
+    out("Frodo45127: Triggering dilemma: " .. dilemma_key .. " with " .. #choices .. " choices.")
+    cm:launch_custom_dilemma_from_builder(dilemma_builder, faction);
+end
+
 -- Function to add a mission for a disaster. Use this if you want to setup an incident with an associated mission for a disaster. Mission applies to all players.
 ---@param objectives table #List of objectives this mission should have.
 ---@param can_be_victory boolean #If we should try to set the mission as Campaing Victory mission. Will fail and set it as normal mission if there is already one campaign victory mission.

@@ -1,0 +1,6 @@
+key	localised_title	localised_description	ui_image	generate	prioritized	event_category	sound_popup_override	sound_click_override	override_icon	is_large_dilemma
+#dilemmas_tables;3;db/dilemmas_tables/dyn_dis										
+dyn_dis_chaos_invasion_rift_dilemma_khorne			ai_enters_khorne_realm	false	false	Event				true
+dyn_dis_chaos_invasion_rift_dilemma_nurgle			ai_enters_nurgle_realm	false	false	Event				true
+dyn_dis_chaos_invasion_rift_dilemma_slaanesh			ai_enters_slaanesh_realm	false	false	Event				true
+dyn_dis_chaos_invasion_rift_dilemma_tzeentch			ai_enters_tzeentch_realm	false	false	Event				true

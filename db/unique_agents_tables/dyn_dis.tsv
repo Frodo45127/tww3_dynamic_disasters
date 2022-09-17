@@ -1,0 +1,6 @@
+agent_subtype	forename	surname	other_name	clan_name	agent_type	spawn_behaviour	spawn_via_ui
+#unique_agents_tables;3;db/unique_agents_tables/dyn_dis							
+dyn_dis_wh3_kho_cha_daemon_prince_of_khorne	2147360514	894850662	2147360514	2147360514	general	FACTION_LEADER	false
+dyn_dis_wh3_nur_cha_daemon_prince_of_nurgle	2147344037	1353890747	2147358913	2147358913	general	FACTION_LEADER	false
+dyn_dis_wh3_sla_cha_daemon_prince_of_slaanesh	1226380347	2147354469	2147358913	2147358913	general	FACTION_LEADER	false
+dyn_dis_wh3_tze_cha_daemon_prince_of_tzeentch	159761477	2147358913	2147358913	2147358913	general	FACTION_LEADER	false
