@@ -1265,6 +1265,9 @@ function dynamic_disasters:initialize()
         self:load_from_mct(get_mct());
     end
 
+    -- After everything is loaded, initialize any integrations we have.
+    self:initialize_integrations();
+
     -- Listener for evaluating if a disaster can be started or not. Triggered at the begining of each turn.
     core:add_listener(
         "ScriptEventMaybeDisasterTime",
@@ -1275,6 +1278,53 @@ function dynamic_disasters:initialize()
         end,
         true
     );
+end
+
+-- Function to initialize integration scripts.
+function dynamic_disasters:initialize_integrations()
+    local integration_files = core:get_filepaths_from_folder("/script/campaign/dynamic_disasters_integrations/", "*.lua")
+    out("####################")
+    out("Frodo45127: Loading the following integrations from /script/campaign/dynamic_disasters_integrations/:")
+    local env = core:get_env()
+
+    for i = 1, #integration_files do
+        local filepath = integration_files[i]
+        local name = tostring(string.sub(filepath, 47))
+
+        -- Make sure the file is loaded correctly, skip its inclusion if not
+        local loaded_file, load_error = loadfile(filepath)
+        if loaded_file then
+
+            -- Make sure the file is set as loaded
+            package.loaded[filepath] = true
+
+            -- Set the environment of the Lua chunk to the global environment
+            -- Note to future me: removing this makes the disasters unable to load core listeners. Do not remove it.
+            setfenv(loaded_file, env)
+
+            -- Execute the loaded Lua chunk so the functions within are registered
+            local executed_successfully, result = pcall(loaded_file)
+            if not executed_successfully then
+                out("\tFailed to execute loaded disaster integration file [" .. name .. "], error is: " .. tostring(result))
+            else
+                out("\t"..name.." loaded successfully")
+            end
+
+        -- If the integration failed to load, report it.
+        else
+            out("\tFailed to load integration file [" .. name .. "], error is: " .. tostring(load_error) .. ". Will attempt to require() this file to generate a more meaningful error message:")
+            local path_no_lua =  tostring(string.sub(filepath, 0, (string.len(filepath)-4)))
+            local require_result, require_error = pcall(require, path_no_lua)
+
+            if require_result then
+                out("\tWARNING: require() seemed to be able to load file [" .. filepath .. "] with filename [" .. name .. "], where loadfile failed? Maybe the scenario is loaded, maybe it isn't - proceed with caution!")
+            else
+                -- strip tab and newline characters from error string
+                out("\t\t" .. string.gsub(string.gsub(require_error, "\t", ""), "\n", ""))
+            end
+
+        end
+    end
 end
 
 -- Function to process all the disasters available and trigger them when they can be triggered.
