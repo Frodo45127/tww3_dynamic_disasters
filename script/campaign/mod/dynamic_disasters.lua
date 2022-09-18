@@ -1956,6 +1956,25 @@ function dynamic_disasters:kill_faction_silently(faction_key)
     end;
 end;
 
+-- Function to add new units to a specific template, so it's used by disasters using that template.
+--
+-- NOTE: is up to you to check the unit key is valid, as I haven't found a way to ensure that.
+---@param race string #Race owning the army template. Check the dynamic_disasters object for valid races.
+---@param template string #Template of that race which will receive the unit.
+---@param unit_key string #Key of the unit that will be added to the template. Must be a valid unit key from the DB.
+---@param weight integer #Weight of that unit for army generation. 8-> will surely appear multiple times, 1-> will rarely appear more than once.
+---@return boolean|string #True if the unit got added, an error message if there was an error while adding it.
+function dynamic_disasters:add_unit_to_army_template(race, template, unit_key, weight)
+    if self.army_templates[race] == nil then
+        return "ERROR: Race " .. tostring(race) .. " not found in the army templates.";
+    elseif self.army_templates[race][template] == nil then
+        return "ERROR: Template " .. tostring(template) .. " not found in the army templates for race " .. tostring(race) .. ".";
+    else
+        self.army_templates[race][template][unit_key] = weight;
+    end
+
+    return true;
+end
 
 -- Function to determine if a faction is currently considered an order faction or not.
 ---@param faction_key string #Faction key to check.
