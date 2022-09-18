@@ -1233,10 +1233,10 @@ function disaster_chaos_invasion:set_status(status)
 
             -- If we're lucky, trigger a dilemma to choose between fight a battle and get an artifact, or just ran away.
             if math.random() <= 0.1 or dynamic_disasters.settings.debug then
-                out("Frodo45127: dilemma key to to use mid-journey on the chaos realms: " .. tostring(dilemma_key) .. ".")
-
                 local dilemma_key = nil;
                 local effect_key = nil;
+
+                out("Frodo45127: dilemma key to to use mid-journey on the chaos realms: " .. tostring(dilemma_key) .. ".")
                 if template == "wh3_main_teleportation_node_template_kho" and #self.settings.khorne_realm_rewards > 0 then
                     dilemma_key = self.battle_in_rift_khorne_dilemma_key;
                     effect_key = self.battle_in_rift_khorne_effect_key;
