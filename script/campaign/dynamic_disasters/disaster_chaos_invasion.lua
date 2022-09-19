@@ -56,6 +56,9 @@
                 - Rifts have a (10% + (self.settings.difficulty_mod * 10)) chance to spawn an army each turns.
                 - Spawned armies belong either to the faction that owns the Rift (if demonic) or to Archaon.
                 - If a character travels through a rift, it has a chance of receiving the trait for being on the related realm too long.
+                - If a character travels through a rift, it has a chance of spotting a Daemon Prince. If the character accepts to fight it, it'll gain a trait for being in a realm of chaos too long. If the character wins the fight, it'll win a chaos realm ancillary.
+                - TODO: Make sure all chaos realm battles are fought in storms of magic.
+                - TODO: Add ancillaries for Nurgle and Tzeench.
         - Stage 2a:
             - If Gaen Vale, Asurian's Temple, Tor Elyr and White Tower of Hoeth are either in hands of Chaos, Norsca, or in Ruins:
                 - Trigger "The Great Vortex Undone", which has the following effects:
