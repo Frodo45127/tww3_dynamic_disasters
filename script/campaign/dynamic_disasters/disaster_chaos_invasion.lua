@@ -56,6 +56,13 @@
                 - Rifts have a (10% + (self.settings.difficulty_mod * 10)) chance to spawn an army each turns.
                 - Spawned armies belong either to the faction that owns the Rift (if demonic) or to Archaon.
                 - If a character travels through a rift, it has a chance of receiving the trait for being on the related realm too long.
+        - Stage 2a:
+            - If Gaen Vale, Asurian's Temple, Tor Elyr and White Tower of Hoeth are either in hands of Chaos, Norsca, or in Ruins:
+                - Trigger "The Great Vortex Undone", which has the following effects:
+                    - Spawn respawnable rifts across the whole world in any region with over 75 of Corruption.
+                    - "Hide" the vortex by removing the VFX.
+                    - Give mission to "restore" the Vortex by taking back Gaen Vale, Asurian's Temple, Tor Elyr and White Tower of Hoeth.
+                    - When the mission is completed, stop its effects and rift respawn outside the chaos wastes and norsca.
 
 
 
@@ -64,15 +71,9 @@
         - Stage 2:
             - If player is Cathay, improve pressure in the bastion's thread.
             - If player is not Cathay and the Bastion still stands, spawn a few of Vilich armies to take it down.
-        - Stage 3a:
-            - If Gaen Vale, Asurian's Temple, Tor Elyr and White Tower of Hoeth are either in hands of Chaos, Norsca, or in Ruins:
-                - Trigger "Ulthuan's Fall", which has the following effects.
-                - "Hide" the vortex, either by removing the VFX or by hiding that sea on a Terrain Patch.
-                - Spawn rifts across all provinces of the world, regardless of corruption level.
-                - Spawn pure daemonic armies at the chaos wastes, with them respawning every (20 / difficulty_multiplier) turns.
-                - Give mission to "restore" the Vortex by taking back Gaen Vale, Asurian's Temple, Tor Elyr and White Tower of Hoeth
-                - When the mission is completed, stop global chaos buffs and rift respawn outside the chaos wastes.
-                - Give INCARNATION trait to certain characters (maybe).
+        - Stage 2a:
+            - Give INCARNATION trait to certain characters (maybe).
+
         - Stage 3b:
             - If player is Cathay, Empire, Bretonia, Vampires, High Elves or Dark Elves, trigger a dilemma to become a vassal of chaos:
                 - If rejected, continue as normal.
@@ -162,6 +163,7 @@ disaster_chaos_invasion = {
         stage_1_delay = 1,
         stage_2_delay = 1,
         stage_3_delay = 1,
+        great_vortex_undone = false,
 
         -- Rewards for the different chaos realms battles.
         khorne_realm_rewards = {
@@ -536,6 +538,26 @@ disaster_chaos_invasion = {
         --wh3_main_sla_seducers_of_slaanesh = {},
     },
 
+    great_vortex_undone = {
+        objectives = {
+            {
+                type = "CONTROL_N_REGIONS_FROM",
+                conditions = {
+                    "override_text mission_text_text_mis_activity_control_n_regions_satrapy_including_at_least_n"
+                },
+                payloads = {
+                    "money 25000"
+                }
+            }
+        },
+        regions = {
+            "wh3_main_combi_region_gaean_vale",
+            "wh3_main_combi_region_shrine_of_asuryan",
+            "wh3_main_combi_region_tor_elyr",
+            "wh3_main_combi_region_white_tower_of_hoeth",
+        },
+    },
+
     --------------------------------
     -- Teleportation nodes stuff
     --------------------------------
@@ -826,6 +848,10 @@ disaster_chaos_invasion = {
     finish_before_stage_1_event_key = "dyn_dis_chaos_invasion_finish_before_stage_1",
     finish_event_key = "dyn_dis_chaos_invasion_finish",
 
+    great_vortex_undone_incident_key = "dyn_dis_chaos_invasion_great_vortex_undone",
+    great_vortex_undone_effect_key = "dyn_dis_chaos_invasion_great_vortex_undone",
+
+    great_vortex_undone_mission_name = "great_vortex_undone",
     endgame_mission_name = "endtimes_unfolding",
     battle_in_rift_khorne_dilemma_key = "dyn_dis_chaos_invasion_rift_dilemma_khorne",
     battle_in_rift_nurgle_dilemma_key = "dyn_dis_chaos_invasion_rift_dilemma_nurgle",
@@ -841,6 +867,8 @@ disaster_chaos_invasion = {
     effects_global_key = "fro_dyn_dis_chaos_invasion_global_effects",
 
     teleportation_network = "dyn_dis_chaos_invasion_network",
+    vortex_key = "dyn_dis_custom_vortex_ulthuan",
+    vortex_vfx = "scripted_effect17"
 }
 
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
@@ -912,7 +940,7 @@ function disaster_chaos_invasion:set_status(status)
         true
     );
 
-    -- Listener to respawn rifts chaos wasteland and norsca rifts after closing them.
+    -- Listener to respawn rifts.
     core:add_listener(
         "ChaosInvasionRespawnRiftsChaosWastes",
         "WorldStartRound",
@@ -925,6 +953,19 @@ function disaster_chaos_invasion:set_status(status)
             local min_chaos = 75;
             self:open_teleportation_nodes(self.teleportation_nodes_chaos_wastes, percentage, min_chaos)
             self:open_teleportation_nodes(self.teleportation_nodes_norsca, percentage, min_chaos);
+
+            -- If Ulthuan has fallen, respawn everywhere.
+            if self.settings.great_vortex_undone then
+                percentage = 0.25 + (self.settings.difficulty_mod / 10);
+                self:open_teleportation_nodes(self.teleportation_nodes_cathay, percentage, min_chaos);
+                self:open_teleportation_nodes(self.teleportation_nodes_old_world, percentage, min_chaos);
+                self:open_teleportation_nodes(self.teleportation_nodes_mountains_of_mourne, percentage, min_chaos);
+                self:open_teleportation_nodes(self.teleportation_nodes_dark_lands, percentage, min_chaos);
+                self:open_teleportation_nodes(self.teleportation_nodes_southlands, percentage, min_chaos);
+                self:open_teleportation_nodes(self.teleportation_nodes_lustria, percentage, min_chaos);
+                self:open_teleportation_nodes(self.teleportation_nodes_naggaroth, percentage, min_chaos);
+                self:open_teleportation_nodes(self.teleportation_nodes_ulthuan, percentage, min_chaos);
+            end
         end,
         true
     );
@@ -1458,6 +1499,57 @@ function disaster_chaos_invasion:set_status(status)
             end,
             true
         );
+
+        -- Listener to trigger the Great Vortex Undone branch of the disaster.
+        core:add_listener(
+            "ChaosInvasionGreatVortexUndoneTrigger",
+            "WorldStartRound",
+            function()
+                local regions = self.great_vortex_undone.regions;
+                local order_stands = false;
+                for i = 1, #regions do
+                    local region = cm:get_region(regions[i]);
+                    if not region == false and region:is_null_interface() == false and region:is_abandoned() == false then
+                        local owner = region:owning_faction();
+                        if not dynamic_disasters:is_chaos_faction(owner:name()) then
+                            order_stands = true;
+                            break;
+                        end
+                    end
+                end
+
+                return not (order_stands and self.settings.great_vortex_undone == false) or dynamic_disasters.settings.debug;
+            end,
+            function()
+
+                -- Remove the VFX and trigger the mission to recover ulthuan.
+                self.settings.great_vortex_undone_triggered = true;
+
+                ---@type table
+                local objectives = table.copy(self.great_vortex_undone.objectives);
+                table.insert(objectives[1].conditions, "total " .. #self.great_vortex_undone.regions)
+                for i = 1, #self.great_vortex_undone.regions do
+                    table.insert(objectives[1].conditions, "region " .. self.great_vortex_undone.regions[i])
+                end
+
+                -- Apply the corruption effects to all alive factions, except humans.
+                -- Humans get this effect via payload with effect.
+                local faction_list = cm:model():world():faction_list()
+                for i = 0, faction_list:num_items() - 1 do
+                    local faction = faction_list:item_at(i)
+
+                    if not faction:is_dead() and faction:is_human() == false then
+                        cm:apply_effect_bundle(self.great_vortex_undone_effect_key, faction:name(), 0)
+                    end
+                end
+
+                dynamic_disasters:add_mission(objectives, false, self.name, self.great_vortex_undone_mission_name, self.great_vortex_undone_incident_key, self.great_vortex_undone.regions[i], nil, function () self:restore_vortex() end, true)
+                dynamic_disasters:execute_payload(self.great_vortex_undone_incident_key, self.great_vortex_undone_effect_key, 0, nil);
+                cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_chs_chaos")
+                cm:remove_vfx(self.vortex_vfx);
+            end,
+            true
+        );
     end
 
     -- No need to have a specific listener to end the disaster after no more stages can be triggered, as that's controlled by a mission.
@@ -1505,7 +1597,7 @@ function disaster_chaos_invasion:trigger_stage_1()
     dynamic_disasters:force_peace_between_factions(self.settings.factions, true);
 
     -- Trigger the chaos-related effects
-    self:trigger_chaos_effects(self.settings.stage_2_delay);
+    self:trigger_chaos_effects(self.settings.stage_2_delay, nil);
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
     dynamic_disasters:execute_payload(self.stage_1_incident_key, self.effects_global_key, self.settings.stage_2_delay, nil);
@@ -1632,24 +1724,16 @@ function disaster_chaos_invasion:trigger_stage_2()
     end
 
     -- Trigger the chaos-related effects
-    self:trigger_chaos_effects(self.settings.stage_3_delay);
+    self:trigger_chaos_effects(0, 10);
 
     -- Trigger the end game mission.
     dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.stage_2_incident_key, nil, self.settings.factions[1], function () self:trigger_end_disaster() end, true)
-    dynamic_disasters:execute_payload(self.stage_2_incident_key, self.effects_global_key, self.settings.stage_3_delay, nil);
+    dynamic_disasters:execute_payload(self.stage_2_incident_key, self.effects_global_key, 0, nil);
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_chs_chaos")
     cm:register_instant_movie("Warhammer/chs_invasion");
 
     -- Advance status to stage 2.
     self:set_status(STATUS_STAGE_2);
-end
-
--- Function to trigger the third stage of the Chaos Invasion.
-function disaster_chaos_invasion:trigger_stage_3()
-
-
-    -- Advance status to stage 3.
-    self:set_status(STATUS_STAGE_3);
 end
 
 -- Function to trigger the opening of the Chaos Wastes rifts.
@@ -1875,24 +1959,45 @@ function disaster_chaos_invasion:favoured_corruption_for_faction(faction)
     return pooled_resource
 end
 
--- Function to trigger the effects related with each stage of the chaos invasion.
----@param duration integer #Duration of the effects, in turns.
-function disaster_chaos_invasion:trigger_chaos_effects(duration)
+-- Function to restore the vortex after being removed.
+function disaster_chaos_invasion:restore_vortex()
+    self.settings.great_vortex_undone = false;
+
+    -- Disable the extra infinite effect for losing the Vortex.
     local faction_list = cm:model():world():faction_list()
 
-  -- Apply the corruption effects to all alive factions, except humans.
+    -- Remove the Great Vortex undone effect from everyone.
+    for i = 0, faction_list:num_items() - 1 do
+        local faction = faction_list:item_at(i)
+        cm:remove_effect_bundle(self.great_vortex_undone_effect_key, faction:name());
+    end
+
+    cm:add_vfx(self.vortex_key, self.vortex_vfx, 171.925, 431.5, 0)
+end
+
+-- Function to trigger the effects related with each stage of the chaos invasion.
+---@param duration_global_effects integer #Duration of the effects, in turns.
+---@param duration_buffs integer #Optional. Duration of the buffs, in turns.
+function disaster_chaos_invasion:trigger_chaos_effects(duration_global_effects, duration_buffs)
+    if duration_buffs == nil then
+        duration_buffs = duration_global_effects;
+    end
+
+    local faction_list = cm:model():world():faction_list()
+
+    -- Apply the corruption effects to all alive factions, except humans.
     -- Humans get this effect via payload with effect.
     for i = 0, faction_list:num_items() - 1 do
         local faction = faction_list:item_at(i)
 
         if not faction:is_dead() and faction:is_human() == false then
-            cm:apply_effect_bundle(self.effects_global_key, faction:name(), duration)
+            cm:apply_effect_bundle(self.effects_global_key, faction:name(), duration_global_effects)
         end
     end
 
     -- Apply attackers buffs to all alive attackers.
     for _, faction_key in pairs(self.settings.factions) do
-        cm:apply_effect_bundle(self.attacker_buffs_key, faction_key, duration);
+        cm:apply_effect_bundle(self.attacker_buffs_key, faction_key, duration_buffs);
     end
 end
 
@@ -1902,6 +2007,14 @@ end
 function disaster_chaos_invasion:trigger_end_disaster()
     if self.settings.started == true then
         out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
+
+        local faction_list = cm:model():world():faction_list()
+        for i = 0, faction_list:num_items() - 1 do
+            local faction = faction_list:item_at(i)
+            cm:remove_effect_bundle(self.great_vortex_undone_effect_key, faction:name());
+            cm:remove_effect_bundle(self.effects_global_key, faction:name());
+        end
+
         dynamic_disasters:finish_disaster(self);
     end
 end
@@ -2009,6 +2122,9 @@ function disaster_chaos_invasion:check_end_disaster_conditions()
 
     return false;
 end
+
+-- Initialize the custom vortex here.
+cm:add_vfx(disaster_chaos_invasion.vortex_key, disaster_chaos_invasion.vortex_vfx, 171.925, 431.5, 0)
 
 -- Return the disaster so the manager can read it.
 return disaster_chaos_invasion

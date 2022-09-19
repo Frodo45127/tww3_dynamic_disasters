@@ -133,8 +133,7 @@ incidents_localised_title_dyn_dis_chaos_invasion_stage_1_trigger	The Rise of Cha
 incidents_localised_description_dyn_dis_chaos_invasion_stage_1_trigger	Dire tidings from the North!\\n\\nThe tendrils of Chaos writhe and reach out from the accursed wastes, tainting the land and sowing dissent. Their corrupt forces wax ever stronger, and now their agents are abroad, spreading the foul corruption of their malign Gods.\\n\\nOn their heels come bands of marauding warriors led by the most zealous of the Chaos Lords, eager to wreak destruction in the name of the Ruinous Powers. And all the while, ever more warriors flock to some focal point in the Chaos Wastes, a nexus of power which transcends their petty rivalries and impels them to join with the numberless horde.\\n\\nDoom approaches, and it is only in strength that any hope may be found!	true
 incidents_localised_title_dyn_dis_chaos_invasion_stage_early_warning	Chaos Stirs	true
 incidents_localised_description_dyn_dis_chaos_invasion_stage_early_warning	Storm clouds gather in the North. There are rumours that the barbarous tribes residing in the shadow of Chaos have ceased striving against each other for the attention of the Dark Gods and are instead banding together. Suckling at the teat of Chaos, the hordes grow in strength. It seems only a matter of time before the dam breaks and a tide of ruin bursts forth to engulf the Old World, corrupting or destroying all in its path.\\n\\nMarshal your strength, nurture the sinews of war, build your walls high, gather warriors to your banner and temper them in the crucible of battle, so that when the time comes you may yet weather the storm!	true
-incidents_localised_title_dyn_dis_chaos_invasion_stage_3_trigger	Placeholder	true
-incidents_localised_description_dyn_dis_chaos_invasion_stage_3_trigger	Placeholder	true
+incidents_localised_description_dyn_dis_chaos_invasion_great_vortex_undone	The Great Vortex, the vast magical maelstrom at the heart of the island-continent of Ulthuan, has been undone by the forces of Chaos! Without it, rifts to the chaos realms are opening all over the world!	true
 incidents_localised_title_dyn_dis_chaos_invasion_finish_before_stage_1	Chaos Receeds	true
 incidents_localised_description_dyn_dis_chaos_invasion_finish_before_stage_1	It seems whatever menace was uniting the northern tribes in the chaos wastes it's gone... for now.	true
 incidents_localised_title_dyn_dis_chaos_invasion_finish	An Age of Peace?	true
@@ -186,3 +185,12 @@ effect_bundles_localised_description_dyn_dis_chaos_invasion_rift_chance_of_rewar
 effect_bundles_localised_description_dyn_dis_chaos_invasion_rift_chance_of_reward_nurgle	You can find the most horrific diseases in the realm of the Plague Lord... but everything comes at a price.	true
 effect_bundles_localised_description_dyn_dis_chaos_invasion_rift_chance_of_reward_slaanesh	You can find the most pleasant surprises in the realm of the Dark Prince... but everything comes at a price.	true
 effect_bundles_localised_description_dyn_dis_chaos_invasion_rift_chance_of_reward_tzeentch	You can find the most interesting mysteries in the realm of the Changer of Ways... but everything comes at a price.	true
+incidents_localised_title_dyn_dis_chaos_invasion_great_vortex_undone	The Great Vortex Undone!	true
+missions_localised_title_dyn_dis_chaos_invasion_great_vortex_undone_1	The Restoration of the Great Vortex	true
+missions_localised_description_dyn_dis_chaos_invasion_great_vortex_undone_1	Without the Great Vortex, daemons of Chaos are free to roam through the whole world! Restore it before it's too late!	true
+effect_bundles_localised_title_dyn_dis_chaos_invasion_great_vortex_undone	The Great Vortex Undone	true
+effect_bundles_localised_description_dyn_dis_chaos_invasion_great_vortex_undone	Without the Great Vortex, there's nothing stopping the daemons of chaos from entering our world.	true
+effects_description_dyn_dis_chaos_invasion_great_vortex_undone_khorne	Khorne corruption: %+n	true
+effects_description_dyn_dis_chaos_invasion_great_vortex_undone_nurgle	Nurgle corruption: %+n	true
+effects_description_dyn_dis_chaos_invasion_great_vortex_undone_slaanesh	Slaanesh corruption: %+n	true
+effects_description_dyn_dis_chaos_invasion_great_vortex_undone_tzeench	Tzeentch corruption: %+n	true

@@ -1539,6 +1539,8 @@ end
 function dynamic_disasters:create_mission(faction_key, objectives, can_be_victory, disaster_name, mission_name, success_callback)
 
     if can_be_victory and self.settings.victory_condition_triggered == false then
+
+        ---@type mission_manager
         local mm = mission_manager:new(faction_key, "dyn_dis_" .. disaster_name .. "_" .. mission_name, success_callback);
         self:add_objectives_to_mission(mm, objectives, faction_key)
         mm:add_payload("text_display dummy_wh3_main_survival_forge_of_souls")
@@ -1552,6 +1554,8 @@ function dynamic_disasters:create_mission(faction_key, objectives, can_be_victor
     else
         -- For some reason, individual-non victory missions don't read more than the first objective. So we have to create a mission per objective.
         for i = 1, #objectives do
+
+            ---@type mission_manager
             local mm = mission_manager:new(faction_key, "dyn_dis_" .. disaster_name .. "_" .. mission_name .. "_" .. i, success_callback);
             self:add_objectives_to_mission(mm, { objectives[i] }, faction_key)
             mm:set_show_mission(true)
