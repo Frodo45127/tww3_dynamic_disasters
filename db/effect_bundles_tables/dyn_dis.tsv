@@ -1,9 +1,9 @@
 key	localised_title	localised_description	ui_icon	bundle_target	priority	is_global_effect	show_in_3d_space	owner_only
 #effect_bundles_tables;4;db/effect_bundles_tables/dyn_dis								
-fro_dyn_dis_aztec_invasion_warning_1			disaster.png	faction	1	true	false	false
-fro_dyn_dis_aztec_invasion_warning_2	 	 	disaster.png	faction	1	true	false	false
+dyn_dis_aztec_invasion_early_warning			disaster.png	faction	1	true	false	false
+dyn_dis_aztec_invasion_stage_1_trigger	 	 	disaster.png	faction	1	true	false	false
 fro_dyn_dis_aztec_invasion_trigger_invader_buffs	 	 	disaster.png	faction	1	false	false	false
-fro_dyn_dis_aztec_invasion_trigger	 	 	disaster.png	faction	1	true	false	false
+dyn_dis_aztec_invasion_stage_2_trigger	 	 	disaster.png	faction	1	true	false	false
 fro_dyn_dis_raiding_parties_invader_buffs	 	 	disaster.png	faction	1	false	false	false
 fro_dyn_dis_chianchi_assault_warning	 	 	disaster.png	faction	1	false	false	false
 fro_dyn_dis_chianchi_assault_wall_assault_trigger	 	 	disaster.png	faction	1	false	false	false

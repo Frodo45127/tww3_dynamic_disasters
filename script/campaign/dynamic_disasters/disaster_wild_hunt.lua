@@ -174,6 +174,10 @@ end
 -- Function to trigger the disaster.
 function disaster_wild_hunt:trigger_the_wild_hunt()
     for _, faction_key in pairs(self.settings.factions) do
+
+        -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances.
+        endgame:no_peace_no_confederation_only_war(faction_key)
+
         local region_key = potential_wood_elves[faction_key];
         local invasion_faction = cm:get_faction(faction_key)
 
@@ -199,7 +203,6 @@ function disaster_wild_hunt:trigger_the_wild_hunt()
 
         -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
         cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
-        endgame:no_peace_no_confederation_only_war(faction_key)
         dynamic_disasters:declare_war_for_owners_and_neightbours(invasion_faction, { region_key }, true, { "wh_dlc05_sc_wef_wood_elves" })
 
         cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)

@@ -185,6 +185,10 @@ end
 -- Function to trigger the disaster.
 function disaster_grudge_too_far:trigger_second_great_beard_war()
 	for _, faction_key in pairs(self.settings.factions) do
+
+        -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances.
+        endgame:no_peace_no_confederation_only_war(faction_key)
+
         local region_key = potential_dwarfs[faction_key];
 		local invasion_faction = cm:get_faction(faction_key)
 
@@ -210,7 +214,6 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
 
         -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
 		cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
-		endgame:no_peace_no_confederation_only_war(faction_key)
 		dynamic_disasters:declare_war_for_owners_and_neightbours(invasion_faction, { region_key }, true, { "wh_main_sc_dwf_dwarfs" })
 
 		cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)

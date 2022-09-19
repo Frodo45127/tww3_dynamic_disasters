@@ -1,20 +1,19 @@
 key	text	tooltip
 #Loc PackedFile;1;text/db/dyn_dis.loc		
-incidents_localised_title_fro_dyn_dis_aztec_invasion_trigger	The Enactment of the Great Plan	true
-incidents_localised_title_fro_dyn_dis_aztec_invasion_warning_2	Sightings of Strange Ships	true
-incidents_localised_title_fro_dyn_dis_aztec_invasion_warning_1	Rumors of Strange Ships	true
-incidents_localised_description_fro_dyn_dis_aztec_invasion_trigger	Across the whole world, a message has been heard. \\n\\n"The Great Plan has been understood. None of you are part of it."\\n\\nThe invasion has begun.	true
-incidents_localised_description_fro_dyn_dis_aztec_invasion_warning_1	Rumours are surfacing on ports around the world about mysterious ships, of rock and magic, like nothing anyone has seen before. Too many drunken sailors telling tales, if you ask me.	true
-incidents_localised_description_fro_dyn_dis_aztec_invasion_warning_2	Sightings of strange ships are increasing on all seas, from the New World to Grand Cathay.	true
-incidents_button_text_fro_dyn_dis_aztec_invasion_trigger	They're coming!	true
-incidents_button_text_fro_dyn_dis_aztec_invasion_warning_1	Rumours from druken sailors, no doubt.	true
-incidents_button_text_fro_dyn_dis_aztec_invasion_warning_2	Increase the port guard, just in case.	true
-effect_bundles_localised_description_fro_dyn_dis_aztec_invasion_warning_1	Paranoids all, fearing the sea.	true
-effect_bundles_localised_description_fro_dyn_dis_aztec_invasion_warning_2	What its that, floating in the distance?	true
-effect_bundles_localised_description_fro_dyn_dis_aztec_invasion_trigger	Run! Run away from the sea!	true
-effect_bundles_localised_title_fro_dyn_dis_aztec_invasion_warning_1	Rumors of Strange Ships	true
-effect_bundles_localised_title_fro_dyn_dis_aztec_invasion_warning_2	Sightings of Strange Ships	true
-effect_bundles_localised_title_fro_dyn_dis_aztec_invasion_trigger	The Enactment of the Great Plan	true
+incidents_localised_title_dyn_dis_aztec_invasion_stage_2_trigger	The Enactment of the Great Plan	true
+incidents_localised_title_dyn_dis_aztec_invasion_stage_1_trigger	The Silence of the Southern Seas	true
+incidents_localised_title_dyn_dis_aztec_invasion_early_warning	Tremors from the Jungle	true
+incidents_localised_description_dyn_dis_aztec_invasion_stage_2_trigger	Across the whole world, a message has been heard. \\n\\n"The Great Plan has been understood. None of you are part of it."\\n\\nThe invasion has begun.	true
+incidents_localised_description_dyn_dis_aztec_invasion_early_warning	On the dense jungles of Lustria, tremors began. And they haven't stop. Something is happening on Lustria... Prepare for the worst.	true
+incidents_localised_description_dyn_dis_aztec_invasion_stage_1_trigger	Ships sailing through the southern seas are dissapearing without a trace. First tremors, then this... I'm telling you, it's the end of the world.	true
+incidents_button_text_dyn_dis_aztec_invasion_stage_2_trigger	They're coming!	true
+incidents_button_text_dyn_dis_aztec_invasion_stage_1_trigger	Increase the port guard, just in case.	true
+effect_bundles_localised_description_dyn_dis_aztec_invasion_early_warning	After the recent tremors, people has leave the ports in case a giant wave comes...	true
+effect_bundles_localised_description_dyn_dis_aztec_invasion_stage_1_trigger	These dissapearances are driving sailors mad....	true
+effect_bundles_localised_description_dyn_dis_aztec_invasion_stage_2_trigger	Run! Run away from the sea!	true
+effect_bundles_localised_title_dyn_dis_aztec_invasion_early_warning	Tremors from the Jungle	true
+effect_bundles_localised_title_dyn_dis_aztec_invasion_stage_1_trigger	The Silence of the Southern Seas	true
+effect_bundles_localised_title_dyn_dis_aztec_invasion_stage_2_trigger	The Enactment of the Great Plan	true
 diplomacy_strings_string_personality_desc_short_lizardmen_aztec_invasion	Enactor of the Great Plan	true
 diplomacy_strings_string_personality_desc_long_lizardmen_aztec_invasion	It will enact the Great Plan of the Old Ones. Even if it means to destroy all other races.	true
 mct_dyn_dis_mod_title	Dynamic Disasters	true

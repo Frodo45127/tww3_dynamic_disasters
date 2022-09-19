@@ -101,114 +101,6 @@ disaster_raiding_parties = {
     finish_early_incident_key = "fro_dyn_dis_raiding_parties_early_end",
 }
 
-
--- Potential coasts to attack. Each coast may contain one or more regions.
-local potential_coasts = {
-    cathay_eastern_coast = {
-        "wh3_main_combi_region_northern_straits_of_the_jade_sea",
-        "wh3_main_combi_region_the_jade_sea",
-    },
-    darklands_south_coast = {
-        "wh3_main_combi_region_sea_of_storms",
-    },
-    eastern_isles = {
-        "wh3_main_combi_region_the_eastern_isles",
-    },
-    southlands_east_coast = {
-        "wh3_main_combi_region_the_bitter_sea",
-        "wh3_main_combi_region_shifting_mangrove_coastline",
-    },
-    southlands_south_coast = {
-        "wh3_main_combi_region_the_churning_gulf",
-        "wh3_main_combi_region_serpent_coast_sea",
-    },
-    southlands_west_coast = {
-        "wh3_main_combi_region_gulf_of_medes",
-        "wh3_main_combi_region_the_southern_straits",
-    },
-    southlands_north_coast = {
-        "wh3_main_combi_region_shark_straights",
-        "wh3_main_combi_region_the_pirate_coast",
-    },
-    badlands_coast = {
-        "wh3_main_combi_region_the_black_gulf",
-    },
-    tilea_and_estalia_coast = {
-        "wh3_main_combi_region_tilean_sea",
-        "wh3_main_combi_region_the_estalia_coastline",
-    },
-    bretonnia_west_coast = {
-        "wh3_main_combi_region_middle_sea",
-        "wh3_main_combi_region_the_mistnar_crossing",
-    },
-    bretonnia_north_coast = {
-        "wh3_main_combi_region_southern_sea_of_chaos",
-        "wh3_main_combi_region_the_albion_channel",
-    },
-    norsca_south_coast = {
-        "wh3_main_combi_region_southern_sea_of_chaos",
-        "wh3_main_combi_region_gulf_of_kislev",
-        "wh3_main_combi_region_sea_of_claws",
-    },
-
-    -- We skip the straits of chaos west of norsca. No sense on putting that single province from where they cannot raid anything.
-    norsca_north_coast = {
-        "wh3_main_combi_region_frozen_sea",
-        "wh3_main_combi_region_kraken_sea",
-        "wh3_main_combi_region_northern_sea_of_chaos",
-    },
-
-    -- We skip shard coast, for the same thing as the west of norsca.
-    naggarond_coast = {
-        "wh3_main_combi_region_sea_of_malice",
-        "wh3_main_combi_region_sea_of_chill",
-        "wh3_main_combi_region_the_forbidding_coast",
-    },
-
-    mexico_coast = {
-        "wh3_main_combi_region_straits_of_fear",
-        "wh3_main_combi_region_sea_of_serpents",
-        "wh3_main_combi_region_scorpion_coast",
-    },
-    lustria_north_east_coast = {
-        "wh3_main_combi_region_tarantula_coast",
-        "wh3_main_combi_region_the_vampire_coast_sea",
-    },
-    lustria_east_coast = {
-        "wh3_main_combi_region_the_vampire_coast_sea",
-        "wh3_main_combi_region_mangrove_coast_sea",
-    },
-    lustria_south_coast = {
-        "wh3_main_combi_region_the_lustria_straight",
-        "wh3_main_combi_region_worm_coast",
-    },
-    lustria_west_coast = {
-        "wh3_main_combi_region_the_turtle_shallows",
-        "wh3_main_combi_region_sea_of_squalls",
-    },
-
-    donut_east_coast = {
-        "wh3_main_combi_region_shifting_isles",
-        "wh3_main_combi_region_the_mistnar_crossing",
-    },
-    donut_north_west_coast = {
-        "wh3_main_combi_region_the_isles",
-        "wh3_main_combi_region_the_bleak_coast",
-    },
-    donut_south_coast = {
-        "wh3_main_combi_region_straits_of_lothern",
-    },
-
-    -- Who the fuck would raid that? The AI, aparently. A lot.
-    --antartid = {
-    --    "wh3_main_combi_region_the_daemonium_coast",
-    --    "wh3_main_combi_region_serpent_coast_sea",
-    --    "wh3_main_combi_region_the_churning_gulf",
-    --    "wh3_main_combi_region_daemons_landing",
-    --    "wh3_main_combi_region_the_lustria_straight",
-    --},
-}
-
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
 function disaster_raiding_parties:set_status(status)
     self.settings.status = status;
@@ -354,12 +246,12 @@ function disaster_raiding_parties:trigger_raiding_parties()
     local count = 0;
 
     -- Calculate the weight of each attack region.
-    for coast, regions in pairs(potential_coasts) do
+    for coast, regions in pairs(dyn_dis_coasts) do
         attack_vectors[coast] = 0;
         count = count + 1;
 
         for _, sea_region in pairs(regions) do
-            local sea_region_data = dyn_dis_sea_potential_attack_vectors[sea_region];
+            local sea_region_data = dyn_dis_sea_regions[sea_region];
 
             for _, land_region in pairs(sea_region_data.coastal_regions) do
                 local region = cm:get_region(land_region)
@@ -400,23 +292,16 @@ function disaster_raiding_parties:trigger_raiding_parties()
     out("Frodo45127: We have " .. #coasts_to_attack .. " coasts to attack. Using only the upper half.");
     local coast_to_attack = coasts_to_attack[math.random(1, math.ceil(#coasts_to_attack / 2))];
     local first_sea_region = nil;
-    for _, sea_region in pairs(potential_coasts[coast_to_attack]) do
+    for _, sea_region in pairs(dyn_dis_coasts[coast_to_attack]) do
         first_sea_region = sea_region;
 
-        -- Scale is an optional value for manually increasing/decreasing armies in one region.
-        -- By default it's 1 (no change in amount of armies).
-        local scale = 1;
-        if dyn_dis_sea_potential_attack_vectors[sea_region].scale ~= nil then
-            scale = dyn_dis_sea_potential_attack_vectors[sea_region].scale;
-        end
-
         -- Spawn armies at sea.
-        for i = 1, #dyn_dis_sea_potential_attack_vectors[sea_region].coastal_regions do
+        for i = 1, #dyn_dis_sea_regions[sea_region].coastal_regions do
 
             -- Armies calculation, per province.
-            local region_key = dyn_dis_sea_potential_attack_vectors[sea_region].coastal_regions[i];
+            local region_key = dyn_dis_sea_regions[sea_region].coastal_regions[i];
             local army_count = math.floor(math.random(1, math.ceil(self.settings.difficulty_mod)));
-            local spawn_pos = dyn_dis_sea_potential_attack_vectors[sea_region].spawn_positions[math.random(#dyn_dis_sea_potential_attack_vectors[sea_region].spawn_positions)];
+            local spawn_pos = dyn_dis_sea_regions[sea_region].spawn_positions[math.random(#dyn_dis_sea_regions[sea_region].spawn_positions)];
             out("Frodo45127: Armies to spawn: " .. tostring(army_count) .. " for " .. region_key .. " region, spawn pos X: " .. spawn_pos[1] .. ", Y: " .. spawn_pos[2] .. ".");
 
             -- Store the region for invasion controls.
@@ -427,14 +312,14 @@ function disaster_raiding_parties:trigger_raiding_parties()
 
     -- Make every attacking faction go full retard against the owner of the coastal provinces.
     if not faction == false and faction:is_null_interface() == false and not faction:is_dead() then
-        for _, sea_region in pairs(potential_coasts[coast_to_attack]) do
-            dynamic_disasters:declare_war_for_owners_and_neightbours(faction, dyn_dis_sea_potential_attack_vectors[sea_region].coastal_regions, false, {self.settings.subculture});
+        for _, sea_region in pairs(dyn_dis_coasts[coast_to_attack]) do
+            dynamic_disasters:declare_war_for_owners_and_neightbours(faction, dyn_dis_sea_regions[sea_region].coastal_regions, false, {self.settings.subculture});
         end
     end
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
     cm:apply_effect_bundle(self.invader_buffs_effects_key, self.settings.faction, 10)
-    dynamic_disasters:execute_payload(self.raiding_event_key, nil, 0, dyn_dis_sea_potential_attack_vectors[first_sea_region].coastal_regions[1]);
+    dynamic_disasters:execute_payload(self.raiding_event_key, nil, 0, dyn_dis_sea_regions[first_sea_region].coastal_regions[1]);
     cm:activate_music_trigger("ScriptedEvent_Negative", self.settings.subculture)
     self:set_status(STATUS_STARTED);
 end
@@ -471,6 +356,12 @@ function spawn_armies_callback(cqi)
                 local faction_key = nil;
                 if not faction == false and faction:is_null_interface() == false and faction:name() ~= "rebels" and faction:name() ~= disaster.settings.faction then
                     faction_key = faction:name();
+                end
+
+                -- If the target is owned by a non-rebel settlement of your own, release the army from the invasion.
+                if not faction == false and faction:is_null_interface() == false and faction:name() ~= "rebels" and faction:name() == disaster.settings.faction then
+                    invasion:release();
+                    return;
                 end
 
                 invasion:set_target("REGION", region_key, faction_key);

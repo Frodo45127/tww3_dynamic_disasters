@@ -1,8 +1,8 @@
 key	ui_image	generate	prioritised	event_category	override_icon	is_large_incident
 #incidents_tables;4;db/incidents_tables/dyn_dis						
-fro_dyn_dis_aztec_invasion_warning_2	lzd/wh2_dlc17_new_threats_available	false	true	Disaster		false
-fro_dyn_dis_aztec_invasion_warning_1	lzd/wh2_dlc17_new_threats_available	false	true	Disaster		false
-fro_dyn_dis_aztec_invasion_trigger	lzd/victory	false	true	Disaster		true
+dyn_dis_aztec_invasion_stage_1_trigger	all/wh2_storm_attrition	false	true	Disaster		true
+dyn_dis_aztec_invasion_early_warning	lzd/messenger	false	true	Disaster		false
+dyn_dis_aztec_invasion_stage_2_trigger	lzd/victory	false	true	Disaster		true
 fro_dyn_dis_raiding_parties_warning	cst/legendary_pirate_attacks	false	true	Disaster		false
 fro_dyn_dis_raiding_parties_trigger	cst/legendary_pirate_attacks	false	true	Disaster		false
 fro_dyn_dis_chianchi_assault_warning	tze/faction	false	true	Disaster		false
