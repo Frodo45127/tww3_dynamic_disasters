@@ -162,7 +162,6 @@ disaster_chaos_invasion = {
         base_army_unit_count = 19,
         stage_1_delay = 1,
         stage_2_delay = 1,
-        stage_3_delay = 1,
         great_vortex_undone = false,
 
         -- Rewards for the different chaos realms battles.
@@ -1479,27 +1478,6 @@ function disaster_chaos_invasion:set_status(status)
 
     if self.settings.status == STATUS_STAGE_2 then
 
-        -- This triggers stage three of the disaster if the disaster hasn't been cancelled.
-        core:add_listener(
-            "ChaosInvasionStage3",
-            "WorldStartRound",
-            function()
-                if cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.stage_3_delay then
-                    return true
-                end
-                return false;
-            end,
-            function()
-                if self:check_end_disaster_conditions() == true then
-                    dynamic_disasters:execute_payload(self.finish_event_key, nil, 0, nil);
-                else
-                    --self:trigger_stage_3();
-                end
-                core:remove_listener("ChaosInvasionStage3")
-            end,
-            true
-        );
-
         -- Listener to trigger the Great Vortex Undone branch of the disaster.
         core:add_listener(
             "ChaosInvasionGreatVortexUndoneTrigger",
@@ -1610,12 +1588,6 @@ end
 
 -- Function to trigger the second stage of the Chaos Invasion.
 function disaster_chaos_invasion:trigger_stage_2()
-
-    if dynamic_disasters.settings.debug == true then
-        self.settings.stage_3_delay = 1;
-    else
-        self.settings.stage_3_delay = math.random(6, 10);
-    end
 
     -- Spawn all the stage 2 chaos armies. This is where hell breaks loose... literally.
     for _, faction_key in pairs(self.settings.stage_2_data.factions) do
