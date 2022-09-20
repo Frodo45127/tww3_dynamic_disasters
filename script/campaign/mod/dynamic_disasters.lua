@@ -1284,12 +1284,12 @@ end
 function dynamic_disasters:initialize_integrations()
     local integration_files = core:get_filepaths_from_folder("/script/campaign/dynamic_disasters_integrations/", "*.lua")
     out("####################")
-    out("Frodo45127: Loading the following integrations from /script/campaign/dynamic_disasters_integrations/:")
+    out("Frodo45127: Loading the following dynamic disaster integrations from /script/campaign/dynamic_disasters_integrations/:")
     local env = core:get_env()
 
     for i = 1, #integration_files do
         local filepath = integration_files[i]
-        local name = tostring(string.sub(filepath, 47))
+        local name = tostring(string.sub(filepath, 48))
 
         -- Make sure the file is loaded correctly, skip its inclusion if not
         local loaded_file, load_error = loadfile(filepath)
@@ -1307,7 +1307,7 @@ function dynamic_disasters:initialize_integrations()
             if not executed_successfully then
                 out("\tFailed to execute loaded disaster integration file [" .. name .. "], error is: " .. tostring(result))
             else
-                out("\t"..name.." loaded successfully")
+                out("\tIntegration "..name.." loaded successfully")
             end
 
         -- If the integration failed to load, report it.
@@ -1325,6 +1325,8 @@ function dynamic_disasters:initialize_integrations()
 
         end
     end
+
+    out("####################")
 end
 
 -- Function to process all the disasters available and trigger them when they can be triggered.
@@ -2011,8 +2013,6 @@ function dynamic_disasters:kill_faction_silently(faction_key)
 end;
 
 -- Function to add new units to a specific template, so it's used by disasters using that template.
---
--- NOTE: is up to you to check the unit key is valid, as I haven't found a way to ensure that.
 ---@param race string #Race owning the army template. Check the dynamic_disasters object for valid races.
 ---@param template string #Template of that race which will receive the unit.
 ---@param unit_key string #Key of the unit that will be added to the template. Must be a valid unit key from the DB.
@@ -2023,6 +2023,8 @@ function dynamic_disasters:add_unit_to_army_template(race, template, unit_key, w
         return "ERROR: Race " .. tostring(race) .. " not found in the army templates.";
     elseif self.army_templates[race][template] == nil then
         return "ERROR: Template " .. tostring(template) .. " not found in the army templates for race " .. tostring(race) .. ".";
+    elseif common.get_localised_string("land_units_onscreen_name_" .. unit_key) == "" then
+        return "ERROR: Unit " .. tostring(unit_key) .. " not found in the db. Maybe is for a mod not yet installed or integration needs updating?";
     else
         self.army_templates[race][template][unit_key] = weight;
     end
