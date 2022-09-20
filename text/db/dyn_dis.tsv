@@ -193,3 +193,12 @@ effects_description_dyn_dis_chaos_invasion_great_vortex_undone_khorne	Khorne cor
 effects_description_dyn_dis_chaos_invasion_great_vortex_undone_nurgle	Nurgle corruption: %+n	true
 effects_description_dyn_dis_chaos_invasion_great_vortex_undone_slaanesh	Slaanesh corruption: %+n	true
 effects_description_dyn_dis_chaos_invasion_great_vortex_undone_tzeench	Tzeentch corruption: %+n	true
+mct_dyn_dis_realm_divided_enable	Enable "Realm Divided" disaster	true
+mct_dyn_dis_realm_divided_enable_tooltip	Enable/Disable the "Realm Divided" disaster.\\n\\nYour uncontrolled expansion within Grand Cathay is unaceptable. By Decree of the Dragon Emperor, you shall surrender your provinces, your armies and your riches to the Emperor. Will you even accept that?\\n\\nSafe to disable mid-campaign as long as it hasn't trigger yet.	true
+incidents_localised_title_dyn_dis_realm_divided_trigger	A Realm Divided!	true
+incidents_localised_description_dyn_dis_realm_divided_trigger	A messenger has arrived from Wei-Jin with a message, directly from the Dragon Emperor:\\n\\n"Your uncontrolled expansion within Grand Cathay has gone too far.\\n\\nBy Decree of the Dragon Emperor, your ambitions shall be crushed, your cities returned to the Emperor, and your riches returned to Grand Cathay."\\n\\nAfter deliverating for some time, you give a message back to the messenger:\\n\\n"By My Decree, Grand Cathay must be surrendered to me. It's cities shall be mine, it's riches shall be mine."\\n\\nThe war has begun.	true
+incidents_button_text_dyn_dis_realm_divided_trigger	So war it is.	true
+missions_localised_title_dyn_dis_realm_divided_united_we_stand_1	Grand Cathay shall be mine!	true
+missions_localised_description_dyn_dis_realm_divided_united_we_stand_1	And no other shall rule over me!	true
+missions_localised_title_dyn_dis_realm_divided_united_we_stand_2	Submit or Die	true
+missions_localised_description_dyn_dis_realm_divided_united_we_stand_2	My enemies have but one choice: submit to my rule, or die.	true

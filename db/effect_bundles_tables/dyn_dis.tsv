@@ -26,3 +26,4 @@ dyn_dis_chaos_invasion_rift_chance_of_reward_nurgle			attribute_mark_nurgle.png	
 dyn_dis_chaos_invasion_rift_chance_of_reward_slaanesh			attribute_mark_slaanesh.png	faction	1	false	false	true
 dyn_dis_chaos_invasion_rift_chance_of_reward_tzeentch			attribute_mark_tzeentch.png	faction	1	false	false	true
 dyn_dis_chaos_invasion_great_vortex_undone			disaster.png	faction	1	true	false	false
+dyn_dis_realm_divided_attacker_buffs	 	 	disaster.png	faction	1	false	false	false

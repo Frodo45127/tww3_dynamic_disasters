@@ -186,6 +186,22 @@ chaos_invasion_enable_rifts:set_tooltip_text(loc_prefix.."chaos_invasion_enable_
 local d = mod:add_new_option("d98", "dummy")
 d:set_text(" ");
 
+--[[
+    Realm Divided Config
+]]
+local realm_divided_enable = mod:add_new_option("realm_divided_enable", "checkbox")
+realm_divided_enable:set_default_value(false)
+realm_divided_enable:set_text(loc_prefix.."realm_divided_enable", true)
+realm_divided_enable:set_tooltip_text(loc_prefix.."realm_divided_enable_tooltip", true)
+
+local realm_divided_difficulty_mod = mod:add_new_option("realm_divided_difficulty_mod", "slider")
+realm_divided_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)
+realm_divided_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_tooltip", true)
+realm_divided_difficulty_mod:slider_set_min_max(10, 500)
+realm_divided_difficulty_mod:set_default_value(150)
+realm_divided_difficulty_mod:slider_set_step_size(10)
+local d = mod:add_new_option("d97", "dummy")
+d:set_text(" ");
 
 --[[
     Vanilla Grudge Too Far Config

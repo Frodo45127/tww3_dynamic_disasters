@@ -938,6 +938,22 @@ dynamic_disasters = {
                 wh3_main_sla_mon_soul_grinder_0 = 1,
             }
         },
+        cathay = {
+            earlygame = {
+
+                --Melee Infantry
+                wh3_main_cth_inf_peasant_spearmen_1 = 8,
+                wh3_main_cth_inf_jade_warriors_0 = 4,
+                wh3_main_cth_inf_jade_warriors_1 = 2,
+
+                --Melee Infantry
+                wh3_main_cth_inf_peasant_archers_0 = 6,
+                wh3_main_cth_inf_jade_warrior_crossbowmen_0 = 2,
+
+                --Cavalry -- ignore the peaseant horsement, they're trash.
+                wh3_main_cth_cav_jade_lancers_0 = 2,
+            }
+        }
     }
 };
 
@@ -1823,6 +1839,17 @@ function dynamic_disasters:declare_war(attacker_key, defender_key, invite_attack
             end
         end
     end
+end
+
+-- This function disables peace treaties with for the faction for all human players. It allows confederations.
+---@param hostile_faction_key string #Faction that will get the war declaration.
+function dynamic_disasters:no_peace_only_war(hostile_faction_key)
+    local human_factions = cm:get_human_factions()
+    for i = 1, #human_factions do
+        dynamic_disasters:declare_war(hostile_faction_key, cm:get_faction(human_factions[i]):name(), true, true)
+    end
+
+    cm:force_diplomacy("faction:" .. hostile_faction_key, "all", "peace", false, false, true, false)
 end
 
 -- Function to force a peace between a list of factions.
