@@ -68,6 +68,9 @@
                     - When the mission is completed, stop its effects and rift respawn outside the chaos wastes and norsca.
 
 
+    -- TODO: Cancel vortex mission if the AI rebuilds it.
+
+
 
     -- Reference for the timeline: https://warhammerfantasy.fandom.com/wiki/End_Times_Timeline#Appendix_1_-_Chronology_of_the_End_Times
     Not Yet Implemented:
@@ -76,6 +79,7 @@
             - If player is not Cathay and the Bastion still stands, spawn a few of Vilich armies to take it down.
         - Stage 2a:
             - Give INCARNATION trait to certain characters (maybe).
+            - Stage the vortex up and down in size, enabling/disabling rifts in certain parts of the world.
 
         - Stage 3b:
             - If player is Cathay, Empire, Bretonia, Vampires, High Elves or Dark Elves, trigger a dilemma to become a vassal of chaos:
@@ -104,7 +108,6 @@
 local STATUS_TRIGGERED = 1;
 local STATUS_STAGE_1 = 2;
 local STATUS_STAGE_2 = 3;
-local STATUS_STAGE_3 = 4;
 
 -- Object representing the disaster.
 disaster_chaos_invasion = {
@@ -165,6 +168,7 @@ disaster_chaos_invasion = {
         base_army_unit_count = 19,
         stage_1_delay = 1,
         stage_2_delay = 1,
+        grace_period = 1,
         great_vortex_undone = false,
 
         -- Rewards for the different chaos realms battles.
@@ -224,50 +228,8 @@ disaster_chaos_invasion = {
                 "wh3_dlc20_chs_sigvald",            -- Sigvald
                 "wh3_dlc20_chs_valkia",             -- Valkia
             },
-
-            regions = {
-                wh_main_chs_chaos = {
-                    "wh3_main_combi_region_the_writhing_fortress",
-                    "wh3_main_combi_region_the_howling_citadel",
-                    "wh3_main_combi_region_the_crystal_spires",
-                },
-                wh3_dlc20_chs_kholek = {
-                    "wh3_main_combi_region_the_challenge_stone",
-                    "wh3_main_combi_region_the_volary",
-                    "wh3_main_combi_region_icespewer",
-                },
-                wh3_dlc20_chs_sigvald = {
-                    "wh3_main_combi_region_black_rock",
-                    "wh3_main_combi_region_the_twisted_towers",
-                    "wh3_main_combi_region_the_forest_of_decay",
-                },
-                wh3_dlc20_chs_valkia = {
-                    "wh3_dlc20_combi_region_glacier_encampment",
-                    "wh3_main_combi_region_dagraks_end",
-                    "wh3_dlc20_combi_region_glacial_gardens",
-                },
-            },
-
-            army_templates = {
-                wh_main_chs_chaos = {
-                    chaos = "lategame_humans_only",
-                    khorne = "lategame_humans_only",
-                    nurgle = "lategame_humans_only",
-                    tzeentch = "lategame_humans_only",
-                    slaanesh = "lategame_humans_only",
-                },
-                wh3_dlc20_chs_kholek = {
-                    chaos = "lategame_beasts_and_daemons",
-                },
-                wh3_dlc20_chs_sigvald = {
-                    chaos = "lategame",
-                    slaanesh = "lategame",
-                },
-                wh3_dlc20_chs_valkia = {
-                    chaos = "lategame",
-                    khorne = "lategame",
-                },
-            },
+            cqis = {},                              -- List of invader's cqi, so we can track them and release them when needed.
+            targets = {},                           -- List of regions/factions to invade.
         },
 
         stage_2_data = {
@@ -291,183 +253,272 @@ disaster_chaos_invasion = {
                 "wh3_main_tze_sarthoraels_watchers",    -- Sarthorael, Tzeenchian faction of Aliexpress
                 "wh3_main_sla_seducers_of_slaanesh",    -- N'Kari
             },
+            cqis = {},                                  -- List of invader's cqi, so we can track them and release them when needed.
+            targets = {},                               -- List of regions/factions to invade.
+        },
+    },
 
-            regions = {
-                wh_main_chs_chaos = {
-                    land = {
+    stage_1_data = {
+        regions = {
+            wh_main_chs_chaos = {
+                "wh3_main_combi_region_the_writhing_fortress",
+                "wh3_main_combi_region_the_howling_citadel",
+                "wh3_main_combi_region_the_crystal_spires",
+            },
+            wh3_dlc20_chs_kholek = {
+                "wh3_main_combi_region_the_challenge_stone",
+                "wh3_main_combi_region_the_volary",
+                "wh3_main_combi_region_icespewer",
+            },
+            wh3_dlc20_chs_sigvald = {
+                "wh3_main_combi_region_black_rock",
+                "wh3_main_combi_region_the_twisted_towers",
+                "wh3_main_combi_region_the_forest_of_decay",
+            },
+            wh3_dlc20_chs_valkia = {
+                "wh3_dlc20_combi_region_glacier_encampment",
+                "wh3_main_combi_region_dagraks_end",
+                "wh3_dlc20_combi_region_glacial_gardens",
+            },
+        },
+
+        army_templates = {
+            wh_main_chs_chaos = {
+                chaos = "lategame_humans_only",
+                khorne = "lategame_humans_only",
+                nurgle = "lategame_humans_only",
+                tzeentch = "lategame_humans_only",
+                slaanesh = "lategame_humans_only",
+            },
+            wh3_dlc20_chs_kholek = {
+                chaos = "lategame_beasts_and_daemons",
+            },
+            wh3_dlc20_chs_sigvald = {
+                chaos = "lategame",
+                slaanesh = "lategame",
+            },
+            wh3_dlc20_chs_valkia = {
+                chaos = "lategame",
+                khorne = "lategame",
+            },
+        },
+    },
+
+    stage_2_data = {
+        regions = {
+            wh_main_chs_chaos = {
+                land = {
+                    regions = {
                         "wh3_main_combi_region_the_writhing_fortress",
                         "wh3_main_combi_region_the_howling_citadel",
                         "wh3_main_combi_region_the_crystal_spires",
-                    }
+                    },
                 },
-                wh3_dlc20_chs_kholek = {
-                    land = {
+            },
+            wh3_dlc20_chs_kholek = {
+                land = {
+                    regions = {
                         "wh3_main_combi_region_the_challenge_stone",
                         "wh3_main_combi_region_the_volary",
                         "wh3_main_combi_region_icespewer",
-                    }
+                    },
                 },
-                wh3_dlc20_chs_sigvald = {
-                    land = {
+            },
+            wh3_dlc20_chs_sigvald = {
+                land = {
+                    regions = {
                         "wh3_main_combi_region_black_rock",
                         "wh3_main_combi_region_the_twisted_towers",
                         "wh3_main_combi_region_the_forest_of_decay",
-                    }
+                    },
                 },
-                wh3_main_dae_daemon_prince = {
-                    land = {
+            },
+            wh3_main_dae_daemon_prince = {
+                land = {
+                    regions = {
                         "wh3_main_combi_region_the_forbidden_citadel",
                         "wh3_main_combi_region_sarl_encampment",
                         "wh3_main_combi_region_naglfari_plain",
                     },
                 },
-                wh3_main_chs_shadow_legion = {
-                    land = {
+            },
+            wh3_main_chs_shadow_legion = {
+                land = {
+                    regions = {
                         "wh3_main_combi_region_konquata",
                         "wh3_main_combi_region_isle_of_wights",
                         "wh3_main_combi_region_citadel_of_lead",
                     },
                 },
-                wh3_dlc20_chs_valkia = {
-                    land = {
+            },
+            wh3_dlc20_chs_valkia = {
+                land = {
+                    regions = {
                         "wh3_dlc20_combi_region_glacier_encampment",
                         "wh3_main_combi_region_dagraks_end",
                         "wh3_dlc20_combi_region_glacial_gardens",
                     },
                 },
-                wh3_dlc20_chs_festus = {
-                    land = {
+            },
+            wh3_dlc20_chs_festus = {
+                land = {
+                    regions = {
                         "wh3_main_combi_region_middenstag", --"wh3_main_combi_region_brass_keep", Brass keep alwasy fail to spawn armies, so we use Middenstag instead as spawning region.
                         "wh3_main_combi_region_hergig",
                         "wh3_dlc20_combi_region_krudenwald",
                     },
                 },
-                wh3_dlc20_chs_vilitch = {
-                    sea = {
-                        coords = {
-                            {605, 465},
-                            {563, 404},
-                        },
-                        region_key = "wh3_main_combi_region_barak_varr",
-                    }
-                },
-                wh3_dlc20_chs_azazel = {
-                    sea = {
-                        coords = {
-                            {278, 482},
-                            {182, 519},
-                            {221, 487},
-                        },
-                        region_key = "wh3_main_combi_region_lothern",
-                    }
-                },
-                wh3_main_kho_exiles_of_khorne = {
-                    land = {
-                        "wh3_main_combi_region_infernius",
+            },
+            wh3_dlc20_chs_vilitch = {
+                sea = {
+                    coords = {
+                        {605, 465},
+                        {563, 404},
                     },
-                },
-                wh3_main_nur_poxmakers_of_nurgle = {
-                    sea = {
-                        coords = {
-                            {332, 650},
-                            {350, 615},
-                            {370, 584},
-                        },
-                        region_key = "wh3_main_combi_region_mousillon",
+                    targets = {
+                        "wh3_main_combi_region_matorca",
+                        "wh3_main_combi_region_myrmidens",
+                    },
+                }
+            },
+            wh3_dlc20_chs_azazel = {
+                sea = {
+                    coords = {
+                        {221, 487},
+                        {278, 482},
+                    },
+                    targets = {
+                        "wh3_main_combi_region_lothern",
+                        "wh3_main_combi_region_shrine_of_asuryan",
+                    },
+                }
+            },
+            wh3_main_kho_exiles_of_khorne = {
+                land = {
+                    regions = {
+                        "wh3_main_combi_region_infernius",
                     }
                 },
-                wh3_main_tze_oracles_of_tzeentch = {
-                    sea = {
-                        coords = {
-                            {381, 560},
-                            {416, 501},
-                            {397, 528},
-                        },
-                        region_key = "wh3_main_combi_region_castle_carcassonne",
+            },
+            wh3_main_nur_poxmakers_of_nurgle = {
+                sea = {
+                    coords = {
+                        {332, 650},
+                        {350, 615},
+                        {370, 584},
+                    },
+                    targets = {
+                        "wh3_main_combi_region_languille",
+                        "wh3_main_combi_region_lyonesse",
+                        "wh3_main_combi_region_mousillon",
+                    },
+                }
+            },
+            wh3_main_tze_oracles_of_tzeentch = {
+                sea = {
+                    coords = {
+                        {381, 560},
+                        {397, 528},
+                        {416, 501},
+                    },
+                    targets = {
+                        "wh3_main_combi_region_bordeleaux",
+                        "wh3_main_combi_region_parravon",
+                        "wh3_main_combi_region_castle_carcassonne",
                     }
-                },
-                wh3_main_tze_sarthoraels_watchers = {
-                    sea = {
-                        coords = {
-                            {132, 412},
-                            {181, 373},
-                        },
-                        region_key = "wh3_main_combi_region_the_high_sentinel",
+                }
+            },
+            wh3_main_tze_sarthoraels_watchers = {
+                sea = {
+                    coords = {
+                        {132, 412},
+                        {181, 373},
+                    },
+                    targets = {
+                        "wh3_main_combi_region_the_high_sentinel",
+                        "wh3_main_combi_region_temple_of_kara",
                     }
-                },
-                wh3_main_sla_seducers_of_slaanesh = {
-                    land = {
+                }
+            },
+            wh3_main_sla_seducers_of_slaanesh = {
+                land = {
+                    regions = {
                         "wh3_main_combi_region_tor_achare",
                         "wh3_main_combi_region_elisia",
                         "wh3_main_combi_region_shrine_of_kurnous",
                     },
+                    targets = {
+                        "wh3_main_combi_region_gaean_vale",
+                        "wh3_main_combi_region_tor_elyr",
+                        "wh3_main_combi_region_white_tower_of_hoeth",
+                    },
                 },
             },
+        },
 
-            army_templates = {
-                wh_main_chs_chaos = {
-                    chaos = "lategame_humans_only",
-                    khorne = "lategame_humans_only",
-                    nurgle = "lategame_humans_only",
-                    tzeentch = "lategame_humans_only",
-                    slaanesh = "lategame_humans_only",
-                },
-                wh3_dlc20_chs_kholek = {
-                    chaos = "lategame_beasts_and_daemons",
-                    khorne = "lategame_daemons_only",
-                    nurgle = "lategame_daemons_only",
-                    tzeentch = "lategame_daemons_only",
-                    slaanesh = "lategame_daemons_only",
-                },
-                wh3_dlc20_chs_sigvald = {
-                    chaos = "lategame",
-                    slaanesh = "lategame",
-                },
-                wh3_main_dae_daemon_prince = {
-                    chaos = "lategame_daemons_only",
-                    khorne = "lategame_daemons_only",
-                    nurgle = "lategame_daemons_only",
-                    tzeentch = "lategame_daemons_only",
-                    slaanesh = "lategame_daemons_only",
-                },
-                wh3_main_chs_shadow_legion = {
-                    chaos = "lategame_daemons_only",
-                    khorne = "lategame_daemons_only",
-                    nurgle = "lategame_daemons_only",
-                    tzeentch = "lategame_daemons_only",
-                    slaanesh = "lategame_daemons_only",
-                },
-                wh3_dlc20_chs_valkia = {
-                    chaos = "lategame",
-                    khorne = "lategame",
-                },
-                wh3_dlc20_chs_festus = {
-                    chaos = "lategame",
-                    nurgle = "lategame",
-                },
-                wh3_dlc20_chs_vilitch = {
-                    chaos = "lategame",
-                    tzeentch = "lategame",
-                },
-                wh3_dlc20_chs_azazel = {
-                    chaos = "lategame",
-                    slaanesh = "lategame",
-                },
-                wh3_main_kho_exiles_of_khorne = {
-                    khorne = "lategame",
-                },
-                wh3_main_nur_poxmakers_of_nurgle = {
-                    nurgle = "lategame",
-                },
-                wh3_main_tze_oracles_of_tzeentch = {
-                    tzeentch = "lategame",
-                },
-                wh3_main_tze_sarthoraels_watchers = {
-                    tzeentch = "lategame",
-                },
-                wh3_main_sla_seducers_of_slaanesh = {
-                    slaanesh = "lategame",
-                },
+        army_templates = {
+            wh_main_chs_chaos = {
+                chaos = "lategame_humans_only",
+                khorne = "lategame_humans_only",
+                nurgle = "lategame_humans_only",
+                tzeentch = "lategame_humans_only",
+                slaanesh = "lategame_humans_only",
+            },
+            wh3_dlc20_chs_kholek = {
+                chaos = "lategame_beasts_and_daemons",
+                khorne = "lategame_daemons_only",
+                nurgle = "lategame_daemons_only",
+                tzeentch = "lategame_daemons_only",
+                slaanesh = "lategame_daemons_only",
+            },
+            wh3_dlc20_chs_sigvald = {
+                chaos = "lategame",
+                slaanesh = "lategame",
+            },
+            wh3_main_dae_daemon_prince = {
+                chaos = "lategame_daemons_only",
+                khorne = "lategame_daemons_only",
+                nurgle = "lategame_daemons_only",
+                tzeentch = "lategame_daemons_only",
+                slaanesh = "lategame_daemons_only",
+            },
+            wh3_main_chs_shadow_legion = {
+                chaos = "lategame_daemons_only",
+                khorne = "lategame_daemons_only",
+                nurgle = "lategame_daemons_only",
+                tzeentch = "lategame_daemons_only",
+                slaanesh = "lategame_daemons_only",
+            },
+            wh3_dlc20_chs_valkia = {
+                chaos = "lategame",
+                khorne = "lategame",
+            },
+            wh3_dlc20_chs_festus = {
+                chaos = "lategame",
+                nurgle = "lategame",
+            },
+            wh3_dlc20_chs_vilitch = {
+                chaos = "lategame",
+                tzeentch = "lategame",
+            },
+            wh3_dlc20_chs_azazel = {
+                chaos = "lategame",
+                slaanesh = "lategame",
+            },
+            wh3_main_kho_exiles_of_khorne = {
+                khorne = "lategame",
+            },
+            wh3_main_nur_poxmakers_of_nurgle = {
+                nurgle = "lategame",
+            },
+            wh3_main_tze_oracles_of_tzeentch = {
+                tzeentch = "lategame",
+            },
+            wh3_main_tze_sarthoraels_watchers = {
+                tzeentch = "lategame",
+            },
+            wh3_main_sla_seducers_of_slaanesh = {
+                slaanesh = "lategame",
             },
         },
     },
@@ -1428,6 +1479,34 @@ function disaster_chaos_invasion:set_status(status)
         true
     );
 
+    -- Listener to know when to free the AI armies.
+    core:add_listener(
+        "ChaosInvasionFreeArmiesStage1",
+        "WorldStartRound",
+        function()
+            return self.settings.started and cm:turn_number() <= self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.grace_period
+        end,
+        function()
+            local max_turn = self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.grace_period;
+            dynamic_disasters:release_armies(self.settings.stage_1_data.cqis, self.settings.stage_1_data.targets, max_turn)
+        end,
+        true
+    );
+
+    -- Listener to know when to free the AI armies.
+    core:add_listener(
+        "ChaosInvasionFreeArmiesStage2",
+        "WorldStartRound",
+        function()
+            return self.settings.started and cm:turn_number() <= self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.grace_period
+        end,
+        function()
+            local max_turn = self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.grace_period;
+            dynamic_disasters:release_armies(self.settings.stage_2_data.cqis, self.settings.stage_2_data.targets, max_turn)
+        end,
+        true
+    );
+
     -- Listener that need to be initialized after the disaster is triggered.
     if self.settings.status == STATUS_TRIGGERED then
 
@@ -1499,7 +1578,7 @@ function disaster_chaos_invasion:set_status(status)
                     end
                 end
 
-                return not (order_stands and self.settings.great_vortex_undone == false) or dynamic_disasters.settings.debug;
+                return not (order_stands and self.settings.great_vortex_undone == false) or (dynamic_disasters.settings.debug and self.settings.great_vortex_undone == false);
             end,
             function()
 
@@ -1542,8 +1621,10 @@ function disaster_chaos_invasion:trigger()
 
     if dynamic_disasters.settings.debug == true then
         self.settings.stage_1_delay = 1;
+        self.settings.grace_period = 5;
     else
         self.settings.stage_1_delay = math.random(8, 12);
+        self.settings.grace_period = 15;
     end
 
     -- Initialize listeners.
@@ -1563,14 +1644,14 @@ function disaster_chaos_invasion:trigger_stage_1()
 
     -- Spawn all the initial chaos armies.
     for _, faction_key in pairs(self.settings.stage_1_data.factions) do
-        for _, region_key in pairs(self.settings.stage_1_data.regions[faction_key]) do
-            local army_template = self.settings.stage_1_data.army_templates[faction_key];
+        for _, region_key in pairs(self.stage_1_data.regions[faction_key]) do
+            local army_template = self.stage_1_data.army_templates[faction_key];
             dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, self.settings.base_army_unit_count, false, math.ceil(3 * self.settings.difficulty_mod), self.name, nil)
         end
 
         local faction = cm:get_faction(faction_key);
         endgame:no_peace_no_confederation_only_war(faction_key)
-        dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.settings.stage_1_data.regions[faction_key], true, self.denied_for_sc)
+        dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.stage_1_data.regions[faction_key], true, self.denied_for_sc)
     end
 
     -- Make sure every attacker is allied with each other. This is to ensure all of them are on the same chaos-tide.
@@ -1595,39 +1676,64 @@ function disaster_chaos_invasion:trigger_stage_2()
     -- Spawn all the stage 2 chaos armies. This is where hell breaks loose... literally.
     for _, faction_key in pairs(self.settings.stage_2_data.factions) do
 
+        -- Declare war against the player first to avoid bugs.
+        endgame:no_peace_no_confederation_only_war(faction_key)
+
         -- Land spawns are region-based, so we spawn them using their region key.
-        if self.settings.stage_2_data.regions[faction_key]["land"] ~= nil then
-            for _, region_key in pairs(self.settings.stage_2_data.regions[faction_key].land) do
-                local army_template = self.settings.stage_2_data.army_templates[faction_key];
-                dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, self.settings.base_army_unit_count, false, math.ceil(2 * self.settings.difficulty_mod), self.name, nil)
+        local army_count = math.ceil(2.5 * self.settings.difficulty_mod);
+        local army_template = self.stage_2_data.army_templates[faction_key];
+        if self.stage_2_data.regions[faction_key]["land"] ~= nil and self.stage_2_data.regions[faction_key]["land"]["regions"] ~= nil then
+            for j, region_key in pairs(self.stage_2_data.regions[faction_key].land.regions) do
+                if self.stage_2_data.regions[faction_key]["land"]["targets"] ~= nil then
+                    local target_region_key = self.stage_2_data.regions[faction_key].land.targets[j];
+                    if target_region_key ~= nil then
+                        for i = 1, army_count do
+                            table.insert(self.settings.stage_2_data.targets, target_region_key)
+                        end
+
+                        dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, self.settings.base_army_unit_count, false, army_count, self.name, chaos_invasion_spawn_armies_callback_sea)
+                    else
+                        script_error("ERROR: Missing target region for spawn at land.")
+                    end
+                else
+                    dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
+                end
             end
 
             -- Skarbrand has to spawn troops on its capital too.
             local faction = cm:get_faction(faction_key);
             if faction_key == "wh3_main_kho_exiles_of_khorne" then
                 local region = faction:home_region();
-                if not region == nil then
-                    local army_template = self.settings.stage_2_data.army_templates[faction_key];
-                    dynamic_disasters:create_scenario_force(faction_key, region:name(), army_template, self.settings.base_army_unit_count, false, math.ceil(2 * self.settings.difficulty_mod), self.name, nil)
+                if not region == false and region:is_null_interface() == false then
+                    local army_template = self.stage_2_data.army_templates[faction_key];
+                    dynamic_disasters:create_scenario_force(faction_key, region:name(), army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
                 end
             end
 
-            endgame:no_peace_no_confederation_only_war(faction_key)
-            dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.settings.stage_2_data.regions[faction_key].land, true, self.denied_for_sc)
+            -- War declarations against AI.
+            dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.stage_2_data.regions[faction_key].land.regions, true, self.denied_for_sc)
+            if self.stage_2_data.regions[faction_key]["land"]["targets"] ~= nil then
+                dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.stage_2_data.regions[faction_key].land.targets, true, self.denied_for_sc)
+            end
         end
 
-        -- Sea spawns are coordinate based with a region key of a land region nearby.
-        if self.settings.stage_2_data.regions[faction_key]["sea"] ~= nil then
-            for _, coords in pairs(self.settings.stage_2_data.regions[faction_key].sea.coords) do
-                local army_template = self.settings.stage_2_data.army_templates[faction_key];
-                local region_key =self.settings.stage_2_data.regions[faction_key].sea.region_key;
+        -- Sea spawns are coordinate based with a region key of a land region nearby. We need to pass them a callback so they're out of the AI control until their target falls.
+        if self.stage_2_data.regions[faction_key]["sea"] ~= nil and self.stage_2_data.regions[faction_key]["sea"]["coords"] ~= nil and self.stage_2_data.regions[faction_key]["sea"]["targets"] ~= nil then
+            for j, coords in pairs(self.stage_2_data.regions[faction_key].sea.coords) do
+                local target_region_key = self.stage_2_data.regions[faction_key].sea.targets[j];
+                if target_region_key ~= nil then
+                    for i = 1, army_count do
+                        table.insert(self.settings.stage_2_data.targets, target_region_key)
+                    end
 
-                dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, coords, army_template, self.settings.base_army_unit_count, false, math.ceil(2 * self.settings.difficulty_mod), self.name, nil)
+                    dynamic_disasters:create_scenario_force_at_coords(faction_key, target_region_key, coords, army_template, self.settings.base_army_unit_count, false, army_count, self.name, chaos_invasion_spawn_armies_callback_sea)
+                else
+                    script_error("ERROR: Missing target region for spawn at sea.")
+                end
             end
 
             local faction = cm:get_faction(faction_key);
-            endgame:no_peace_no_confederation_only_war(faction_key)
-            dynamic_disasters:declare_war_for_owners_and_neightbours(faction, { self.settings.stage_2_data.regions[faction_key].sea.region_key }, true, self.denied_for_sc)
+            dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.stage_2_data.regions[faction_key].sea.targets, true, self.denied_for_sc)
         end
 
         -- After spawning armies and declaring wars, try to give certain dark fortresses to specific factions. Only if norsca holds them.
@@ -1932,6 +2038,79 @@ function disaster_chaos_invasion:favoured_corruption_for_faction(faction)
     end
 
     return pooled_resource
+end
+
+-- Callback function to pass to a create_force function. It ties the spawned army to an invasion force and force it to attack an specific settlement.
+---@param cqi integer #CQI of the army.
+function chaos_invasion_spawn_armies_callback_sea(cqi)
+    out("Frodo45127: Callback for force " .. tostring(cqi) .. " triggered.")
+
+    local character = cm:char_lookup_str(cqi)
+    cm:apply_effect_bundle_to_characters_force("wh_main_bundle_military_upkeep_free_force", cqi, 0)
+    cm:apply_effect_bundle_to_characters_force("wh3_main_ie_scripted_endgame_force_immune_to_regionless_attrition", cqi, 5)
+    cm:add_agent_experience(character, cm:random_number(25, 15), true)
+    cm:add_experience_to_units_commanded_by_character(character, cm:random_number(7, 3))
+
+    local general = cm:get_character_by_cqi(cqi)
+    local invasion = invasion_manager:new_invasion_from_existing_force(tostring(cqi), general:military_force())
+
+    if invasion == nil or invasion == false then
+        return
+    end
+
+    -- Store all the disaster's cqis, so we can free them later.
+    for i = 1, #dynamic_disasters.disasters do
+        local disaster = dynamic_disasters.disasters[i];
+        if disaster.name == "chaos_invasion" then
+            local cqis = {};
+            local targets = {};
+            if disaster.settings.status == STATUS_TRIGGERED then
+                cqis = disaster.settings.stage_1_data.cqis;
+                targets = disaster.settings.stage_1_data.targets;
+            elseif disaster.settings.status == STATUS_STAGE_1 then
+                cqis = disaster.settings.stage_2_data.cqis;
+                targets = disaster.settings.stage_2_data.targets;
+            end
+            out("\tFrodo45127: Army with cqi " .. cqi .. " created and added to the invasions force.")
+
+            table.insert(cqis, cqi);
+
+            local region_key = targets[#targets];
+            local region = cm:get_region(region_key);
+
+            if not region == false and region:is_null_interface() == false then
+                local faction = region:owning_faction();
+                local faction_key = nil;
+                if not faction == false and faction:is_null_interface() == false and faction:name() ~= "rebels" then
+                    faction_key = faction:name();
+                end
+
+                -- If the target is destroyed, or owned by one of the chaos factions or by rebels,
+                -- release the army from the invasion. Otherwise we'll get stuck armies at sea.
+                if not faction == false and faction:is_null_interface() == false and faction:name() ~= "rebels" and (
+                        faction:subculture() == "wh3_main_sc_dae_daemons" or
+                        faction:subculture() == "wh3_main_sc_kho_khorne" or
+                        faction:subculture() == "wh3_main_sc_nur_nurgle" or
+                        faction:subculture() == "wh3_main_sc_sla_slaanesh" or
+                        faction:subculture() == "wh3_main_sc_tze_tzeentch" or
+                        faction:subculture() == "wh_dlc03_sc_bst_beastmen" or
+                        faction:subculture() == "wh_dlc08_sc_nor_norsca" or
+                        faction:subculture() == "wh_main_sc_chs_chaos"
+                    ) then
+                    invasion:release();
+                    return;
+                end
+
+                invasion:set_target("REGION", region_key, faction_key);
+                invasion:add_aggro_radius(15)
+
+                if invasion:has_target() then
+                    out.design("\t\tFrodo45127: Setting invasion with general [" .. common.get_localised_string(general:get_forename()) .. "] to attack " .. region_key .. ".")
+                    invasion:start_invasion(nil, false, false, false)
+                end
+            end
+        end
+    end
 end
 
 -- Function to restore the vortex after being removed.

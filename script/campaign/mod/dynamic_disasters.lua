@@ -1763,6 +1763,64 @@ function dynamic_disasters:create_scenario_force_at_coords(faction_key, region_k
     return army_spawn;
 end
 
+-- Function to release invasion-controlled armies to the AI.
+---@param cqis table #List of army CQI in the invasion.
+---@param targets table #List of target regions in the invasion.
+---@param max_turn integer #Max turn the invasion should keep control of the armies.
+function dynamic_disasters:release_armies(cqis, targets, max_turn)
+    out("\tFrodo45127: Max turn passed for army releases: " .. tostring(max_turn) .. ".")
+
+    local indexes_to_delete = {};
+    for i = 1, #cqis do
+        local cqi = cqis[i];
+
+        ---@type invasion
+        local invasion = invasion_manager:get_invasion(tostring(cqi))
+        if invasion == nil or invasion == false then
+            out("\tFrodo45127: Army with cqi " .. cqi .. " has not been found on an invasion. Probably released after reaching its target. Queued for deletion from the disaster data.")
+            table.insert(indexes_to_delete, i);
+        elseif invasion:has_target() == false then
+            out("\tFrodo45127: Army with cqi " .. cqi .. " has no target. Releasing.")
+            invasion:release();
+            table.insert(indexes_to_delete, i);
+        end
+    end
+
+    -- To delete, reverse the table, because I don't know how reindexing works in lua. Doing it in reverse guarantees us that we're removing bottom to top.
+    reverse = {}
+    for i = #indexes_to_delete, 1, -1 do
+        reverse[#reverse+1] = indexes_to_delete[i]
+    end
+    indexes_to_delete = reverse
+
+    -- Be careful with always making sure that both tables are kept inline with each other.
+    for i = 1, #indexes_to_delete do
+        local index = indexes_to_delete[i]
+
+        table.remove(cqis, index)
+        table.remove(targets, index)
+    end
+
+    out("\tFrodo45127: Remaining armies: " .. #cqis .. ".")
+
+    -- If we don't have more factions or we reached the end of the grace period, release the armies.
+    if #cqis == 0 or cm:turn_number() == max_turn then
+        if #cqis > 0 then
+
+            out("\tFrodo45127: Releasing all " .. #cqis .. " remaining armies.")
+            for i = 1, #cqis do
+                local cqi = cqis[i];
+
+                ---@type invasion
+                local invasion = invasion_manager:get_invasion(tostring(cqi))
+                if not invasion == nil and not invasion == false then
+                    invasion:release();
+                end
+            end
+        end
+    end
+end
+
 -- Function add a bunch of regions to the list of revealed regions when disasters are processed.
 ---@param regions table #List of land region keys.
 function dynamic_disasters:prepare_reveal_regions(regions)
