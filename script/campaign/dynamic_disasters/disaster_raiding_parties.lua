@@ -105,6 +105,27 @@ disaster_raiding_parties = {
 function disaster_raiding_parties:set_status(status)
     self.settings.status = status;
 
+    -- Listener to know when to free the AI armies.
+    core:remove_listener("RaidingPartiesFreeArmies")
+    core:add_listener(
+        "RaidingPartiesFreeArmies",
+        "WorldStartRound",
+        function()
+            return cm:turn_number() <= self.settings.last_triggered_turn + self.settings.grace_period
+        end,
+        function()
+            out("Frodo45127: RaidingPartiesFreeArmies")
+            local max_turn = self.settings.last_triggered_turn + self.settings.grace_period;
+            dynamic_disasters:release_armies(self.settings.cqis, self.settings.targets, max_turn);
+
+            -- Finish the disaster after all armies are freed.
+            if cm:turn_number() == max_turn then
+                self:trigger_end_disaster();
+            end
+        end,
+        true
+    );
+
     if self.settings.status == STATUS_TRIGGERED then
 
         -- Listener for the warning.
@@ -122,68 +143,6 @@ function disaster_raiding_parties:set_status(status)
                     self:trigger_raiding_parties();
                 end
                 core:remove_listener("RaidingPartiesWarning")
-            end,
-            true
-        );
-    end
-
-    if self.settings.status == STATUS_STARTED then
-
-        -- Listener to know when to free the AI armies.
-        core:add_listener(
-            "RaidingPartiesFreeArmies",
-            "WorldStartRound",
-            function()
-                return cm:turn_number() <= self.settings.last_triggered_turn + self.settings.grace_period
-            end,
-            function()
-                local indexes_to_delete = {};
-                for i = 1, #self.settings.cqis do
-                    local cqi = self.settings.cqis[i];
-                    local invasion = invasion_manager:get_invasion(tostring(cqi))
-
-                    if invasion == nil or invasion == false then
-                        out("\tFrodo45127: Army with cqi " .. cqi .. " has not been found on an invasion. Probably released after reaching its target. Queued for deletion from the disaster data.")
-                        table.insert(indexes_to_delete, i);
-                    elseif invasion:has_target() == false then
-                        out("\tFrodo45127: Army with cqi " .. cqi .. " has no target. Releasing.")
-                        invasion:release();
-                        table.insert(indexes_to_delete, i);
-                    end
-                end
-
-                -- To delete, reverse the table, because I don't know how reindexing works in lua. Doing it in reverse guarantees us that we're removing bottom to top.
-                reverse = {}
-                for i = #indexes_to_delete, 1, -1 do
-                    reverse[#reverse+1] = indexes_to_delete[i]
-                end
-                indexes_to_delete = reverse
-
-                for i = 1, #indexes_to_delete do
-                    local index = indexes_to_delete[i]
-                    table.remove(self.settings.cqis, index)
-                    table.remove(self.settings.targets, index)
-                end
-
-                out("\tFrodo45127: Remaining armies: " .. #self.settings.cqis .. ".")
-
-                -- If we don't have more factions or we reached the end of the grace period, release the armies and end the disaster.
-                if #self.settings.cqis == 0 or cm:turn_number() == self.settings.last_triggered_turn + self.settings.grace_period then
-                    if #self.settings.cqis > 0 then
-                        for i = 1, #self.settings.cqis do
-                            local cqi = self.settings.cqis[i];
-                            local invasion = invasion_manager:get_invasion(tostring(cqi))
-
-                            out("\tFrodo45127: Releasing all " .. #self.settings.cqis .. " remaining armies.")
-                            if not invasion == nil or invasion == false then
-                                invasion:release();
-                            end
-                        end
-                    end
-
-                    self:trigger_end_disaster();
-                    core:remove_listener("RaidingPartiesFreeArmies")
-                end
             end,
             true
         );
@@ -305,8 +264,11 @@ function disaster_raiding_parties:trigger_raiding_parties()
             out("Frodo45127: Armies to spawn: " .. tostring(army_count) .. " for " .. region_key .. " region, spawn pos X: " .. spawn_pos[1] .. ", Y: " .. spawn_pos[2] .. ".");
 
             -- Store the region for invasion controls.
-            table.insert(self.settings.targets, region_key)
-            dynamic_disasters:create_scenario_force_at_coords(self.settings.faction, region_key, spawn_pos, self.settings.army_template, self.settings.unit_count, false, army_count, self.name, spawn_armies_callback);
+            for j = 1, army_count do
+                table.insert(self.settings.targets, region_key)
+            end
+
+            dynamic_disasters:create_scenario_force_at_coords(self.settings.faction, region_key, spawn_pos, self.settings.army_template, self.settings.unit_count, false, army_count, self.name, raiding_parties_spawn_armies_callback);
         end
     end
 
@@ -326,7 +288,7 @@ end
 
 -- Callback function to pass to a create_force function. It ties the spawned army to an invasion force and force it to attack an specific settlement.
 ---@param cqi integer #CQI of the army.
-function spawn_armies_callback(cqi)
+function raiding_parties_spawn_armies_callback(cqi)
     out("Frodo45127: Callback for force " .. tostring(cqi) .. " triggered.")
 
     local character = cm:char_lookup_str(cqi)
@@ -345,31 +307,39 @@ function spawn_armies_callback(cqi)
     for i = 1, #dynamic_disasters.disasters do
         local disaster = dynamic_disasters.disasters[i];
         if disaster.name == "raiding_parties" then
-            out("\tFrodo45127: Army with cqi " .. cqi .. " created and added to the invasions force.")
-            table.insert(disaster.settings.cqis, cqi);
+            local cqis = disaster.settings.cqis;
+            local targets = disaster.settings.targets;
 
-            local region_key = disaster.settings.targets[#disaster.settings.targets];
+            out("\tFrodo45127: Army with cqi " .. cqi .. " created and added to the invasions force.")
+            table.insert(cqis, cqi);
+
+            local region_key = targets[#targets];
             local region = cm:get_region(region_key);
 
             if not region == false and region:is_null_interface() == false then
                 local faction = region:owning_faction();
-                local faction_key = nil;
-                if not faction == false and faction:is_null_interface() == false and faction:name() ~= "rebels" and faction:name() ~= disaster.settings.faction then
-                    faction_key = faction:name();
-                end
+                if not faction == false and faction:is_null_interface() == false and faction:name() ~= "rebels" then
+                    local faction_key = faction:name();
 
-                -- If the target is owned by a non-rebel settlement of your own, release the army from the invasion.
-                if not faction == false and faction:is_null_interface() == false and faction:name() ~= "rebels" and faction:name() == disaster.settings.faction then
+                    -- If the target is destroyed, or owned by the same faction that's attacking or by rebels,
+                    -- release the army from the invasion. Otherwise we'll get stuck armies at sea.
+                    if faction:name() == disaster.settings.faction then
+                        invasion:release();
+                        return;
+                    end
+
+                    invasion:set_target("REGION", region_key, faction_key);
+                    invasion:add_aggro_radius(15)
+
+                    if invasion:has_target() then
+                        out.design("\t\tFrodo45127: Setting invasion with general [" .. common.get_localised_string(general:get_forename()) .. "] to attack " .. region_key .. ".")
+                        invasion:start_invasion(nil, false, false, false)
+                    end
+
+                -- If there is no owner (abandoned?) release the army and return.
+                else
                     invasion:release();
                     return;
-                end
-
-                invasion:set_target("REGION", region_key, faction_key);
-                invasion:add_aggro_radius(15)
-
-                if invasion:has_target() then
-                    out.design("\t\tFrodo45127: Setting invasion with general [" .. common.get_localised_string(general:get_forename()) .. "] to attack " .. region_key .. ".")
-                    invasion:start_invasion(nil, false, false, false)
                 end
             end
         end
@@ -380,6 +350,9 @@ end
 function disaster_raiding_parties:trigger_end_disaster()
     if self.settings.started == true then
         out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
+
+        core:remove_listener("RaidingPartiesFreeArmies")
+
         dynamic_disasters:finish_disaster(self);
     end
 end

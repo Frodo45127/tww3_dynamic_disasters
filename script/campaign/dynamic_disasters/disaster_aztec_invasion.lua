@@ -222,6 +222,37 @@ disaster_aztec_invasion = {
 function disaster_aztec_invasion:set_status(status)
     self.settings.status = status;
 
+    -- Listener to know when to free the AI armies.
+    core:remove_listener("AztecInvasionFreeArmiesStage1");
+    core:add_listener(
+        "AztecInvasionFreeArmiesStage1",
+        "WorldStartRound",
+        function()
+            return cm:turn_number() <= self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.grace_period
+        end,
+        function()
+            out("Frodo45127: AztecInvasionFreeArmiesStage1")
+            local max_turn = self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.grace_period;
+            dynamic_disasters:release_armies(self.settings.stage_1_data.cqis, self.settings.stage_1_data.targets, max_turn);
+        end,
+        true
+    );
+
+    -- Listener to know when to free the AI armies.
+    core:remove_listener("AztecInvasionFreeArmiesStage2");
+    core:add_listener(
+        "AztecInvasionFreeArmiesStage2",
+        "WorldStartRound",
+        function()
+            return cm:turn_number() <= self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.grace_period
+        end,
+        function()
+            out("Frodo45127: AztecInvasionFreeArmiesStage2")
+            local max_turn = self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.grace_period;
+            dynamic_disasters:release_armies(self.settings.stage_2_data.cqis, self.settings.stage_2_data.targets, max_turn);
+        end,
+        true
+    );
 
     if self.settings.status == STATUS_TRIGGERED then
 
@@ -246,7 +277,6 @@ function disaster_aztec_invasion:set_status(status)
             end,
             true
         );
-
     end
 
     if self.settings.status == STATUS_STAGE_1 then
@@ -272,127 +302,6 @@ function disaster_aztec_invasion:set_status(status)
             end,
             true
         );
-
-        -- Listener to know when to free the AI armies.
-        core:add_listener(
-            "AztecInvasionFreeArmiesStage1",
-            "WorldStartRound",
-            function()
-                return cm:turn_number() <= self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.grace_period
-            end,
-            function()
-                local indexes_to_delete = {};
-                for i = 1, #self.settings.stage_1_data.cqis do
-                    local cqi = self.settings.stage_1_data.cqis[i];
-                    local invasion = invasion_manager:get_invasion(tostring(cqi))
-
-                    if invasion == nil or invasion == false then
-                        out("\tFrodo45127: Army with cqi " .. cqi .. " has not been found on an invasion. Probably released after reaching its target. Queued for deletion from the disaster data.")
-                        table.insert(indexes_to_delete, i);
-                    elseif invasion:has_target() == false then
-                        out("\tFrodo45127: Army with cqi " .. cqi .. " has no target. Releasing.")
-                        invasion:release();
-                        table.insert(indexes_to_delete, i);
-                    end
-                end
-
-                -- To delete, reverse the table, because I don't know how reindexing works in lua. Doing it in reverse guarantees us that we're removing bottom to top.
-                reverse = {}
-                for i = #indexes_to_delete, 1, -1 do
-                    reverse[#reverse+1] = indexes_to_delete[i]
-                end
-                indexes_to_delete = reverse
-
-                for i = 1, #indexes_to_delete do
-                    local index = indexes_to_delete[i]
-                    table.remove(self.settings.stage_1_data.cqis, index)
-                    table.remove(self.settings.stage_1_data.targets, index)
-                end
-
-                out("\tFrodo45127: Remaining armies: " .. #self.settings.stage_1_data.cqis .. ".")
-
-                -- If we don't have more factions or we reached the end of the grace period, release the armies and end the disaster.
-                if #self.settings.stage_1_data.cqis == 0 or cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.grace_period then
-                    if #self.settings.stage_1_data.cqis > 0 then
-                        for i = 1, #self.settings.stage_1_data.cqis do
-                            local cqi = self.settings.stage_1_data.cqis[i];
-                            local invasion = invasion_manager:get_invasion(tostring(cqi))
-
-                            out("\tFrodo45127: Releasing all " .. #self.settings.stage_1_data.cqis .. " remaining armies.")
-                            if not invasion == nil or invasion == false then
-                                invasion:release();
-                            end
-                        end
-                    end
-
-                    self:trigger_end_disaster();
-                    core:remove_listener("AztecInvasionFreeArmiesStage1")
-                end
-            end,
-            true
-        );
-    end
-
-    if self.settings.status == STATUS_STAGE_2 then
-
-        -- Listener to know when to free the AI armies.
-        core:add_listener(
-            "AztecInvasionFreeArmiesStage2",
-            "WorldStartRound",
-            function()
-                return cm:turn_number() <= self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.grace_period
-            end,
-            function()
-                local indexes_to_delete = {};
-                for i = 1, #self.settings.stage_2_data.cqis do
-                    local cqi = self.settings.stage_2_data.cqis[i];
-                    local invasion = invasion_manager:get_invasion(tostring(cqi))
-
-                    if invasion == nil or invasion == false then
-                        out("\tFrodo45127: Army with cqi " .. cqi .. " has not been found on an invasion. Probably released after reaching its target. Queued for deletion from the disaster data.")
-                        table.insert(indexes_to_delete, i);
-                    elseif invasion:has_target() == false then
-                        out("\tFrodo45127: Army with cqi " .. cqi .. " has no target. Releasing.")
-                        invasion:release();
-                        table.insert(indexes_to_delete, i);
-                    end
-                end
-
-                -- To delete, reverse the table, because I don't know how reindexing works in lua. Doing it in reverse guarantees us that we're removing bottom to top.
-                reverse = {}
-                for i = #indexes_to_delete, 1, -1 do
-                    reverse[#reverse+1] = indexes_to_delete[i]
-                end
-                indexes_to_delete = reverse
-
-                for i = 1, #indexes_to_delete do
-                    local index = indexes_to_delete[i]
-                    table.remove(self.settings.stage_2_data.cqis, index)
-                    table.remove(self.settings.stage_2_data.targets, index)
-                end
-
-                out("\tFrodo45127: Remaining armies: " .. #self.settings.stage_2_data.cqis .. ".")
-
-                -- If we don't have more factions or we reached the end of the grace period, release the armies and end the disaster.
-                if #self.settings.stage_2_data.cqis == 0 or cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.grace_period then
-                    if #self.settings.stage_2_data.cqis > 0 then
-                        for i = 1, #self.settings.stage_2_data.cqis do
-                            local cqi = self.settings.stage_2_data.cqis[i];
-                            local invasion = invasion_manager:get_invasion(tostring(cqi))
-
-                            out("\tFrodo45127: Releasing all " .. #self.settings.stage_2_data.cqis .. " remaining armies.")
-                            if not invasion == nil or invasion == false then
-                                invasion:release();
-                            end
-                        end
-                    end
-
-                    self:trigger_end_disaster();
-                    core:remove_listener("AztecInvasionFreeArmiesStage2")
-                end
-            end,
-            true
-        );
     end
 
     -- Once we triggered the disaster, ending it is controlled by a mission, so we don't need to listen for an ending.
@@ -405,10 +314,10 @@ function disaster_aztec_invasion:trigger()
     -- Recalculate the delay to trigger this.
     if dynamic_disasters.settings.debug == true then
         self.settings.stage_1_delay = 1;
-        self.settings.grace_period = 1;
+        self.settings.grace_period = 4;
     else
         self.settings.stage_1_delay = math.random(6, 10);
-        self.settings.grace_period = 6;
+        self.settings.grace_period = 8;
     end
 
     -- Initialize listeners.
@@ -467,8 +376,11 @@ function disaster_aztec_invasion:trigger_stage_1()
                     out("Frodo45127: Armies to spawn: " .. tostring(army_count) .. " for " .. region_key .. " region, spawn pos X: " .. spawn_pos[1] .. ", Y: " .. spawn_pos[2] .. ".");
 
                     -- Store the region for invasion controls.
-                    table.insert(self.settings.stage_1_data.targets, region_key)
-                    dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, spawn_pos, self.settings.army_template, self.settings.unit_count, false, army_count, self.name, spawn_armies_callback_stage_1);
+                    for k = 1, army_count do
+                        table.insert(self.settings.stage_1_data.targets, region_key)
+                    end
+
+                    dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, spawn_pos, self.settings.army_template, self.settings.unit_count, false, army_count, self.name, aztec_invasion_spawn_armies_callback);
 
                 end
 
@@ -519,8 +431,11 @@ function disaster_aztec_invasion:trigger_stage_2()
                         out("Frodo45127: Armies to spawn: " .. tostring(army_count) .. " for " .. region_key .. " region, spawn pos X: " .. spawn_pos[1] .. ", Y: " .. spawn_pos[2] .. ".");
 
                         -- Store the region for invasion controls.
-                        table.insert(self.settings.stage_2_data.targets, region_key)
-                        dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, spawn_pos, self.settings.army_template, self.settings.unit_count, false, army_count, self.name, spawn_armies_callback_stage_2);
+                        for k = 1, army_count do
+                            table.insert(self.settings.stage_2_data.targets, region_key)
+                        end
+
+                        dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, spawn_pos, self.settings.army_template, self.settings.unit_count, false, army_count, self.name, aztec_invasion_spawn_armies_callback);
 
                     end
 
@@ -553,8 +468,11 @@ function disaster_aztec_invasion:trigger_stage_2()
                     local army_count = math.floor(math.random(1, math.ceil(self.settings.difficulty_mod)));
 
                     -- Store the region for invasion controls.
-                    table.insert(self.settings.stage_2_data.targets, spawn_region)
-                    dynamic_disasters:create_scenario_force(faction_key, spawn_region, self.settings.army_template, self.settings.unit_count, false, army_count, self.name, spawn_armies_callback_stage_2);
+                    for i = 1, army_count do
+                        table.insert(self.settings.stage_2_data.targets, target_region_key)
+                    end
+
+                    dynamic_disasters:create_scenario_force(faction_key, spawn_region, self.settings.army_template, self.settings.unit_count, false, army_count, self.name, aztec_invasion_spawn_armies_callback);
                 end
             end
 
@@ -577,8 +495,11 @@ function disaster_aztec_invasion:trigger_stage_2()
                 out("Frodo45127: Armies to spawn: " .. tostring(army_count) .. " for " .. region_key .. " region, spawn pos X: " .. spawn_pos[1] .. ", Y: " .. spawn_pos[2] .. ".");
 
                 -- Store the region for invasion controls.
-                table.insert(self.settings.stage_2_data.targets, region_key)
-                dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, spawn_pos, self.settings.army_template, self.settings.unit_count, false, army_count, self.name, spawn_armies_callback_stage_2);
+                for i = 1, army_count do
+                    table.insert(self.settings.stage_2_data.targets, region_key)
+                end
+
+                dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, spawn_pos, self.settings.army_template, self.settings.unit_count, false, army_count, self.name, aztec_invasion_spawn_armies_callback);
             end
 
             -- Declare war on all neightbours and coastal region owners.
@@ -605,9 +526,9 @@ function disaster_aztec_invasion:trigger_stage_2()
     self:set_status(STATUS_STAGE_2);
 end
 
--- Callback function to pass to a create_force function. It ties the spawned army to an invasion force and force it to attack an specific settlement. Specific for Stage 1.
+-- Callback function to pass to a create_force function. It ties the spawned army to an invasion force and force it to attack an specific settlement.
 ---@param cqi integer #CQI of the army.
-function spawn_armies_callback_stage_1(cqi)
+function aztec_invasion_spawn_armies_callback(cqi)
     out("Frodo45127: Callback for force " .. tostring(cqi) .. " triggered.")
 
     local character = cm:char_lookup_str(cqi)
@@ -627,85 +548,46 @@ function spawn_armies_callback_stage_1(cqi)
     for i = 1, #dynamic_disasters.disasters do
         local disaster = dynamic_disasters.disasters[i];
         if disaster.name == "aztec_invasion" then
-            out("\tFrodo45127: Army with cqi " .. cqi .. " created and added to the invasions force.")
-            table.insert(disaster.settings.stage_1_data.cqis, cqi);
-
-            local region_key = disaster.settings.stage_1_data.targets[#disaster.settings.stage_1_data.targets];
-            local region = cm:get_region(region_key);
-
-            if not region == false and region:is_null_interface() == false then
-                local faction = region:owning_faction();
-                local faction_key = nil;
-                if not faction == false and faction:is_null_interface() == false and faction:name() ~= "rebels" and faction:subculture() ~= "wh2_main_sc_lzd_lizardmen" then
-                    faction_key = faction:name();
-                end
-
-                -- If the target is owned by a non-rebel lizard, release the army from the invasion.
-                if not faction == false and faction:is_null_interface() == false and faction:name() ~= "rebels" and faction:subculture() == "wh2_main_sc_lzd_lizardmen" then
-                    invasion:release();
-                    return;
-                end
-
-                invasion:set_target("REGION", region_key, faction_key);
-                invasion:add_aggro_radius(15)
-
-                if invasion:has_target() then
-                    out.design("\t\tFrodo45127: Setting invasion with general [" .. common.get_localised_string(general:get_forename()) .. "] to attack " .. region_key .. ".")
-                    invasion:start_invasion(nil, false, false, false)
-                end
+            local cqis = {};
+            local targets = {};
+            if disaster.settings.status == STATUS_TRIGGERED then
+                cqis = disaster.settings.stage_1_data.cqis;
+                targets = disaster.settings.stage_1_data.targets;
+            elseif disaster.settings.status == STATUS_STAGE_1 then
+                cqis = disaster.settings.stage_2_data.cqis;
+                targets = disaster.settings.stage_2_data.targets;
             end
-        end
-    end
-end
-
-
--- Callback function to pass to a create_force function. It ties the spawned army to an invasion force and force it to attack an specific settlement. Specific for Stage 2.
----@param cqi integer #CQI of the army.
-function spawn_armies_callback_stage_2(cqi)
-    out("Frodo45127: Callback for force " .. tostring(cqi) .. " triggered.")
-
-    local character = cm:char_lookup_str(cqi)
-    cm:apply_effect_bundle_to_characters_force("wh_main_bundle_military_upkeep_free_force", cqi, 0)
-    cm:apply_effect_bundle_to_characters_force("wh3_main_ie_scripted_endgame_force_immune_to_regionless_attrition", cqi, 5)
-    cm:add_agent_experience(character, cm:random_number(25, 15), true)
-    cm:add_experience_to_units_commanded_by_character(character, cm:random_number(7, 3))
-
-    local general = cm:get_character_by_cqi(cqi)
-    local invasion = invasion_manager:new_invasion_from_existing_force(tostring(cqi), general:military_force())
-
-    if invasion == nil or invasion == false then
-        return
-    end
-
-    -- Store all the disaster's cqis, so we can free them later.
-    for i = 1, #dynamic_disasters.disasters do
-        local disaster = dynamic_disasters.disasters[i];
-        if disaster.name == "aztec_invasion" then
             out("\tFrodo45127: Army with cqi " .. cqi .. " created and added to the invasions force.")
-            table.insert(disaster.settings.stage_2_data.cqis, cqi);
 
-            local region_key = disaster.settings.stage_2_data.targets[#disaster.settings.stage_2_data.targets];
+            table.insert(cqis, cqi);
+
+            local region_key = targets[#targets];
             local region = cm:get_region(region_key);
 
             if not region == false and region:is_null_interface() == false then
                 local faction = region:owning_faction();
-                local faction_key = nil;
-                if not faction == false and faction:is_null_interface() == false and faction:name() ~= "rebels" and faction:subculture() ~= "wh2_main_sc_lzd_lizardmen" then
-                    faction_key = faction:name();
-                end
+                if not faction == false and faction:is_null_interface() == false and faction:name() ~= "rebels" then
+                    local faction_key = faction:name();
 
-                -- If the target is owned by a non-rebel lizard, release the army from the invasion.
-                if not faction == false and faction:is_null_interface() == false and faction:name() ~= "rebels" and faction:subculture() == "wh2_main_sc_lzd_lizardmen" then
+                    -- If the target is destroyed, or owned by one of the lizardmen factions or by rebels,
+                    -- release the army from the invasion. Otherwise we'll get stuck armies at sea.
+                    if faction:subculture() == "wh2_main_sc_lzd_lizardmen" then
+                        invasion:release();
+                        return;
+                    end
+
+                    invasion:set_target("REGION", region_key, faction_key);
+                    invasion:add_aggro_radius(15)
+
+                    if invasion:has_target() then
+                        out.design("\t\tFrodo45127: Setting invasion with general [" .. common.get_localised_string(general:get_forename()) .. "] to attack " .. region_key .. ".")
+                        invasion:start_invasion(nil, false, false, false)
+                    end
+
+                -- If there is no owner (abandoned?) release the army and return.
+                else
                     invasion:release();
                     return;
-                end
-
-                invasion:set_target("REGION", region_key, faction_key);
-                invasion:add_aggro_radius(15)
-
-                if invasion:has_target() then
-                    out.design("\t\tFrodo45127: Setting invasion with general [" .. common.get_localised_string(general:get_forename()) .. "] to attack " .. region_key .. ".")
-                    invasion:start_invasion(nil, false, false, false)
                 end
             end
         end
@@ -716,6 +598,10 @@ end
 function disaster_aztec_invasion:trigger_end_disaster()
     if self.settings.started == true then
         out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
+
+        core:remove_listener("AztecInvasionFreeArmiesStage1");
+        core:remove_listener("AztecInvasionFreeArmiesStage2");
+
         dynamic_disasters:finish_disaster(self);
     end
 end

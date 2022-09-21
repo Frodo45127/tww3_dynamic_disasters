@@ -1493,6 +1493,7 @@ function disaster_chaos_invasion:set_status(status)
             return self.settings.started and cm:turn_number() <= self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.grace_period
         end,
         function()
+            out("Frodo45127: ChaosInvasionFreeArmiesStage1")
             local max_turn = self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.grace_period;
             dynamic_disasters:release_armies(self.settings.stage_1_data.cqis, self.settings.stage_1_data.targets, max_turn)
         end,
@@ -1508,6 +1509,7 @@ function disaster_chaos_invasion:set_status(status)
             return self.settings.started and cm:turn_number() <= self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.grace_period
         end,
         function()
+            out("Frodo45127: ChaosInvasionFreeArmiesStage2")
             local max_turn = self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.grace_period;
             dynamic_disasters:release_armies(self.settings.stage_2_data.cqis, self.settings.stage_2_data.targets, max_turn)
         end,
@@ -1567,7 +1569,7 @@ function disaster_chaos_invasion:set_status(status)
                 end
             end
 
-            return (order_stands == false and self.settings.great_vortex_undone == false) or (dynamic_disasters.settings.debug and self.settings.great_vortex_undone == false);
+            return order_stands == false and self.settings.great_vortex_undone == false;
         end,
         function()
 
@@ -2118,33 +2120,35 @@ function chaos_invasion_spawn_armies_callback_sea(cqi)
 
             if not region == false and region:is_null_interface() == false then
                 local faction = region:owning_faction();
-                local faction_key = nil;
                 if not faction == false and faction:is_null_interface() == false and faction:name() ~= "rebels" then
-                    faction_key = faction:name();
-                end
+                    local faction_key = faction:name();
 
-                -- If the target is destroyed, or owned by one of the chaos factions or by rebels,
-                -- release the army from the invasion. Otherwise we'll get stuck armies at sea.
-                if not faction == false and faction:is_null_interface() == false and faction:name() ~= "rebels" and (
-                        faction:subculture() == "wh3_main_sc_dae_daemons" or
+                    -- If the target is destroyed, or owned by one of the chaos factions or by rebels,
+                    -- release the army from the invasion. Otherwise we'll get stuck armies at sea.
+                    if faction:subculture() == "wh3_main_sc_dae_daemons" or
                         faction:subculture() == "wh3_main_sc_kho_khorne" or
                         faction:subculture() == "wh3_main_sc_nur_nurgle" or
                         faction:subculture() == "wh3_main_sc_sla_slaanesh" or
                         faction:subculture() == "wh3_main_sc_tze_tzeentch" or
                         faction:subculture() == "wh_dlc03_sc_bst_beastmen" or
                         faction:subculture() == "wh_dlc08_sc_nor_norsca" or
-                        faction:subculture() == "wh_main_sc_chs_chaos"
-                    ) then
+                        faction:subculture() == "wh_main_sc_chs_chaos" then
+                        invasion:release();
+                        return;
+                    end
+
+                    invasion:set_target("REGION", region_key, faction_key);
+                    invasion:add_aggro_radius(15)
+
+                    if invasion:has_target() then
+                        out.design("\t\tFrodo45127: Setting invasion with general [" .. common.get_localised_string(general:get_forename()) .. "] to attack " .. region_key .. ".")
+                        invasion:start_invasion(nil, false, false, false)
+                    end
+
+                -- If there is no owner (abandoned?) release the army and return.
+                else
                     invasion:release();
                     return;
-                end
-
-                invasion:set_target("REGION", region_key, faction_key);
-                invasion:add_aggro_radius(15)
-
-                if invasion:has_target() then
-                    out.design("\t\tFrodo45127: Setting invasion with general [" .. common.get_localised_string(general:get_forename()) .. "] to attack " .. region_key .. ".")
-                    invasion:start_invasion(nil, false, false, false)
                 end
             end
         end
