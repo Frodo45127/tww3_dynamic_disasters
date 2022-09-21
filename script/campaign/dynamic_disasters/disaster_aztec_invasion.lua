@@ -123,7 +123,6 @@ disaster_aztec_invasion = {
                 },
                 wh2_dlc12_lzd_cult_of_sotek = {
                     "lustria_south_coast",
-                    "lustria_west_coast",
                 },
                 wh2_main_lzd_tlaqua = {
                     "southlands_west_coast",
@@ -346,15 +345,14 @@ function disaster_aztec_invasion:trigger_stage_1()
         if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false then
 
             -- If we have a capital, spawn free armies for the AI there.
+            local army_count = math.ceil(4 * self.settings.difficulty_mod);
             if faction:has_home_region() then
                 local capital = faction:home_region()
-                local army_count = math.ceil(4 * self.settings.difficulty_mod);
                 dynamic_disasters:create_scenario_force(faction_key, capital:name(), self.settings.army_template, self.settings.unit_count, false, army_count, self.name, nil);
 
             -- If we don't have a home region, spawn wherever the faction leader is, if alive.
             elseif not faction:faction_leader() == nil and faction:faction_leader():has_region() then
                 local region = faction:faction_leader():region();
-                local army_count = math.ceil(4 * self.settings.difficulty_mod);
                 dynamic_disasters:create_scenario_force(faction_key, region:name(), self.settings.army_template, self.settings.unit_count, false, army_count, self.name, nil);
             end
         end
@@ -490,7 +488,7 @@ function disaster_aztec_invasion:trigger_stage_2()
             for _, region_key in pairs(regions.land) do
 
                 -- Armies calculation, per province.
-                local army_count = math.floor(math.random(1, math.ceil(self.settings.difficulty_mod)));
+                local army_count = math.floor(math.random(1, math.ceil(self.settings.difficulty_mod * 0.75)));
                 local spawn_pos = dyn_dis_sea_regions[sea_region].spawn_positions[math.random(#dyn_dis_sea_regions[sea_region].spawn_positions)];
                 out("Frodo45127: Armies to spawn: " .. tostring(army_count) .. " for " .. region_key .. " region, spawn pos X: " .. spawn_pos[1] .. ", Y: " .. spawn_pos[2] .. ".");
 

@@ -936,7 +936,7 @@ function disaster_chaos_invasion:set_status(status)
             local default_owner = "wh_main_chs_chaos";
 
             for i = 0, open_nodes:num_items() - 1 do
-                if (math.random() > (0.1 + (self.settings.difficulty_mod / 10)) or dynamic_disasters.settings.debug) then
+                if (math.random() > (0.05 + (self.settings.difficulty_mod / 12)) or dynamic_disasters.settings.debug) then
                     local current_node = open_nodes:item_at(i);
                     local x, y = current_node:position();
                     local region_data = world:region_data_at_position(x, y);
@@ -1684,10 +1684,11 @@ function disaster_chaos_invasion:trigger_stage_1()
     end
 
     -- Spawn all the initial chaos armies.
+    local army_count = math.ceil(1 * self.settings.difficulty_mod);
     for _, faction_key in pairs(self.settings.stage_1_data.factions) do
+        local army_template = self.stage_1_data.army_templates[faction_key];
         for _, region_key in pairs(self.stage_1_data.regions[faction_key]) do
-            local army_template = self.stage_1_data.army_templates[faction_key];
-            dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, self.settings.base_army_unit_count, false, math.ceil(3 * self.settings.difficulty_mod), self.name, nil)
+            dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
         end
 
         local faction = cm:get_faction(faction_key);
@@ -1721,7 +1722,7 @@ function disaster_chaos_invasion:trigger_stage_2()
         endgame:no_peace_no_confederation_only_war(faction_key)
 
         -- Land spawns are region-based, so we spawn them using their region key.
-        local army_count = math.ceil(2.5 * self.settings.difficulty_mod);
+        local army_count = math.ceil(1 * self.settings.difficulty_mod);
         local army_template = self.stage_2_data.army_templates[faction_key];
         if self.stage_2_data.regions[faction_key]["land"] ~= nil and self.stage_2_data.regions[faction_key]["land"]["regions"] ~= nil then
             for j, region_key in pairs(self.stage_2_data.regions[faction_key].land.regions) do
@@ -1823,20 +1824,8 @@ function disaster_chaos_invasion:trigger_stage_2()
         -- Open the rifts on the chaos wastes and norsca.
         local percentage = 0.5 + (self.settings.difficulty_mod / 10);
         local min_chaos = 50;
-        --local percentage = 1;
-        --local min_chaos = 0;
         self:open_teleportation_nodes(self.teleportation_nodes_chaos_wastes, percentage, min_chaos);
         self:open_teleportation_nodes(self.teleportation_nodes_norsca, percentage, min_chaos);
-
-        -- Testing stuff.
-        --self:open_teleportation_nodes(self.teleportation_nodes_cathay, percentage, min_chaos);
-        --self:open_teleportation_nodes(self.teleportation_nodes_old_world, percentage, min_chaos);
-        --self:open_teleportation_nodes(self.teleportation_nodes_mountains_of_mourne, percentage, min_chaos);
-        --self:open_teleportation_nodes(self.teleportation_nodes_dark_lands, percentage, min_chaos);
-        --self:open_teleportation_nodes(self.teleportation_nodes_southlands, percentage, min_chaos);
-        --self:open_teleportation_nodes(self.teleportation_nodes_lustria, percentage, min_chaos);
-        --self:open_teleportation_nodes(self.teleportation_nodes_naggaroth, percentage, min_chaos);
-        --self:open_teleportation_nodes(self.teleportation_nodes_ulthuan, percentage, min_chaos);
 
         -- Prepare the final mission objectives.
         for _, faction_key in pairs(self.settings.factions) do

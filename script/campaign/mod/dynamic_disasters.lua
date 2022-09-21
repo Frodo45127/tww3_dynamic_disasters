@@ -1091,6 +1091,9 @@ end
 -- Extended from endgames.lua to keep things more or less compatible.
 function dynamic_disasters:initialize()
 
+    -- Initialize randomizer.
+    math.randomseed(os.time())
+
     -- Look for dynamic disaster files and load them into the framework
     local disaster_files = core:get_filepaths_from_folder("/script/campaign/dynamic_disasters/", "*.lua")
     out("####################")
