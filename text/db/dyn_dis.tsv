@@ -89,7 +89,7 @@ mct_dyn_dis_debug_tooltip	Enable/Disable debug mode.\\n\\nIn debug mode, all dis
 mct_dyn_dis_max_turn_value	Maximum turn	true
 mct_dyn_dis_max_turn_value_tooltip	Maximum turn for this disaster to trigger. If the disaster has not yet triggered when reaching this turn, it'll trigger if none of the requeriments are unfulfilled. \\nSet to 0 to allow the disaster to trigger normally based on its requeriments.	true
 mct_dyn_dis_disable_vanilla_endgames	Disable Vanilla Endgames	true
-mct_dyn_dis_disable_vanilla_endgames_tooltip	NOTE: This may cause bugs if switched on and off in the middle of a campaign! \\n\\nThis setting toggles the vanilla endgame logic on and off. If you uncheck it, vanilla disasters may trigger twice, once by the endgames logic, and once by this mod.	true
+mct_dyn_dis_disable_vanilla_endgames_tooltip	NOTE: This may cause bugs if switched on and off in the middle of a campaign! And switching vanilla endgames on again requires a save/reload to take full effect. \\n\\nThis setting toggles the vanilla endgame logic on and off. If you uncheck it, vanilla disasters may trigger twice, once by the endgames logic, and once by this mod.	true
 effects_description_fro_dyn_dis_chaos_corruption_mapwide	Chaos corruption: %+n	true
 effect_bundles_localised_title_fro_dyn_dis_chaos_invasion_global_effects	Flow of the Polar Gates	true
 missions_localised_description_dyn_dis_grudge_too_far_we_ran_out_of_book_1	The Dwarfs have declared war onto the whole world! Defeat them and make the incredible famed wealth of the Karaz-Ankor yours!	true

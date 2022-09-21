@@ -1029,6 +1029,11 @@ function dynamic_disasters:load_from_mct(mct)
     self.settings.disable_vanilla_endgames = dynamic_disasters_disable_vanilla_endgames_setting
     if endgame ~= nil then
         endgame.settings.endgame_enabled = not self.settings.disable_vanilla_endgames;
+
+        if endgame.settings.endgame_enabled == false then
+            core:remove_listener("endgame_victory_trigger_listener")
+            core:remove_listener("endgame_turn_trigger_listener")
+        end
     end
 
     local dynamic_disasters_debug = mod:get_option_by_key("dynamic_disasters_debug")
