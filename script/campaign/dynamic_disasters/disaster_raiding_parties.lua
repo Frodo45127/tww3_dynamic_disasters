@@ -154,7 +154,7 @@ function disaster_raiding_parties:trigger()
     out("Frodo45127: Starting disaster: " .. self.name);
 
     -- Recalculate the delay for further executions.
-    if dynamic_disasters.settings.debug == true then
+    if dynamic_disasters.settings.debug_2 == true then
         self.settings.warning_delay = 1;
         self.settings.grace_period = 5; -- Keep this a few turns ahead to test if the AI actually works.
         self.settings.wait_turns_between_repeats = 1;
@@ -367,7 +367,7 @@ function disaster_raiding_parties:check_start_disaster_conditions()
     end
 
     -- Debug mode support.
-    if dynamic_disasters.settings.debug == true then
+    if dynamic_disasters.settings.debug_2 == true then
         return true;
     end
 

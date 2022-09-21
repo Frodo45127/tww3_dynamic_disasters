@@ -292,7 +292,7 @@ function disaster_realm_divided:check_start_disaster_conditions()
     end
 
     -- Debug mode support.
-    if dynamic_disasters.settings.debug == true then
+    if dynamic_disasters.settings.debug_2 == true then
         return true;
     end
 

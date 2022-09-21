@@ -192,7 +192,7 @@ end
 function disaster_waaagh:trigger()
 
     -- Debug mode support.
-    if dynamic_disasters.settings.debug == true then
+    if dynamic_disasters.settings.debug_2 == true then
         self.settings.early_warning_delay = 1;
     else
         self.settings.early_warning_delay = math.random(8, 12);
@@ -303,7 +303,7 @@ function disaster_waaagh:check_start_disaster_conditions()
     end
 
     -- Debug mode support.
-    if dynamic_disasters.settings.debug == true then
+    if dynamic_disasters.settings.debug_2 == true then
         return true;
     end
 

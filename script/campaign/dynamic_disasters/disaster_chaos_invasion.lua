@@ -936,7 +936,7 @@ function disaster_chaos_invasion:set_status(status)
             local default_owner = "wh_main_chs_chaos";
 
             for i = 0, open_nodes:num_items() - 1 do
-                if (math.random() > (0.05 + (self.settings.difficulty_mod / 12)) or dynamic_disasters.settings.debug) then
+                if (math.random() > (0.05 + (self.settings.difficulty_mod / 12)) or dynamic_disasters.settings.debug_2) then
                     local current_node = open_nodes:item_at(i);
                     local x, y = current_node:position();
                     local region_data = world:region_data_at_position(x, y);
@@ -994,7 +994,7 @@ function disaster_chaos_invasion:set_status(status)
         "ChaosInvasionRespawnRiftsChaosWastes",
         "WorldStartRound",
         function()
-            return self.settings.started and self.settings.status >= STATUS_STAGE_2 and self.settings.enable_rifts and (cm:random_number(5) == 1 or dynamic_disasters.settings.debug);
+            return self.settings.started and self.settings.status >= STATUS_STAGE_2 and self.settings.enable_rifts and (cm:random_number(5) == 1 or dynamic_disasters.settings.debug_2);
         end,
         function()
             out("Frodo45127: Respawning rifts at random on provinces with at least 75% chaos corruption.");
@@ -1316,7 +1316,7 @@ function disaster_chaos_invasion:set_status(status)
             end
 
             -- If we're trying to travel through the Chaos Realms, you get a chance of receiving a trait.
-            if math.random() <= 0.1 or dynamic_disasters.settings.debug then
+            if math.random() <= 0.1 or dynamic_disasters.settings.debug_2 then
                 local realm = self.teleportation_nodes_realm_by_templates[template];
 
                 out("Frodo45127: Trying to add chaos realm trait. Realm: " .. tostring(realm) .. ".");
@@ -1330,7 +1330,7 @@ function disaster_chaos_invasion:set_status(status)
             end
 
             -- If we're lucky, trigger a dilemma to choose between fight a battle and get an artifact, or just ran away.
-            if math.random() <= 0.1 or dynamic_disasters.settings.debug then
+            if math.random() <= 0.1 or dynamic_disasters.settings.debug_2 then
                 local dilemma_key = nil;
                 local effect_key = nil;
 
@@ -1460,7 +1460,7 @@ function disaster_chaos_invasion:set_status(status)
                 local value = character:region():bonus_values():scripted_value("chaos_realm_trait_removal", "value");
                 if value > 0 or character:region():is_province_capital() then
                     for _, realm in pairs(self.teleportation_nodes_realm_by_templates) do
-                        if cm:random_number(100) <= value or dynamic_disasters.settings.debug then
+                        if cm:random_number(100) <= value or dynamic_disasters.settings.debug_2 then
 
                             -- Reduce 1 level or remove the trait.
                             local trait_name = self:get_chaos_trait_name(realm, faction:subculture(), faction:name());
@@ -1660,7 +1660,7 @@ end
 function disaster_chaos_invasion:trigger()
     out("Frodo45127: Disaster: " .. self.name .. ". Triggering first warning.");
 
-    if dynamic_disasters.settings.debug == true then
+    if dynamic_disasters.settings.debug_2 == true then
         self.settings.stage_1_delay = 1;
         self.settings.grace_period = 5;
     else
@@ -1677,7 +1677,7 @@ end
 function disaster_chaos_invasion:trigger_stage_1()
     out("Frodo45127: Disaster: " .. self.name .. ". Triggering stage 1.");
 
-    if dynamic_disasters.settings.debug == true then
+    if dynamic_disasters.settings.debug_2 == true then
         self.settings.stage_2_delay = 1;
     else
         self.settings.stage_2_delay = math.random(6, 10);
@@ -2255,7 +2255,7 @@ function disaster_chaos_invasion:check_start_disaster_conditions()
     end
 
     -- Debug mode support.
-    if dynamic_disasters.settings.debug == true then
+    if dynamic_disasters.settings.debug_2 == true then
         return true;
     end
 

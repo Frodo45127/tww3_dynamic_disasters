@@ -486,7 +486,7 @@ function disaster_the_great_uprising:trigger()
     out("Frodo45127: Starting disaster: " .. self.name);
 
     -- Recalculate the delay to trigger this.
-    if dynamic_disasters.settings.debug == true then
+    if dynamic_disasters.settings.debug_2 == true then
         self.settings.stage_1_delay = 1;
     else
         self.settings.stage_1_delay = math.random(6, 10);
@@ -499,7 +499,7 @@ end
 
 -- Function to trigger the first stage of the Great Uprising.
 function disaster_the_great_uprising:trigger_stage_1()
-    if dynamic_disasters.settings.debug == true then
+    if dynamic_disasters.settings.debug_2 == true then
         self.settings.stage_2_delay = 1;
     else
         self.settings.stage_2_delay = math.random(6, 10);
@@ -534,7 +534,7 @@ end
 -- Function to trigger the second stage of the Great Uprising.
 function disaster_the_great_uprising:trigger_stage_2()
 
-    if dynamic_disasters.settings.debug == true then
+    if dynamic_disasters.settings.debug_2 == true then
         self.settings.stage_3_delay = 1;
     else
         self.settings.stage_3_delay = math.random(4, 7);
@@ -591,7 +591,7 @@ end
 -- Function to trigger the third stage of the Great Uprising.
 function disaster_the_great_uprising:trigger_stage_3()
 
-    if dynamic_disasters.settings.debug == true then
+    if dynamic_disasters.settings.debug_2 == true then
         self.settings.stage_4_delay = 1;
     else
         self.settings.stage_4_delay = math.random(4, 6);
@@ -622,7 +622,7 @@ end
 -- Function to trigger the fourth stage of the Great Uprising.
 function disaster_the_great_uprising:trigger_stage_4()
 
-    if dynamic_disasters.settings.debug == true then
+    if dynamic_disasters.settings.debug_2 == true then
         self.settings.stage_5_delay = 1;
     else
         self.settings.stage_5_delay = math.random(6, 10);
@@ -745,7 +745,7 @@ function disaster_the_great_uprising:check_start_disaster_conditions()
     end
 
     -- Debug mode support.
-    if dynamic_disasters.settings.debug == true then
+    if dynamic_disasters.settings.debug_2 == true then
         return true;
     end
 

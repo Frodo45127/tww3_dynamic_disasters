@@ -220,7 +220,7 @@ function disaster_chianchi_assault:trigger()
     out("Frodo45127: Starting disaster: " .. self.name);
 
     -- Recalculate the delays to trigger this after the initial warning.
-    if dynamic_disasters.settings.debug == true then
+    if dynamic_disasters.settings.debug_2 == true then
         self.settings.warning_delay = 1;
         self.settings.reinforcements_delay = 1;
         self.settings.wait_turns_between_repeats = 1;

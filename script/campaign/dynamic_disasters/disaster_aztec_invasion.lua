@@ -311,7 +311,7 @@ function disaster_aztec_invasion:trigger()
     out("Frodo45127: Starting disaster: " .. self.name .. ". Triggering early warning.");
 
     -- Recalculate the delay to trigger this.
-    if dynamic_disasters.settings.debug == true then
+    if dynamic_disasters.settings.debug_2 == true then
         self.settings.stage_1_delay = 1;
         self.settings.grace_period = 4;
     else
@@ -329,7 +329,7 @@ function disaster_aztec_invasion:trigger_stage_1()
     out("Frodo45127: Disaster: " .. self.name .. ". Triggering stage 1.");
 
     -- Recalculate the delay to trigger this.
-    if dynamic_disasters.settings.debug == true then
+    if dynamic_disasters.settings.debug_2 == true then
         self.settings.stage_2_delay = 1;
     else
         self.settings.stage_2_delay = math.random(6, 10);
@@ -632,7 +632,7 @@ function disaster_aztec_invasion:check_start_disaster_conditions()
     end
 
     -- Debug mode support.
-    if dynamic_disasters.settings.debug == true then
+    if dynamic_disasters.settings.debug_2 == true then
         return true;
     end
 
