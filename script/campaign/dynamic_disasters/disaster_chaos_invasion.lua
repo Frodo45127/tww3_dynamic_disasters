@@ -67,11 +67,6 @@
                     - Give mission to "restore" the Vortex by taking back Gaen Vale, Asurian's Temple, Tor Elyr and White Tower of Hoeth.
                     - When the mission is completed, stop its effects and rift respawn outside the chaos wastes and norsca.
 
-
-    -- TODO: Cancel vortex mission if the AI rebuilds it.
-
-
-
     -- Reference for the timeline: https://warhammerfantasy.fandom.com/wiki/End_Times_Timeline#Appendix_1_-_Chronology_of_the_End_Times
     Not Yet Implemented:
         - Stage 2:
@@ -903,6 +898,7 @@ disaster_chaos_invasion = {
 
     great_vortex_undone_incident_key = "dyn_dis_chaos_invasion_great_vortex_undone",
     great_vortex_undone_effect_key = "dyn_dis_chaos_invasion_great_vortex_undone",
+    great_vortex_undone_cancel_incident_key = "dyn_dis_chaos_invasion_great_vortex_undone_cancel",
 
     great_vortex_undone_mission_name = "great_vortex_undone",
     endgame_mission_name = "endtimes_unfolding",
@@ -920,8 +916,6 @@ disaster_chaos_invasion = {
     effects_global_key = "fro_dyn_dis_chaos_invasion_global_effects",
 
     teleportation_network = "dyn_dis_chaos_invasion_network",
-    vortex_key = "dyn_dis_custom_vortex_ulthuan",
-    vortex_vfx = "scripted_effect17"
 }
 
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
@@ -929,6 +923,7 @@ function disaster_chaos_invasion:set_status(status)
     self.settings.status = status;
 
     -- Listener to spawn armies from open rifts. This one needs to trigger as long as the disaster is running.
+    core:remove_listener("ChaosInvasionRiftArmies");
     core:add_listener(
         "ChaosInvasionRiftArmies",
         "WorldStartRound",
@@ -994,6 +989,7 @@ function disaster_chaos_invasion:set_status(status)
     );
 
     -- Listener to respawn rifts.
+    core:remove_listener("ChaosInvasionRespawnRiftsChaosWastes");
     core:add_listener(
         "ChaosInvasionRespawnRiftsChaosWastes",
         "WorldStartRound",
@@ -1024,6 +1020,7 @@ function disaster_chaos_invasion:set_status(status)
     );
 
     -- Listener for switching templates of rifts if the region owner is favoured by another god.
+    core:remove_listener("ChaosInvasionRiftSwitchingTemplates");
     core:add_listener(
         "ChaosInvasionRiftSwitchingTemplates",
         "CharacterPerformsSettlementOccupationDecision",
@@ -1062,6 +1059,7 @@ function disaster_chaos_invasion:set_status(status)
     );
 
     -- Listener to tell the game that, when an army tries to close a rift, there should be battle.
+    core:remove_listener("ChaosInvasionRiftClosingBattleQuery");
     core:add_listener(
         "ChaosInvasionRiftClosingBattleQuery",
         "QueryTeleportationNetworkShouldHandoverCharacterNodeClosure",
@@ -1088,6 +1086,7 @@ function disaster_chaos_invasion:set_status(status)
     );
 
     -- Listener to generate battles on rift closure.
+    core:remove_listener("ChaosInvasionRiftClosingBattle");
     core:add_listener(
         "ChaosInvasionRiftClosingBattle",
         "TeleportationNetworkCharacterNodeClosureHandedOver",
@@ -1117,6 +1116,7 @@ function disaster_chaos_invasion:set_status(status)
     );
 
     -- Listener to cleanup after a battle to close a rift.
+    core:remove_listener("ChaosInvasionRiftClosingBattleCleanup");
     core:add_listener(
         "ChaosInvasionRiftClosingBattleCleanup",
         "BattleCompleted",
@@ -1149,6 +1149,7 @@ function disaster_chaos_invasion:set_status(status)
     );
 
     -- Listener to check if the character ran a way from a "closing rift" battle and cleanup accordingly.
+    core:remove_listener("ChaosInvasionRiftClosingBattleCleanupAfterRetreat");
     core:add_listener(
         "ChaosInvasionRiftClosingBattleCleanupAfterRetreat",
         "CharacterWithdrewFromBattle",
@@ -1169,6 +1170,7 @@ function disaster_chaos_invasion:set_status(status)
     );
 
     -- Listener to cleanup after a battle of event on a rift. Similar to the closing rift one, but it closes both nodes of the network.
+    core:remove_listener("ChaosInvasionRiftEventBattleCleanup");
     core:add_listener(
         "ChaosInvasionRiftEventBattleCleanup",
         "BattleCompleted",
@@ -1248,6 +1250,7 @@ function disaster_chaos_invasion:set_status(status)
     );
 
     -- Listener to check if the character ran a way from a Daemon Prince in a rift and cleanup accordingly.
+    core:remove_listener("ChaosInvasionRiftEventBattleCleanupAfterRetreat");
     core:add_listener(
         "ChaosInvasionRiftEventBattleCleanupAfterRetreat",
         "CharacterWithdrewFromBattle",
@@ -1285,6 +1288,7 @@ function disaster_chaos_invasion:set_status(status)
     );
 
     -- Listener to assign debuff traits to travelers of the rifts.
+    core:remove_listener("ChaosInvasionRiftArmyTravelCompleted");
     core:add_listener(
         "ChaosInvasionRiftArmyTravelCompleted",
         "TeleportationNetworkMoveCompleted",
@@ -1362,7 +1366,6 @@ function disaster_chaos_invasion:set_status(status)
                                 -- Store the fact that we're fighting an special battle, so we can clean up after it later.
                                 local from_data = {from_node_key, from_template_key}
                                 local to_data = {to_node_key, to_template_key}
-                                local x, y = to_node:position();
                                 local faction_key = context:faction():name();
 
                                 cm:set_saved_value("ChaosInvasionRiftEventBattleActive", {from_data, to_data, character:command_queue_index(), template, trait_received, faction_key});
@@ -1409,7 +1412,8 @@ function disaster_chaos_invasion:set_status(status)
         true
     );
 
-   -- Listener to setup Chaos Realm battles.
+    -- Listener to setup Chaos Realm battles.
+    core:remove_listener("ChaosInvasionRiftEventPendingBattle");
     core:add_listener(
         "ChaosInvasionRiftEventPendingBattle",
         "PendingBattle",
@@ -1437,6 +1441,7 @@ function disaster_chaos_invasion:set_status(status)
     );
 
     -- Listener to remove debuff traits to travelers of the rifts.
+    core:remove_listener("ChaosInvasionRiftTraitRemover");
     core:add_listener(
         "ChaosInvasionRiftTraitRemover",
         "CharacterTurnEnd",
@@ -1480,6 +1485,7 @@ function disaster_chaos_invasion:set_status(status)
     );
 
     -- Listener to know when to free the AI armies.
+    core:remove_listener("ChaosInvasionFreeArmiesStage1");
     core:add_listener(
         "ChaosInvasionFreeArmiesStage1",
         "WorldStartRound",
@@ -1494,6 +1500,7 @@ function disaster_chaos_invasion:set_status(status)
     );
 
     -- Listener to know when to free the AI armies.
+    core:remove_listener("ChaosInvasionFreeArmiesStage2");
     core:add_listener(
         "ChaosInvasionFreeArmiesStage2",
         "WorldStartRound",
@@ -1503,6 +1510,92 @@ function disaster_chaos_invasion:set_status(status)
         function()
             local max_turn = self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.grace_period;
             dynamic_disasters:release_armies(self.settings.stage_2_data.cqis, self.settings.stage_2_data.targets, max_turn)
+        end,
+        true
+    );
+
+    -- Listener to cancel the vortex mission if an order AI manages to recover the 4 target cities.
+    core:remove_listener("ChaosInvasionGreatVortexUndoneAIEnd");
+    core:add_listener(
+        "ChaosInvasionGreatVortexUndoneAIEnd",
+        "WorldStartRound",
+        function()
+            local regions = self.great_vortex_undone.regions;
+            local regions_controlled_by_order = 0;
+            for i = 1, #regions do
+                local region = cm:get_region(regions[i]);
+                if not region == false and region:is_null_interface() == false and region:is_abandoned() == false then
+                    local owner = region:owning_faction();
+                    if dynamic_disasters:is_order_faction(owner:name()) and owner:is_human() == false then
+                        regions_controlled_by_order = regions_controlled_by_order + 1;
+                    end
+                end
+            end
+
+            return self.settings.great_vortex_undone == true and regions_controlled_by_order == #regions;
+        end,
+        function()
+
+            -- Just cancel the mission, trigger the vortex restoration, and a small incident explaining why.
+            local humans = cm:get_human_factions();
+            for i = 1, #humans do
+                cm:cancel_custom_mission(humans[i], "dyn_dis_" .. self.name .. "_" .. self.great_vortex_undone_mission_name .. "_1");
+            end
+
+            dynamic_disasters:trigger_incident(self.great_vortex_undone_cancel_incident_key, nil, 0, nil);
+            self:restore_vortex()
+        end,
+        true
+    );
+
+    -- Listener to trigger the Great Vortex Undone branch of the disaster.
+    core:remove_listener("ChaosInvasionGreatVortexUndoneTrigger");
+    core:add_listener(
+        "ChaosInvasionGreatVortexUndoneTrigger",
+        "WorldStartRound",
+        function()
+            local regions = self.great_vortex_undone.regions;
+            local order_stands = false;
+            for i = 1, #regions do
+                local region = cm:get_region(regions[i]);
+                if not region == false and region:is_null_interface() == false and region:is_abandoned() == false then
+                    local owner = region:owning_faction();
+                    if not dynamic_disasters:is_chaos_faction(owner:name()) then
+                        order_stands = true;
+                        break;
+                    end
+                end
+            end
+
+            return (order_stands == false and self.settings.great_vortex_undone == false) or (dynamic_disasters.settings.debug and self.settings.great_vortex_undone == false);
+        end,
+        function()
+
+            -- Remove the VFX and trigger the mission to recover ulthuan.
+            self.settings.great_vortex_undone = true;
+
+            ---@type table
+            local objectives = table.copy(self.great_vortex_undone.objectives);
+            table.insert(objectives[1].conditions, "total " .. #self.great_vortex_undone.regions)
+            for i = 1, #self.great_vortex_undone.regions do
+                table.insert(objectives[1].conditions, "region " .. self.great_vortex_undone.regions[i])
+            end
+
+            -- Apply the corruption effects to all alive factions, except humans.
+            -- Humans get this effect via payload with effect.
+            local faction_list = cm:model():world():faction_list()
+            for i = 0, faction_list:num_items() - 1 do
+                local faction = faction_list:item_at(i)
+
+                if not faction:is_dead() and faction:is_human() == false then
+                    cm:apply_effect_bundle(self.great_vortex_undone_effect_key, faction:name(), 0)
+                end
+            end
+
+            dynamic_disasters:add_mission(objectives, false, self.name, self.great_vortex_undone_mission_name, self.great_vortex_undone_incident_key, self.great_vortex_undone.regions[i], nil, function () self:restore_vortex() end, true)
+            dynamic_disasters:trigger_incident(self.great_vortex_undone_incident_key, self.great_vortex_undone_effect_key, 0, nil);
+            cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_chs_chaos")
+            --cm:remove_vfx(dynamic_disasters.vortex_vfx);
         end,
         true
     );
@@ -1522,7 +1615,7 @@ function disaster_chaos_invasion:set_status(status)
             end,
             function()
                 if self:check_end_disaster_conditions() == true then
-                    dynamic_disasters:execute_payload(self.finish_before_stage_1_event_key, nil, 0, nil);
+                    dynamic_disasters:trigger_incident(self.finish_before_stage_1_event_key, nil, 0, nil);
                     self:trigger_end_disaster();
                 else
                     self:trigger_stage_1();
@@ -1547,66 +1640,12 @@ function disaster_chaos_invasion:set_status(status)
             end,
             function()
                 if self:check_end_disaster_conditions() == true then
-                    dynamic_disasters:execute_payload(self.finish_event_key, nil, 0, nil);
+                    dynamic_disasters:trigger_incident(self.finish_event_key, nil, 0, nil);
                     self:trigger_end_disaster();
                 else
                     self:trigger_stage_2();
                 end
                 core:remove_listener("ChaosInvasionStage2")
-            end,
-            true
-        );
-    end
-
-    if self.settings.status == STATUS_STAGE_2 then
-
-        -- Listener to trigger the Great Vortex Undone branch of the disaster.
-        core:add_listener(
-            "ChaosInvasionGreatVortexUndoneTrigger",
-            "WorldStartRound",
-            function()
-                local regions = self.great_vortex_undone.regions;
-                local order_stands = false;
-                for i = 1, #regions do
-                    local region = cm:get_region(regions[i]);
-                    if not region == false and region:is_null_interface() == false and region:is_abandoned() == false then
-                        local owner = region:owning_faction();
-                        if not dynamic_disasters:is_chaos_faction(owner:name()) then
-                            order_stands = true;
-                            break;
-                        end
-                    end
-                end
-
-                return not (order_stands and self.settings.great_vortex_undone == false) or (dynamic_disasters.settings.debug and self.settings.great_vortex_undone == false);
-            end,
-            function()
-
-                -- Remove the VFX and trigger the mission to recover ulthuan.
-                self.settings.great_vortex_undone_triggered = true;
-
-                ---@type table
-                local objectives = table.copy(self.great_vortex_undone.objectives);
-                table.insert(objectives[1].conditions, "total " .. #self.great_vortex_undone.regions)
-                for i = 1, #self.great_vortex_undone.regions do
-                    table.insert(objectives[1].conditions, "region " .. self.great_vortex_undone.regions[i])
-                end
-
-                -- Apply the corruption effects to all alive factions, except humans.
-                -- Humans get this effect via payload with effect.
-                local faction_list = cm:model():world():faction_list()
-                for i = 0, faction_list:num_items() - 1 do
-                    local faction = faction_list:item_at(i)
-
-                    if not faction:is_dead() and faction:is_human() == false then
-                        cm:apply_effect_bundle(self.great_vortex_undone_effect_key, faction:name(), 0)
-                    end
-                end
-
-                dynamic_disasters:add_mission(objectives, false, self.name, self.great_vortex_undone_mission_name, self.great_vortex_undone_incident_key, self.great_vortex_undone.regions[i], nil, function () self:restore_vortex() end, true)
-                dynamic_disasters:execute_payload(self.great_vortex_undone_incident_key, self.great_vortex_undone_effect_key, 0, nil);
-                cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_chs_chaos")
-                cm:remove_vfx(self.vortex_vfx);
             end,
             true
         );
@@ -1628,7 +1667,7 @@ function disaster_chaos_invasion:trigger()
     end
 
     -- Initialize listeners.
-    dynamic_disasters:execute_payload(self.stage_early_warning_incident_key, self.stage_early_warning_incident_key, self.settings.stage_1_delay, nil);
+    dynamic_disasters:trigger_incident(self.stage_early_warning_incident_key, self.stage_early_warning_incident_key, self.settings.stage_1_delay, nil);
     self:set_status(STATUS_TRIGGERED);
 end
 
@@ -1662,7 +1701,7 @@ function disaster_chaos_invasion:trigger_stage_1()
     self:trigger_chaos_effects(self.settings.stage_2_delay, nil);
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
-    dynamic_disasters:execute_payload(self.stage_1_incident_key, self.effects_global_key, self.settings.stage_2_delay, nil);
+    dynamic_disasters:trigger_incident(self.stage_1_incident_key, self.effects_global_key, self.settings.stage_2_delay, nil);
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_chs_chaos")
     cm:register_instant_movie("Warhammer/chs_rises");
 
@@ -1705,7 +1744,6 @@ function disaster_chaos_invasion:trigger_stage_2()
             if faction_key == "wh3_main_kho_exiles_of_khorne" then
                 local region = faction:home_region();
                 if not region == false and region:is_null_interface() == false then
-                    local army_template = self.stage_2_data.army_templates[faction_key];
                     dynamic_disasters:create_scenario_force(faction_key, region:name(), army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
                 end
             end
@@ -1809,7 +1847,7 @@ function disaster_chaos_invasion:trigger_stage_2()
 
     -- Trigger the end game mission.
     dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.stage_2_incident_key, nil, self.settings.factions[1], function () self:trigger_end_disaster() end, true)
-    dynamic_disasters:execute_payload(self.stage_2_incident_key, self.effects_global_key, 0, nil);
+    dynamic_disasters:trigger_incident(self.stage_2_incident_key, self.effects_global_key, 0, nil);
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_chs_chaos")
     cm:register_instant_movie("Warhammer/chs_invasion");
 
@@ -2126,7 +2164,7 @@ function disaster_chaos_invasion:restore_vortex()
         cm:remove_effect_bundle(self.great_vortex_undone_effect_key, faction:name());
     end
 
-    cm:add_vfx(self.vortex_key, self.vortex_vfx, 171.925, 431.5, 0)
+    --cm:add_vfx(dynamic_disasters.vortex_key, dynamic_disasters.vortex_vfx, 171.925, 431.5, 0)
 end
 
 -- Function to trigger the effects related with each stage of the chaos invasion.
@@ -2168,6 +2206,27 @@ function disaster_chaos_invasion:trigger_end_disaster()
             cm:remove_effect_bundle(self.great_vortex_undone_effect_key, faction:name());
             cm:remove_effect_bundle(self.effects_global_key, faction:name());
         end
+
+        -- Remove all the related listeners.
+        core:remove_listener("ChaosInvasionRiftArmies");
+        core:remove_listener("ChaosInvasionRespawnRiftsChaosWastes");
+        core:remove_listener("ChaosInvasionRiftSwitchingTemplates");
+        core:remove_listener("ChaosInvasionRiftClosingBattleQuery");
+        core:remove_listener("ChaosInvasionRiftClosingBattle");
+        core:remove_listener("ChaosInvasionRiftClosingBattleCleanup");
+        core:remove_listener("ChaosInvasionRiftClosingBattleCleanupAfterRetreat");
+        core:remove_listener("ChaosInvasionRiftEventBattleCleanup");
+        core:remove_listener("ChaosInvasionRiftEventBattleCleanupAfterRetreat");
+        core:remove_listener("ChaosInvasionRiftArmyTravelCompleted");
+        core:remove_listener("ChaosInvasionRiftEventPendingBattle");
+        core:remove_listener("ChaosInvasionRiftTraitRemover");
+        core:remove_listener("ChaosInvasionFreeArmiesStage1");
+        core:remove_listener("ChaosInvasionFreeArmiesStage2");
+        core:remove_listener("ChaosInvasionGreatVortexUndoneAIEnd");
+        core:remove_listener("ChaosInvasionGreatVortexUndoneTrigger");
+
+        -- Close all the open rifts.
+        cm:teleportation_network_close_all_nodes(self.teleportation_network);
 
         dynamic_disasters:finish_disaster(self);
     end
@@ -2276,9 +2335,6 @@ function disaster_chaos_invasion:check_end_disaster_conditions()
 
     return false;
 end
-
--- Initialize the custom vortex here.
-cm:add_vfx(disaster_chaos_invasion.vortex_key, disaster_chaos_invasion.vortex_vfx, 171.925, 431.5, 0)
 
 -- Return the disaster so the manager can read it.
 return disaster_chaos_invasion

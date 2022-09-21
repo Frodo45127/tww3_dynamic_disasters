@@ -6,19 +6,21 @@
 
 -- Global Dynamic Disasters manager object, to keep track of all disasters.
 dynamic_disasters = {
-    settings = {},                              -- Settings. To be populated later on.
-    disasters = {},                             -- List of disasters. This is populated on first tick.
+    settings = {},                                  -- Settings. To be populated later on.
+    disasters = {},                                 -- List of disasters. This is populated on first tick.
 
-    default_settings = {                        -- Default settings for the manager.
-        enabled = true,                         -- If the entire Dynamic Disasters system is enabled.
-        debug = false,                          -- Debug mode. Forces all disasters to trigger and all in-between phase timers are reduced to 1 turn.
-        disable_vanilla_endgames = true,        -- If this should disable the vanilla endgames, to avoid duplicated disasters. TODO: Fix issues with missions getting overwritten due to this.
-        victory_condition_triggered = false,    -- If a disaster has already triggered a victory condition, as we can't have two at the same time.
-        max_endgames_at_the_same_time = 4,      -- Max amount of endgame crisis one can trigger at the same time, to space them out a bit.
-        currently_running_endgames = 0,         -- Amount of currently running endgames.
+    default_settings = {                            -- Default settings for the manager.
+        enabled = true,                             -- If the entire Dynamic Disasters system is enabled.
+        debug = false,                              -- Debug mode. Forces all disasters to trigger and all in-between phase timers are reduced to 1 turn.
+        disable_vanilla_endgames = true,            -- If this should disable the vanilla endgames, to avoid duplicated disasters. TODO: Fix issues with missions getting overwritten due to this.
+        victory_condition_triggered = false,        -- If a disaster has already triggered a victory condition, as we can't have two at the same time.
+        max_endgames_at_the_same_time = 4,          -- Max amount of endgame crisis one can trigger at the same time, to space them out a bit.
+        currently_running_endgames = 0,             -- Amount of currently running endgames.
     },
 
-    regions_to_reveal = {},                     -- List of regions to reveal after processing disasters.
+    vortex_key = "dyn_dis_custom_vortex_ulthuan",   -- Vortex VFX name.
+    vortex_vfx = "scripted_effect17",               -- Vortex effect key.
+    regions_to_reveal = {},                         -- List of regions to reveal after processing disasters.
 
     -- List of weigthed units used by the manager.
     --
@@ -1284,6 +1286,9 @@ function dynamic_disasters:initialize()
     -- After everything is loaded, initialize any integrations we have.
     self:initialize_integrations();
 
+    -- We need to set the vortex status depending on the current disasters.
+    self:toggle_vortex();
+
     -- Listener for evaluating if a disaster can be started or not. Triggered at the begining of each turn.
     core:add_listener(
         "ScriptEventMaybeDisasterTime",
@@ -1294,6 +1299,17 @@ function dynamic_disasters:initialize()
         end,
         true
     );
+
+    -- Listener to check if the Vortex VFX should be enabled or not this turn. This has to trigger after all listeners to work properly.
+    --core:add_listener(
+    --    "zzzDynDisReenableVortex",
+    --    "WorldStartRound",
+    --    true,
+    --    function ()
+    --        return self:toggle_vortex();
+    --    end,
+    --    true
+    --);
 end
 
 -- Function to initialize integration scripts.
@@ -1420,11 +1436,22 @@ function dynamic_disasters:finish_disaster(disaster)
 end
 
 -- Function to trigger an incident for a phase of a disaster. It can have an associated effect and a payload that lasts the provided duration.
+--
+-- Deprecated. Use trigger_incident instead.
 ---@param incident_key string #Incident key for the incident this function will trigger. Must exists in the DB.
 ---@param effect_bundle_key string #Optional. Effect Bundle key for the effect bundle to trigger with this incident. Must exists in the DB.
 ---@param duration integer #Optional. Duration for the effect bundle.
 ---@param region_key string #Optional. Region key for the region this incident will allow to zoom in.
 function dynamic_disasters:execute_payload(incident_key, effect_bundle_key, duration, region_key)
+    self:trigger_incident(incident_key, effect_bundle_key, duration, region_key)
+end
+
+-- Function to trigger an incident for a disaster. It can have an associated effect and a payload that lasts the provided duration.
+---@param incident_key string #Incident key for the incident this function will trigger. Must exists in the DB.
+---@param effect_bundle_key string #Optional. Effect Bundle key for the effect bundle to trigger with this incident. Must exists in the DB.
+---@param duration integer #Optional. Duration for the effect bundle.
+---@param region_key string #Optional. Region key for the region this incident will allow to zoom in.
+function dynamic_disasters:trigger_incident(incident_key, effect_bundle_key, duration, region_key)
     if duration == nil then
         duration = 0;
     end
@@ -1446,6 +1473,7 @@ function dynamic_disasters:execute_payload(incident_key, effect_bundle_key, dura
             incident_builder:add_target("default", cm:get_region(region_key));
         end
 
+        out("Frodo45127: triggering incident " .. incident_key .. ", " .. tostring(incident_builder) .. ".")
         incident_builder:set_payload(payload_builder)
         cm:launch_custom_incident_from_builder(incident_builder, cm:get_faction(human_factions[i]))
     end
@@ -2192,6 +2220,22 @@ function dynamic_disasters:is_chaos_faction(faction_key)
     end
 
     return is_chaos_faction;
+end
+
+-- Function to toggle the Vortex VFX on and off depending on if a disaster has forced disabling it.
+function dynamic_disasters:toggle_vortex()
+    local is_vortex_removed_by_disaster = false;
+    for i = 1, #self.disasters do
+        if self.disasters[i].name == "chaos_invasion" and self.disasters[i].settings.enabled == true and self.disasters[i].settings.started == true and self.disasters[i].settings.great_vortex_undone == true then
+            is_vortex_removed_by_disaster = true;
+            break;
+        end
+    end
+    out("Frodo45127: toggling Vortex VFX: " .. tostring(not is_vortex_removed_by_disaster));
+    if not is_vortex_removed_by_disaster then
+        --cm:remove_vfx(self.vortex_key);
+        cm:add_vfx(self.vortex_key, self.vortex_vfx, 171.925, 431.5, 0)
+    end
 end
 
 -- Once everything is initialized, initialize the whole mod on first tick.

@@ -202,3 +202,5 @@ missions_localised_title_dyn_dis_realm_divided_united_we_stand_1	Grand Cathay sh
 missions_localised_description_dyn_dis_realm_divided_united_we_stand_1	And no other shall rule over me!	true
 missions_localised_title_dyn_dis_realm_divided_united_we_stand_2	Submit or Die	true
 missions_localised_description_dyn_dis_realm_divided_united_we_stand_2	My enemies have but one choice: submit to my rule, or die.	true
+incidents_localised_title_dyn_dis_chaos_invasion_great_vortex_undone_cancel	The Great Vortex Restored!	true
+incidents_localised_description_dyn_dis_chaos_invasion_great_vortex_undone_cancel	It seems someone sane has managed to retake the inner regions of Ulthuan and restore the Vortex! While the chaos invasion is still in full swing, the vortex strength should block any new rifts outside the Chaos Wastes.	true

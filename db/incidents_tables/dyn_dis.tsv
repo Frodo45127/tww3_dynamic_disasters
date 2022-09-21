@@ -33,3 +33,4 @@ dyn_dis_wild_hunt_early_end	wef/defeat	false	true	Disaster		false
 dyn_dis_aztec_invasion_early_end	lzd/defeat	false	true	Disaster		false
 dyn_dis_chaos_invasion_great_vortex_undone	all/rift_entered	false	true	Disaster		true
 dyn_dis_realm_divided_trigger	cth/diplomacy	false	true	Disaster		true
+dyn_dis_chaos_invasion_great_vortex_undone_cancel	hef/ritual_complete	false	true	Disaster		true
