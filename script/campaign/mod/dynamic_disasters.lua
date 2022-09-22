@@ -1345,7 +1345,7 @@ function dynamic_disasters:initialize()
     self:initialize_integrations();
 
     -- We need to set the vortex status depending on the current disasters.
-    self:toggle_vortex();
+    --self:toggle_vortex();
 
     -- Listener for evaluating if a disaster can be started or not. Triggered at the begining of each turn.
     core:add_listener(
