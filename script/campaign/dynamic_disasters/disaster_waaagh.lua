@@ -326,7 +326,7 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
             -- Transfer the region only if it's their original one.
                 local region = cm:get_region(region_key)
                 local region_owner = region:owning_faction()
-                if region_owner == false or region_owner:is_null_interface() or (region_owner:name() ~= faction_key and region_owner:is_human() == false and region_owner:subculture() ~= "wh_main_sc_grn_greenskins") then
+                if region_owner == false or region_owner:is_null_interface() or (region_owner:name() ~= faction_key and region_owner:is_human() == false and region_owner:subculture() ~= "wh_main_sc_grn_greenskins" and region_owner:subculture() ~= "wh_main_sc_grn_savage_orcs") then
                     cm:transfer_region_to_faction(region_key, faction_key)
                 end
             end
@@ -340,7 +340,7 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
             -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
 			cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
 			endgame:no_peace_no_confederation_only_war(faction_key)
-            dynamic_disasters:declare_war_for_owners_and_neightbours(faction, { region_key }, true, { "wh_main_sc_grn_greenskins" })
+            dynamic_disasters:declare_war_for_owners_and_neightbours(faction, { region_key }, true, { "wh_main_sc_grn_greenskins", "wh_main_sc_grn_savage_orcs" })
 			cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)
             table.insert(self.settings.regions, region_key);
             table.insert(factions, faction_key);
@@ -375,7 +375,7 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
                 -- Transfer the region only if it's their original one.
                     local region = cm:get_region(region_key)
                     local region_owner = region:owning_faction()
-                    if region_owner == false or region_owner:is_null_interface() or (region_owner:name() ~= faction_key and region_owner:is_human() == false and region_owner:subculture() ~= "wh_main_sc_grn_greenskins") then
+                    if region_owner == false or region_owner:is_null_interface() or (region_owner:name() ~= faction_key and region_owner:is_human() == false and region_owner:subculture() ~= "wh_main_sc_grn_greenskins" and region_owner:subculture() ~= "wh_main_sc_grn_savage_orcs")  then
                         cm:transfer_region_to_faction(region_key, faction_key)
                     end
                 end
@@ -389,7 +389,7 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
                 -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
                 cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
                 endgame:no_peace_no_confederation_only_war(faction_key)
-                dynamic_disasters:declare_war_for_owners_and_neightbours(faction, { region_key }, true, { "wh_main_sc_grn_greenskins" })
+                dynamic_disasters:declare_war_for_owners_and_neightbours(faction, { region_key }, true, { "wh_main_sc_grn_greenskins", "wh_main_sc_grn_savage_orcs" })
                 cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)
                 table.insert(self.settings.regions, region_key);
                 table.insert(factions, faction_key);
