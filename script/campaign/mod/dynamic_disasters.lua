@@ -57,21 +57,46 @@ dynamic_disasters = {
             },
         },
         greenskins = {
-            lategame = {
+            lategame_orcs = {
 
                 --Infantry
                 wh_dlc06_grn_inf_nasty_skulkers_0 = 2,
-                wh_main_grn_inf_night_goblins = 2,
-                wh_main_grn_inf_night_goblin_fanatics = 2,
-                wh_main_grn_inf_night_goblin_fanatics_1 = 2,
-                wh_main_grn_inf_orc_boyz = 2,
                 wh_main_grn_inf_orc_big_uns = 8,
-                wh_main_grn_inf_savage_orcs = 3,
-                wh_main_grn_inf_savage_orc_big_uns = 8,
                 wh_main_grn_inf_black_orcs = 8,
                 wh_main_grn_inf_night_goblin_archers = 2,
-                wh_main_grn_inf_orc_arrer_boyz = 4,
-                wh_main_grn_inf_savage_orc_arrer_boyz = 8,
+                wh_main_grn_inf_savage_orc_arrer_boyz = 6,
+
+                --Cavalry
+                wh_main_grn_cav_orc_boar_boyz = 1,
+                wh_main_grn_cav_orc_boar_boy_big_uns = 2,
+                wh_main_grn_cav_orc_boar_chariot = 1,
+                wh_main_grn_cav_savage_orc_boar_boyz = 4,
+                wh_main_grn_cav_savage_orc_boar_boy_big_uns = 4,
+
+                --Monsters
+                wh2_dlc15_grn_mon_river_trolls_0 = 2,
+                wh2_dlc15_grn_mon_stone_trolls_0 = 2,
+                wh_main_grn_mon_giant = 2,
+                wh_main_grn_mon_arachnarok_spider_0 = 1,
+                wh2_dlc15_grn_mon_rogue_idol_0 = 1,
+
+                --Artillery
+                wh_main_grn_art_goblin_rock_lobber = 2,
+                wh_main_grn_art_doom_diver_catapult = 4,
+
+                --Hero
+                wh2_pro09_grn_cha_black_orc_big_boss_0 = 1,
+                wh_main_grn_cha_orc_shaman_0 = 1,
+            },
+
+            lategame_goblins = {
+
+                --Infantry
+                wh_dlc06_grn_inf_nasty_skulkers_0 = 4,
+                wh_main_grn_inf_night_goblins = 6,
+                wh_main_grn_inf_night_goblin_fanatics = 4,
+                wh_main_grn_inf_night_goblin_fanatics_1 = 4,
+                wh_main_grn_inf_night_goblin_archers = 8,
 
                 --Cavalry
                 wh_main_grn_cav_goblin_wolf_riders_0 = 2,
@@ -80,21 +105,52 @@ dynamic_disasters = {
                 wh_main_grn_cav_forest_goblin_spider_riders_0 = 2,
                 wh_main_grn_cav_forest_goblin_spider_riders_1 = 2,
                 wh_dlc06_grn_cav_squig_hoppers_0 = 1,
-                wh_main_grn_cav_orc_boar_boyz = 1,
-                wh_main_grn_cav_orc_boar_boy_big_uns = 5,
-                wh_main_grn_cav_orc_boar_chariot = 1,
+
+                --Monsters
+                wh_dlc06_grn_inf_squig_herd_0 = 2,
+                wh2_dlc15_grn_mon_river_trolls_0 = 3,
+                wh2_dlc15_grn_mon_stone_trolls_0 = 3,
+                wh_main_grn_mon_giant = 1,
+                wh_main_grn_mon_arachnarok_spider_0 = 1,
+                wh2_dlc15_grn_mon_rogue_idol_0 = 1,
+
+                --Vechicles
+                wh2_dlc15_grn_veh_snotling_pump_wagon_flappas_0 = 2,
+                wh2_dlc15_grn_veh_snotling_pump_wagon_roller_0 = 2,
+
+                --Artillery
+                wh_main_grn_art_goblin_rock_lobber = 1,
+                wh_main_grn_art_doom_diver_catapult = 2,
+
+                --Hero
+                wh_main_grn_cha_goblin_big_boss_0 = 1,
+                wh_main_grn_cha_goblin_great_shaman_0 = 1,
+            },
+
+            lategame_savage_orcs = {
+
+                --Infantry
+                wh_main_grn_inf_savage_orc_big_uns = 8,
+                wh_main_grn_inf_savage_orc_arrer_boyz = 8,
+
+                --Cavalry
+                wh_main_grn_cav_orc_boar_chariot = 2,
                 wh_main_grn_cav_savage_orc_boar_boyz = 2,
                 wh_main_grn_cav_savage_orc_boar_boy_big_uns = 3,
 
                 --Monsters
-                wh_dlc06_grn_inf_squig_herd_0 = 2,
-                wh_main_grn_mon_trolls = 3,
+                wh2_dlc15_grn_mon_river_trolls_0 = 3,
+                wh2_dlc15_grn_mon_stone_trolls_0 = 3,
                 wh_main_grn_mon_giant = 2,
-                wh_main_grn_mon_arachnarok_spider_0 = 2,
+                wh_main_grn_mon_arachnarok_spider_0 = 1,
+                wh2_dlc15_grn_mon_rogue_idol_0 = 1,
 
                 --Artillery
-                wh_main_grn_art_goblin_rock_lobber = 2,
-                wh_main_grn_art_doom_diver_catapult = 4,
+                wh_main_grn_art_goblin_rock_lobber = 1,
+
+                --Hero
+                wh2_dlc15_grn_cha_river_troll_hag_0 = 1,
+                wh_main_grn_cha_orc_shaman_0 = 1,
             },
         },
         tomb_kings = {

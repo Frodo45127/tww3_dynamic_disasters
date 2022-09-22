@@ -31,7 +31,7 @@ disaster_waaagh = {
     -- Values for categorizing the disaster.
     is_global = true;
     allowed_for_sc = {},
-    denied_for_sc = { "wh_main_sc_grn_greenskins" },
+    denied_for_sc = { "wh_main_sc_grn_greenskins", "wh_main_sc_grn_savage_orcs" },
     campaigns = {                       -- Campaigns this disaster works on.
         "main_warhammer",
     },
@@ -65,51 +65,150 @@ disaster_waaagh = {
         wait_turns_between_repeats = 0,     -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
         difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
 
-		army_template = {
-			greenskins = "lategame"
-		},
         army_count_per_province = 4,
         unit_count = 19,
         early_warning_delay = 10,
 
         factions = {
-            "wh_main_grn_greenskins",                       -- Grimgor Ironhide
-            "wh_main_grn_orcs_of_the_bloody_hand",          -- Wurrzag, The Greath Prophet
-            "wh2_dlc15_grn_broken_axe",                     -- Grom, The Paunch
-            "wh2_dlc15_grn_bonerattlaz",                    -- Azhag, The Butcher
-            "wh_main_grn_crooked_moon",                     -- Skarsnik
 
-            -- TODO: Add the rest of the Greenskin factions here.
-            "wh_main_grn_top_knotz",
-            "wh_main_grn_teef_snatchaz",
-            "wh_main_grn_skullsmasherz",
-            "wh_main_grn_skull-takerz",
-            "wh_main_grn_scabby_eye",
-            "wh_main_grn_red_fangs",
-            "wh_main_grn_red_eye",
-            "wh_main_grn_necksnappers",
-            "wh_main_grn_broken_nose",
-            "wh_main_grn_bloody_spearz",
-            "wh_main_grn_black_venom",
-            "wh_dlc03_grn_black_pit",
-            "wh3_main_grn_tusked_sunz",
-            "wh3_main_grn_slaves_of_zharr",
-            "wh3_main_grn_moon_howlerz",
-            --"wh3_main_grn_drippin_fangs", -- Not in the starting map.
-            "wh3_main_grn_dimned_sun",
-            "wh3_main_grn_dark_land_orcs",
-            "wh3_main_grn_da_cage_breakaz",
-            "wh2_main_grn_blue_vipers",
-            "wh2_main_grn_arachnos",
-            "wh2_dlc16_grn_naggaroth_orcs",
-            "wh2_dlc16_grn_creeping_death",
-            "wh2_dlc15_grn_skull_crag",
-            "wh2_dlc14_grn_red_cloud",
-            "wh2_dlc12_grn_leaf_cutterz_tribe",
+            major = {
+                "wh_main_grn_greenskins",                       -- Grimgor Ironhide
+                "wh_main_grn_orcs_of_the_bloody_hand",          -- Wurrzag, The Greath Prophet
+                "wh2_dlc15_grn_broken_axe",                     -- Grom, The Paunch
+                "wh2_dlc15_grn_bonerattlaz",                    -- Azhag, The Butcher
+                "wh_main_grn_crooked_moon",                     -- Skarsnik
+            },
+
+            minor = {
+                "wh_main_grn_top_knotz",
+                "wh_main_grn_teef_snatchaz",
+                "wh_main_grn_skullsmasherz",
+                "wh_main_grn_skull-takerz",
+                "wh_main_grn_scabby_eye",
+                "wh_main_grn_red_fangs",
+                "wh_main_grn_red_eye",
+                "wh_main_grn_necksnappers",
+                "wh_main_grn_broken_nose",
+                "wh_main_grn_bloody_spearz",
+                "wh_main_grn_black_venom",
+                "wh_dlc03_grn_black_pit",
+                "wh3_main_grn_tusked_sunz",
+                "wh3_main_grn_slaves_of_zharr",
+                "wh3_main_grn_moon_howlerz",
+                --"wh3_main_grn_drippin_fangs", -- Not in the starting map.
+                "wh3_main_grn_dimned_sun",
+                "wh3_main_grn_dark_land_orcs",
+                "wh3_main_grn_da_cage_breakaz",
+                "wh2_main_grn_blue_vipers",
+                "wh2_main_grn_arachnos",
+                "wh2_dlc16_grn_naggaroth_orcs",
+                "wh2_dlc16_grn_creeping_death",
+                "wh2_dlc15_grn_skull_crag",
+                "wh2_dlc14_grn_red_cloud",
+                "wh2_dlc12_grn_leaf_cutterz_tribe",
+            },
         },
 
         regions = {},
 	},
+
+    army_templates = {
+
+        -- Major
+        wh_main_grn_greenskins = {
+            greenskins = "lategame_orcs",
+        },
+        wh_main_grn_orcs_of_the_bloody_hand = {
+            greenskins = "lategame_savage_orcs",
+        },
+        wh2_dlc15_grn_broken_axe = {
+            greenskins = "lategame_goblins",
+        },
+        wh2_dlc15_grn_bonerattlaz = {
+            greenskins = "lategame_orcs",
+        },
+        wh_main_grn_crooked_moon = {
+            greenskins = "lategame_goblins",
+        },
+
+        -- Minor
+        wh_main_grn_top_knotz = {
+            greenskins = "lategame_savage_orcs",
+        },
+        wh_main_grn_teef_snatchaz = {
+            greenskins = "lategame_orcs",
+        },
+        wh_main_grn_skullsmasherz = {
+            greenskins = "lategame_orcs",
+        },
+        wh_main_grn_skull_takerz = {
+            greenskins = "lategame_savage_orcs",
+        },
+        wh_main_grn_scabby_eye = {
+            greenskins = "lategame_orcs",
+        },
+        wh_main_grn_red_fangs = {
+            greenskins = "lategame_orcs",
+        },
+        wh_main_grn_red_eye = {
+            greenskins = "lategame_goblins",
+        },
+        wh_main_grn_necksnappers = {
+            greenskins = "lategame_goblins",
+        },
+        wh_main_grn_broken_nose = {
+            greenskins = "lategame_orcs",
+        },
+        wh_main_grn_bloody_spearz = {
+            greenskins = "lategame_goblins",
+        },
+        wh_main_grn_black_venom = {
+            greenskins = "lategame_goblins",
+        },
+        wh_dlc03_grn_black_pit = {
+            greenskins = "lategame_orcs",
+        },
+        wh3_main_grn_tusked_sunz = {
+            greenskins = "lategame_orcs",
+        },
+        wh3_main_grn_slaves_of_zharr = {
+            greenskins = "lategame_orcs",
+        },
+        wh3_main_grn_moon_howlerz = {
+            greenskins = "lategame_goblins",
+        },
+        --"wh3_main_grn_drippin_fangs", -- Not in the starting map.
+        wh3_main_grn_dimned_sun = {
+            greenskins = "lategame_savage_orcs",
+        },
+        wh3_main_grn_dark_land_orcs = {
+            greenskins = "lategame_orcs",
+        },
+        wh3_main_grn_da_cage_breakaz = {
+            greenskins = "lategame_orcs",
+        },
+        wh2_main_grn_blue_vipers = {
+            greenskins = "lategame_savage_orcs",
+        },
+        wh2_main_grn_arachnos = {
+            greenskins = "lategame_goblins",
+        },
+        wh2_dlc16_grn_naggaroth_orcs = {
+            greenskins = "lategame_orcs",
+        },
+        wh2_dlc16_grn_creeping_death = {
+            greenskins = "lategame_goblins",
+        },
+        wh2_dlc15_grn_skull_crag = {
+            greenskins = "lategame_orcs",
+        },
+        wh2_dlc14_grn_red_cloud = {
+            greenskins = "lategame_orcs",
+        },
+        wh2_dlc12_grn_leaf_cutterz_tribe = {
+            greenskins = "lategame_orcs",
+        },
+    },
 
     early_warning_incident_key = "wh3_main_ie_incident_endgame_waaagh_early_warning",
     early_warning_effects_key = "dyn_dis_waaagh_early_warning",
@@ -172,8 +271,9 @@ function disaster_waaagh:set_status(status)
             function()
 
                 -- Update the potential factions removing the confederated ones and check if we still have factions to use.
-                self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
-                if #self.settings.factions == 0 then
+                self.settings.factions.major = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions.major);
+                self.settings.factions.minor = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions.minor);
+                if #self.settings.factions.major == 0 then
                     dynamic_disasters:execute_payload(self.finish_early_incident_key, nil, 0, nil);
                     self:trigger_end_disaster()
                 else
@@ -205,15 +305,10 @@ end
 
 -- Function to trigger the disaster.
 function disaster_waaagh:trigger_da_biggest_waaagh()
-	for _, faction_key in pairs(self.settings.factions) do
+    local factions = {};
+	for _, faction_key in pairs(self.settings.factions.major) do
 		local faction = cm:get_faction(faction_key)
 		local region_key = nil
-
-        -- Seriously????
-        local faction_key_fixed = faction_key;
-        if faction_key == "wh_main_grn_skull-takerz" then
-            faction_key_fixed = "wh_main_grn_skull_takerz";
-        end
 
         -- Try to spawn the armies on the faction leader, or if it's dead, on their capital.
         local faction_leader = faction:faction_leader();
@@ -225,7 +320,7 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
 
             -- On this situation, either the faction is dead or homeless with some armies running around.
             -- So we spawn the armies in their original settlements. Note that some factions do not have one.
-            region_key = potential_greenskins[faction_key_fixed];
+            region_key = potential_greenskins[faction_key];
             if not region_key == nil then
 
             -- Transfer the region only if it's their original one.
@@ -239,7 +334,8 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
 
 		if region_key ~= nil then
             local army_count = math.floor(self.settings.army_count_per_province * self.settings.difficulty_mod);
-            dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.unit_count, false, army_count, self.name)
+            local army_template = self.army_templates[faction_key];
+            dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, self.settings.unit_count, false, army_count, self.name, nil)
 
             -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
 			cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
@@ -247,22 +343,73 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
             dynamic_disasters:declare_war_for_owners_and_neightbours(faction, { region_key }, true, { "wh_main_sc_grn_greenskins" })
 			cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)
             table.insert(self.settings.regions, region_key);
+            table.insert(factions, faction_key);
 		end
 	end
 
+    -- Same for minor factions, but this one there's a chance it doesn't trigger.
+    for _, faction_key in pairs(self.settings.factions.minor) do
+        local faction = cm:get_faction(faction_key)
+        if faction:is_dead() == false or math.random() <= (0.2 + self.settings.difficulty_mod / 10) then
+            local region_key = nil
+
+            -- Seriously????
+            local faction_key_fixed = faction_key;
+            if faction_key == "wh_main_grn_skull-takerz" then
+                faction_key_fixed = "wh_main_grn_skull_takerz";
+            end
+
+            -- Try to spawn the armies on the faction leader, or if it's dead, on their capital.
+            local faction_leader = faction:faction_leader();
+            if not faction_leader == nil and faction_leader:has_region() then
+                region_key = faction_leader:region():name()
+            elseif faction:has_home_region() then
+                region_key = faction:home_region():name()
+            else
+
+                -- On this situation, either the faction is dead or homeless with some armies running around.
+                -- So we spawn the armies in their original settlements. Note that some factions do not have one.
+                region_key = potential_greenskins[faction_key_fixed];
+                if not region_key == nil then
+
+                -- Transfer the region only if it's their original one.
+                    local region = cm:get_region(region_key)
+                    local region_owner = region:owning_faction()
+                    if region_owner == false or region_owner:is_null_interface() or (region_owner:name() ~= faction_key and region_owner:is_human() == false and region_owner:subculture() ~= "wh_main_sc_grn_greenskins") then
+                        cm:transfer_region_to_faction(region_key, faction_key)
+                    end
+                end
+            end
+
+            if region_key ~= nil then
+                local army_count = math.floor(self.settings.army_count_per_province * self.settings.difficulty_mod);
+                local army_template = self.army_templates[faction_key_fixed];
+                dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, self.settings.unit_count, false, army_count, self.name, nil)
+
+                -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
+                cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
+                endgame:no_peace_no_confederation_only_war(faction_key)
+                dynamic_disasters:declare_war_for_owners_and_neightbours(faction, { region_key }, true, { "wh_main_sc_grn_greenskins" })
+                cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)
+                table.insert(self.settings.regions, region_key);
+                table.insert(factions, faction_key);
+            end
+        end
+    end
+
     -- Force an alliance between all Greenskin hordes.
-    dynamic_disasters:force_peace_between_factions(self.settings.factions, true);
+    dynamic_disasters:force_peace_between_factions(factions, true);
 
     -- Prepare the victory mission/disaster end data.
-    for i = 1, #self.settings.factions do
-        table.insert(self.objectives[1].conditions, "faction " .. self.settings.factions[i])
+    for i = 1, #factions do
+        table.insert(self.objectives[1].conditions, "faction " .. factions[i])
     end
 
     -- Reveal all regions subject to capture.
     dynamic_disasters:prepare_reveal_regions(self.settings.regions);
 
     -- Trigger either the victory mission, or just the related incident.
-    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.invasion_incident_key, self.settings.regions[1], self.settings.factions[1], function () self:trigger_end_disaster() end, false)
+    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.invasion_incident_key, self.settings.regions[1], factions[1], function () self:trigger_end_disaster() end, false)
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_grn_greenskins")
     self:set_status(STATUS_STARTED);
 end
@@ -280,16 +427,17 @@ end
 function disaster_waaagh:check_start_disaster_conditions()
 
     -- Update the potential factions removing the confederated ones.
-    self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
+    self.settings.factions.major = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions.major);
+    self.settings.factions.minor = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions.minor);
 
     -- Do not start if we don't have attackers.
-    if #self.settings.factions == 0 then
+    if #self.settings.factions.major == 0 then
         return false;
     end
 
     -- Check if any of the attackers if actually alive.
     local attackers_still_alive = false;
-    for _, faction_key in pairs(self.settings.factions) do
+    for _, faction_key in pairs(self.settings.factions.major) do
         local faction = cm:get_faction(faction_key);
         if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false then
             attackers_still_alive = true;
@@ -313,7 +461,7 @@ function disaster_waaagh:check_start_disaster_conditions()
     end
 
     local base_chance = 0.005;
-    for _, faction_key in pairs(self.settings.factions) do
+    for _, faction_key in pairs(self.settings.factions.major) do
         local faction = cm:get_faction(faction_key);
         if not faction == false and faction:is_null_interface() == false and faction:is_dead() then
             base_chance = base_chance + 0.005;
