@@ -936,7 +936,7 @@ function disaster_chaos_invasion:set_status(status)
             local default_owner = "wh_main_chs_chaos";
 
             for i = 0, open_nodes:num_items() - 1 do
-                if (math.random() > (0.05 + (self.settings.difficulty_mod / 12)) or dynamic_disasters.settings.debug_2) then
+                if (math.random() <= (0.05 + (self.settings.difficulty_mod / 12)) or dynamic_disasters.settings.debug_2) then
                     local current_node = open_nodes:item_at(i);
                     local x, y = current_node:position();
                     local region_data = world:region_data_at_position(x, y);
