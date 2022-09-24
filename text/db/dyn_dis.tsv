@@ -204,3 +204,7 @@ missions_localised_title_dyn_dis_realm_divided_united_we_stand_2	Submit or Die	t
 missions_localised_description_dyn_dis_realm_divided_united_we_stand_2	My enemies have but one choice: submit to my rule, or die.	true
 incidents_localised_title_dyn_dis_chaos_invasion_great_vortex_undone_cancel	The Great Vortex Restored!	true
 incidents_localised_description_dyn_dis_chaos_invasion_great_vortex_undone_cancel	It seems someone sane has managed to retake the inner regions of Ulthuan and restore the Vortex! While the chaos invasion is still in full swing, the vortex strength should block any new rifts outside the Chaos Wastes.	true
+dilemmas_localised_description_dyn_dis_realm_divided_confederation_dilemma	After the last battle, whats left of your enemies is in front of you. Their leader, found barely alive a top a pile of corpses, kneels before your blade. But before you cut his head, it speaks: "Forgive my live, and it'll be yours to command". What do you decide? Would you confederate {{CcoCampaignEventDilemma:FirstTargetFactionNameWithIcon}}, or will you end it's life here?	true
+cdir_events_dilemma_choice_details_localised_choice_label_dyn_dis_realm_divided_confederation_dilemmaSCRIPTED_1	You're forgiven.	true
+cdir_events_dilemma_choice_details_localised_choice_label_dyn_dis_realm_divided_confederation_dilemmaSCRIPTED_2	The Dragon Emperor is mercyful. I'm not.	true
+dilemmas_localised_title_dyn_dis_realm_divided_confederation_dilemma	The Choice	true

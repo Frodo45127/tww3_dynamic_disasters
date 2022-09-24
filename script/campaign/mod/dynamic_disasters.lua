@@ -1541,11 +1541,38 @@ end
 ---@param faction FACTION_SCRIPT_INTERFACE #Faction object of the faction that will receive the dilemma.
 ---@param dilemma_key string #Key for the dilemma this function will trigger. Must exists in the DB.
 ---@param choices string #Key for the dilemma this function will trigger. Must exists in the DB and be ordered in the table.
-function dynamic_disasters:trigger_dilemma(faction, dilemma_key, choices)
+---@param target_faction FACTION_SCRIPT_INTERFACE #Optional. Faction to use as target for the dilemma.
+---@param secondary_faction FACTION_SCRIPT_INTERFACE #Optional. Secondary Faction to use as target for the dilemma.
+---@param character FAMILY_MEMBER_SCRIPT_INTERFACE #Optional. Character to use as target for the dilemma.
+---@param mf MILITARY_FORCE_SCRIPT_INTERFACE #Optional. Military force to use as target for the dilemma.
+---@param region REGION_SCRIPT_INTERFACE #Optional. Region to use as target for the dilemma.
+---@param settlement SETTLEMENT_SCRIPT_INTERFACE #Optional. Settlement to use as target for the dilemma.
+function dynamic_disasters:trigger_dilemma(faction, dilemma_key, choices, target_faction, secondary_faction, character, mf, region, settlement)
 
     local dilemma_builder = cm:create_dilemma_builder(dilemma_key);
     local payload_builder = cm:create_payload();
 
+    -- Targets
+    if target_faction then
+        dilemma_builder:add_target("default", target_faction);
+    end
+    if secondary_faction then
+        dilemma_builder:add_target("target_faction_1", secondary_faction);
+    end
+    if character then
+        dilemma_builder:add_target("default", character);
+    end
+    if mf then
+        dilemma_builder:add_target("default", mf);
+    end
+    if region then
+        dilemma_builder:add_target("default", region);
+    end
+    if settlement then
+        dilemma_builder:add_target("default", settlement);
+    end
+
+    -- Choices
     for i = 1, #choices do
         if i == 5 then
             break;
@@ -1557,6 +1584,13 @@ function dynamic_disasters:trigger_dilemma(faction, dilemma_key, choices)
                 if payload_type == "effect_bundle" then
                     payload_builder:effect_bundle_to_faction(payload_data);
 
+                end
+
+                if payload_type == "form_confederation" then
+                    local confed_faction = cm:get_faction(payload_data);
+                    if not confed_faction == false and confed_faction:is_null_interface() == false then
+                        payload_builder:form_confederation(faction, confed_faction, true)
+                    end
                 end
             end
         end

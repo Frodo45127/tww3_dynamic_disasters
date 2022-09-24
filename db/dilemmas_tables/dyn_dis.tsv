@@ -4,3 +4,4 @@ dyn_dis_chaos_invasion_rift_dilemma_khorne			ai_enters_khorne_realm	false	false	
 dyn_dis_chaos_invasion_rift_dilemma_nurgle			ai_enters_nurgle_realm	false	false	Event				true
 dyn_dis_chaos_invasion_rift_dilemma_slaanesh			ai_enters_slaanesh_realm	false	false	Event				true
 dyn_dis_chaos_invasion_rift_dilemma_tzeentch			ai_enters_tzeentch_realm	false	false	Event				true
+dyn_dis_realm_divided_confederation_dilemma			cth/land_defeat	false	false	Event				true
