@@ -2127,6 +2127,19 @@ function dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regio
                         end
                     end
 
+                    -- Make sure we don't declare wars on vassals of ignored subcultures.
+                    if ignore_region == false then
+                        local master = faction:master();
+                        if not master == false and master:is_null_interface() == false then
+                            for j = 1, #subcultures_to_ignore do
+                                if subcultures_to_ignore[j] == master:subculture() then
+                                    ignore_region = true;
+                                    break;
+                                end
+                            end
+                        end
+                    end
+
                     -- If the current region is not to be ignored, declate war on the owner.
                     if ignore_region == false then
                         dynamic_disasters:declare_war(faction:name(), region_owner:name(), true, true)
@@ -2173,6 +2186,19 @@ function dynamic_disasters:declare_war_on_adjacent_region_owners(faction, base_r
                         if subcultures_to_ignore[j] == region_subculture then
                             ignore_region = true;
                             break;
+                        end
+                    end
+
+                    -- Make sure we don't declare wars on vassals of ignored subcultures.
+                    if ignore_region == false then
+                        local master = faction:master();
+                        if not master == false and master:is_null_interface() == false then
+                            for j = 1, #subcultures_to_ignore do
+                                if subcultures_to_ignore[j] == master:subculture() then
+                                    ignore_region = true;
+                                    break;
+                                end
+                            end
                         end
                     end
 
