@@ -337,9 +337,6 @@ function disaster_aztec_invasion:trigger_stage_1()
 
     for _, faction_key in pairs(self.settings.factions) do
 
-        -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances.
-        endgame:no_peace_no_confederation_only_war(faction_key)
-
         -- For alive factions, give them armies in their capital and let the AI use them as they please.
         local faction = cm:get_faction(faction_key);
         if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false then
@@ -356,6 +353,9 @@ function disaster_aztec_invasion:trigger_stage_1()
                 dynamic_disasters:create_scenario_force(faction_key, region:name(), self.settings.army_template, self.settings.unit_count, false, army_count, self.name, nil);
             end
         end
+
+        -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
+        endgame:no_peace_no_confederation_only_war(faction_key)
 
         -- The rest of the armies should be spawned regardless of the faction being dead.
         for _, coast in pairs(self.settings.stage_1_data.regions[faction_key]) do

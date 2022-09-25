@@ -1735,9 +1735,6 @@ function disaster_chaos_invasion:trigger_stage_2()
     -- Spawn all the stage 2 chaos armies. This is where hell breaks loose... literally.
     for _, faction_key in pairs(self.settings.stage_2_data.factions) do
 
-        -- Declare war against the player first to avoid bugs.
-        endgame:no_peace_no_confederation_only_war(faction_key)
-
         -- Land spawns are region-based, so we spawn them using their region key.
         local army_count = math.ceil(2 * self.settings.difficulty_mod);
         local army_template = self.stage_2_data.army_templates[faction_key];
@@ -1768,6 +1765,9 @@ function disaster_chaos_invasion:trigger_stage_2()
                 end
             end
 
+            -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
+            endgame:no_peace_no_confederation_only_war(faction_key)
+
             -- War declarations against AI.
             dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.stage_2_data.regions[faction_key].land.regions, true, self.denied_for_sc)
             self:declare_war_on_unvasalized_norscans(faction, self.stage_2_data.regions[faction_key].land.regions)
@@ -1793,6 +1793,7 @@ function disaster_chaos_invasion:trigger_stage_2()
             end
 
             local faction = cm:get_faction(faction_key);
+            endgame:no_peace_no_confederation_only_war(faction_key)
             dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.stage_2_data.regions[faction_key].sea.targets, true, self.denied_for_sc)
             self:declare_war_on_unvasalized_norscans(faction, self.stage_2_data.regions[faction_key].sea.targets)
         end

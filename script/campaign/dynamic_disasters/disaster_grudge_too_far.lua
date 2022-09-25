@@ -185,15 +185,14 @@ end
 -- Function to trigger the disaster.
 function disaster_grudge_too_far:trigger_second_great_beard_war()
 	for _, faction_key in pairs(self.settings.factions) do
-
-        -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances.
-        endgame:no_peace_no_confederation_only_war(faction_key)
-
         local region_key = potential_dwarfs[faction_key];
 		local invasion_faction = cm:get_faction(faction_key)
 
         local army_count = math.floor(self.settings.army_count_per_province * self.settings.difficulty_mod);
 		dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.unit_count, false, army_count, self.name)
+
+        -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
+        endgame:no_peace_no_confederation_only_war(faction_key)
 
         -- In the case of Karak Izor, also spawn armies in Karak Eight Peaks if it controls it.
         if faction_key == "wh_main_dwf_karak_izor" then
