@@ -39,6 +39,15 @@ disaster_grudge_too_far = {
     -- If the disaster is an endgame scenario, define here the objectives to pass to the function that creates the victory condition.
     objectives = {
         {
+            type = "DESTROY_FACTION",
+            conditions = {
+                "confederation_valid"
+            },
+            payloads = {
+                "money 50000"
+            }
+        },
+        {
             type = "CONTROL_N_REGIONS_FROM",
             conditions = {
                 "override_text mission_text_text_mis_activity_control_n_regions_satrapy_including_at_least_n"
@@ -47,15 +56,6 @@ disaster_grudge_too_far = {
                 "money 25000"
             }
         },
-        {
-            type = "DESTROY_FACTION",
-            conditions = {
-                "confederation_valid"
-            },
-            payloads = {
-                "money 50000"
-            }
-        }
     },
 
     -- Settings of the disaster that will be stored in a save.
@@ -223,12 +223,12 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
     dynamic_disasters:force_peace_between_factions(self.settings.factions, true);
 
     -- If we got regions, prepare the victory mission/disaster end data.
-    table.insert(self.objectives[1].conditions, "total " .. math.ceil(#self.settings.regions * 0.65))
+    table.insert(self.objectives[2].conditions, "total " .. math.ceil(#self.settings.regions * 0.65))
 	for i = 1, #self.settings.regions do
-		table.insert(self.objectives[1].conditions, "region " .. self.settings.regions[i])
+		table.insert(self.objectives[2].conditions, "region " .. self.settings.regions[i])
 	end
     for i = 1, #self.settings.factions do
-        table.insert(self.objectives[2].conditions, "faction " .. self.settings.factions[i])
+        table.insert(self.objectives[1].conditions, "faction " .. self.settings.factions[i])
     end
 
     -- Reveal all regions subject to capture.

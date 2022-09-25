@@ -92,15 +92,15 @@ mct_dyn_dis_disable_vanilla_endgames	Disable Vanilla Endgames	true
 mct_dyn_dis_disable_vanilla_endgames_tooltip	NOTE: This may cause bugs if switched on and off in the middle of a campaign! And switching vanilla endgames on again requires a save/reload to take full effect. \\n\\nThis setting toggles the vanilla endgame logic on and off. If you uncheck it, vanilla disasters may trigger twice, once by the endgames logic, and once by this mod.	true
 effects_description_fro_dyn_dis_chaos_corruption_mapwide	Chaos corruption: %+n	true
 effect_bundles_localised_title_fro_dyn_dis_chaos_invasion_global_effects	Flow of the Polar Gates	true
-missions_localised_description_dyn_dis_grudge_too_far_we_ran_out_of_book_1	The Dwarfs have declared war onto the whole world! Defeat them and make the incredible famed wealth of the Karaz-Ankor yours!	true
-missions_localised_title_dyn_dis_grudge_too_far_we_ran_out_of_book_1	The Wealth of the Karaz-Ankor	true
-missions_localised_description_dyn_dis_grudge_too_far_we_ran_out_of_book_2	After thousands of years, the Dwarven holds are ready. The long lost holds will be retaken! The book will be empty of Grudges!	true
-missions_localised_title_dyn_dis_grudge_too_far_we_ran_out_of_book_2	The End of an Era	true
+missions_localised_description_dyn_dis_grudge_too_far_we_ran_out_of_book_1	After thousands of years, the Dwarven holds are ready. The long lost holds will be retaken! The book will be empty of Grudges!	true
+missions_localised_title_dyn_dis_grudge_too_far_we_ran_out_of_book_1	The End of an Era	true
+missions_localised_description_dyn_dis_grudge_too_far_we_ran_out_of_book_2	The Dwarfs have declared war onto the whole world! Defeat them and make the incredible famed wealth of the Karaz-Ankor yours!	true
+missions_localised_title_dyn_dis_grudge_too_far_we_ran_out_of_book_2	The Wealth of the Karaz-Ankor	true
 missions_localised_title_dyn_dis_chaos_invasion_endtimes_unfolding_1	End Times Unfolding	true
 missions_localised_description_dyn_dis_chaos_invasion_endtimes_unfolding_1	The Chaos Gods have made their move. Now... make yours.	true
 missions_localised_description_dyn_dis_aztec_invasion_d_day_1	The Slanns of Lustria have finally deciphered the Great Plan of the Old Gods. And you're not on it.	true
 missions_localised_title_dyn_dis_aztec_invasion_d_day_1	Breaking of the Great Plan	true
-missions_localised_title_dyn_dis_pyramid_of_nagash_guess_whos_back_1	Assault to the Black Pyramid!	true
+missions_localised_title_dyn_dis_pyramid_of_nagash_guess_whos_back_1	Assault the Black Pyramid!	true
 missions_localised_description_dyn_dis_pyramid_of_nagash_guess_whos_back_1	The Pyramid of Nagash must be taken away from their current occupiers, of the world will be turned into a land of dead.	true
 missions_localised_description_dyn_dis_pyramid_of_nagash_guess_whos_back_2	The Black Pyramid of Nagash has been awaken! Kill the beings performing that horrible ritual before dead covers the world!	true
 missions_localised_title_dyn_dis_pyramid_of_nagash_guess_whos_back_2	The End of the Great Necromancer	true
@@ -108,10 +108,10 @@ missions_localised_title_dyn_dis_vampires_rise_planet_of_the_dead_1	Give Rest to
 missions_localised_description_dyn_dis_vampires_rise_planet_of_the_dead_1	Death and decay taints the Winds of Magic. Will you leave it stay like that, or will you resist the Tide of Death?	true
 missions_localised_description_dyn_dis_waaagh_da_biggest_and_badest_waaagh_1	The Greenskin Hordes have assembled the bigger waaaghs ever seen since time immemorial. Would you be able to resist the Green Tide?	true
 missions_localised_title_dyn_dis_waaagh_da_biggest_and_badest_waaagh_1	The Biggest and Badest Waaagh!	true
-missions_localised_title_dyn_dis_wild_hunt_and_so_the_wild_hunt_begun_1	Burn the Oak Tree!	true
-missions_localised_description_dyn_dis_wild_hunt_and_so_the_wild_hunt_begun_1	And incinerate all that is Amber!	true
-missions_localised_title_dyn_dis_wild_hunt_and_so_the_wild_hunt_begun_2	The Hunt for the Wild Hunt	true
-missions_localised_description_dyn_dis_wild_hunt_and_so_the_wild_hunt_begun_2	For ages, Orion and his Wild Hunt have terrified the forces of the Old World. It's time the Hunters become the hunted.	true
+missions_localised_title_dyn_dis_wild_hunt_and_so_the_wild_hunt_begun_1	The Hunt for the Wild Hunt	true
+missions_localised_description_dyn_dis_wild_hunt_and_so_the_wild_hunt_begun_1	For ages, Orion and his Wild Hunt have terrified the forces of the Old World. It's time the Hunters become the hunted.	true
+missions_localised_title_dyn_dis_wild_hunt_and_so_the_wild_hunt_begun_2	Burn the Oak Tree!	true
+missions_localised_description_dyn_dis_wild_hunt_and_so_the_wild_hunt_begun_2	And incinerate all that is Amber!	true
 incidents_localised_title_dyn_dis_grudge_too_far_early_end	Free Drinks for Everyone!	true
 incidents_localised_description_dyn_dis_grudge_too_far_early_end	Seems like thanks to some large shipments of Bugman's Ale, courtesy of a mysterious patron, the Dwarfs have calm down... for now.	true
 incidents_localised_title_dyn_dis_pyramid_of_nagash_vampires_early_end	The Black Pyramid back to normal	true

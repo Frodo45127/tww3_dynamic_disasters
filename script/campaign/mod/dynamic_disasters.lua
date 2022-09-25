@@ -1682,8 +1682,8 @@ function dynamic_disasters:create_mission(faction_key, objectives, can_be_victor
     if can_be_victory and self.settings.victory_condition_triggered == false then
 
         ---@type mission_manager
-        local mm = mission_manager:new(faction_key, "dyn_dis_" .. disaster_name .. "_" .. mission_name, success_callback);
-        self:add_objectives_to_mission(mm, objectives, faction_key)
+        local mm = mission_manager:new(faction_key, "dyn_dis_" .. disaster_name .. "_" .. mission_name .. "_1", success_callback);
+        self:add_objectives_to_mission(mm, objectives, faction_key, false)
         mm:add_payload("text_display dummy_wh3_main_survival_forge_of_souls")
         mm:add_payload("game_victory")
         mm:set_victory_type("wh3_combi_victory_type_ultimate")
@@ -1698,7 +1698,7 @@ function dynamic_disasters:create_mission(faction_key, objectives, can_be_victor
 
             ---@type mission_manager
             local mm = mission_manager:new(faction_key, "dyn_dis_" .. disaster_name .. "_" .. mission_name .. "_" .. i, success_callback);
-            self:add_objectives_to_mission(mm, { objectives[i] }, faction_key)
+            self:add_objectives_to_mission(mm, { objectives[i] }, faction_key, true)
             mm:set_show_mission(true)
             mm:trigger()
         end
@@ -1709,7 +1709,8 @@ end
 ---@param mm mission_manager #Mission manager that will receive the objectives.
 ---@param objectives table #Objectives to add to the mission.
 ---@param faction_key string #Key of the faction that will receive the objectives.
-function dynamic_disasters:add_objectives_to_mission(mm, objectives, faction_key)
+---@param add_payloads bool #If we should add the payloads for each objective.
+function dynamic_disasters:add_objectives_to_mission(mm, objectives, faction_key, add_payloads)
 
     for i1 = 1, #objectives do
         if objectives[i1].type ~= nil then
@@ -1723,8 +1724,10 @@ function dynamic_disasters:add_objectives_to_mission(mm, objectives, faction_key
                 mm:add_condition("faction "..faction_key)
             end
 
-            for i2 = 1, #objectives[i1].payloads do
-                mm:add_payload(objectives[i1].payloads[i2])
+            if add_payloads == true then
+                for i2 = 1, #objectives[i1].payloads do
+                    mm:add_payload(objectives[i1].payloads[i2])
+                end
             end
         end
     end

@@ -908,7 +908,7 @@ disaster_chaos_invasion = {
     stage_early_warning_incident_key = "dyn_dis_chaos_invasion_stage_early_warning",
     stage_1_incident_key = "dyn_dis_chaos_invasion_stage_1_trigger",
     stage_2_incident_key = "dyn_dis_chaos_invasion_stage_2_trigger",
-    stage_3_incident_key = "dyn_dis_chaos_invasion_stage_3_trigger",
+
     finish_before_stage_1_event_key = "dyn_dis_chaos_invasion_finish_before_stage_1",
     finish_event_key = "dyn_dis_chaos_invasion_finish",
 
@@ -1856,9 +1856,6 @@ function disaster_chaos_invasion:trigger_stage_2()
 
     -- Trigger the chaos-related effects
     self:trigger_chaos_effects(0, 10);
-
-    -- The war declarations can cause a fair bit of issues. Make sure all chaos factions remain allies.
-    dynamic_disasters:force_peace_between_factions(self.settings.factions, true);
 
     -- Trigger the end game mission.
     dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.stage_2_incident_key, nil, self.settings.factions[1], function () self:trigger_end_disaster() end, true)
