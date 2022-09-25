@@ -221,6 +221,7 @@ disaster_chaos_invasion = {
                 "wh3_dlc20_chs_kholek",             -- Kholek
                 "wh3_dlc20_chs_sigvald",            -- Sigvald
                 "wh3_dlc20_chs_valkia",             -- Valkia
+                "wh3_dlc20_chs_vilitch",            -- Vilich
             },
             cqis = {},                              -- List of invader's cqi, so we can track them and release them when needed.
             targets = {},                           -- List of regions/factions to invade.
@@ -1699,7 +1700,7 @@ function disaster_chaos_invasion:trigger_stage_1()
     end
 
     -- Spawn all the initial chaos armies.
-    local army_count = math.ceil(1 * self.settings.difficulty_mod);
+    local army_count = math.ceil(3 * self.settings.difficulty_mod);
     for _, faction_key in pairs(self.settings.stage_1_data.factions) do
         local army_template = self.stage_1_data.army_templates[faction_key];
         for _, region_key in pairs(self.stage_1_data.regions[faction_key]) do
@@ -1737,7 +1738,7 @@ function disaster_chaos_invasion:trigger_stage_2()
         endgame:no_peace_no_confederation_only_war(faction_key)
 
         -- Land spawns are region-based, so we spawn them using their region key.
-        local army_count = math.ceil(1 * self.settings.difficulty_mod);
+        local army_count = math.ceil(2 * self.settings.difficulty_mod);
         local army_template = self.stage_2_data.army_templates[faction_key];
         if self.stage_2_data.regions[faction_key]["land"] ~= nil and self.stage_2_data.regions[faction_key]["land"]["regions"] ~= nil then
             for j, region_key in pairs(self.stage_2_data.regions[faction_key].land.regions) do
@@ -2293,7 +2294,7 @@ end
 function disaster_chaos_invasion:check_end_disaster_conditions()
 
     -- Update the list of available factions and check if are all dead.
-    self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
+    self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.default_settings.factions);
     local all_attackers_dead = true;
 
     if #self.settings.factions > 0 then
@@ -2314,7 +2315,7 @@ function disaster_chaos_invasion:check_end_disaster_conditions()
     if self.settings.status == STATUS_TRIGGERED then
 
         -- Update the list of available factions.
-        self.settings.stage_1_data.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.stage_1_data.factions);
+        self.settings.stage_1_data.factions = dynamic_disasters:remove_confederated_factions_from_list(self.default_settings.stage_1_data.factions);
 
         local faction_key = "wh_main_chs_chaos";
         local faction = cm:get_faction(faction_key);
@@ -2325,7 +2326,7 @@ function disaster_chaos_invasion:check_end_disaster_conditions()
     if self.settings.status == STATUS_STAGE_1 then
 
         -- Update the list of available factions.
-        self.settings.stage_2_data.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.stage_2_data.factions);
+        self.settings.stage_2_data.factions = dynamic_disasters:remove_confederated_factions_from_list(self.default_settings.stage_2_data.factions);
         local all_attackers_unavailable_stage_2 = true;
 
         if #self.settings.stage_2_data.factions > 0 then
