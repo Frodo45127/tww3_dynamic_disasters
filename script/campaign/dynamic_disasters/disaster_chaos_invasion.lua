@@ -20,8 +20,10 @@
                     - Sigvald: No particular target, just buildup of forces.
                     - Kholek: Zharr Naggrund, Firemouth.
                     - Valkia: Naggarond.
+                    - Vilich: Great Bastion.
                 - Spawn each faction's armies in provinces we expect they have by now.
                 - Each attacker faction declares war on all non-chaos/non vassal of chaos owners of said provinces and on all its neightbours.
+                - (TODO: UI is broken)If player is Cathay, "Flow of the Polar Gates" increases bastion thread.
                 - Trigger "Flow of the Polar Gates" incident (global chaos corruption).
                 - Trigger "Chaos Rises" video.
                 - Wait 6-10 turns for more info.
@@ -41,7 +43,7 @@
 
                 - Valkia: Naggarond (Reinforcements).
                 - Festus: Altdorf, Middenheim, Talabheim.
-                - Vilich: Averheim (From Barak Varr).
+                - Vilich: Great Bastion (Reinforcements), Averheim (From Barak Varr).
                 - Azzazel: Tor Sethai, Vaul's Anvil (Ulthuan), Lothern.
 
             - Spawn each faction's armies in provinces we expect they have by now, at sea, or near their objectives.
@@ -69,9 +71,6 @@
 
     -- Reference for the timeline: https://warhammerfantasy.fandom.com/wiki/End_Times_Timeline#Appendix_1_-_Chronology_of_the_End_Times
     Not Yet Implemented:
-        - Stage 2:
-            - If player is Cathay, improve pressure in the bastion's thread.
-            - If player is not Cathay and the Bastion still stands, spawn a few of Vilich armies to take it down.
         - Stage 2a:
             - Give INCARNATION trait to certain characters (maybe).
             - Stage the vortex up and down in size, enabling/disabling rifts in certain parts of the world.
@@ -275,6 +274,11 @@ disaster_chaos_invasion = {
                 "wh3_main_combi_region_dagraks_end",
                 "wh3_dlc20_combi_region_glacial_gardens",
             },
+            wh3_dlc20_chs_vilitch = {
+                "wh3_main_combi_region_red_fortress",
+                "wh3_main_combi_region_bloodwind_keep",
+                "wh3_main_combi_region_fortress_of_eyes",
+            },
         },
 
         army_templates = {
@@ -295,6 +299,10 @@ disaster_chaos_invasion = {
             wh3_dlc20_chs_valkia = {
                 chaos = "lategame",
                 khorne = "lategame",
+            },
+            wh3_dlc20_chs_vilitch = {
+                chaos = "lategame",
+                tzeentch = "lategame",
             },
         },
     },
@@ -365,6 +373,13 @@ disaster_chaos_invasion = {
                 },
             },
             wh3_dlc20_chs_vilitch = {
+                land = {
+                    regions = {
+                        "wh3_main_combi_region_red_fortress",
+                        "wh3_main_combi_region_bloodwind_keep",
+                        "wh3_main_combi_region_fortress_of_eyes",
+                    },
+                },
                 sea = {
                     coords = {
                         {605, 465},
