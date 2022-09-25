@@ -1328,6 +1328,12 @@ function dynamic_disasters:initialize()
         end
     end
 
+
+    -- Once all disasters are loaded, get their settings from the mct if available and apply it to them.
+    if get_mct then
+        self:load_from_mct(get_mct());
+    end
+
     -- There's a thing going on with two different victory conditions getting triggered (it bugs out the victory missions panel)
     -- so we need to make sure that none of the vanilla endgames are triggered before allowing this to trigger victory conditions.
     if endgame ~= nil then
@@ -1336,10 +1342,7 @@ function dynamic_disasters:initialize()
         end
     end
 
-    -- Once all disasters are loaded, get their settings from the mct if available and apply it to them.
-    if get_mct then
-        self:load_from_mct(get_mct());
-    end
+    out("Frodo45127: Victory mission has been triggered: " .. tostring(self.settings.victory_condition_triggered) .. ".")
 
     -- After everything is loaded, initialize any integrations we have.
     self:initialize_integrations();
