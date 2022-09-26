@@ -985,9 +985,17 @@ function disaster_chaos_invasion:set_status(status)
                                     }
                                 end
 
+                                -- If the owner is a vassal, then check its master for the owner.
+                                local region_real_owner = nil;
+                                if region_owner:is_vassal() then
+                                    region_real_owner = region_owner:master();
+                                else
+                                    region_real_owner = region_owner;
+                                end
+
                                 local faction_army_owner = default_owner;
                                 for j = 1, #self.settings.factions do
-                                    if region_owner:name() == self.settings.factions[j] then
+                                    if region_real_owner:name() == self.settings.factions[j] then
                                         faction_army_owner = self.settings.factions[j];
                                         break;
                                     end
@@ -1057,7 +1065,15 @@ function disaster_chaos_invasion:set_status(status)
                 local corruption = false;
                 local faction = context:character():faction()
                 if not faction == false and faction:is_null_interface() == false then
-                    corruption = self:favoured_corruption_for_faction(faction);
+
+                    -- If the owner is a vassal, then check its master for the owner.
+                    local real_faction = nil;
+                    if faction:is_vassal() then
+                        real_faction = faction:master();
+                    else
+                        real_faction = faction;
+                    end
+                    corruption = self:favoured_corruption_for_faction(real_faction);
                 end
 
                 if not corruption == false then
