@@ -1709,7 +1709,7 @@ end
 ---@param mm mission_manager #Mission manager that will receive the objectives.
 ---@param objectives table #Objectives to add to the mission.
 ---@param faction_key string #Key of the faction that will receive the objectives.
----@param add_payloads bool #If we should add the payloads for each objective.
+---@param add_payloads boolean #If we should add the payloads for each objective.
 function dynamic_disasters:add_objectives_to_mission(mm, objectives, faction_key, add_payloads)
 
     for i1 = 1, #objectives do
