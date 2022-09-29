@@ -878,10 +878,9 @@ function disaster_the_great_uprising:check_end_disaster_conditions()
             local region_owner = region:owning_faction();
 
             -- Stage 5 should only trigger if Karaz-a-Karak belongs to the dwarfs.
-            if not region_owner == false and region_owner:is_null_interface() == false and region_owner:subculture() == "wh_main_sc_dwf_dwarfs" then
-                return false
+            if not region_owner == false and region_owner:is_null_interface() == false and region_owner:subculture() ~= "wh_main_sc_dwf_dwarfs" then
+                return true
             end
-
         end
 
         -- If we're about to trigger Stage 5, make sure Clan Mors is still alive.
@@ -897,12 +896,7 @@ function disaster_the_great_uprising:check_end_disaster_conditions()
             end
         end
 
-        if all_attackers_unavailable_stage_5 == true then
-            return true
-        end
-
-        -- If we reached this, we got no more to do.
-        return true;
+        return all_attackers_unavailable_stage_5;
     end
 
     return false;
