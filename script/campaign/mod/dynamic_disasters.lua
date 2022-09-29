@@ -1275,10 +1275,10 @@ function dynamic_disasters:initialize()
                                 break;
                             end
                         end
+                    end
 
-                        if allowed == false then
-                            disaster_is_valid = false;
-                        end
+                    if allowed == false then
+                        disaster_is_valid = false;
                     end
                 end
             else
