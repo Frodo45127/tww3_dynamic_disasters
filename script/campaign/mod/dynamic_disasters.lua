@@ -1370,7 +1370,12 @@ function dynamic_disasters:initialize()
     -- There's a thing going on with two different victory conditions getting triggered (it bugs out the victory missions panel)
     -- so we need to make sure that none of the vanilla endgames are triggered before allowing this to trigger victory conditions.
     if endgame ~= nil then
-        if endgame.settings.endgame_enabled == true then
+        endgame.settings.endgame_enabled = not self.settings.disable_vanilla_endgames;
+
+        if endgame.settings.endgame_enabled == false then
+            core:remove_listener("endgame_victory_trigger_listener")
+            core:remove_listener("endgame_turn_trigger_listener")
+        else
             self.settings.victory_condition_triggered = true;
         end
     end
