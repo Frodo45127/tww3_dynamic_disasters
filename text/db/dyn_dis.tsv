@@ -22,8 +22,8 @@ mct_dyn_dis_enable	Enable Dynamic Disasters	true
 mct_dyn_dis_enable_tooltip	Enable/Disable the whole mod. \\n\\nSafe to disable mid-campaign, but on-going disasters will still finish.	true
 mct_dyn_dis_aztec_invasion_enable	Enable "Enactment of the Great Plan" disaster	true
 mct_dyn_dis_aztec_invasion_enable_tooltip	Enable/Disable the "Enactment of the Great Plan" disaster.\\n\\nThe Slann of Lustria have finally understood the Great Plan. And they plan to Enact it.\\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
-mct_dyn_dis_mod_config	Global Config	true
-mct_dyn_dis_disasters_config	Disaster Specific Config	true
+mct_dyn_dis_mod_config	1.Global Config	true
+mct_dyn_dis_disasters_config	2.Disaster Specific Config	true
 mct_dyn_dis_min_turn_value	Minimum Turn	true
 mct_dyn_dis_difficulty_mod	Difficulty Modifier	true
 mct_dyn_dis_min_turn_value_tooltip	Minimum turn required for this disaster to trigger.	true
@@ -208,3 +208,5 @@ dilemmas_localised_description_dyn_dis_realm_divided_confederation_dilemma	After
 cdir_events_dilemma_choice_details_localised_choice_label_dyn_dis_realm_divided_confederation_dilemmaSCRIPTED_1	You're forgiven.	true
 cdir_events_dilemma_choice_details_localised_choice_label_dyn_dis_realm_divided_confederation_dilemmaSCRIPTED_2	The Dragon Emperor is mercyful. I'm not.	true
 dilemmas_localised_title_dyn_dis_realm_divided_confederation_dilemma	The Choice: Servitude or Death	true
+mct_dyn_dis_automatic_difficulty_enable	Enable Automatic Difficulty	true
+mct_dyn_dis_automatic_difficulty_enable_tooltip	Enabling this will change the disaster difficulty based on campaign difficulty. This disables the difficulty multipiers of each disaster and the max concurrent disasters selector.	true

@@ -10,7 +10,7 @@ mod:set_description(loc_prefix.."mod_desc", true)
     Global Config
 ]]
 
-local disasters_global_config_section = mod:add_new_section("mod_config", loc_prefix.."mod_config", true)
+local disasters_global_config_section = mod:add_new_section("a_mod_config", loc_prefix.."mod_config", true)
 
 local dynamic_disasters_enable = mod:add_new_option("dynamic_disasters_enable", "checkbox")
 dynamic_disasters_enable:set_default_value(true)
@@ -22,11 +22,18 @@ dynamic_disasters_disable_vanilla_endgames:set_default_value(true)
 dynamic_disasters_disable_vanilla_endgames:set_text(loc_prefix.."disable_vanilla_endgames", true)
 dynamic_disasters_disable_vanilla_endgames:set_tooltip_text(loc_prefix.."disable_vanilla_endgames_tooltip", true)
 
-local dynamic_disasters_debug = mod:add_new_option("dynamic_disasters_debug", "checkbox")
-dynamic_disasters_debug:set_default_value(false)
-dynamic_disasters_debug:set_text(loc_prefix.."debug", true)
-dynamic_disasters_debug:set_tooltip_text(loc_prefix.."debug_tooltip", true)
-
+local dynamic_disasters_automatic_difficulty_enable = mod:add_new_option("dynamic_disasters_automatic_difficulty_enable", "checkbox")
+dynamic_disasters_automatic_difficulty_enable:set_default_value(true)
+dynamic_disasters_automatic_difficulty_enable:set_text(loc_prefix.."automatic_difficulty_enable", true)
+dynamic_disasters_automatic_difficulty_enable:set_tooltip_text(loc_prefix.."automatic_difficulty_enable_tooltip", true)
+--[[
+local dynamic_disasters_global_difficulty = mod:add_new_option("dynamic_disasters_global_difficulty", "slider")
+dynamic_disasters_global_difficulty:set_text(loc_prefix.."global_difficulty", true)
+dynamic_disasters_global_difficulty:set_tooltip_text(loc_prefix.."global_difficulty_tooltip", true)
+dynamic_disasters_global_difficulty:slider_set_min_max(1, 4)
+dynamic_disasters_global_difficulty:set_default_value(2)
+dynamic_disasters_global_difficulty:slider_set_step_size(1)
+]]--
 local dynamic_disasters_max_simul = mod:add_new_option("dynamic_disasters_max_simul", "slider")
 dynamic_disasters_max_simul:set_text(loc_prefix.."max_simul", true)
 dynamic_disasters_max_simul:set_tooltip_text(loc_prefix.."max_simul_tooltip", true)
@@ -34,7 +41,12 @@ dynamic_disasters_max_simul:slider_set_min_max(1, 50)
 dynamic_disasters_max_simul:set_default_value(4)
 dynamic_disasters_max_simul:slider_set_step_size(1)
 
-local disasters_individual_config_section = mod:add_new_section("disasters_config", loc_prefix.."disasters_config", true)
+local dynamic_disasters_debug = mod:add_new_option("dynamic_disasters_debug", "checkbox")
+dynamic_disasters_debug:set_default_value(false)
+dynamic_disasters_debug:set_text(loc_prefix.."debug", true)
+dynamic_disasters_debug:set_tooltip_text(loc_prefix.."debug_tooltip", true)
+
+local disasters_individual_config_section = mod:add_new_section("z_disasters_config", loc_prefix.."disasters_config", true)
 
 
 --[[

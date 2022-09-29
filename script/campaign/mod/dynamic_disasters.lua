@@ -12,6 +12,7 @@ dynamic_disasters = {
     default_settings = {                            -- Default settings for the manager.
         enabled = true,                             -- If the entire Dynamic Disasters system is enabled.
         debug_2 = false,                            -- Debug mode. Forces all disasters to trigger and all in-between phase timers are reduced to 1 turn.
+        automatic_difficulty = true,                -- If the difficulty must be chosen based on the campaign difficulty.
         disable_vanilla_endgames = true,            -- If this should disable the vanilla endgames, to avoid duplicated disasters. TODO: Fix issues with missions getting overwritten due to this.
         victory_condition_triggered = false,        -- If a disaster has already triggered a victory condition, as we can't have two at the same time.
         max_endgames_at_the_same_time = 4,          -- Max amount of endgame crisis one can trigger at the same time, to space them out a bit.
@@ -1092,6 +1093,10 @@ function dynamic_disasters:load_from_mct(mct)
         end
     end
 
+    local dynamic_disasters_automatic_difficulty_enable = mod:get_option_by_key("dynamic_disasters_automatic_difficulty_enable")
+    local dynamic_disasters_automatic_difficulty_enable_setting = dynamic_disasters_automatic_difficulty_enable:get_finalized_setting()
+    self.settings.automatic_difficulty = dynamic_disasters_automatic_difficulty_enable_setting
+
     local dynamic_disasters_debug = mod:get_option_by_key("dynamic_disasters_debug")
     local dynamic_disasters_debug_setting = dynamic_disasters_debug:get_finalized_setting()
     self.settings.debug_2 = dynamic_disasters_debug_setting
@@ -1099,6 +1104,12 @@ function dynamic_disasters:load_from_mct(mct)
     local dynamic_disasters_max_simul = mod:get_option_by_key("dynamic_disasters_max_simul")
     local dynamic_disasters_max_simul_setting = dynamic_disasters_max_simul:get_finalized_setting()
     self.settings.max_endgames_at_the_same_time = dynamic_disasters_max_simul_setting
+
+    -- Only set based on campaign difficulty if a campaign has been started or we're starting one.
+    if cm and self.settings.automatic_difficulty == true then
+        local difficulty = cm:get_difficulty();
+        self.settings.max_endgames_at_the_same_time = difficulty
+    end
 
     for _, disaster in pairs(self.disasters) do
         local disaster_enable = mod:get_option_by_key(disaster.name .. "_enable");
@@ -1119,10 +1130,18 @@ function dynamic_disasters:load_from_mct(mct)
             disaster.settings.max_turn = max_turn_setting;
         end
 
-        local difficulty_mod = mod:get_option_by_key(disaster.name .. "_difficulty_mod");
-        if not difficulty_mod == false then
-            local difficulty_mod_setting = difficulty_mod:get_finalized_setting();
-            disaster.settings.difficulty_mod = difficulty_mod_setting / 100;
+        -- Same as before, if we're in a campaign and we have automatic difficulty enabled, scale the multiplier with the campaign difficulty.
+        if cm and self.settings.automatic_difficulty == true then
+            local difficulty = cm:get_difficulty();
+            disaster.settings.difficulty_mod = difficulty / 2.5;
+
+        -- Otherwise, use the normal difficulty multiplier.
+        else
+            local difficulty_mod = mod:get_option_by_key(disaster.name .. "_difficulty_mod");
+            if not difficulty_mod == false then
+                local difficulty_mod_setting = difficulty_mod:get_finalized_setting();
+                disaster.settings.difficulty_mod = difficulty_mod_setting / 100;
+            end
         end
 
         for i = 1, #disaster.settings.mct_settings do
@@ -1328,10 +1347,24 @@ function dynamic_disasters:initialize()
         end
     end
 
-
     -- Once all disasters are loaded, get their settings from the mct if available and apply it to them.
     if get_mct then
         self:load_from_mct(get_mct());
+    end
+
+    -- Set automatic difficulty stuff AFTER it has been taken from the MCT.
+    if self.settings.automatic_difficulty == true then
+        local difficulty = cm:get_difficulty();
+        self.settings.max_endgames_at_the_same_time = difficulty;
+
+        out("\tFrodo45127: Automatic difficulty detected. Setting max concurrent endgame disasters to " .. self.settings.max_endgames_at_the_same_time ..", based on campaign difficulty.")
+
+        for _, disaster in ipairs(self.disasters) do
+            local difficulty = cm:get_difficulty();
+            disaster.settings.difficulty_mod = difficulty / 2.5;
+
+            out("\tFrodo45127: Automatic difficulty detected. Setting difficulty of disaster "..disaster.name.." to ".. disaster.settings.difficulty_mod .. ", based on campaign difficulty.")
+        end
     end
 
     -- There's a thing going on with two different victory conditions getting triggered (it bugs out the victory missions panel)
