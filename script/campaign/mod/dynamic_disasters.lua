@@ -1353,14 +1353,13 @@ function dynamic_disasters:initialize()
     end
 
     -- Set automatic difficulty stuff AFTER it has been taken from the MCT.
-    if self.settings.automatic_difficulty == true then
+    if cm and self.settings.automatic_difficulty == true then
         local difficulty = cm:get_difficulty();
         self.settings.max_endgames_at_the_same_time = difficulty;
 
         out("\tFrodo45127: Automatic difficulty detected. Setting max concurrent endgame disasters to " .. self.settings.max_endgames_at_the_same_time ..", based on campaign difficulty.")
 
         for _, disaster in ipairs(self.disasters) do
-            local difficulty = cm:get_difficulty();
             disaster.settings.difficulty_mod = difficulty / 2.5;
 
             out("\tFrodo45127: Automatic difficulty detected. Setting difficulty of disaster "..disaster.name.." to ".. disaster.settings.difficulty_mod .. ", based on campaign difficulty.")
