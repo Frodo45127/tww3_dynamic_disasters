@@ -1105,12 +1105,6 @@ function dynamic_disasters:load_from_mct(mct)
     local dynamic_disasters_max_simul_setting = dynamic_disasters_max_simul:get_finalized_setting()
     self.settings.max_endgames_at_the_same_time = dynamic_disasters_max_simul_setting
 
-    -- Only set based on campaign difficulty if a campaign has been started or we're starting one.
-    if cm and self.settings.automatic_difficulty == true then
-        local difficulty = cm:get_difficulty();
-        self.settings.max_endgames_at_the_same_time = difficulty
-    end
-
     for _, disaster in pairs(self.disasters) do
         local disaster_enable = mod:get_option_by_key(disaster.name .. "_enable");
         if not disaster_enable == false then
@@ -1130,18 +1124,10 @@ function dynamic_disasters:load_from_mct(mct)
             disaster.settings.max_turn = max_turn_setting;
         end
 
-        -- Same as before, if we're in a campaign and we have automatic difficulty enabled, scale the multiplier with the campaign difficulty.
-        if cm and self.settings.automatic_difficulty == true then
-            local difficulty = cm:get_difficulty();
-            disaster.settings.difficulty_mod = difficulty / 2.5;
-
-        -- Otherwise, use the normal difficulty multiplier.
-        else
-            local difficulty_mod = mod:get_option_by_key(disaster.name .. "_difficulty_mod");
-            if not difficulty_mod == false then
-                local difficulty_mod_setting = difficulty_mod:get_finalized_setting();
-                disaster.settings.difficulty_mod = difficulty_mod_setting / 100;
-            end
+        local difficulty_mod = mod:get_option_by_key(disaster.name .. "_difficulty_mod");
+        if not difficulty_mod == false then
+            local difficulty_mod_setting = difficulty_mod:get_finalized_setting();
+            disaster.settings.difficulty_mod = difficulty_mod_setting / 100;
         end
 
         for i = 1, #disaster.settings.mct_settings do
@@ -1352,20 +1338,6 @@ function dynamic_disasters:initialize()
         self:load_from_mct(get_mct());
     end
 
-    -- Set automatic difficulty stuff AFTER it has been taken from the MCT.
-    if cm and self.settings.automatic_difficulty == true then
-        local difficulty = cm:get_difficulty();
-        self.settings.max_endgames_at_the_same_time = difficulty;
-
-        out("\tFrodo45127: Automatic difficulty detected. Setting max concurrent endgame disasters to " .. self.settings.max_endgames_at_the_same_time ..", based on campaign difficulty.")
-
-        for _, disaster in ipairs(self.disasters) do
-            disaster.settings.difficulty_mod = difficulty / 2.5;
-
-            out("\tFrodo45127: Automatic difficulty detected. Setting difficulty of disaster "..disaster.name.." to ".. disaster.settings.difficulty_mod .. ", based on campaign difficulty.")
-        end
-    end
-
     -- There's a thing going on with two different victory conditions getting triggered (it bugs out the victory missions panel)
     -- so we need to make sure that none of the vanilla endgames are triggered before allowing this to trigger victory conditions.
     if endgame ~= nil then
@@ -1397,6 +1369,40 @@ function dynamic_disasters:initialize()
         end,
         true
     );
+
+    -- Listener to make sure the automatic difficulty works and it's kept updated.
+    -- We CANNOT do this on initialization if we use the MCT, so we need to fallback to good ol listener on turn start.
+    -- NOTE: leave the aaa in the name, so it triggers before anything else.
+    core:add_listener(
+        "aaaDynamicDisastersAutoDifficultyCheck",
+        "WorldStartRound",
+        true,
+        function ()
+
+            -- If we have auto difficulty enabled, set the difficulty based on campaign difficulty.
+            if self.settings.automatic_difficulty == true then
+                local difficulty = cm:get_difficulty();
+                self.settings.max_endgames_at_the_same_time = difficulty;
+                out("\tFrodo45127: Automatic difficulty detected. Setting max concurrent endgame disasters to " .. self.settings.max_endgames_at_the_same_time ..", based on campaign difficulty.")
+                for _, disaster in ipairs(self.disasters) do
+                    disaster.settings.difficulty_mod = difficulty / 2.5;
+                    out("\tFrodo45127: Automatic difficulty detected. Setting difficulty of disaster "..disaster.name.." to ".. disaster.settings.difficulty_mod .. ", based on campaign difficulty.")
+                end
+
+            -- If we have auto difficulty disabled but have MCT, load it from there.
+            elseif get_mct then
+                self:load_from_mct(get_mct());
+
+            -- If not, load it from the default values.
+            else
+                self.settings.max_endgames_at_the_same_time = self.default_settings.max_endgames_at_the_same_time;
+                for _, disaster in ipairs(self.disasters) do
+                    disaster.settings.difficulty_mod = disaster.default_settings.difficulty_mod;
+                end
+            end
+        end,
+        true
+    )
 
     -- Listener to check if the Vortex VFX should be enabled or not this turn. This has to trigger after all listeners to work properly.
     --core:add_listener(
