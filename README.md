@@ -16,15 +16,17 @@ This mod dinamically loads disasters from lua scripts present in the ***script/c
 * MCT integration is optional. MCT settings are updated when closing the MCT dialog or at the start of each turn, before processing disasters for that turn.
 * To add custom MCT settings for a disaster, add the key of the setting to the *mct_settings* table and the framework will try to load any setting called **disaster_name_setting_key** into disaster.settings.setting_key when loading settings. For an example, check the "enable_rifts" setting in the chaos invasion disaster.
 
-# Unit Mod integrations
+# Unit Mod integrations/Submods
 
-For army spawning, this mod uses hardcoded army templates (similar to what the endgames script uses). This means custom units will not appear by default in disaster-spawned armies. That can be solved by making a unit mod integration. Similar to how disasters are loaded, unit mod integrations are scripts dinamically loaded from ***script/campaign/dynamic_disasters_integrations/***. The script just needs one line per unit/template/faction calling ***dynamic_disasters:add_unit_to_army_template***. The framework will take care to ensure to only load the integration if the unit is valid, reporting any error to the logs. For more guidance, check the example.lua integration, or any of the other ones.
+For spawning armies, this mod uses hardcoded army templates (similar to what the endgames script uses). This means custom units will not appear by default in disaster-spawned armies. That can be solved by making a unit mod integration. Similar to how disasters are loaded, unit mod integrations are scripts dinamically loaded from ***script/campaign/dynamic_disasters_integrations/***. The script just needs one line per unit/template/faction calling ***dynamic_disasters:add_unit_to_army_template***. The framework will take care to ensure to only load the integration if the unit is valid, reporting any error to the logs. For more guidance, check the example.lua integration, or any of the other ones.
 
 Currently, the framework has mod integrations with the following mods:
 
 * Expanded Roster - Greenskins - Goblin Pack
 * Expanded Roster - Greenskins - Orc Pack
 * Yin-Yin, the Sea Dragon & Warriors of the Jade Sea
+
+The same goes for submods manipulating anything (including trigger conditions) of a disaster. You can overwrite any function of a disaster with your own, altering its behavior, using a lua script in the integrations folder. That's guaranteed to only load after Dynamic Disasters has been fully initialized.
 
 # Credits
 

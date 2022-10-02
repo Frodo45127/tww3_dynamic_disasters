@@ -67,6 +67,7 @@
         - If its faction is dead, put krokgar in lustria after Xlanhuapec falls
         - If its faction is dead, put Belegar in Karak 8 Peaks
         - If we reach the Karaz-a-Karak battle, maybe enter as reinforcements?
+        - Replace army spawns with undercities, and make some undercities explode.
 
 ]]
 

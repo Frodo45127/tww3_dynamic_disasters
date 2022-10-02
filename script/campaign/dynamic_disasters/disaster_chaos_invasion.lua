@@ -74,7 +74,8 @@
         - Stage 2a:
             - Give INCARNATION trait to certain characters (maybe).
             - Stage the vortex up and down in size, enabling/disabling rifts in certain parts of the world.
-
+        - Stage 2b:
+            - Create Chaos cults on random cities on the empire, bretonia, ulthuan, kislev, cathay, norsca, and naggaroth.
         - Stage 3b:
             - If player is Cathay, Empire, Bretonia, Vampires, High Elves or Dark Elves, trigger a dilemma to become a vassal of chaos:
                 - If rejected, continue as normal.
