@@ -267,7 +267,7 @@ function disaster_realm_divided:set_status(status)
 
             for i = 1, #self.settings.cathayan_factions_to_delete do
                 local index = self.settings.cathayan_factions_to_delete[i]
-                table.remove(self.settings.cathayan_factions, i)
+                table.remove(self.settings.cathayan_factions, index)
             end
 
             -- Cleanp the list of factions before continuing.
