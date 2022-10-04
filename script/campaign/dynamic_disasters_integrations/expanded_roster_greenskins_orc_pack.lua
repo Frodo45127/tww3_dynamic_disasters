@@ -29,12 +29,12 @@ if dynamic_disasters then
     -- Lategame Savage Orcs
     ----------------------------------------
     -- Infantry
-    error_message = dynamic_disasters:add_unit_to_army_template("greenskins", "lategame_savage_orcs", "grn_inf_savage_big_great", 4); if is_string(error_message) then out("\t\t" .. error_message); end
+    error_message = dynamic_disasters:add_unit_to_army_template("savage_orcs", "lategame", "grn_inf_savage_big_great", 4); if is_string(error_message) then out("\t\t" .. error_message); end
 
     -- Monsters
-    error_message = dynamic_disasters:add_unit_to_army_template("greenskins", "lategame_savage_orcs", "grn_mon_savage_giant", 2); if is_string(error_message) then out("\t\t" .. error_message); end
+    error_message = dynamic_disasters:add_unit_to_army_template("savage_orcs", "lategame", "grn_mon_savage_giant", 2); if is_string(error_message) then out("\t\t" .. error_message); end
 
     -- Heroes
-    error_message = dynamic_disasters:add_unit_to_army_template("greenskins", "lategame_orcs", "wh_grn_savage_boss", 1); if is_string(error_message) then out("\t\t" .. error_message); end
+    error_message = dynamic_disasters:add_unit_to_army_template("savage_orcs", "lategame", "wh_grn_savage_boss", 1); if is_string(error_message) then out("\t\t" .. error_message); end
 
 end
