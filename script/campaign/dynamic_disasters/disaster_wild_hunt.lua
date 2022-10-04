@@ -178,13 +178,13 @@ function disaster_wild_hunt:trigger_the_wild_hunt()
         local invasion_faction = cm:get_faction(faction_key)
 
         local army_count = math.floor(self.settings.army_count_per_province * self.settings.difficulty_mod);
-        dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.unit_count, false, army_count, self.name)
+        dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.unit_count, false, army_count, self.name, nil)
 
         -- In the case of the main Wood Elf faction, also spawn armies in the Oak of Ages if it owns it.
         if faction_key == "wh_dlc05_wef_wood_elves" then
             local oak_of_ages_region = cm:get_region("wh3_main_combi_region_the_oak_of_ages");
             if oak_of_ages_region:owning_faction():name() == faction_key then
-                dynamic_disasters:create_scenario_force(faction_key, "wh3_main_combi_region_the_oak_of_ages", self.settings.army_template, self.settings.unit_count, false, army_count, self.name)
+                dynamic_disasters:create_scenario_force(faction_key, "wh3_main_combi_region_the_oak_of_ages", self.settings.army_template, self.settings.unit_count, false, army_count, self.name, nil)
                 endgame:no_peace_no_confederation_only_war(faction_key)
                 dynamic_disasters:declare_war_for_owners_and_neightbours(invasion_faction, { "wh3_main_combi_region_the_oak_of_ages" }, true, { "wh_dlc05_sc_wef_wood_elves" })
                 table.insert(self.settings.regions, "wh3_main_combi_region_the_oak_of_ages");

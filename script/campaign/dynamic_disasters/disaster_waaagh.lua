@@ -119,7 +119,7 @@ disaster_waaagh = {
             greenskins = "lategame_orcs",
         },
         wh_main_grn_orcs_of_the_bloody_hand = {
-            greenskins = "lategame_savage_orcs",
+            savage_orcs = "lategame",
         },
         wh2_dlc15_grn_broken_axe = {
             greenskins = "lategame_goblins",
@@ -133,7 +133,7 @@ disaster_waaagh = {
 
         -- Minor
         wh_main_grn_top_knotz = {
-            greenskins = "lategame_savage_orcs",
+            savage_orcs = "lategame",
         },
         wh_main_grn_teef_snatchaz = {
             greenskins = "lategame_orcs",
@@ -142,7 +142,7 @@ disaster_waaagh = {
             greenskins = "lategame_orcs",
         },
         wh_main_grn_skull_takerz = {
-            greenskins = "lategame_savage_orcs",
+            savage_orcs = "lategame",
         },
         wh_main_grn_scabby_eye = {
             greenskins = "lategame_orcs",
@@ -179,7 +179,7 @@ disaster_waaagh = {
         },
         --"wh3_main_grn_drippin_fangs", -- Not in the starting map.
         wh3_main_grn_dimned_sun = {
-            greenskins = "lategame_savage_orcs",
+            savage_orcs = "lategame",
         },
         wh3_main_grn_dark_land_orcs = {
             greenskins = "lategame_orcs",
@@ -188,7 +188,7 @@ disaster_waaagh = {
             greenskins = "lategame_orcs",
         },
         wh2_main_grn_blue_vipers = {
-            greenskins = "lategame_savage_orcs",
+            savage_orcs = "lategame",
         },
         wh2_main_grn_arachnos = {
             greenskins = "lategame_goblins",

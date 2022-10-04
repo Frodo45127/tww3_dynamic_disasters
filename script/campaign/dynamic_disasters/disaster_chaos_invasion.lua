@@ -1438,7 +1438,7 @@ function disaster_chaos_invasion:set_status(status)
                         ""
                     };
 
-                    dynamic_disasters:trigger_dilemma(faction, dilemma_key, choices)
+                    dynamic_disasters:trigger_dilemma(faction, dilemma_key, choices, nil, nil, nil, nil, nil, nil)
                 end
             end
         end,
@@ -1888,7 +1888,6 @@ end
 ---@param faction FACTION_SCRIPT_INTERFACE #Faction that will declare war.
 ---@param regions string #Regions keys to declare war on.
 function disaster_chaos_invasion:declare_war_on_unvasalized_norscans(faction, regions)
-    local faction_key = faction:name();
 
     -- If the owners are norsca AND not a vassal of chaos, declare war on them too to kinda trigger a vasallization by force.
     for _, region_key in pairs(regions) do
@@ -1982,8 +1981,8 @@ end
 
 -- Function to trigger the opening of the Chaos Wastes rifts.
 ---@param nodes table #Numeric-indexed table with the list of node keys to open.
----@param percentage float? #Optional. Percentage of the closed nodes of the nodes provided that we're going to open. Accepts values 0-1.
----@param min_chaos_required float? #Optional. Minimal amount of chaos required in a province to allow spawning a rift. Accepts values 0-100.
+---@param percentage number? #Optional. Percentage of the closed nodes of the nodes provided that we're going to open. Accepts values 0-1.
+---@param min_chaos_required number? #Optional. Minimal amount of chaos required in a province to allow spawning a rift. Accepts values 0-100.
 function disaster_chaos_invasion:open_teleportation_nodes(nodes, percentage, min_chaos_required)
     out("Frodo45127: Opening rifts.");
     if percentage == nil or percentage > 1 or percentage < 0.1 then

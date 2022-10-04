@@ -67,7 +67,7 @@ disaster_vampires_rise = {
 
         --Disaster-specific data.
 		army_template = {
-			vampires = "lategame"
+			vampire_counts = "lategame"
 		},
 
         army_count_per_province = 4,
@@ -175,7 +175,7 @@ function disaster_vampires_rise:trigger_the_great_vampiric_war()
 		local faction = cm:get_faction(faction_key)
 
         local army_count = math.floor(self.settings.army_count_per_province * self.settings.difficulty_mod);
-        dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.unit_count, false, army_count, self.name)
+        dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.unit_count, false, army_count, self.name, nil)
 
         cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
         endgame:no_peace_no_confederation_only_war(faction_key)

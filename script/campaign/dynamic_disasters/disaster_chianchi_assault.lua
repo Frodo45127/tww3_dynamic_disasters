@@ -259,7 +259,7 @@ function disaster_chianchi_assault:trigger_wall_attack_reinforcement()
     local armies_to_spawn_per_gate = math.floor(1 * math.ceil(self.settings.difficulty_mod));
     for _, location in pairs(Bastion.spawn_locations_by_gate) do
         local spawn_pos = location.spawn_locations[math.random(1, #location.spawn_locations)]
-        dynamic_disasters:create_scenario_force_at_coords(self.settings.faction, location.gate_key, spawn_pos, self.settings.army_template, self.settings.base_army_unit_count, true, armies_to_spawn_per_gate, self.name)
+        dynamic_disasters:create_scenario_force_at_coords(self.settings.faction, location.gate_key, spawn_pos, self.settings.army_template, self.settings.base_army_unit_count, true, armies_to_spawn_per_gate, self.name, nil)
     end
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
@@ -275,7 +275,7 @@ function disaster_chianchi_assault:trigger_full_daemonic_invasion()
     local armies_to_spawn_per_gate = math.floor(1 * math.ceil(self.settings.difficulty_mod));
     for _, location in pairs(Bastion.spawn_locations_by_gate) do
         local spawn_pos = location.spawn_locations[math.random(1, #location.spawn_locations)]
-        dynamic_disasters:create_scenario_force_at_coords(self.settings.faction, location.gate_key, spawn_pos, self.settings.army_template, self.settings.base_army_unit_count, true, armies_to_spawn_per_gate, self.name)
+        dynamic_disasters:create_scenario_force_at_coords(self.settings.faction, location.gate_key, spawn_pos, self.settings.army_template, self.settings.base_army_unit_count, true, armies_to_spawn_per_gate, self.name, nil)
     end
 
     -- Set diplomacy.

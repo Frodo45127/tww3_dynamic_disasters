@@ -110,7 +110,7 @@ disaster_pyramid_of_nagash = {
 		subculture = "wh_main_sc_vmp_vampire_counts",
 		music = "wh_main_sc_vmp_vampire_counts",
 		army_template = {
-			vampires = "lategame"
+			vampire_counts = "lategame"
 		}
 	},
 
@@ -183,7 +183,7 @@ function disaster_pyramid_of_nagash:set_status(status)
 			end,
 			function()
 			    local army_count = math.floor(self.settings.difficulty_mod);
-				dynamic_disasters:create_scenario_force(self.settings.faction_data.faction_key, self.region_key, self.settings.army_template, self.settings.unit_count, false, army_count, self.name)
+				dynamic_disasters:create_scenario_force(self.settings.faction_data.faction_key, self.region_key, self.settings.army_template, self.settings.unit_count, false, army_count, self.name, nil)
 			end,
 			true
 		)
@@ -227,7 +227,7 @@ function disaster_pyramid_of_nagash:trigger_resurection_of_nagash()
 	self.settings.army_template = self.settings.faction_data.army_template;
 
     local army_count = math.floor(self.settings.army_count_per_province * self.settings.difficulty_mod);
-	dynamic_disasters:create_scenario_force(self.settings.faction_data.faction_key, self.region_key, self.settings.army_template, self.settings.unit_count, false, army_count, self.name)
+	dynamic_disasters:create_scenario_force(self.settings.faction_data.faction_key, self.region_key, self.settings.army_template, self.settings.unit_count, false, army_count, self.name, nil)
 
 	local faction = cm:get_faction(self.settings.faction_data.faction_key)
 	cm:force_change_cai_faction_personality(self.settings.faction_data.faction_key, self.settings.faction_data.ai_personality)

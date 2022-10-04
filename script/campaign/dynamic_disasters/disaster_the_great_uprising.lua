@@ -510,7 +510,7 @@ function disaster_the_great_uprising:trigger_stage_1()
     local army_count = math.floor(1.5 * self.settings.difficulty_mod)
     for _, faction_key in pairs(self.settings.factions_stage_1) do
         for _, region_key in pairs(self.regions_stage_1) do
-            dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count, self.name)
+            dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
         end
 
         -- Apply the relevant CAI changes only to Clan Skryre and declare the appropiate wars.
@@ -545,13 +545,13 @@ function disaster_the_great_uprising:trigger_stage_2()
     local army_count_empire = math.ceil(1.5 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_2_empire) do
         local faction_key = self.settings.factions_stage_2_empire_and_araby[math.random(1, #self.settings.factions_stage_2_empire_and_araby)];
-        dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count_empire, self.name)
+        dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count_empire, self.name, nil)
     end
 
     local army_count_araby = math.ceil(2 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_2_araby) do
         local faction_key = self.settings.factions_stage_2_empire_and_araby[math.random(1, #self.settings.factions_stage_2_empire_and_araby)];
-        dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count_araby, self.name)
+        dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count_araby, self.name, nil)
     end
 
     -- The Attack on Cathay depends on Eshin being available to spawn.
@@ -559,7 +559,7 @@ function disaster_the_great_uprising:trigger_stage_2()
         local army_count_cathay = math.ceil(2 * self.settings.difficulty_mod)
         for _, region_key in pairs(self.regions_stage_2_cathay) do
             local faction_key = self.settings.factions_stage_2_cathay[math.random(1, #self.settings.factions_stage_2_cathay)];
-            dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count_cathay, self.name)
+            dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count_cathay, self.name, nil)
         end
     end
 
@@ -602,7 +602,7 @@ function disaster_the_great_uprising:trigger_stage_3()
     local army_count = math.ceil(2.5 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_3) do
         local faction_key = self.settings.factions_stage_3_lustria[math.random(1, #self.settings.factions_stage_3_lustria)];
-        dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count, self.name)
+        dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
     end
 
     -- Force war against every skaven faction for each faction the skaven attack.
@@ -633,7 +633,7 @@ function disaster_the_great_uprising:trigger_stage_4()
     local army_count = math.ceil(2 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_4) do
         local faction_key = self.settings.factions_stage_4_karaz_ankor[math.random(1, #self.settings.factions_stage_4_karaz_ankor)];
-        dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count, self.name)
+        dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
     end
 
     -- Force war against every skaven faction for each faction the skaven attack.
@@ -658,7 +658,7 @@ function disaster_the_great_uprising:trigger_stage_5()
     local army_count = math.ceil(2 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_5) do
         local faction_key = self.settings.factions_stage_5_karaz_a_karak[math.random(1, #self.settings.factions_stage_5_karaz_a_karak)];
-        dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count, self.name)
+        dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
     end
 
     -- Force war against every skaven faction for each faction the skaven attack.
