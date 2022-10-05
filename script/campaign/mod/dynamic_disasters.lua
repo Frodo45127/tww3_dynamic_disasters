@@ -1307,8 +1307,24 @@ function dynamic_disasters:kill_faction_silently(faction_key)
     end;
 end;
 
+-- Function to add a new army template to a specific race, so it can be used in disasters.
+--
+-- NOTE: If you pass an existing army template, it'll wipe out its contents.
+---@param race string #Race owning the army template. Check the dyn_dis_army_templates object for valid races.
+---@param template string #Key of the template we want to add. Must be unique and not exist already.
+---@return boolean|string #True if the unit got added, an error message if there was an error while adding it.
+function dynamic_disasters:add_army_template_to_race(race, template)
+    if self.army_templates[race] == nil then
+        return "ERROR: Race " .. tostring(race) .. " not found in the army templates.";
+    else
+        self.army_templates[race][template] = {};
+    end
+
+    return true;
+end
+
 -- Function to add new units to a specific template, so it's used by disasters using that template.
----@param race string #Race owning the army template. Check the dynamic_disasters object for valid races.
+---@param race string #Race owning the army template. Check the dyn_dis_army_templates object for valid races.
 ---@param template string #Template of that race which will receive the unit.
 ---@param unit_key string #Key of the unit that will be added to the template. Must be a valid unit key from the DB.
 ---@param weight integer #Weight of that unit for army generation. 8-> will surely appear multiple times, 1-> will rarely appear more than once.

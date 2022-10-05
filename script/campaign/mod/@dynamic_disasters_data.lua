@@ -122,7 +122,6 @@ dyn_dis_sea_regions = {
     wh3_main_combi_region_northern_straits_of_the_jade_sea = {
         spawn_positions = {
             {1375, 597},
--- NOTE: This one is global so other disasters can use it too.
             {1377, 535},
         },
         coastal_regions = {
