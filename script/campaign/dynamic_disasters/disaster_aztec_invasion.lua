@@ -575,7 +575,8 @@ function aztec_invasion_spawn_armies_callback(cqi)
                     end
 
                     invasion:set_target("REGION", region_key, faction_key);
-                    invasion:add_aggro_radius(15)
+                    invasion:add_aggro_radius(15);
+                    invasion:abort_on_target_owner_change(true);
 
                     if invasion:has_target() then
                         out.design("\t\tFrodo45127: Setting invasion with general [" .. common.get_localised_string(general:get_forename()) .. "] to attack " .. region_key .. ".")
