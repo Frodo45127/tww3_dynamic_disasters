@@ -69,7 +69,7 @@ function invasion:advance()
                     -- Fix for duplicated war declarations.
                     local faction = cm:get_faction(self.faction);
                     local target_faction = cm:get_faction(self.target_faction);
-                    if not faction == false and faction:is_null_interface() == false and not target_faction == false and target_faction:is_null_interface() == false and not faction:at_war_with(target_faction) then
+                    if self.faction ~= self.target_faction and not faction == false and faction:is_null_interface() == false and not target_faction == false and target_faction:is_null_interface() == false and not faction:at_war_with(target_faction) then
                         cm:force_declare_war(self.faction, self.target_faction, true, true);
                     end
                 end
@@ -222,7 +222,7 @@ function invasion:advance()
                                 -- Fix for duplicated war declarations.
                                 local faction = cm:get_faction(self.faction);
                                 local target_faction = cm:get_faction(self.target_faction);
-                                if not faction == false and faction:is_null_interface() == false and not target_faction == false and target_faction:is_null_interface() == false and not faction:at_war_with(target_faction) then
+                                if self.faction ~= self.target_faction and not faction == false and faction:is_null_interface() == false and not target_faction == false and target_faction:is_null_interface() == false and not faction:at_war_with(target_faction) then
                                     cm:force_declare_war(self.faction, self.target_faction, true, true);
                                 end
                             else
