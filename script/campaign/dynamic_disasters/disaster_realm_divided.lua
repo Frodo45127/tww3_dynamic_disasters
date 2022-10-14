@@ -123,10 +123,6 @@ disaster_realm_divided = {
         difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
 
         -- Disaster-specific data
-        army_template = {
-            cathay = "earlygame"
-        },
-
         unit_count = 19,
         choice_taken = 0,
         faction = "",
@@ -136,6 +132,10 @@ disaster_realm_divided = {
         objectives_completed = 0,
         needed_objectives_completed = 2,
 
+    },
+
+    army_template = {
+        cathay = "earlygame"
     },
 
     catay_regions = {
@@ -302,13 +302,13 @@ function disaster_realm_divided:trigger()
             if faction:has_home_region() then
                 local capital = faction:home_region()
                 local army_count = math.ceil(1 * self.settings.difficulty_mod);
-                dynamic_disasters:create_scenario_force(faction:name(), capital:name(), self.settings.army_template, self.settings.unit_count, false, army_count, self.name, nil);
+                dynamic_disasters:create_scenario_force(faction:name(), capital:name(), self.army_template, self.settings.unit_count, false, army_count, self.name, nil);
 
             -- If we don't have a home region, spawn wherever the faction leader is, if alive.
             elseif not faction:faction_leader() == nil and faction:faction_leader():has_region() then
                 local region = faction:faction_leader():region();
                 local army_count = math.ceil(1 * self.settings.difficulty_mod);
-                dynamic_disasters:create_scenario_force(faction:name(), region:name(), self.settings.army_template, self.settings.unit_count, false, army_count, self.name, nil);
+                dynamic_disasters:create_scenario_force(faction:name(), region:name(), self.army_template, self.settings.unit_count, false, army_count, self.name, nil);
             end
 
             -- Regardless of armies spawned, declare war and buff the AI.

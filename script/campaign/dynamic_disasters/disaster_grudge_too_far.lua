@@ -75,10 +75,6 @@ disaster_grudge_too_far = {
         difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
 
         --Disaster-specific data.
-		army_template = {
-			dwarfs = "lategame"
-		},
-
 		army_count_per_province = 4,
 		unit_count = 19,
         early_warning_delay = 10,
@@ -105,6 +101,11 @@ disaster_grudge_too_far = {
         },
         regions = {}
 	},
+
+    army_template = {
+        dwarfs = "lategame"
+    },
+
     early_warning_incident_key = "wh3_main_ie_incident_endgame_grudge_too_far_early_warning",
 	early_warning_effects_key = "dyn_dis_grudge_too_far_early_warning",
     invasion_incident_key = "wh3_main_ie_incident_endgame_grudge_too_far",
@@ -189,7 +190,7 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
 		local invasion_faction = cm:get_faction(faction_key)
 
         local army_count = math.floor(self.settings.army_count_per_province * self.settings.difficulty_mod);
-		dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.unit_count, false, army_count, self.name, nil)
+		dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_template, self.settings.unit_count, false, army_count, self.name, nil)
 
         -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
         endgame:no_peace_no_confederation_only_war(faction_key)
@@ -198,7 +199,7 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
         if faction_key == "wh_main_dwf_karak_izor" then
             local karak_eight_peaks_region = cm:get_region("wh3_main_combi_region_karak_eight_peaks");
 			if karak_eight_peaks_region:owning_faction():name() == faction_key then
-				dynamic_disasters:create_scenario_force(faction_key, "wh3_main_combi_region_karak_eight_peaks", self.settings.army_template, self.settings.unit_count, false, army_count, self.name, nil)
+				dynamic_disasters:create_scenario_force(faction_key, "wh3_main_combi_region_karak_eight_peaks", self.army_template, self.settings.unit_count, false, army_count, self.name, nil)
                 dynamic_disasters:declare_war_for_owners_and_neightbours(invasion_faction, { "wh3_main_combi_region_karak_eight_peaks" }, true, { "wh_main_sc_dwf_dwarfs" })
                 table.insert(self.settings.regions, region_key);
 			end

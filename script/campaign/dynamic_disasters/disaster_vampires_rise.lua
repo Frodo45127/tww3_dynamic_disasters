@@ -66,15 +66,9 @@ disaster_vampires_rise = {
         difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
 
         --Disaster-specific data.
-		army_template = {
-			vampire_counts = "lategame"
-		},
-
-        army_count_per_province = 4,
-        unit_count = 19,
         early_warning_delay = 10,
 
-       factions = {
+        factions = {
             "wh_main_vmp_schwartzhafen",            -- Vlad/Isabella.
             "wh_main_vmp_vampire_counts",           -- Manfred
             "wh2_dlc11_vmp_the_barrow_legion",      -- Heinrich Kemmler
@@ -94,6 +88,13 @@ disaster_vampires_rise = {
 
         regions = {},
 	},
+
+    army_template = {
+        vampire_counts = "lategame"
+    },
+
+    army_count_per_province = 4,
+    unit_count = 19,
 
     early_warning_incident_key = "wh3_main_ie_incident_endgame_vampires_rise_early_warning",
     early_warning_effects_key = "dyn_dis_vampires_rise_early_warning",
@@ -174,8 +175,8 @@ function disaster_vampires_rise:trigger_the_great_vampiric_war()
         local region_key = potential_vampires[faction_key];
 		local faction = cm:get_faction(faction_key)
 
-        local army_count = math.floor(self.settings.army_count_per_province * self.settings.difficulty_mod);
-        dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.unit_count, false, army_count, self.name, nil)
+        local army_count = math.floor(self.army_count_per_province * self.settings.difficulty_mod);
+        dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_template, self.unit_count, false, army_count, self.name, nil)
 
         cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
         endgame:no_peace_no_confederation_only_war(faction_key)
