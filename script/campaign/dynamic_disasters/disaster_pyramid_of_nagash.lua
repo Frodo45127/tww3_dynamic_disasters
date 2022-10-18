@@ -54,7 +54,8 @@ disaster_pyramid_of_nagash = {
 		{
 			type = "DESTROY_FACTION",
 			conditions = {
-				"confederation_valid"
+				"confederation_valid",
+				"vassalization_valid"
 			},
             payloads = {
                 "money 50000"
@@ -231,6 +232,7 @@ function disaster_pyramid_of_nagash:trigger_resurection_of_nagash()
 
 	local faction = cm:get_faction(self.settings.faction_data.faction_key)
 	cm:force_change_cai_faction_personality(self.settings.faction_data.faction_key, self.settings.faction_data.ai_personality)
+	cm:instantly_research_all_technologies(data.faction_key)
 	endgame:no_peace_no_confederation_only_war(self.settings.faction_data.faction_key)
 	dynamic_disasters:declare_war_for_owners_and_neightbours(faction, { self.region_key }, true, { self.settings.faction_data.subculture })
 
