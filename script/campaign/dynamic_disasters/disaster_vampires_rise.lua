@@ -41,7 +41,8 @@ disaster_vampires_rise = {
         {
             type = "DESTROY_FACTION",
             conditions = {
-                "confederation_valid"
+                "confederation_valid",
+                "vassalization_valid"
             },
             payloads = {
                 "money 50000"
@@ -179,6 +180,7 @@ function disaster_vampires_rise:trigger_the_great_vampiric_war()
         dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_template, self.unit_count, false, army_count, self.name, nil)
 
         cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
+        cm:instantly_research_all_technologies(faction_key)
         endgame:no_peace_no_confederation_only_war(faction_key)
         dynamic_disasters:declare_war_for_owners_and_neightbours(faction, { region_key }, true, { "wh_main_sc_vmp_vampire_counts" })
 
