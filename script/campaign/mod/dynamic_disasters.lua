@@ -806,7 +806,7 @@ end
 function dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, unit_count, declare_war, total_armies, disaster_name, success_callback)
 
     -- total_armies shouldn't be nil, but if it is assume we want a single army
-    if total_armies == nil then
+    if total_armies == nil or total_armies < 1 then
         total_armies = 1
     end
 
@@ -884,7 +884,7 @@ end
 function dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, coords, army_template, unit_count, declare_war, total_armies, disaster_name, success_callback)
 
     -- total_armies shouldn't be nil, but if it is assume we want a single army
-    if total_armies == nil then
+    if total_armies == nil or total_armies < 1 then
         total_armies = 1
     end
 
