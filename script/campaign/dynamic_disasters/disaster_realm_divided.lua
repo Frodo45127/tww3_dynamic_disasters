@@ -97,7 +97,8 @@ disaster_realm_divided = {
         {
             type = "DESTROY_FACTION",
             conditions = {
-                "confederation_valid"
+                "confederation_valid",
+                "vassalization_valid"
             },
             payloads = {
                 "money 20000"

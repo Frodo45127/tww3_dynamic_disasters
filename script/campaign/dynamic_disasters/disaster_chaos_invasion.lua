@@ -130,7 +130,8 @@ disaster_chaos_invasion = {
         {
             type = "DESTROY_FACTION",
             conditions = {
-                "confederation_valid"
+                "confederation_valid",
+                "vassalization_valid"
             },
             payloads = {
                 "money 25000"
