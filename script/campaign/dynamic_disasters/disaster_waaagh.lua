@@ -374,7 +374,7 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
                 region_key = potential_greenskins[faction_key_fixed];
                 if not region_key == nil then
 
-                -- Transfer the region only if it's their original one.
+                    -- Transfer the region only if it's their original one.
                     local region = cm:get_region(region_key)
                     local region_owner = region:owning_faction()
                     if region_owner == false or region_owner:is_null_interface() or (region_owner:name() ~= faction_key and region_owner:is_human() == false and region_owner:subculture() ~= "wh_main_sc_grn_greenskins" and region_owner:subculture() ~= "wh_main_sc_grn_savage_orcs")  then
