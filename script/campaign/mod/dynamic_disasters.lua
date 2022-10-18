@@ -1161,6 +1161,20 @@ function dynamic_disasters:remove_confederated_factions_from_list(factions)
     return clean_factions;
 end
 
+-- Function to get the "base" region for a faction, being the home region/region with the faction leader, or a default one we pass.
+---@param faction FACTION_SCRIPT_INTERFACE #Faction object.
+---@param default_region string #Region to use if we cannot use the capital/leader region.
+function dynamic_disasters:base_region_for_faction(faction, default_region)
+    if not faction == nil and faction:is_null_interface() == false and faction:is_dead() == false then
+        if faction:has_home_region() then
+            return faction:home_region():name()
+        elseif faction:faction_leader():has_region() then
+            return faction:faction_leader():region():name()
+        end
+    end
+
+    return default_region;
+end
 
 -- Function to declare war on all region owners of provided regions, and optionally on all neigthbors of the provided faction.
 --
