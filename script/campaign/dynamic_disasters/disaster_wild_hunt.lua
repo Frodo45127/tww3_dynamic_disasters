@@ -44,7 +44,8 @@ disaster_wild_hunt = {
         {
             type = "DESTROY_FACTION",
             conditions = {
-                "confederation_valid"
+                "confederation_valid",
+                "vassalization_valid"
             },
             payloads = {
                 "money 50000"
@@ -101,6 +102,8 @@ disaster_wild_hunt = {
     army_template = {
         wood_elves = "lategame"
     },
+
+    subculture = "wh_dlc05_sc_wef_wood_elves",
 
     early_warning_incident_key = "wh3_main_ie_incident_endgame_wild_hunt_early_warning",
     early_warning_effects_key = "dyn_dis_wild_hunt_early_warning",
@@ -187,7 +190,7 @@ function disaster_wild_hunt:trigger_the_wild_hunt()
             if oak_of_ages_region:owning_faction():name() == faction_key then
                 dynamic_disasters:create_scenario_force(faction_key, "wh3_main_combi_region_the_oak_of_ages", self.army_template, self.settings.unit_count, false, army_count, self.name, nil)
                 endgame:no_peace_no_confederation_only_war(faction_key)
-                dynamic_disasters:declare_war_for_owners_and_neightbours(invasion_faction, { "wh3_main_combi_region_the_oak_of_ages" }, true, { "wh_dlc05_sc_wef_wood_elves" })
+                dynamic_disasters:declare_war_for_owners_and_neightbours(invasion_faction, { "wh3_main_combi_region_the_oak_of_ages" }, true, { self.subculture })
                 table.insert(self.settings.regions, "wh3_main_combi_region_the_oak_of_ages");
             end
         end
@@ -195,14 +198,15 @@ function disaster_wild_hunt:trigger_the_wild_hunt()
         -- Give the invasion region to the invader if it isn't owned by them or a human
         local region = cm:get_region(region_key)
         local region_owner = region:owning_faction()
-        if region_owner == false or region_owner:is_null_interface() or (region_owner:name() ~= faction_key and region_owner:is_human() == false and region_owner:subculture() ~= "wh_dlc05_sc_wef_wood_elves") then
+        if region_owner == false or region_owner:is_null_interface() or (region_owner:name() ~= faction_key and region_owner:is_human() == false and region_owner:subculture() ~= self.subculture) then
             cm:transfer_region_to_faction(region_key, faction_key)
         end
 
         -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
         cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
+        cm:instantly_research_all_technologies(faction_key);
         endgame:no_peace_no_confederation_only_war(faction_key)
-        dynamic_disasters:declare_war_for_owners_and_neightbours(invasion_faction, { region_key }, true, { "wh_dlc05_sc_wef_wood_elves" })
+        dynamic_disasters:declare_war_for_owners_and_neightbours(invasion_faction, { region_key }, true, { self.subculture })
 
         cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)
         table.insert(self.settings.regions, region_key);
@@ -225,7 +229,7 @@ function disaster_wild_hunt:trigger_the_wild_hunt()
 
     -- Trigger either the victory mission, or just the related incident.
     dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.invasion_incident_key, self.settings.regions[1], self.settings.factions[1], function () self:trigger_end_disaster() end, false)
-    cm:activate_music_trigger("ScriptedEvent_Negative", "wh_dlc05_sc_wef_wood_elves")
+    cm:activate_music_trigger("ScriptedEvent_Negative", self.subculture)
     self:set_status(STATUS_STARTED);
 end
 
