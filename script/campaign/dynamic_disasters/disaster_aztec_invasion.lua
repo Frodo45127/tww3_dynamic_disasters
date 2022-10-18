@@ -356,6 +356,7 @@ function disaster_aztec_invasion:trigger_stage_1()
         end
 
         -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
+        cm:instantly_research_all_technologies(faction_key);
         endgame:no_peace_no_confederation_only_war(faction_key)
 
         -- The rest of the armies should be spawned regardless of the faction being dead.

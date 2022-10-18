@@ -568,6 +568,7 @@ function disaster_the_great_uprising:trigger_stage_2()
     -- This includes owners of the attacked region, and owners of nearby regions. Even if its Skaven.
     for _, faction_key in pairs(self.settings.factions) do
         local faction = cm:get_faction(faction_key);
+        cm:instantly_research_all_technologies(faction_key);
         cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
         endgame:no_peace_no_confederation_only_war(faction_key)
         dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.regions_stage_2_empire, true, {"wh2_main_sc_skv_skaven"});

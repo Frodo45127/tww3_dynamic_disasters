@@ -1726,6 +1726,7 @@ function disaster_chaos_invasion:trigger_stage_1()
         end
 
         local faction = cm:get_faction(faction_key);
+        cm:instantly_research_all_technologies(faction_key);
         endgame:no_peace_no_confederation_only_war(faction_key)
         dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.stage_1_data.regions[faction_key], true, self.denied_for_sc)
         self:declare_war_on_unvasalized_norscans(faction, self.stage_1_data.regions[faction_key])
@@ -1784,6 +1785,7 @@ function disaster_chaos_invasion:trigger_stage_2()
             end
 
             -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
+            cm:instantly_research_all_technologies(faction_key);
             endgame:no_peace_no_confederation_only_war(faction_key)
 
             -- War declarations against AI.
