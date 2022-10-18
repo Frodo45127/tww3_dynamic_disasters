@@ -813,7 +813,7 @@ function dynamic_disasters:create_scenario_force(faction_key, region_key, army_t
     if success_callback == nil then
         success_callback = function(cqi)
             local character = cm:char_lookup_str(cqi)
-            cm:apply_effect_bundle_to_characters_force("wh_main_bundle_military_upkeep_free_force", cqi, 0)
+            cm:apply_effect_bundle_to_characters_force("wh_main_bundle_military_upkeep_free_force_endgame", cqi, 0)
             cm:apply_effect_bundle_to_characters_force("wh3_main_ie_scripted_endgame_force_immune_to_regionless_attrition", cqi, 5)
             cm:add_agent_experience(character, cm:random_number(25, 15), true)
             cm:add_experience_to_units_commanded_by_character(character, cm:random_number(7, 3))
@@ -891,7 +891,7 @@ function dynamic_disasters:create_scenario_force_at_coords(faction_key, region_k
     if success_callback == nil then
         success_callback = function(cqi)
             local character = cm:char_lookup_str(cqi)
-            cm:apply_effect_bundle_to_characters_force("wh_main_bundle_military_upkeep_free_force", cqi, 0)
+            cm:apply_effect_bundle_to_characters_force("wh_main_bundle_military_upkeep_free_force_endgame", cqi, 0)
             cm:apply_effect_bundle_to_characters_force("wh3_main_ie_scripted_endgame_force_immune_to_regionless_attrition", cqi, 5)
             cm:add_agent_experience(character, cm:random_number(25, 15), true)
             cm:add_experience_to_units_commanded_by_character(character, cm:random_number(7, 3))
