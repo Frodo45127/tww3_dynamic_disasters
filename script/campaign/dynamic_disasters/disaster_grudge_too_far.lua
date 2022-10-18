@@ -41,7 +41,8 @@ disaster_grudge_too_far = {
         {
             type = "DESTROY_FACTION",
             conditions = {
-                "confederation_valid"
+                "confederation_valid",
+                "vassalization_valid"
             },
             payloads = {
                 "money 50000"
@@ -213,6 +214,7 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
 		end
 
         -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
+        cm:instantly_research_all_technologies(faction_key)
 		cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
 		dynamic_disasters:declare_war_for_owners_and_neightbours(invasion_faction, { region_key }, true, { "wh_main_sc_dwf_dwarfs" })
 
