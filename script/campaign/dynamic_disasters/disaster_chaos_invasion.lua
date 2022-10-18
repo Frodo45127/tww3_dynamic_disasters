@@ -1723,8 +1723,10 @@ function disaster_chaos_invasion:trigger_stage_1()
         local army_template = self.stage_1_data.army_templates[faction_key];
         for _, region_key in pairs(self.stage_1_data.regions[faction_key]) do
             dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
-        end
 
+            -- Prepare the regions to reveal. Only shown them in stage 1.
+            dynamic_disasters:prepare_reveal_regions(self.stage_1_data.regions[faction_key]);
+        end
         local faction = cm:get_faction(faction_key);
         cm:instantly_research_all_technologies(faction_key);
         endgame:no_peace_no_confederation_only_war(faction_key)

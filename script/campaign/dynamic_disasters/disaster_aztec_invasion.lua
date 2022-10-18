@@ -348,6 +348,9 @@ function disaster_aztec_invasion:trigger_stage_1()
                 local capital = faction:home_region()
                 dynamic_disasters:create_scenario_force(faction_key, capital:name(), self.settings.army_template, self.settings.unit_count, false, army_count, self.name, nil);
 
+                -- Prepare the regions to reveal.
+                dynamic_disasters:prepare_reveal_regions({capital:name()});
+
             -- If we don't have a home region, spawn wherever the faction leader is, if alive.
             elseif not faction:faction_leader() == nil and faction:faction_leader():has_region() then
                 local region = faction:faction_leader():region();

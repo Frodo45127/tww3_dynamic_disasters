@@ -521,6 +521,9 @@ function disaster_the_great_uprising:trigger_stage_1()
         dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.regions_stage_1, true, {"wh2_main_sc_skv_skaven"})
     end
 
+    -- Prepare the regions to reveal.
+    dynamic_disasters:prepare_reveal_regions(self.regions_stage_1);
+
     -- Make sure every attacker is at peace with each other.
     dynamic_disasters:force_peace_between_factions(self.settings.factions, false);
 
@@ -562,7 +565,13 @@ function disaster_the_great_uprising:trigger_stage_2()
             local faction_key = self.settings.factions_stage_2_cathay[math.random(1, #self.settings.factions_stage_2_cathay)];
             dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count_cathay, self.name, nil)
         end
+
+        dynamic_disasters:prepare_reveal_regions(self.regions_stage_2_cathay);
     end
+
+    -- Prepare the regions to reveal.
+    dynamic_disasters:prepare_reveal_regions(self.regions_stage_2_empire);
+    dynamic_disasters:prepare_reveal_regions(self.regions_stage_2_araby);
 
     -- From this stage, we force all skaven on the map to declare war on everyone a single faction faces.
     -- This includes owners of the attacked region, and owners of nearby regions. Even if its Skaven.
@@ -613,6 +622,9 @@ function disaster_the_great_uprising:trigger_stage_3()
         dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.regions_stage_3, true, {"wh2_main_sc_skv_skaven"});
     end
 
+    -- Prepare the regions to reveal.
+    dynamic_disasters:prepare_reveal_regions(self.regions_stage_3);
+
     -- Trigger the effect about Morrslieb.
     self:morrslieb_gaze_is_upon_us(self.settings.stage_4_delay);
 
@@ -644,6 +656,9 @@ function disaster_the_great_uprising:trigger_stage_4()
         dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.regions_stage_4, true, {"wh2_main_sc_skv_skaven"});
     end
 
+    -- Prepare the regions to reveal.
+    dynamic_disasters:prepare_reveal_regions(self.regions_stage_4);
+
     -- Trigger the effect about Morrslieb.
     self:morrslieb_gaze_is_upon_us(self.settings.stage_5_delay);
 
@@ -668,6 +683,9 @@ function disaster_the_great_uprising:trigger_stage_5()
         local faction = cm:get_faction(faction_key);
         dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.regions_stage_5, true, {"wh2_main_sc_skv_skaven"});
     end
+
+    -- Prepare the regions to reveal.
+    dynamic_disasters:prepare_reveal_regions(self.regions_stage_5);
 
     -- Trigger the effect about Morrslieb.
     self:morrslieb_gaze_is_upon_us(self.settings.invasion_over_delay);
