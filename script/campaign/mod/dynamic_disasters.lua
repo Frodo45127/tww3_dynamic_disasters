@@ -34,6 +34,7 @@ local mandatory_settings = {
     finished = false,                   -- If the disaster has been finished.
     repeteable = false,                 -- If the disaster can be repeated.
     is_endgame = true,                  -- If the disaster is an endgame.
+    revive_dead_factions = true,        -- If true, dead factions will be revived if needed.
     min_turn = 60,                      -- Minimum turn required for the disaster to trigger.
     max_turn = 0,                       -- If the disaster hasn't trigger at this turn, we try to trigger it. Set to 0 to not check for max turn. Used only for some disasters.
     status = 0,                         -- Current status of the disaster. Used to re-initialize the disaster correctly on reload.
@@ -1311,6 +1312,13 @@ function dynamic_disasters:kill_faction_silently(faction_key)
         );
     end;
 end;
+
+-- Returns if the faction can be used or not. Invalid are broken or nil objects, humans, confederated factions, rebels, and dead factions if we set can_be_dead to false.
+---@param faction FACTION_SCRIPT_INTERFACE #Faction object to check.
+---@param can_be_dead boolean #If a dead faction is valid (will be revived on army spawns).
+function dynamic_disasters:check_faction_is_valid(faction, can_be_dead)
+    return faction ~= nil and faction:is_null_interface() == false and faction:is_human() == false and faction:was_confederated() == false and faction:name() ~= "rebels" and (can_be_dead == true or faction:is_dead() == false)
+end
 
 -- Function to add a new army template to a specific race, so it can be used in disasters.
 --
