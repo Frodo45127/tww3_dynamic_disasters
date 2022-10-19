@@ -371,6 +371,38 @@ disaster_vermintide = {
         },
     },
 
+    initial_under_empire_placements = {
+        wh2_main_skv_clan_mors = {
+            "wh3_main_combi_region_karag_orrud",
+            "wh3_main_combi_region_karak_zorn",
+            "wh3_main_combi_region_galbaraz",
+        },
+        wh2_main_skv_clan_pestilens = {
+            "wh3_main_combi_region_xahutec",
+            "wh3_main_combi_region_hualotal",
+            "wh3_main_combi_region_hexoatl",
+        },
+        wh2_dlc09_skv_clan_rictus = {
+            "wh3_main_combi_region_karak_azul",
+            "wh3_main_combi_region_black_fortress",
+            "wh3_main_combi_region_zharr_naggrund",
+        },
+        wh2_main_skv_clan_skryre = {
+            "wh3_main_combi_region_pfeildorf",
+            "wh3_main_combi_region_altdorf",
+            "wh3_main_combi_region_nuln",
+        },
+        wh2_main_skv_clan_eshin = {
+            "wh3_main_combi_region_nan_gau",
+            "wh3_main_combi_region_wei_jin",
+            "wh3_main_combi_region_shang_yang",
+        },
+        wh2_main_skv_clan_moulder = {
+            "wh3_main_combi_region_kislev",
+            "wh3_main_combi_region_middenheim",
+            "wh3_main_combi_region_kraka_drak",
+        },
+    }
 }
 
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
@@ -649,7 +681,7 @@ function disaster_vermintide:set_status(status)
         "VermintideUnderEmpireExpansion",
         "WorldStartRound",
         function()
-            return self.settings.started == true;
+            return self.settings.started == true and self.settings.status > STATUS_TRIGGERED;
         end,
         function()
             self:expand_under_empire()
@@ -698,6 +730,28 @@ function disaster_vermintide:trigger_stage_1()
         cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
         endgame:no_peace_no_confederation_only_war(faction_key)
         dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.regions_stage_1, true, {"wh2_main_sc_skv_skaven"})
+    end
+
+    -- For any dead skaven faction, spawn a few of their armies in Skavenblight. Do not get them into wars yet.
+    for _, faction_key in pairs(self.settings.factions) do
+        dynamic_disasters:create_scenario_force(faction_key, "wh3_main_combi_region_skavenblight", self.settings.army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
+    end
+
+    -- Setup strategic under-cities for all factions available, including the recently resurrected ones.
+    for _, faction_key in pairs(self.settings.factions) do
+        if self.settings.repeat_regions[faction_key] == nil then
+            self.settings.repeat_regions[faction_key] = {}
+        end
+
+        out("Frodo45127: Setting up initial underempire for faction " .. faction_key .. ".");
+        local faction_regions = self.initial_under_empire_placements[faction_key];
+        if self.initial_under_empire_placements[faction_key] ~= nil then
+            for _, region_key in pairs(self.initial_under_empire_placements[faction_key]) do
+                out("Frodo45127: Setting up initial underempire for faction " .. faction_key .. ", region " .. region_key .. ".");
+                local region = cm:get_region(region_key);
+                self:expand_under_empire_adjacent_region_check(faction_key, region, {}, true, true, true)
+            end
+        end
     end
 
     -- Prepare the regions to reveal.
@@ -1081,27 +1135,30 @@ function disaster_vermintide:expand_under_empire()
             local foreign_region_list = faction:foreign_slot_managers()
             for i2 = 0, foreign_region_list:num_items() -1 do
                 local region = foreign_region_list:item_at(i2):region()
-                self:expand_under_empire_adjacent_region_check(faction_key, region, checked_regions)
+                self:expand_under_empire_adjacent_region_check(faction_key, region, checked_regions, false)
             end
 
             -- Try to expand to regions bordering the current surface empire.
             local region_list = faction:region_list()
             for i2 = 0, region_list:num_items() -1 do
                 local region = region_list:item_at(i2)
-                self:expand_under_empire_adjacent_region_check(faction_key, region, checked_regions)
+                self:expand_under_empire_adjacent_region_check(faction_key, region, checked_regions, false)
             end
         end
     end
 end
 
 -- This function expands the underempire for the provided faction, using the provided region as source region to expand from.
-function disaster_vermintide:expand_under_empire_adjacent_region_check(sneaky_skaven, region, checked_regions)
+function disaster_vermintide:expand_under_empire_adjacent_region_check(sneaky_skaven, region, checked_regions, force_unique_setup, ignore_rolls, apply_to_current_region)
     local adjacent_region_list = region:adjacent_region_list()
     for i = 0, adjacent_region_list:num_items() -1 do
-
-        -- Get each bordering region.
         local adjacent_region = adjacent_region_list:item_at(i)
         local adjacent_region_key = adjacent_region:name()
+
+        if apply_to_current_region == true then
+            adjacent_region = region;
+            adjacent_region_key = region:name();
+        end
 
         -- To reduce iterations, we only process regions that have not be processed yet this turn.
         if checked_regions[adjacent_region_key] == nil then
@@ -1115,7 +1172,7 @@ function disaster_vermintide:expand_under_empire_adjacent_region_check(sneaky_sk
                     chance = self.inital_expansion_chance
                 end
                 local dice_roll = cm:random_number(100, 1)
-                if dice_roll <= chance then
+                if (dice_roll <= chance or ignore_rolls == true) then
                     out("Frodo45127: Spreading under-empire to " .. adjacent_region_key .. " for " .. sneaky_skaven)
 
                     -- If the region is abandoned, do not use underempire. Take the region directly.
@@ -1138,7 +1195,7 @@ function disaster_vermintide:expand_under_empire_adjacent_region_check(sneaky_sk
 
                             -- Pick the underempire setup at random.
                             local under_empire_buildings
-                            if self.under_empire_buildings[sneaky_skaven] ~= nil and cm:random_number(100, 1) <= self.unique_building_chance then
+                            if self.under_empire_buildings[sneaky_skaven] ~= nil and (cm:random_number(100, 1) <= self.unique_building_chance or force_unique_setup == true) then
                                 under_empire_buildings = self.under_empire_buildings[sneaky_skaven]
                             else
                                 local random_index = cm:random_number(#self.under_empire_buildings.generic, 1)
