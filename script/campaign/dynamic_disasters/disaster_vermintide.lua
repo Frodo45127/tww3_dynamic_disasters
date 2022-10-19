@@ -134,9 +134,6 @@ disaster_vermintide = {
         difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
 
         -- Disaster-specific data.
-        army_template = {
-            skaven = "lategame",
-        },
         base_army_unit_count = 19,
         stage_0_ubersreik_battle_delay = 1,
         stage_1_delay = 1,
@@ -291,6 +288,35 @@ disaster_vermintide = {
 
         -- Final battle of the Karaz Ankor.
         "wh3_main_combi_region_karaz_a_karak",
+    },
+
+    army_templates = {
+
+        -- Major factions use faction-specific templates
+        wh2_main_skv_clan_mors = { skaven = "lategame_mors" },
+        wh2_main_skv_clan_pestilens = { skaven = "lategame_pestilens" },
+        wh2_dlc09_skv_clan_rictus = { skaven = "lategame_rictus" },
+        wh2_main_skv_clan_skryre = { skaven = "lategame_skryre" },
+        wh2_main_skv_clan_eshin = { skaven = "lategame_eshin" },
+        wh2_main_skv_clan_moulder = { skaven = "lategame_moulder" },
+
+        -- Minor factions use generic templates
+        wh3_main_skv_clan_carrion = { skaven = "lategame" },
+        wh2_dlc12_skv_clan_fester = { skaven = "lategame" },
+        wh2_dlc15_skv_clan_ferrik = { skaven = "lategame" },
+        wh2_main_skv_grey_seer_clan = { skaven = "lategame" },
+        wh2_dlc16_skv_clan_gritus = { skaven = "lategame" },
+        wh3_main_skv_clan_gritus = { skaven = "lategame" },
+        wh2_dlc15_skv_clan_kreepus = { skaven = "lategame" },
+        wh3_main_skv_clan_krizzor = { skaven = "lategame" },
+        wh2_dlc12_skv_clan_mange = { skaven = "lategame" },
+        wh3_main_skv_clan_morbidus = { skaven = "lategame" },
+        wh2_main_skv_clan_septik = { skaven = "lategame" },
+        wh3_main_skv_clan_skrat = { skaven = "lategame" },
+        wh2_main_skv_clan_spittel = { skaven = "lategame" },
+        wh3_main_skv_clan_treecherik = { skaven = "lategame" },
+        wh2_dlc15_skv_clan_volkn = { skaven = "lategame" },
+        wh3_main_skv_clan_verms = { skaven = "lategame" },
     },
 
     stage_1_warning_event_key = "wh3_main_ie_incident_endgame_vermintide_1",
@@ -722,7 +748,7 @@ function disaster_vermintide:trigger_stage_1()
     local army_count = math.floor(1.5 * self.settings.difficulty_mod)
     for _, faction_key in pairs(self.settings.factions_stage_1) do
         for _, region_key in pairs(self.regions_stage_1) do
-            dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
+            dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil)
         end
 
         -- Apply the relevant CAI changes only to Clan Skryre and declare the appropiate wars.
@@ -734,7 +760,7 @@ function disaster_vermintide:trigger_stage_1()
 
     -- For any dead skaven faction, spawn a few of their armies in Skavenblight. Do not get them into wars yet.
     for _, faction_key in pairs(self.settings.factions) do
-        dynamic_disasters:create_scenario_force(faction_key, "wh3_main_combi_region_skavenblight", self.settings.army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
+        dynamic_disasters:create_scenario_force(faction_key, "wh3_main_combi_region_skavenblight", self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil)
     end
 
     -- Setup strategic under-cities for all factions available, including the recently resurrected ones.
@@ -744,9 +770,9 @@ function disaster_vermintide:trigger_stage_1()
         end
 
         out("Frodo45127: Setting up initial underempire for faction " .. faction_key .. ".");
-        local faction_regions = self.initial_under_empire_placements[faction_key];
         if self.initial_under_empire_placements[faction_key] ~= nil then
             for _, region_key in pairs(self.initial_under_empire_placements[faction_key]) do
+
                 out("Frodo45127: Setting up initial underempire for faction " .. faction_key .. ", region " .. region_key .. ".");
                 local region = cm:get_region(region_key);
                 self:expand_under_empire_adjacent_region_check(faction_key, region, {}, true, true, true)
@@ -782,13 +808,13 @@ function disaster_vermintide:trigger_stage_2()
     local army_count_empire = math.ceil(1.5 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_2_empire) do
         local faction_key = self.settings.factions_stage_2_empire_and_araby[math.random(1, #self.settings.factions_stage_2_empire_and_araby)];
-        dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count_empire, self.name, nil)
+        dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count_empire, self.name, nil)
     end
 
     local army_count_araby = math.ceil(2 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_2_araby) do
         local faction_key = self.settings.factions_stage_2_empire_and_araby[math.random(1, #self.settings.factions_stage_2_empire_and_araby)];
-        dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count_araby, self.name, nil)
+        dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count_araby, self.name, nil)
     end
 
     -- The Attack on Cathay depends on Eshin being available to spawn.
@@ -796,7 +822,7 @@ function disaster_vermintide:trigger_stage_2()
         local army_count_cathay = math.ceil(2 * self.settings.difficulty_mod)
         for _, region_key in pairs(self.regions_stage_2_cathay) do
             local faction_key = self.settings.factions_stage_2_cathay[math.random(1, #self.settings.factions_stage_2_cathay)];
-            dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count_cathay, self.name, nil)
+            dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count_cathay, self.name, nil)
         end
 
         dynamic_disasters:prepare_reveal_regions(self.regions_stage_2_cathay);
@@ -846,7 +872,7 @@ function disaster_vermintide:trigger_stage_3()
     local army_count = math.ceil(2.5 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_3) do
         local faction_key = self.settings.factions_stage_3_lustria[math.random(1, #self.settings.factions_stage_3_lustria)];
-        dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
+        dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil)
     end
 
     -- Force war against every skaven faction for each faction the skaven attack.
@@ -880,7 +906,7 @@ function disaster_vermintide:trigger_stage_4()
     local army_count = math.ceil(2 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_4) do
         local faction_key = self.settings.factions_stage_4_karaz_ankor[math.random(1, #self.settings.factions_stage_4_karaz_ankor)];
-        dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
+        dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil)
     end
 
     -- Force war against every skaven faction for each faction the skaven attack.
@@ -908,7 +934,7 @@ function disaster_vermintide:trigger_stage_5()
     local army_count = math.ceil(2 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_5) do
         local faction_key = self.settings.factions_stage_5_karaz_a_karak[math.random(1, #self.settings.factions_stage_5_karaz_a_karak)];
-        dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
+        dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil)
     end
 
     -- Force war against every skaven faction for each faction the skaven attack.

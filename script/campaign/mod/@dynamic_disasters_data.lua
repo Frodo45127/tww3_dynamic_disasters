@@ -1028,15 +1028,175 @@ dyn_dis_army_templates = {
         lategame = {
 
             --Melee Infantry
+            wh2_main_skv_inf_stormvermin_0 = 6,
+            wh2_main_skv_inf_stormvermin_1 = 6,
+            wh2_main_skv_inf_plague_monks = 4,
+
+            --Ranged Infantry
+            wh2_dlc12_skv_inf_ratling_gun_0 = 6,
+            wh2_dlc12_skv_inf_warplock_jezzails_0 = 6,
+            wh2_dlc14_skv_inf_poison_wind_mortar_0 = 4,
+            wh2_main_skv_inf_death_globe_bombardiers = 4,
+
+            --Monsters
+            wh2_main_skv_mon_rat_ogres = 2,
+            wh2_main_skv_mon_hell_pit_abomination = 1,
+
+            --Artillery
+            wh2_main_skv_art_plagueclaw_catapult = 2,
+            wh2_main_skv_art_warp_lightning_cannon = 2,
+            wh2_main_skv_veh_doomwheel = 1,
+
+            --Characters
+            wh2_main_skv_cha_assassin = 1,
+            wh2_main_skv_cha_warlock_engineer = 1,
+        },
+
+        -- This one is basically to increase numbers. It's intended to be pure trash.
+        lategame_trash = {
+
+            --Melee Infantry
+            wh2_main_skv_inf_clanrat_spearmen_0 = 8,
+            wh2_main_skv_inf_clanrat_spearmen_1 = 8,
+            wh2_main_skv_inf_clanrats_0 = 8,
+            wh2_main_skv_inf_clanrats_1 = 8,
+
+            --Ranged Infantry
+            wh2_main_skv_inf_night_runners_0 = 6,
+            wh2_main_skv_inf_night_runners_1 = 6,
+
+            --Monsters
+            wh2_main_skv_mon_rat_ogres = 2,
+
+            --Artillery
+            wh2_main_skv_art_warp_lightning_cannon = 2,
+
+            --Characters
+            wh2_main_skv_cha_assassin = 1,
+            wh2_main_skv_cha_warlock_engineer = 1,
+            wh2_main_skv_cha_plague_priest_2 = 1,
+        },
+
+        lategame_skryre = {
+
+            --Melee Infantry
             wh2_main_skv_inf_stormvermin_0 = 4,
             wh2_main_skv_inf_stormvermin_1 = 4,
-            wh2_main_skv_inf_plague_monks = 4,
 
             --Ranged Infantry
             wh2_dlc12_skv_inf_ratling_gun_0 = 8,
             wh2_dlc12_skv_inf_warplock_jezzails_0 = 8,
+
+            --Artillery
+            wh2_main_skv_art_plagueclaw_catapult = 2,
+            wh2_main_skv_art_warp_lightning_cannon = 2,
+            wh2_main_skv_veh_doomwheel = 2,
+            wh2_dlc12_skv_veh_doom_flayer_0 = 3,
+
+            --Characters
+            wh2_main_skv_cha_warlock_engineer = 1,
+        },
+        lategame_pestilens = {
+
+            --Melee Infantry
+            wh2_main_skv_inf_stormvermin_0 = 4,
+            wh2_main_skv_inf_stormvermin_1 = 4,
+            wh2_main_skv_inf_plague_monks = 8,
+
+            --Ranged Infantry
             wh2_dlc14_skv_inf_poison_wind_mortar_0 = 4,
             wh2_main_skv_inf_death_globe_bombardiers = 4,
+
+            --Monsters
+            wh2_main_skv_mon_rat_ogres = 2,
+            wh2_main_skv_mon_hell_pit_abomination = 1,
+
+            --Artillery
+            wh2_main_skv_art_plagueclaw_catapult = 2,
+            wh2_main_skv_veh_doomwheel = 2,
+
+            --Characters
+            wh2_main_skv_cha_plague_priest_0 = 1,
+            wh2_main_skv_cha_plague_priest_2 = 1,
+        },
+        lategame_mors = {
+
+            --Melee Infantry
+            wh2_main_skv_inf_stormvermin_0 = 8,
+            wh2_main_skv_inf_stormvermin_1 = 8,
+
+            --Ranged Infantry
+            wh2_dlc12_skv_inf_ratling_gun_0 = 3,
+            wh2_dlc12_skv_inf_warplock_jezzails_0 = 3,
+            wh2_dlc14_skv_inf_poison_wind_mortar_0 = 2,
+            wh2_main_skv_inf_death_globe_bombardiers = 2,
+
+            --Monsters
+            wh2_main_skv_mon_rat_ogres = 4,
+            wh2_main_skv_mon_hell_pit_abomination = 2,
+
+            --Artillery
+            wh2_main_skv_art_plagueclaw_catapult = 1,
+            wh2_main_skv_art_warp_lightning_cannon = 1,
+            wh2_main_skv_veh_doomwheel = 1,
+
+            --Characters
+            wh2_dlc16_skv_cha_chieftain_1 = 1,
+            wh2_main_skv_cha_assassin = 1,
+        },
+        lategame_moulder = {
+
+            --Melee Infantry
+            wh2_main_skv_inf_stormvermin_0 = 3,
+            wh2_main_skv_inf_stormvermin_1 = 3,
+
+            --Ranged Infantry
+            wh2_dlc14_skv_inf_poison_wind_mortar_0 = 4,
+            wh2_main_skv_inf_death_globe_bombardiers = 4,
+
+            --Monsters
+            wh2_main_skv_mon_rat_ogres = 4,
+            wh2_dlc16_skv_mon_rat_ogre_mutant = 8,
+            wh2_dlc16_skv_mon_brood_horror_0 = 6,
+            wh2_main_skv_mon_hell_pit_abomination = 3,
+
+            --Characters
+            wh2_dlc16_skv_cha_packmaster_0 = 1,
+            wh2_dlc16_skv_cha_packmaster_2 = 1,
+        },
+        lategame_eshin = {
+
+            --Melee Infantry
+            wh2_main_skv_inf_death_runners_0 = 8,
+            wh2_dlc14_skv_inf_eshin_triads_0 = 8,
+            wh2_dlc14_skv_inf_warp_grinder_0 = 2,
+
+            --Ranged Infantry
+            wh2_main_skv_inf_night_runners_0 = 6,
+            wh2_main_skv_inf_night_runners_1 = 6,
+
+            --Monsters
+            wh2_main_skv_mon_rat_ogres = 2,
+
+            --Artillery
+            wh2_main_skv_art_plagueclaw_catapult = 1,
+            wh2_main_skv_art_warp_lightning_cannon = 1,
+            wh2_main_skv_veh_doomwheel = 1,
+
+            --Characters
+            wh2_dlc14_skv_cha_eshin_sorcerer_0 = 1,
+            wh2_main_skv_cha_assassin = 1,
+        },
+        lategame_rictus = {
+
+            --Melee Infantry
+            wh2_main_skv_inf_stormvermin_0 = 6,
+            wh2_main_skv_inf_stormvermin_1 = 6,
+
+            --Ranged Infantry
+            wh2_dlc12_skv_inf_ratling_gun_0 = 4,
+            wh2_main_skv_inf_night_runners_0 = 6,
+            wh2_main_skv_inf_night_runners_1 = 6,
 
             --Monsters
             wh2_main_skv_mon_rat_ogres = 2,
@@ -1044,11 +1204,13 @@ dyn_dis_army_templates = {
             wh2_main_skv_mon_hell_pit_abomination = 1,
 
             --Artillery
-            wh2_main_skv_art_plagueclaw_catapult = 1,
             wh2_main_skv_art_warp_lightning_cannon = 1,
             wh2_main_skv_veh_doomwheel = 1,
-            wh2_dlc12_skv_veh_doom_flayer_0 = 2,
-        }
+
+            --Characters
+            wh2_dlc16_skv_cha_chieftain_0 = 1,
+            wh2_main_skv_cha_assassin = 1,
+        },
     },
     cathay = {
         earlygame = {
