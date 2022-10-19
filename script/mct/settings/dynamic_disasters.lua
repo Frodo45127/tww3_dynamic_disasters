@@ -216,6 +216,40 @@ local d = mod:add_new_option("d97", "dummy")
 d:set_text(" ");
 
 --[[
+    The Vermintide Config
+]]
+local the_vermintide_enable = mod:add_new_option("the_vermintide_enable", "checkbox")
+the_vermintide_enable:set_default_value(true)
+the_vermintide_enable:set_text(loc_prefix.."the_vermintide_enable", true)
+the_vermintide_enable:set_tooltip_text(loc_prefix.."the_vermintide_enable_tooltip", true)
+
+local the_vermintide_min_turn_value = mod:add_new_option("the_vermintide_min_turn_value", "slider")
+the_vermintide_min_turn_value:set_text(loc_prefix.."min_turn_value", true)
+the_vermintide_min_turn_value:set_tooltip_text(loc_prefix.."min_turn_value_tooltip", true)
+the_vermintide_min_turn_value:slider_set_min_max(13, 390)
+the_vermintide_min_turn_value:set_default_value(130)
+the_vermintide_min_turn_value:slider_set_step_size(13)
+
+local the_vermintide_max_turn_value = mod:add_new_option("the_vermintide_max_turn_value", "slider")
+the_vermintide_max_turn_value:set_text(loc_prefix.."max_turn_value", true)
+the_vermintide_max_turn_value:set_tooltip_text(loc_prefix.."max_turn_value_tooltip", true)
+the_vermintide_max_turn_value:slider_set_min_max(0, 600)
+the_vermintide_max_turn_value:set_default_value(0)
+the_vermintide_max_turn_value:slider_set_step_size(13)
+
+local the_vermintide_difficulty_mod = mod:add_new_option("the_vermintide_difficulty_mod", "slider")
+the_vermintide_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)
+the_vermintide_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_tooltip", true)
+the_vermintide_difficulty_mod:slider_set_min_max(10, 500)
+the_vermintide_difficulty_mod:set_default_value(150)
+the_vermintide_difficulty_mod:slider_set_step_size(13)
+local d = mod:add_new_option("d3", "dummy")
+d:set_text(" ");
+
+local d = mod:add_new_option("d4", "dummy")
+d:set_text(" ");
+
+--[[
     Vanilla Grudge Too Far Config
 ]]
 local grudge_too_far_enable = mod:add_new_option("grudge_too_far_enable", "checkbox")

@@ -1,7 +1,8 @@
 --[[
-    The Great Uprising/The Great Ascendancy/The Vermintide disaster, By Frodo45127.
+    
+    Vermintide, By Frodo45127, with changes imported from CA's Vermintide.
 
-    This disaster consists in the execution of the plan proposed to the Lords of Decay by Seerlord Kritislik.
+    Disaster resulting from the merge of my old Great Ascendancy, and the vanilla Vermintide. Nothing happens.
 
     Classified as Endgame, can trigger final mission. Supports debug mode.
 
@@ -81,8 +82,8 @@ local STATUS_STAGE_4 = 5;
 local STATUS_STAGE_5 = 6;
 
 -- Object representing the disaster.
-disaster_the_great_uprising = {
-    name = "the_great_uprising",
+disaster_vermintide = {
+    name = "vermintide",
 
     -- Values for categorizing the disaster.
     is_global = true;
@@ -111,7 +112,7 @@ disaster_the_great_uprising = {
     default_settings = {
 
         -- Common data for all disasters.
-        enabled = false,                    -- If the disaster is enabled or not.
+        enabled = true,                     -- If the disaster is enabled or not.
         started = false,                    -- If the disaster has been started.
         finished = false,                   -- If the disaster has been finished.
         repeteable = false,                 -- If the disaster can be repeated.
@@ -279,30 +280,30 @@ disaster_the_great_uprising = {
         "wh3_main_combi_region_karaz_a_karak",
     },
 
-    stage_1_warning_event_key = "fro_dyn_dis_great_uprising_stage_1_warning",
-    stage_1_warning_effect_key = "dyn_dis_the_great_uprising_early_warning",
-    stage_1_event_key = "fro_dyn_dis_great_uprising_stage_1_trigger",
-    stage_2_event_key = "fro_dyn_dis_great_uprising_stage_2_trigger",
-    stage_3_event_key = "fro_dyn_dis_great_uprising_stage_3_trigger",
-    stage_4_event_key = "fro_dyn_dis_great_uprising_stage_4_trigger",
-    stage_5_event_key = "fro_dyn_dis_great_uprising_stage_5_trigger",
-    finish_before_stage_1_event_key = "fro_dyn_dis_great_uprising_finish_before_stage_1",
-    finish_event_key = "fro_dyn_dis_great_uprising_finish",
-    endgame_mission_name = "the_great_ascendancy",
-    effects_global_key = "fro_dyn_dis_great_uprising_global_effects",
-    attacker_buffs_key = "fro_dyn_dis_great_uprising_attacker_buffs",
+    stage_1_warning_event_key = "fro_dyn_dis_vermintide_stage_1_warning",
+    stage_1_warning_effect_key = "dyn_dis_the_vermintide_early_warning",
+    stage_1_event_key = "fro_dyn_dis_vermintide_stage_1_trigger",
+    stage_2_event_key = "fro_dyn_dis_vermintide_stage_2_trigger",
+    stage_3_event_key = "fro_dyn_dis_vermintide_stage_3_trigger",
+    stage_4_event_key = "fro_dyn_dis_vermintide_stage_4_trigger",
+    stage_5_event_key = "fro_dyn_dis_vermintide_stage_5_trigger",
+    finish_before_stage_1_event_key = "fro_dyn_dis_vermintide_finish_before_stage_1",
+    finish_event_key = "fro_dyn_dis_vermintide_finish",
+    endgame_mission_name = "the_vermintide",
+    effects_global_key = "fro_dyn_dis_vermintide_global_effects",
+    attacker_buffs_key = "fro_dyn_dis_vermintide_attacker_buffs",
     ai_personality = "fro_dyn_dis_wh3_combi_skaven_endgame",
 }
 
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
-function disaster_the_great_uprising:set_status(status)
+function disaster_vermintide:set_status(status)
     self.settings.status = status;
 
     if self.settings.status == STATUS_TRIGGERED then
 
         -- This triggers stage one of the disaster if the disaster hasn't been cancelled.
         core:add_listener(
-            "GreatUprisingStage1",
+            "VermintideStage1",
             "WorldStartRound",
             function()
                 if cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay then
@@ -319,7 +320,7 @@ function disaster_the_great_uprising:set_status(status)
                 else
                     self:trigger_stage_1();
                 end
-                core:remove_listener("GreatUprisingStage1")
+                core:remove_listener("VermintideStage1")
             end,
             true
         );
@@ -329,7 +330,7 @@ function disaster_the_great_uprising:set_status(status)
 
         -- This triggers stage two of the disaster if the disaster hasn't been cancelled.
         core:add_listener(
-            "GreatUprisingStage2",
+            "VermintideStage2",
             "WorldStartRound",
             function()
                 if cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay then
@@ -346,7 +347,7 @@ function disaster_the_great_uprising:set_status(status)
                 else
                     self:trigger_stage_2();
                 end
-                core:remove_listener("GreatUprisingStage2")
+                core:remove_listener("VermintideStage2")
             end,
             true
         );
@@ -356,7 +357,7 @@ function disaster_the_great_uprising:set_status(status)
 
         -- This triggers stage three of the disaster if the disaster hasn't been cancelled.
         core:add_listener(
-            "GreatUprisingStage3",
+            "VermintideStage3",
             "WorldStartRound",
             function()
                 if cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.stage_3_delay then
@@ -372,7 +373,7 @@ function disaster_the_great_uprising:set_status(status)
                 else
                     self:trigger_stage_3();
                 end
-                core:remove_listener("GreatUprisingStage3")
+                core:remove_listener("VermintideStage3")
             end,
             true
         );
@@ -383,7 +384,7 @@ function disaster_the_great_uprising:set_status(status)
 
         -- This triggers stage four of the disaster if the disaster hasn't been cancelled.
         core:add_listener(
-            "GreatUprisingStage4",
+            "VermintideStage4",
             "WorldStartRound",
             function()
                 if cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.stage_3_delay + self.settings.stage_4_delay then
@@ -399,7 +400,7 @@ function disaster_the_great_uprising:set_status(status)
                 else
                     self:trigger_stage_4();
                 end
-                core:remove_listener("GreatUprisingStage4")
+                core:remove_listener("VermintideStage4")
             end,
             true
         );
@@ -407,7 +408,7 @@ function disaster_the_great_uprising:set_status(status)
         --[[
         -- This triggers stage three reinforcements if the disaster hasn't been cancelled.
         core:add_listener(
-            "GreatUprisingStage3Reinforcements",
+            "VermintideStage3Reinforcements",
             "WorldStartRound",
             function()
 
@@ -447,7 +448,7 @@ function disaster_the_great_uprising:set_status(status)
                         dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions_stage_3);
                     end
                 end
-                core:remove_listener("GreatUprisingStage3Reinforcements")
+                core:remove_listener("VermintideStage3Reinforcements")
             end,
             true
         );
@@ -458,7 +459,7 @@ function disaster_the_great_uprising:set_status(status)
 
         -- This triggers stage five of the disaster if the disaster hasn't been cancelled.
         core:add_listener(
-            "GreatUprisingStage5",
+            "VermintideStage5",
             "WorldStartRound",
             function()
                 if cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.stage_3_delay + self.settings.stage_4_delay + self.settings.stage_5_delay then
@@ -474,7 +475,7 @@ function disaster_the_great_uprising:set_status(status)
                 else
                     self:trigger_stage_5();
                 end
-                core:remove_listener("GreatUprisingStage5")
+                core:remove_listener("VermintideStage5")
             end,
             true
         );
@@ -484,7 +485,7 @@ function disaster_the_great_uprising:set_status(status)
 end
 
 -- Function to trigger the disaster.
-function disaster_the_great_uprising:trigger()
+function disaster_vermintide:trigger()
     out("Frodo45127: Starting disaster: " .. self.name);
 
     -- Recalculate the delay to trigger this.
@@ -499,8 +500,8 @@ function disaster_the_great_uprising:trigger()
     self:set_status(STATUS_TRIGGERED);
 end
 
--- Function to trigger the first stage of the Great Uprising.
-function disaster_the_great_uprising:trigger_stage_1()
+-- Function to trigger the first stage of the Vermintide.
+function disaster_vermintide:trigger_stage_1()
     if dynamic_disasters.settings.debug_2 == true then
         self.settings.stage_2_delay = 1;
     else
@@ -536,8 +537,8 @@ function disaster_the_great_uprising:trigger_stage_1()
     self:set_status(STATUS_STAGE_1);
 end
 
--- Function to trigger the second stage of the Great Uprising.
-function disaster_the_great_uprising:trigger_stage_2()
+-- Function to trigger the second stage of the Vermintide.
+function disaster_vermintide:trigger_stage_2()
 
     if dynamic_disasters.settings.debug_2 == true then
         self.settings.stage_3_delay = 1;
@@ -600,8 +601,8 @@ function disaster_the_great_uprising:trigger_stage_2()
     self:set_status(STATUS_STAGE_2);
 end
 
--- Function to trigger the third stage of the Great Uprising.
-function disaster_the_great_uprising:trigger_stage_3()
+-- Function to trigger the third stage of the Vermintide.
+function disaster_vermintide:trigger_stage_3()
 
     if dynamic_disasters.settings.debug_2 == true then
         self.settings.stage_4_delay = 1;
@@ -634,8 +635,8 @@ function disaster_the_great_uprising:trigger_stage_3()
     self:set_status(STATUS_STAGE_3);
 end
 
--- Function to trigger the fourth stage of the Great Uprising.
-function disaster_the_great_uprising:trigger_stage_4()
+-- Function to trigger the fourth stage of the Vermintide.
+function disaster_vermintide:trigger_stage_4()
 
     if dynamic_disasters.settings.debug_2 == true then
         self.settings.stage_5_delay = 1;
@@ -668,8 +669,8 @@ function disaster_the_great_uprising:trigger_stage_4()
     self:set_status(STATUS_STAGE_4);
 end
 
--- Function to trigger the fifth stage of the Great Uprising.
-function disaster_the_great_uprising:trigger_stage_5()
+-- Function to trigger the fifth stage of the Vermintide.
+function disaster_vermintide:trigger_stage_5()
 
     -- Spawn a few armies in Karaz-a-Karak.
     local army_count = math.ceil(2 * self.settings.difficulty_mod)
@@ -698,7 +699,7 @@ end
 
 -- Function to apply the Morrslieb effects to all factions.
 ---@param duration integer #Duration of the effects, in turns.
-function disaster_the_great_uprising:morrslieb_gaze_is_upon_us(duration)
+function disaster_vermintide:morrslieb_gaze_is_upon_us(duration)
     local faction_list = cm:model():world():faction_list()
     local province_list = cm:model():world():province_list();
 
@@ -731,7 +732,7 @@ function disaster_the_great_uprising:morrslieb_gaze_is_upon_us(duration)
 end
 
 -- Function to trigger cleanup stuff after the invasion is over.
-function disaster_the_great_uprising:trigger_end_disaster()
+function disaster_vermintide:trigger_end_disaster()
     if self.settings.started == true then
         out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
         dynamic_disasters:finish_disaster(self);
@@ -740,7 +741,7 @@ end
 
 --- Function to check if the disaster custom conditions are valid and can be trigger.
 ---@return boolean If the disaster will be triggered or not.
-function disaster_the_great_uprising:check_start_disaster_conditions()
+function disaster_vermintide:check_start_disaster_conditions()
 
     -- Update the potential factions removing the confederated ones.
     self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
@@ -800,7 +801,7 @@ end
 
 --- Function to check if the conditions to declare the disaster as "finished" are fulfilled.
 ---@return boolean If the disaster will be finished or not.
-function disaster_the_great_uprising:check_end_disaster_conditions()
+function disaster_vermintide:check_end_disaster_conditions()
 
     -- Update the list of available factions and check if are all dead.
     self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
@@ -923,4 +924,4 @@ function disaster_the_great_uprising:check_end_disaster_conditions()
     return false;
 end
 
-return disaster_the_great_uprising
+return disaster_vermintide
