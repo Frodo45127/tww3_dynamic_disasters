@@ -564,6 +564,30 @@ function disaster_vermintide:set_status(status)
         true
     );
 
+    -- Listener to provide ikit with nukes and stuff while he's alive.
+    core:remove_listener("VermintideIkitWarpfuel");
+    core:add_listener(
+        "VermintideIkitWarpfuel",
+        "WorldStartRound",
+        function()
+            return self.settings.started == true;
+        end,
+        function()
+            local skryre_faction = cm:get_faction("wh2_main_skv_clan_skryre")
+            if not skryre_faction == false and skryre_faction:is_null_interface() == false and skryre_faction:is_dead() == false and skryre_faction:is_human() == false then
+
+                out("Frodo45127: Giving Ikit 4 reactor cores.");
+                cm:faction_add_pooled_resource(skryre_faction:name(), "skv_reactor_core", "missions", 4)
+                if cm:random_number(100) <= (10 * self.settings.difficulty_mod) then
+
+                    out("Frodo45127: Giving Ikit 4 nukes. It's fallout, baby!");
+                    cm:faction_add_pooled_resource(skryre_faction:name(), "skv_nuke", "workshop_production", 4)
+                end
+            end
+        end,
+        true
+    )
+
     -- No need to have a specific listener to end the disaster after no more stages can be triggered, as that's controlled by a mission.
 end
 
