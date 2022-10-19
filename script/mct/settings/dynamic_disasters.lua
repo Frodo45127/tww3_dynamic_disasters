@@ -131,7 +131,7 @@ chianchi_assault_difficulty_mod:slider_set_step_size(10)
     The Great Ascendancy Config
 ]]
 local the_great_uprising_enable = mod:add_new_option("the_great_uprising_enable", "checkbox")
-the_great_uprising_enable:set_default_value(true)
+the_great_uprising_enable:set_default_value(false)
 the_great_uprising_enable:set_text(loc_prefix.."the_great_uprising_enable", true)
 the_great_uprising_enable:set_tooltip_text(loc_prefix.."the_great_uprising_enable_tooltip", true)
 
