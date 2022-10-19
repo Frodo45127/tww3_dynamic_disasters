@@ -13,6 +13,9 @@
         - At least turn 130 (so the player has already "prepared").
         - Clan Skryre must be not confederated (it's the one it starts the invasion).
     Effects:
+        - For the entire disaster:
+            - Skavens will keep expanding the underempire constantly.
+            - Ikit will get cores and nukes each turn.
         - Trigger/Early Warning:
             - Message about Morrslieb increasing in size.
             - Wait 6-10 turns for more info.
@@ -146,6 +149,7 @@ disaster_vermintide = {
         ubersreik_battle_setup = false,
         ubersreik_battle_fought = false,
 
+        repeat_regions = {},
 
         -- List of skaven factions that will participate in the uprising.
         factions = {
@@ -316,6 +320,57 @@ disaster_vermintide = {
         {type = "wizard", subtype = "wh_main_emp_bright_wizard", forename = "names_name_2147355023", family_name = "names_name_2147344053"},
         {type = "champion", subtype = "wh_main_dwf_thane", forename = "names_name_2147345808", family_name = "names_name_2147354039"}
     },
+
+    inital_expansion_chance = 39, -- Chance for each region to get an under empire expansion each turn
+    repeat_expansion_chance = 13, -- Chance for a region to get an under empire if it didn't get one on the first dice roll
+    unique_building_chance = 25, -- Chance for a region to get one of the special faction-unique under empire templates
+    under_empire_buildings = {
+        generic = {
+            {
+                "wh2_dlc12_under_empire_annexation_war_camp_1",
+                "wh2_dlc12_under_empire_money_crafting_2",
+                "wh2_dlc12_under_empire_food_kidnappers_2",
+                "wh2_dlc12_under_empire_food_raiding_camp_1"
+            },
+            {
+                "wh2_dlc12_under_empire_settlement_stronghold_3",
+            },
+            {
+                "wh2_dlc12_under_empire_settlement_stronghold_4",
+                "wh2_dlc12_under_empire_food_raiding_camp_1"
+            },
+            {
+                "wh2_dlc12_under_empire_settlement_stronghold_5",
+                "wh2_dlc12_under_empire_food_raiding_camp_1",
+                "wh2_dlc12_under_empire_discovery_deeper_tunnels_1"
+            },
+            {
+                "wh2_dlc12_under_empire_settlement_warren_3",
+            },
+            {
+                "wh2_dlc12_under_empire_settlement_warren_4",
+                "wh2_dlc12_under_empire_food_raiding_camp_1"
+            },
+            {
+                "wh2_dlc12_under_empire_settlement_warren_5",
+                "wh2_dlc12_under_empire_food_raiding_camp_1",
+                "wh2_dlc12_under_empire_discovery_deeper_tunnels_1"
+            }
+        },
+        wh2_main_skv_clan_skryre = {
+            "wh2_dlc12_under_empire_annexation_doomsday_1",
+            "wh2_dlc12_under_empire_money_crafting_2",
+            "wh2_dlc12_under_empire_food_kidnappers_2",
+            "wh2_dlc12_under_empire_food_raiding_camp_1"
+        },
+        wh2_main_skv_clan_pestilens = {
+            "wh2_dlc14_under_empire_annexation_plague_cauldron_1",
+            "wh2_dlc12_under_empire_money_crafting_2",
+            "wh2_dlc12_under_empire_food_kidnappers_2",
+            "wh2_dlc12_under_empire_food_raiding_camp_1"
+        },
+    },
+
 }
 
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
@@ -576,14 +631,28 @@ function disaster_vermintide:set_status(status)
             local skryre_faction = cm:get_faction("wh2_main_skv_clan_skryre")
             if not skryre_faction == false and skryre_faction:is_null_interface() == false and skryre_faction:is_dead() == false and skryre_faction:is_human() == false then
 
-                out("Frodo45127: Giving Ikit 4 reactor cores.");
-                cm:faction_add_pooled_resource(skryre_faction:name(), "skv_reactor_core", "missions", 4)
+                out("Frodo45127: Giving Ikit 14 reactor cores (4 from this, 10 from expansion, same as vanilla but all in one go).");
+                cm:faction_add_pooled_resource(skryre_faction:name(), "skv_reactor_core", "missions", 14)
                 if cm:random_number(100) <= (10 * self.settings.difficulty_mod) then
 
                     out("Frodo45127: Giving Ikit 4 nukes. It's fallout, baby!");
                     cm:faction_add_pooled_resource(skryre_faction:name(), "skv_nuke", "workshop_production", 4)
                 end
             end
+        end,
+        true
+    )
+
+    -- Listener to keep retriggering the Under-Empire expansion each turn, as long as the disaster lasts.
+    core:remove_listener("VermintideUnderEmpireExpansion");
+    core:add_listener(
+        "VermintideUnderEmpireExpansion",
+        "WorldStartRound",
+        function()
+            return self.settings.started == true;
+        end,
+        function()
+            self:expand_under_empire()
         end,
         true
     )
@@ -979,7 +1048,124 @@ function disaster_vermintide:generate_ubersreik_army(faction_key)
 end
 
 -------------------------------------------
--- Ubersreik battle stuff end
+-- Underempire expansion logic
+-------------------------------------------
+
+-- This function expands the underempire when called, if expansion is still possible.
+function disaster_vermintide:expand_under_empire()
+    local potential_skaven = {}
+    for _, faction_key in pairs(self.settings.factions) do
+        local faction = cm:get_faction(faction_key)
+        if endgame:check_faction_is_valid(faction, false) then
+            table.insert(potential_skaven, faction_key)
+        end
+    end
+
+    -- Update the potential factions removing the confederated ones.
+    self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
+    for i = 1, #self.settings.factions do
+
+        -- We're only interested in expanding the underempire for factions that are actually alive.
+        -- NOTE: Make sure the ones we want each stage to expand are alive.
+        local faction_key = self.settings.factions[i];
+        local faction = cm:get_faction(faction_key);
+        if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false then
+
+            local checked_regions = {}
+
+            if self.settings.repeat_regions[faction_key] == nil then
+                self.settings.repeat_regions[faction_key] = {}
+            end
+
+            -- Try to expand to regions bordering the current underempire.
+            local foreign_region_list = faction:foreign_slot_managers()
+            for i2 = 0, foreign_region_list:num_items() -1 do
+                local region = foreign_region_list:item_at(i2):region()
+                self:expand_under_empire_adjacent_region_check(faction_key, region, checked_regions)
+            end
+
+            -- Try to expand to regions bordering the current surface empire.
+            local region_list = faction:region_list()
+            for i2 = 0, region_list:num_items() -1 do
+                local region = region_list:item_at(i2)
+                self:expand_under_empire_adjacent_region_check(faction_key, region, checked_regions)
+            end
+        end
+    end
+end
+
+-- This function expands the underempire for the provided faction, using the provided region as source region to expand from.
+function disaster_vermintide:expand_under_empire_adjacent_region_check(sneaky_skaven, region, checked_regions)
+    local adjacent_region_list = region:adjacent_region_list()
+    for i = 0, adjacent_region_list:num_items() -1 do
+
+        -- Get each bordering region.
+        local adjacent_region = adjacent_region_list:item_at(i)
+        local adjacent_region_key = adjacent_region:name()
+
+        -- To reduce iterations, we only process regions that have not be processed yet this turn.
+        if checked_regions[adjacent_region_key] == nil then
+            checked_regions[adjacent_region_key] = true
+
+            -- Expand with higher chance on the first expansion, the reduce the expansion chance.
+            if not adjacent_region == false and adjacent_region:is_null_interface() == false then
+                local chance = self.repeat_expansion_chance
+                if self.settings.repeat_regions[sneaky_skaven][adjacent_region_key] == nil then
+                    self.settings.repeat_regions[sneaky_skaven][adjacent_region_key] = true
+                    chance = self.inital_expansion_chance
+                end
+                local dice_roll = cm:random_number(100, 1)
+                if dice_roll <= chance then
+                    out("Frodo45127: Spreading under-empire to " .. adjacent_region_key .. " for " .. sneaky_skaven)
+
+                    -- If the region is abandoned, do not use underempire. Take the region directly.
+                    if adjacent_region:is_abandoned() then
+                        cm:transfer_region_to_faction(adjacent_region_key, sneaky_skaven)
+
+                    -- Only expand to regions not owned by the same faction and with not an undercity already there.
+                    elseif adjacent_region:owning_faction():name() ~= sneaky_skaven then
+                        local is_sneaky_skaven_present = false
+                        local foreign_slot_managers = adjacent_region:foreign_slot_managers()
+                        for i2 = 0, foreign_slot_managers:num_items() -1 do
+                            local foreign_slot_manager = foreign_slot_managers:item_at(i2)
+                            if foreign_slot_manager:faction():name() == sneaky_skaven then
+                                is_sneaky_skaven_present = true
+                                break
+                            end
+                        end
+
+                        if is_sneaky_skaven_present == false then
+
+                            -- Pick the underempire setup at random.
+                            local under_empire_buildings
+                            if self.under_empire_buildings[sneaky_skaven] ~= nil and cm:random_number(100, 1) <= self.unique_building_chance then
+                                under_empire_buildings = self.under_empire_buildings[sneaky_skaven]
+                            else
+                                local random_index = cm:random_number(#self.under_empire_buildings.generic, 1)
+                                under_empire_buildings = self.under_empire_buildings.generic[random_index]
+                            end
+
+                            local region_cqi = adjacent_region:cqi()
+                            local faction_cqi = cm:get_faction(sneaky_skaven):command_queue_index()
+                            foreign_slot = cm:add_foreign_slot_set_to_region_for_faction(faction_cqi, region_cqi, "wh2_dlc12_slot_set_underempire")
+
+                            -- Add the buildings to the underempire.
+                            for i3 = 1, #under_empire_buildings do
+                                local building_key = under_empire_buildings[i3]
+                                slot = foreign_slot:slots():item_at(i3-1)
+                                cm:foreign_slot_instantly_upgrade_building(slot, building_key)
+                                out("Frodo45127: Added " .. building_key .. " to " .. adjacent_region:name() .. " for " .. sneaky_skaven)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+-------------------------------------------
+-- Underempire expansion logic end
 -------------------------------------------
 
 -- Function to trigger cleanup stuff after the invasion is over.
