@@ -159,7 +159,7 @@ function disaster_raiding_parties:trigger()
         self.settings.grace_period = 5; -- Keep this a few turns ahead to test if the AI actually works.
         self.settings.wait_turns_between_repeats = 1;
     else
-        self.settings.warning_delay = math.random(4, 10);
+        self.settings.warning_delay = cm:random_number(10, 4);
         self.settings.grace_period = self.settings.warning_delay + 6;
         self.settings.wait_turns_between_repeats = self.settings.grace_period + 4;
     end
@@ -173,8 +173,8 @@ function disaster_raiding_parties:trigger_raiding_parties()
     out("Frodo45127: Disaster: " .. self.name .. ". Triggering invasion.");
 
     -- Get the subculture/faction to use as raiders.
-    self.settings.subculture = self.settings.subcultures_alive[math.random(1, #self.settings.subcultures_alive)];
-    self.settings.faction = self.settings.factions_alive[self.settings.subculture][math.random(1, #self.settings.factions_alive[self.settings.subculture])];
+    self.settings.subculture = self.settings.subcultures_alive[cm:random_number(#self.settings.subcultures_alive)];
+    self.settings.faction = self.settings.factions_alive[self.settings.subculture][cm:random_number(#self.settings.factions_alive[self.settings.subculture])];
 
     -- Get the army template to use, based on the subculture and turn.
     local current_turn = cm:turn_number();
@@ -249,7 +249,7 @@ function disaster_raiding_parties:trigger_raiding_parties()
 
     -- Get the region at random from the top half of the coasts.
     out("Frodo45127: We have " .. #coasts_to_attack .. " coasts to attack. Using only the upper half.");
-    local coast_to_attack = coasts_to_attack[math.random(1, math.ceil(#coasts_to_attack / 2))];
+    local coast_to_attack = coasts_to_attack[cm:random_number(math.ceil(#coasts_to_attack / 2))];
     local first_sea_region = nil;
     for _, sea_region in pairs(dyn_dis_coasts[coast_to_attack]) do
         first_sea_region = sea_region;
@@ -259,8 +259,8 @@ function disaster_raiding_parties:trigger_raiding_parties()
 
             -- Armies calculation, per province.
             local region_key = dyn_dis_sea_regions[sea_region].coastal_regions[i];
-            local army_count = math.floor(math.random(1, math.ceil(self.settings.difficulty_mod)));
-            local spawn_pos = dyn_dis_sea_regions[sea_region].spawn_positions[math.random(#dyn_dis_sea_regions[sea_region].spawn_positions)];
+            local army_count = math.floor(cm:random_number(math.ceil(self.settings.difficulty_mod)));
+            local spawn_pos = dyn_dis_sea_regions[sea_region].spawn_positions[cm:random_number(#dyn_dis_sea_regions[sea_region].spawn_positions)];
             out("Frodo45127: Armies to spawn: " .. tostring(army_count) .. " for " .. region_key .. " region, spawn pos X: " .. spawn_pos[1] .. ", Y: " .. spawn_pos[2] .. ".");
 
             -- Store the region for invasion controls.
@@ -386,7 +386,7 @@ function disaster_raiding_parties:check_start_disaster_conditions()
         end
     end
 
-    if math.random() < base_chance then
+    if cm:random_number(1, 0) < base_chance then
         return true;
     end
 

@@ -954,7 +954,7 @@ function disaster_chaos_invasion:set_status(status)
             local default_owner = "wh_main_chs_chaos";
 
             for i = 0, open_nodes:num_items() - 1 do
-                if (math.random() <= (0.05 + (self.settings.difficulty_mod / 20)) or dynamic_disasters.settings.debug_2) then
+                if (cm:random_number(1, 0) <= (0.05 + (self.settings.difficulty_mod / 20)) or dynamic_disasters.settings.debug_2) then
                     local current_node = open_nodes:item_at(i);
                     local x, y = current_node:position();
                     local region_data = world:region_data_at_position(x, y);
@@ -1003,7 +1003,7 @@ function disaster_chaos_invasion:set_status(status)
                                     end
                                 end
 
-                                local unit_count = math.random(14, 20);
+                                local unit_count = cm:random_number(20, 14);
                                 dynamic_disasters:create_scenario_force_at_coords(faction_army_owner, region:name(), {x, y}, army_template, unit_count, false, 1, self.name, nil)
                             end
                         end
@@ -1225,19 +1225,19 @@ function disaster_chaos_invasion:set_status(status)
                 local reward = nil;
                 local template = node_details[4];
                 if template == "wh3_main_teleportation_node_template_kho" then
-                    reward_index = math.random(#self.settings.khorne_realm_rewards);
+                    reward_index = cm:random_number(#self.settings.khorne_realm_rewards);
                     reward = self.settings.khorne_realm_rewards[reward_index];
                     table.remove(self.settings.khorne_realm_rewards, reward_index);
                 elseif template == "wh3_main_teleportation_node_template_nur" then
-                    reward_index = math.random(#self.settings.nurgle_realm_rewards);
+                    reward_index = cm:random_number(#self.settings.nurgle_realm_rewards);
                     reward = self.settings.nurgle_realm_rewards[reward_index];
                     table.remove(self.settings.nurgle_realm_rewards, reward_index);
                 elseif template == "wh3_main_teleportation_node_template_sla" then
-                    reward_index = math.random(#self.settings.slaanesh_realm_rewards);
+                    reward_index = cm:random_number(#self.settings.slaanesh_realm_rewards);
                     reward = self.settings.slaanesh_realm_rewards[reward_index];
                     table.remove(self.settings.slaanesh_realm_rewards, reward_index);
                 elseif template == "wh3_main_teleportation_node_template_tze" then
-                    reward_index = math.random(#self.settings.tzeench_realm_rewards);
+                    reward_index = cm:random_number(#self.settings.tzeench_realm_rewards);
                     reward = self.settings.tzeench_realm_rewards[reward_index];
                     table.remove(self.settings.tzeench_realm_rewards, reward_index);
                 end
@@ -1345,12 +1345,12 @@ function disaster_chaos_invasion:set_status(status)
 
             -- Precalculate the template to get.
             local template = from_template_key;
-            if math.random() > 0.5 then
+            if cm:random_number(1, 0) > 0.5 then
                 template = to_template_key;
             end
 
             -- If we're trying to travel through the Chaos Realms, you get a chance of receiving a trait.
-            if math.random() <= 0.1 or dynamic_disasters.settings.debug_2 then
+            if cm:random_number(1, 0) <= 0.1 or dynamic_disasters.settings.debug_2 then
                 local realm = self.teleportation_nodes_realm_by_templates[template];
 
                 out("Frodo45127: Trying to add chaos realm trait. Realm: " .. tostring(realm) .. ".");
@@ -1364,7 +1364,7 @@ function disaster_chaos_invasion:set_status(status)
             end
 
             -- If we're lucky, trigger a dilemma to choose between fight a battle and get an artifact, or just ran away.
-            if math.random() <= 0.1 or dynamic_disasters.settings.debug_2 then
+            if cm:random_number(1, 0) <= 0.1 or dynamic_disasters.settings.debug_2 then
                 local dilemma_key = nil;
                 local effect_key = nil;
 
@@ -1698,7 +1698,7 @@ function disaster_chaos_invasion:trigger()
         self.settings.stage_1_delay = 1;
         self.settings.grace_period = 5;
     else
-        self.settings.stage_1_delay = math.random(8, 12);
+        self.settings.stage_1_delay = cm:random_number(12, 8);
         self.settings.grace_period = 15;
     end
 
@@ -1714,7 +1714,7 @@ function disaster_chaos_invasion:trigger_stage_1()
     if dynamic_disasters.settings.debug_2 == true then
         self.settings.stage_2_delay = 1;
     else
-        self.settings.stage_2_delay = math.random(6, 10);
+        self.settings.stage_2_delay = cm:random_number(10, 6);
     end
 
     -- Spawn all the initial chaos armies.
@@ -2059,7 +2059,7 @@ function disaster_chaos_invasion:open_teleportation_nodes(nodes, percentage, min
 
                         local template = nil;
                         if corruption == false then
-                            template = self.teleportation_nodes_templates[math.random(#self.teleportation_nodes_templates)];
+                            template = self.teleportation_nodes_templates[cm:random_number(#self.teleportation_nodes_templates)];
                         else
                             template = corruption;
                         end
@@ -2087,7 +2087,7 @@ function disaster_chaos_invasion:generate_rift_closure_battle(character, node_te
     end
 
     if unit_count == nil then
-        unit_count = math.random(14, 20);
+        unit_count = cm:random_number(20, 14);
     end
 
     local mf = character:military_force();
@@ -2405,7 +2405,7 @@ function disaster_chaos_invasion:check_start_disaster_conditions()
 
     -- Base chance: 1/100 turns (1%).
     local base_chance = 0.01;
-    if math.random() < base_chance then
+    if cm:random_number(1, 0) < base_chance then
         return true;
     end
 

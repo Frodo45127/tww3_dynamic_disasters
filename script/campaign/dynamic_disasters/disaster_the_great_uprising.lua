@@ -437,7 +437,7 @@ function disaster_the_great_uprising:set_status(status)
 
                     -- Spawn a few armies in Lustria.
                     for _, region_key in pairs(regions_stage_3) do
-                        local faction_key = factions[math.random(1, #factions)];
+                        local faction_key = factions[cm:random_number(#factions)];
                         dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, true, math.ceil(2.5 * self.settings.difficulty_mod), self.name)
                     end
 
@@ -491,7 +491,7 @@ function disaster_the_great_uprising:trigger()
     if dynamic_disasters.settings.debug_2 == true then
         self.settings.stage_1_delay = 1;
     else
-        self.settings.stage_1_delay = math.random(6, 10);
+        self.settings.stage_1_delay = cm:random_number(10, 6);
     end
 
     -- Initialize listeners.
@@ -504,7 +504,7 @@ function disaster_the_great_uprising:trigger_stage_1()
     if dynamic_disasters.settings.debug_2 == true then
         self.settings.stage_2_delay = 1;
     else
-        self.settings.stage_2_delay = math.random(6, 10);
+        self.settings.stage_2_delay = cm:random_number(10, 6);
     end
 
     -- Spawn a few Skryre armies in Estalia, Tilea and Sartosa. Enough so they're able to expand next.
@@ -542,19 +542,19 @@ function disaster_the_great_uprising:trigger_stage_2()
     if dynamic_disasters.settings.debug_2 == true then
         self.settings.stage_3_delay = 1;
     else
-        self.settings.stage_3_delay = math.random(4, 7);
+        self.settings.stage_3_delay = cm:random_number(7, 4);
     end
 
     -- Spawn a few armies in the Empire, the northern coast of Araby and Cathay.
     local army_count_empire = math.ceil(1.5 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_2_empire) do
-        local faction_key = self.settings.factions_stage_2_empire_and_araby[math.random(1, #self.settings.factions_stage_2_empire_and_araby)];
+        local faction_key = self.settings.factions_stage_2_empire_and_araby[cm:random_number(#self.settings.factions_stage_2_empire_and_araby)];
         dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count_empire, self.name, nil)
     end
 
     local army_count_araby = math.ceil(2 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_2_araby) do
-        local faction_key = self.settings.factions_stage_2_empire_and_araby[math.random(1, #self.settings.factions_stage_2_empire_and_araby)];
+        local faction_key = self.settings.factions_stage_2_empire_and_araby[cm:random_number(#self.settings.factions_stage_2_empire_and_araby)];
         dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count_araby, self.name, nil)
     end
 
@@ -562,7 +562,7 @@ function disaster_the_great_uprising:trigger_stage_2()
     if #self.settings.factions_stage_2_cathay > 0 then
         local army_count_cathay = math.ceil(2 * self.settings.difficulty_mod)
         for _, region_key in pairs(self.regions_stage_2_cathay) do
-            local faction_key = self.settings.factions_stage_2_cathay[math.random(1, #self.settings.factions_stage_2_cathay)];
+            local faction_key = self.settings.factions_stage_2_cathay[cm:random_number(#self.settings.factions_stage_2_cathay)];
             dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count_cathay, self.name, nil)
         end
 
@@ -606,13 +606,13 @@ function disaster_the_great_uprising:trigger_stage_3()
     if dynamic_disasters.settings.debug_2 == true then
         self.settings.stage_4_delay = 1;
     else
-        self.settings.stage_4_delay = math.random(4, 6);
+        self.settings.stage_4_delay = cm:random_number(6, 4);
     end
 
     -- Spawn a few armies in Lustria.
     local army_count = math.ceil(2.5 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_3) do
-        local faction_key = self.settings.factions_stage_3_lustria[math.random(1, #self.settings.factions_stage_3_lustria)];
+        local faction_key = self.settings.factions_stage_3_lustria[cm:random_number(#self.settings.factions_stage_3_lustria, 1)];
         dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
     end
 
@@ -640,13 +640,13 @@ function disaster_the_great_uprising:trigger_stage_4()
     if dynamic_disasters.settings.debug_2 == true then
         self.settings.stage_5_delay = 1;
     else
-        self.settings.stage_5_delay = math.random(6, 10);
+        self.settings.stage_5_delay = cm:random_number(10, 6);
     end
 
     -- Spawn a few armies along the Karak Ankor.
     local army_count = math.ceil(2 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_4) do
-        local faction_key = self.settings.factions_stage_4_karaz_ankor[math.random(1, #self.settings.factions_stage_4_karaz_ankor)];
+        local faction_key = self.settings.factions_stage_4_karaz_ankor[cm:random_number(#self.settings.factions_stage_4_karaz_ankor)];
         dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
     end
 
@@ -674,7 +674,7 @@ function disaster_the_great_uprising:trigger_stage_5()
     -- Spawn a few armies in Karaz-a-Karak.
     local army_count = math.ceil(2 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_5) do
-        local faction_key = self.settings.factions_stage_5_karaz_a_karak[math.random(1, #self.settings.factions_stage_5_karaz_a_karak)];
+        local faction_key = self.settings.factions_stage_5_karaz_a_karak[cm:random_number(#self.settings.factions_stage_5_karaz_a_karak)];
         dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
     end
 
@@ -715,7 +715,7 @@ function disaster_the_great_uprising:morrslieb_gaze_is_upon_us(duration)
     local base_chance = self.settings.status / 10;
     for i = 0, province_list:num_items() - 1 do
         local province = province_list:item_at(i);
-        local chance = math.random();
+        local chance = cm:random_number(1, 0);
         if chance > base_chance then
             cm:force_winds_of_magic_change(province:key(), "wom_strength_5");
         end
@@ -791,7 +791,7 @@ function disaster_the_great_uprising:check_start_disaster_conditions()
         end
     end
 
-    if math.random() < base_chance then
+    if cm:random_number(1, 0) < base_chance then
         return true;
     end
 

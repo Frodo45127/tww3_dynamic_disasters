@@ -316,7 +316,7 @@ function disaster_aztec_invasion:trigger()
         self.settings.stage_1_delay = 1;
         self.settings.grace_period = 4;
     else
-        self.settings.stage_1_delay = math.random(6, 10);
+        self.settings.stage_1_delay = cm:random_number(10, 6);
         self.settings.grace_period = 8;
     end
 
@@ -333,7 +333,7 @@ function disaster_aztec_invasion:trigger_stage_1()
     if dynamic_disasters.settings.debug_2 == true then
         self.settings.stage_2_delay = 1;
     else
-        self.settings.stage_2_delay = math.random(6, 10);
+        self.settings.stage_2_delay = cm:random_number(10, 6);
     end
 
     for _, faction_key in pairs(self.settings.factions) do
@@ -374,8 +374,8 @@ function disaster_aztec_invasion:trigger_stage_1()
 
                     -- Armies calculation, per province.
                     local region_key = dyn_dis_sea_regions[sea_region].coastal_regions[i];
-                    local army_count = math.floor(math.random(1, math.ceil(self.settings.difficulty_mod)));
-                    local spawn_pos = dyn_dis_sea_regions[sea_region].spawn_positions[math.random(#dyn_dis_sea_regions[sea_region].spawn_positions)];
+                    local army_count = math.floor(cm:random_number(math.ceil(self.settings.difficulty_mod)));
+                    local spawn_pos = dyn_dis_sea_regions[sea_region].spawn_positions[cm:random_number(#dyn_dis_sea_regions[sea_region].spawn_positions)];
                     out("Frodo45127: Armies to spawn: " .. tostring(army_count) .. " for " .. region_key .. " region, spawn pos X: " .. spawn_pos[1] .. ", Y: " .. spawn_pos[2] .. ".");
 
                     -- Store the region for invasion controls.
@@ -429,8 +429,8 @@ function disaster_aztec_invasion:trigger_stage_2()
 
                         -- Armies calculation, per province.
                         local region_key = dyn_dis_sea_regions[sea_region].coastal_regions[i];
-                        local army_count = math.floor(math.random(1, math.ceil(self.settings.difficulty_mod)));
-                        local spawn_pos = dyn_dis_sea_regions[sea_region].spawn_positions[math.random(#dyn_dis_sea_regions[sea_region].spawn_positions)];
+                        local army_count = math.floor(cm:random_number(math.ceil(self.settings.difficulty_mod)));
+                        local spawn_pos = dyn_dis_sea_regions[sea_region].spawn_positions[cm:random_number(#dyn_dis_sea_regions[sea_region].spawn_positions)];
                         out("Frodo45127: Armies to spawn: " .. tostring(army_count) .. " for " .. region_key .. " region, spawn pos X: " .. spawn_pos[1] .. ", Y: " .. spawn_pos[2] .. ".");
 
                         -- Store the region for invasion controls.
@@ -468,7 +468,7 @@ function disaster_aztec_invasion:trigger_stage_2()
                 if spawn_region ~= nil then
 
                     -- Armies calculation, per province.
-                    local army_count = math.floor(math.random(1, math.ceil(self.settings.difficulty_mod)));
+                    local army_count = math.floor(cm:random_number(math.ceil(self.settings.difficulty_mod)));
 
                     -- Store the region for invasion controls.
                     for i = 1, army_count do
@@ -489,12 +489,12 @@ function disaster_aztec_invasion:trigger_stage_2()
         if faction_key == "wh2_dlc13_lzd_spirits_of_the_jungle" then
             local regions = self.settings.stage_2_data.regions[faction_key];
             local coast = regions.sea[1]
-            local sea_region = dyn_dis_coasts[coast][math.random(#dyn_dis_coasts[coast])];
+            local sea_region = dyn_dis_coasts[coast][cm:random_number(#dyn_dis_coasts[coast])];
             for _, region_key in pairs(regions.land) do
 
                 -- Armies calculation, per province.
-                local army_count = math.floor(math.random(1, math.ceil(self.settings.difficulty_mod * 0.75)));
-                local spawn_pos = dyn_dis_sea_regions[sea_region].spawn_positions[math.random(#dyn_dis_sea_regions[sea_region].spawn_positions)];
+                local army_count = math.floor(cm:random_number(math.ceil(self.settings.difficulty_mod * 0.75)));
+                local spawn_pos = dyn_dis_sea_regions[sea_region].spawn_positions[cm:random_number(#dyn_dis_sea_regions[sea_region].spawn_positions)];
                 out("Frodo45127: Armies to spawn: " .. tostring(army_count) .. " for " .. region_key .. " region, spawn pos X: " .. spawn_pos[1] .. ", Y: " .. spawn_pos[2] .. ".");
 
                 -- Store the region for invasion controls.
@@ -655,7 +655,7 @@ function disaster_aztec_invasion:check_start_disaster_conditions()
         end
     end
 
-    if math.random() < base_chance then
+    if cm:random_number(1, 0) < base_chance then
         return true;
     end
 

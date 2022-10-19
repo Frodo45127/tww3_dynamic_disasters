@@ -167,7 +167,7 @@ function disaster_wild_hunt:trigger()
     if dynamic_disasters.settings.debug_2 == true then
         self.settings.early_warning_delay = 1;
     else
-        self.settings.early_warning_delay = math.random(8, 12);
+        self.settings.early_warning_delay = cm:random_number(12, 8);
     end
 
     dynamic_disasters:execute_payload(self.early_warning_incident_key, self.early_warning_effects_key, self.settings.early_warning_delay, nil);
@@ -286,7 +286,7 @@ function disaster_wild_hunt:check_start_disaster_conditions()
         end
     end
 
-    if math.random() < base_chance then
+    if cm:random_number(1, 0) < base_chance then
         return true;
     end
 
