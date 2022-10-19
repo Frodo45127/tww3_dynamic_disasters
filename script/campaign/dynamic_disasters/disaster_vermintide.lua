@@ -13,7 +13,7 @@
         - At least turn 130 (so the player has already "prepared").
         - Clan Skryre must be not confederated (it's the one it starts the invasion).
     Effects:
-        - For the entire disaster:
+        - For the entire disaster since the stage 1:
             - Skavens will keep expanding the underempire constantly.
             - Ikit will get cores and nukes each turn.
         - Trigger/Early Warning:
@@ -33,6 +33,8 @@
                 - Clan Skryre gets disabled diplomacy and full-retard AI.
                 - Trigger "The Green Shine of MorrsLieb" effect (50% Probability of Storm of Magic).
                 - Wait 6-10 turns for more info.
+                - Dead major factions will respawn in Skavenblight.
+                - Major factions will gain undercities on strategic places for them.
         - Stage 2:
             - Targets: The Empire, Araby's North Coast and Cathay's Hearthlands.
             - Spawn random skaven factions's armies on the Empire and Araby's North Coast.
@@ -77,6 +79,9 @@
         - If its faction is dead, put Belegar in Karak 8 Peaks
         - If we reach the Karaz-a-Karak battle, maybe enter as reinforcements?
         - Replace army spawns with undercities, and make some undercities explode.
+
+    TODO: Replace army spawns on occupied regions with undercities initialized in stage 1 reaching boiling point.
+    TODO: Test building nukes on a few cities.
 
 ]]
 
@@ -758,11 +763,6 @@ function disaster_vermintide:trigger_stage_1()
         dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.regions_stage_1, true, {"wh2_main_sc_skv_skaven"})
     end
 
-    -- For any dead skaven faction, spawn a few of their armies in Skavenblight. Do not get them into wars yet.
-    for _, faction_key in pairs(self.settings.factions) do
-        dynamic_disasters:create_scenario_force(faction_key, "wh3_main_combi_region_skavenblight", self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil)
-    end
-
     -- Setup strategic under-cities for all factions available, including the recently resurrected ones.
     for _, faction_key in pairs(self.settings.factions) do
         if self.settings.repeat_regions[faction_key] == nil then
@@ -771,6 +771,12 @@ function disaster_vermintide:trigger_stage_1()
 
         out("Frodo45127: Setting up initial underempire for faction " .. faction_key .. ".");
         if self.initial_under_empire_placements[faction_key] ~= nil then
+
+            -- Only spawn new armies here for dead main factions.
+            if cm:get_faction(faction_key):is_dead() == true then
+                dynamic_disasters:create_scenario_force(faction_key, "wh3_main_combi_region_skavenblight", self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil)
+            end
+
             for _, region_key in pairs(self.initial_under_empire_placements[faction_key]) do
 
                 out("Frodo45127: Setting up initial underempire for faction " .. faction_key .. ", region " .. region_key .. ".");
