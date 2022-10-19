@@ -27,3 +27,6 @@ dyn_dis_chaos_invasion_rift_chance_of_reward_slaanesh			attribute_mark_slaanesh.
 dyn_dis_chaos_invasion_rift_chance_of_reward_tzeentch			attribute_mark_tzeentch.png	faction	1	false	false	true
 dyn_dis_chaos_invasion_great_vortex_undone			disaster.png	faction	1	true	false	false
 dyn_dis_realm_divided_attacker_buffs	 	 	disaster.png	faction	1	false	false	false
+dyn_dis_vermintide_global_effects	 	 	disaster.png	faction	1	true	false	false
+dyn_dis_vermintide_attacker_buffs	 	 	disaster.png	faction	1	false	false	false
+dyn_dis_vermintide_early_warning			disaster.png	faction	1	true	false	true

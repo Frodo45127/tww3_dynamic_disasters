@@ -16,6 +16,11 @@
         - Trigger/Early Warning:
             - Message about Morrslieb increasing in size.
             - Wait 6-10 turns for more info.
+            - After 2-4 turns:
+                - Marker for battle appears on ubersreik.
+                - When entering the marker, a battle is fought.
+                - Battle remains available until invasion ends or battle is fought.
+                - Winning the battle gives you an army with the Ubersreik heroes.
         - Stage 1:
             - If Clan Skryre has been confederated, end the disaster here.
             - If not:
@@ -83,7 +88,7 @@ local STATUS_STAGE_5 = 6;
 
 -- Object representing the disaster.
 disaster_vermintide = {
-    name = "vermintide",
+    name = "the_vermintide",
 
     -- Values for categorizing the disaster.
     is_global = true;
@@ -130,12 +135,16 @@ disaster_vermintide = {
             skaven = "lategame",
         },
         base_army_unit_count = 19,
+        stage_0_ubersreik_battle_delay = 1,
         stage_1_delay = 1,
         stage_2_delay = 1,
         stage_3_delay = 1,
         stage_4_delay = 1,
         stage_5_delay = 1,
         invasion_over_delay = 10,
+
+        ubersreik_battle_setup = false,
+        ubersreik_battle_fought = false,
 
 
         -- List of skaven factions that will participate in the uprising.
@@ -280,28 +289,44 @@ disaster_vermintide = {
         "wh3_main_combi_region_karaz_a_karak",
     },
 
-    stage_1_warning_event_key = "fro_dyn_dis_vermintide_stage_1_warning",
-    stage_1_warning_effect_key = "dyn_dis_the_vermintide_early_warning",
-    stage_1_event_key = "fro_dyn_dis_vermintide_stage_1_trigger",
-    stage_2_event_key = "fro_dyn_dis_vermintide_stage_2_trigger",
-    stage_3_event_key = "fro_dyn_dis_vermintide_stage_3_trigger",
-    stage_4_event_key = "fro_dyn_dis_vermintide_stage_4_trigger",
-    stage_5_event_key = "fro_dyn_dis_vermintide_stage_5_trigger",
-    finish_before_stage_1_event_key = "fro_dyn_dis_vermintide_finish_before_stage_1",
-    finish_event_key = "fro_dyn_dis_vermintide_finish",
+    stage_1_warning_event_key = "wh3_main_ie_incident_endgame_vermintide_1",
+    stage_1_warning_effect_key = "dyn_dis_vermintide_early_warning",
+    stage_1_event_key = "dyn_dis_vermintide_stage_1_trigger",
+    stage_2_event_key = "dyn_dis_vermintide_stage_2_trigger",
+    stage_3_event_key = "dyn_dis_vermintide_stage_3_trigger",
+    stage_4_event_key = "dyn_dis_vermintide_stage_4_trigger",
+    stage_5_event_key = "dyn_dis_vermintide_stage_5_trigger",
+    finish_before_stage_1_event_key = "dyn_dis_vermintide_finish_before_stage_1",
+    finish_event_key = "dyn_dis_vermintide_finish",
     endgame_mission_name = "the_vermintide",
-    effects_global_key = "fro_dyn_dis_vermintide_global_effects",
-    attacker_buffs_key = "fro_dyn_dis_vermintide_attacker_buffs",
-    ai_personality = "fro_dyn_dis_wh3_combi_skaven_endgame",
+    effects_global_key = "dyn_dis_vermintide_global_effects",
+    attacker_buffs_key = "dyn_dis_vermintide_attacker_buffs",
+    ai_personality = "wh3_combi_skaven_endgame",
+
+    ubersreik_incident_key = "wh3_main_ie_incident_endgame_vermintide_ubersreik",
+    ubersreik_battle_success_incident_key = "wh3_main_ie_incident_endgame_vermintide_ubersreik_success",
+    ubersreik_region_key = "wh3_main_combi_region_ubersreik",
+    ubersreik_faction_key = "wh2_main_skv_skaven_qb1",
+    ubersreik_battle_units = "wh2_main_skv_inf_stormvermin_0,wh2_main_skv_inf_stormvermin_0,wh2_main_skv_inf_stormvermin_0,wh2_main_skv_inf_stormvermin_1,wh2_main_skv_inf_stormvermin_1,wh2_main_skv_inf_plague_monks,wh2_main_skv_inf_plague_monks,wh2_main_skv_inf_poison_wind_globadiers,wh2_main_skv_inf_poison_wind_globadiers,wh2_dlc12_skv_inf_ratling_gun_0,wh2_dlc12_skv_inf_ratling_gun_0,wh2_dlc12_skv_inf_ratling_gun_0,wh2_dlc12_skv_inf_ratling_gun_0,wh2_main_skv_inf_warpfire_thrower,wh2_main_skv_inf_warpfire_thrower,wh2_main_skv_inf_gutter_runners_1,wh2_main_skv_inf_gutter_runners_1,wh2_main_skv_inf_gutter_runners_1,wh2_main_skv_mon_rat_ogres",
+    ubersreik_reward_units = "wh_main_dwf_inf_irondrakes_0,wh_main_dwf_inf_irondrakes_0,wh_main_dwf_inf_hammerers,wh_main_dwf_inf_hammerers,wh_dlc05_wef_inf_wildwood_rangers_0,wh_dlc05_wef_inf_wildwood_rangers_0,wh_main_emp_cav_outriders_1,wh_main_emp_cav_outriders_1,wh_main_emp_veh_steam_tank",
+    ubersreik_reward_agents = {
+        {type = "champion", subtype = "wh_main_emp_captain", forename = "names_name_2147355016", family_name = "names_name_2147354850"},
+        {type = "spy", subtype = "wh_dlc05_wef_waystalker", forename = "names_name_2147359174", family_name = ""},
+        {type = "spy", subtype = "wh_main_emp_witch_hunter", forename = "names_name_2147357411", family_name = "names_name_2147344113"},
+        {type = "wizard", subtype = "wh_main_emp_bright_wizard", forename = "names_name_2147355023", family_name = "names_name_2147344053"},
+        {type = "champion", subtype = "wh_main_dwf_thane", forename = "names_name_2147345808", family_name = "names_name_2147354039"}
+    },
 }
 
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
 function disaster_vermintide:set_status(status)
     self.settings.status = status;
 
+    -- Trigger can trigger twice here, so make sure we don't have duplicated listeners running.
     if self.settings.status == STATUS_TRIGGERED then
 
         -- This triggers stage one of the disaster if the disaster hasn't been cancelled.
+        core:remove_listener("VermintideStage1");
         core:add_listener(
             "VermintideStage1",
             "WorldStartRound",
@@ -315,12 +340,39 @@ function disaster_vermintide:set_status(status)
             -- If there are skaven alive, proceed with stage 1.
             function()
                 if self:check_end_disaster_conditions() == true then
-                    dynamic_disasters:execute_payload(self.finish_before_stage_1_event_key, nil, 0, nil);
+                    dynamic_disasters:trigger_incident(self.finish_before_stage_1_event_key, nil, 0, nil);
                     self:trigger_end_disaster();
                 else
                     self:trigger_stage_1();
                 end
                 core:remove_listener("VermintideStage1")
+            end,
+            true
+        );
+
+        -- This triggers the ubersreik battle incident. TODO: move this to a fucking quest battle.
+        -- NOTE: This always happens before stage 1, so no need to delete this listener on stage 1 trigger.
+        core:remove_listener("VermintideUbersreikSetup");
+        core:add_listener(
+            "VermintideUbersreikSetup",
+            "WorldStartRound",
+            function()
+                if cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_0_ubersreik_battle_delay then
+                    return true
+                end
+                return false;
+            end,
+
+            -- If there are skaven alive, proceed with stage 1.
+            function()
+                if self:check_end_disaster_conditions() == true then
+                    dynamic_disasters:trigger_incident(self.finish_before_stage_1_event_key, nil, 0, nil);
+                    core:remove_listener("VermintideStage1")
+                    self:trigger_end_disaster();
+                else
+                    self:setup_ubersreik_battle();
+                end
+                core:remove_listener("VermintideUbersreikAttack")
             end,
             true
         );
@@ -342,7 +394,7 @@ function disaster_vermintide:set_status(status)
             -- If there are skaven alive, proceed with stage 2.
             function()
                 if self:check_end_disaster_conditions() == true then
-                    dynamic_disasters:execute_payload(self.finish_event_key, nil, 0, nil);
+                    dynamic_disasters:trigger_incident(self.finish_event_key, nil, 0, nil);
                     self:trigger_end_disaster();
                 else
                     self:trigger_stage_2();
@@ -369,7 +421,7 @@ function disaster_vermintide:set_status(status)
             -- If there are skaven alive, proceed with stage 3.
             function()
                 if self:check_end_disaster_conditions() == true then
-                    dynamic_disasters:execute_payload(self.finish_event_key, nil, 0, nil);
+                    dynamic_disasters:trigger_incident(self.finish_event_key, nil, 0, nil);
                 else
                     self:trigger_stage_3();
                 end
@@ -379,7 +431,6 @@ function disaster_vermintide:set_status(status)
         );
     end
 
-    -- TODO: Spawn reinforcements in lustria after a few turns.
     if self.settings.status == STATUS_STAGE_3 then
 
         -- This triggers stage four of the disaster if the disaster hasn't been cancelled.
@@ -396,7 +447,7 @@ function disaster_vermintide:set_status(status)
             -- If there are skaven alive, proceed with stage 4.
             function()
                 if self:check_end_disaster_conditions() == true then
-                    dynamic_disasters:execute_payload(self.finish_event_key, nil, 0, nil);
+                    dynamic_disasters:trigger_incident(self.finish_event_key, nil, 0, nil);
                 else
                     self:trigger_stage_4();
                 end
@@ -404,55 +455,6 @@ function disaster_vermintide:set_status(status)
             end,
             true
         );
-
-        --[[
-        -- This triggers stage three reinforcements if the disaster hasn't been cancelled.
-        core:add_listener(
-            "VermintideStage3Reinforcements",
-            "WorldStartRound",
-            function()
-
-                -- Make sure there is at least one turn before the reinforcements arrive.
-                local delay = math.floor(self.settings.stage_4_delay / 2);
-                if delay < 1 then
-                    delay = 1;
-                end
-
-                if cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.stage_3_delay + delay then
-                    return true
-                end
-                return false;
-            end,
-
-            -- If there are skaven alive, trigger the reinforcements
-            function()
-                if self:check_end_disaster_conditions() == true then
-                    dynamic_disasters:execute_payload(self.finish_event_key, nil, 0, nil);
-                    self:trigger_end_disaster();
-                else
-
-                    local factions = {
-                        "wh2_main_skv_clan_pestilens",      -- Clan Pestilens (Skrolk)
-                        "wh2_main_skv_clan_skryre",         -- Clan Skryre (Ikit Claw)
-                    }
-
-                    -- Spawn a few armies in Lustria.
-                    for _, region_key in pairs(regions_stage_3) do
-                        local faction_key = factions[math.random(1, #factions)];
-                        dynamic_disasters:create_scenario_force(faction_key, region_key, self.settings.army_template, self.settings.base_army_unit_count, true, math.ceil(2.5 * self.settings.difficulty_mod), self.name)
-                    end
-
-                    -- Force war against every skaven faction for each faction the skaven attack.
-                    for _, faction_key in pairs(factions) do
-                        local faction = cm:get_faction(faction_key);
-                        dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions_stage_3);
-                    end
-                end
-                core:remove_listener("VermintideStage3Reinforcements")
-            end,
-            true
-        );
-        ]]--
     end
 
     if self.settings.status == STATUS_STAGE_4 then
@@ -471,7 +473,7 @@ function disaster_vermintide:set_status(status)
             -- If there are skaven alive, proceed with stage 5.
             function()
                 if self:check_end_disaster_conditions() == true then
-                    dynamic_disasters:execute_payload(self.finish_event_key, nil, 0, nil);
+                    dynamic_disasters:trigger_incident(self.finish_event_key, nil, 0, nil);
                 else
                     self:trigger_stage_5();
                 end
@@ -480,6 +482,87 @@ function disaster_vermintide:set_status(status)
             true
         );
     end
+
+    --------------------------------------------
+    -- Code for the Ubersreik battle
+    --------------------------------------------
+    core:remove_listener("VermintideUbersreikBattle");
+    core:add_listener(
+        "VermintideUbersreikBattle",
+        "AreaEntered",
+        function(context)
+            return context:area_key() == "endgame_vermintide_marker" and self.settings.status >= STATUS_TRIGGERED and self.settings.ubersreik_battle_setup == true and self.settings.ubersreik_battle_fought == false;
+        end,
+        function(context)
+            local character = context:family_member():character()
+
+            if not character:is_null_interface() and character:has_military_force() then
+                local faction = character:faction()
+
+                if faction:is_human() and (faction:subculture() == "wh_main_sc_emp_empire" or faction:subculture() == "wh_dlc05_sc_wef_wood_elves" or faction:subculture() == "wh_main_sc_dwf_dwarfs") then
+
+                    -- Mute these events so we don't get notifications for the battle factions.
+                    cm:disable_event_feed_events(true, "wh_event_category_diplomacy", "", "");
+                    cm:disable_event_feed_events(true, "wh_event_category_character", "", "");
+
+                    -- Settings to remember that this is a special battle.
+                    cm:set_saved_value("VermintideUbersreikBattleActive", true);
+
+                    -- Generate the battle. This handles generating the armies and triggering the battle.
+                    self:generate_ubersreik_battle_force(character);
+                end
+            end
+        end,
+        true
+    )
+
+    -- Listener to cleanup after the Ubersreik battle.
+    core:remove_listener("VermintideUbersreikBattleCleanup");
+    core:add_listener(
+        "VermintideUbersreikBattleCleanup",
+        "BattleCompleted",
+        function()
+            return cm:get_saved_value("VermintideUbersreikBattleActive");
+        end,
+        function()
+            invasion_manager:kill_invasion_by_key("VermintideUbersreikInvasion");
+            dynamic_disasters:kill_faction_silently(self.ubersreik_faction_key);
+            cm:set_saved_value("VermintideUbersreikBattleActive", false);
+
+            -- If we won, spawn the extra army and remove the battle marker.
+            local pb = cm:model():pending_battle()
+
+            if pb:has_been_fought() and pb:defender_won() and pb:has_defender() then
+                local defender_fm_cqi = cm:pending_battle_cache_get_defender_fm_cqi(1)
+                local defender_fm = cm:get_family_member_by_cqi(defender_fm_cqi)
+                if defender_fm and not defender_fm:character_details():is_null_interface() then
+                    self:generate_ubersreik_army(defender_fm:character_details():faction():name())
+                    cm:remove_interactable_campaign_marker("endgame_vermintide_marker")
+
+                    self.settings.ubersreik_battle_fought = true;
+                    core:remove_listener("VermintideUbersreikBattle")
+                end
+            end
+        end,
+        true
+    );
+
+    -- Listener to check if the character ran a way from the Ubersreik battle and cleanup accordingly.
+    core:remove_listener("VermintideUbersreikBattleCleanupAfterRetreat");
+    core:add_listener(
+        "VermintideUbersreikBattleCleanupAfterRetreat",
+        "CharacterWithdrewFromBattle",
+        function(context)
+            return cm:get_saved_value("VermintideUbersreikBattleActive");
+        end,
+        function(context)
+            out("Frodo45127: Listener VermintideUbersreikBattleCleanupAfterRetreat triggered.")
+            invasion_manager:kill_invasion_by_key("VermintideUbersreikInvasion");
+            dynamic_disasters:kill_faction_silently(self.ubersreik_faction_key);
+            cm:set_saved_value("VermintideUbersreikBattleActive", false);
+        end,
+        true
+    );
 
     -- No need to have a specific listener to end the disaster after no more stages can be triggered, as that's controlled by a mission.
 end
@@ -490,13 +573,15 @@ function disaster_vermintide:trigger()
 
     -- Recalculate the delay to trigger this.
     if dynamic_disasters.settings.debug_2 == true then
-        self.settings.stage_1_delay = 1;
+        self.settings.stage_1_delay = 2;                    -- 2 instead of 1 to let ubersreik trigger in a different turn than step 1.
+        self.settings.stage_0_ubersreik_battle_delay = 1;
     else
         self.settings.stage_1_delay = math.random(6, 10);
+        self.settings.stage_0_ubersreik_battle_delay = math.random(2, 4);
     end
 
     -- Initialize listeners.
-    dynamic_disasters:execute_payload(self.stage_1_warning_event_key, self.stage_1_warning_effect_key, self.settings.stage_1_delay, nil);
+    dynamic_disasters:trigger_incident(self.stage_1_warning_event_key, self.stage_1_warning_effect_key, self.settings.stage_1_delay, nil);
     self:set_status(STATUS_TRIGGERED);
 end
 
@@ -532,7 +617,7 @@ function disaster_vermintide:trigger_stage_1()
     self:morrslieb_gaze_is_upon_us(self.settings.stage_2_delay);
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
-    dynamic_disasters:execute_payload(self.stage_1_event_key, self.effects_global_key, self.settings.stage_2_delay, nil);
+    dynamic_disasters:trigger_incident(self.stage_1_event_key, self.effects_global_key, self.settings.stage_2_delay, nil);
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_skv_skaven")
     self:set_status(STATUS_STAGE_1);
 end
@@ -596,7 +681,7 @@ function disaster_vermintide:trigger_stage_2()
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
     dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.stage_2_event_key, nil, self.settings.factions[1], function () self:trigger_end_disaster() end, true)
-    dynamic_disasters:execute_payload(self.stage_2_event_key, self.effects_global_key, self.settings.stage_3_delay, nil);
+    dynamic_disasters:trigger_incident(self.stage_2_event_key, self.effects_global_key, self.settings.stage_3_delay, nil);
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_skv_skaven")
     self:set_status(STATUS_STAGE_2);
 end
@@ -630,7 +715,7 @@ function disaster_vermintide:trigger_stage_3()
     self:morrslieb_gaze_is_upon_us(self.settings.stage_4_delay);
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
-    dynamic_disasters:execute_payload(self.stage_3_event_key, self.effects_global_key, self.settings.stage_4_delay, nil);
+    dynamic_disasters:trigger_incident(self.stage_3_event_key, self.effects_global_key, self.settings.stage_4_delay, nil);
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_skv_skaven")
     self:set_status(STATUS_STAGE_3);
 end
@@ -664,7 +749,7 @@ function disaster_vermintide:trigger_stage_4()
     self:morrslieb_gaze_is_upon_us(self.settings.stage_5_delay);
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
-    dynamic_disasters:execute_payload(self.stage_4_event_key, self.effects_global_key, self.settings.stage_5_delay, nil);
+    dynamic_disasters:trigger_incident(self.stage_4_event_key, self.effects_global_key, self.settings.stage_5_delay, nil);
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_skv_skaven")
     self:set_status(STATUS_STAGE_4);
 end
@@ -692,7 +777,7 @@ function disaster_vermintide:trigger_stage_5()
     self:morrslieb_gaze_is_upon_us(self.settings.invasion_over_delay);
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
-    dynamic_disasters:execute_payload(self.stage_5_event_key, self.effects_global_key, self.settings.invasion_over_delay, nil);
+    dynamic_disasters:trigger_incident(self.stage_5_event_key, self.effects_global_key, self.settings.invasion_over_delay, nil);
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_skv_skaven")
     self:set_status(STATUS_STAGE_5);
 end
@@ -730,6 +815,148 @@ function disaster_vermintide:morrslieb_gaze_is_upon_us(duration)
         end
     end
 end
+
+-------------------------------------------
+-- Ubersreik battle stuff
+-------------------------------------------
+
+-- Function to setup the stuff for the ubersreik battle.
+function disaster_vermintide:setup_ubersreik_battle()
+
+    -- Only do this if we have a valid position for the marker.
+    local pos_x, pos_y = cm:find_valid_spawn_location_for_character_from_settlement("wh_main_emp_empire", self.ubersreik_region_key, false, true, 9)
+    if pos_x > -1 then
+
+        -- Enable the battle only for empire, wood elves and dwarfs.
+        local human_factions = cm:get_human_factions()
+        for i = 1, #human_factions do
+            local faction = cm:get_faction(human_factions[i])
+            if faction:subculture() == "wh_main_sc_emp_empire" or faction:subculture() == "wh_dlc05_sc_wef_wood_elves" or faction:subculture() == "wh_main_sc_dwf_dwarfs" then
+
+                -- Only setup this if we find a valid position for the marker.
+                self.settings.ubersreik_battle_setup = true;
+
+                local region_cqi = cm:get_region(self.ubersreik_region_key):cqi();
+                local faction_cqi = faction:command_queue_index();
+                cm:trigger_incident_with_targets(faction_cqi, self.ubersreik_incident_key, 0, 0, 0, 0, region_cqi, 0)
+            end
+        end
+    end
+
+    -- If we found at least one human player with a valid position, setup the marker.
+    if self.settings.ubersreik_battle_setup == true then
+        cm:add_interactable_campaign_marker("endgame_vermintide_marker", "endgame_vermintide_marker", pos_x, pos_y, 2)
+    end
+end
+
+-- Function to generate the army for the ubersreik battle, and trigger them to attack.
+---@param character CHARACTER_SCRIPT_INTERFACE #Character that's triggering the battle.
+function disaster_vermintide:generate_ubersreik_battle_force(character)
+    local mf = character:military_force();
+    local faction = character:faction()
+    local faction_name = faction:name()
+
+    -- guard against invasion already existing
+    invasion_manager:kill_invasion_by_key("VermintideUbersreikInvasion");
+
+    -- Spawn the invasion, declare war on them and force them to do an attack of oportunity.
+    ---@type invasion
+    local invasion = invasion_manager:new_invasion("VermintideUbersreikInvasion", self.ubersreik_faction_key, self.ubersreik_battle_units, {character:logical_position_x(), character:logical_position_y()})
+    invasion:set_target("CHARACTER", character:command_queue_index(), faction_name)
+    invasion:start_invasion(
+        function(context2)
+            core:add_listener(
+                "endgame_vermintide_ubersreik_invasion_war_declared",
+                "FactionLeaderDeclaresWar",
+                function(context)
+                    return context:character():faction():name() == self.ubersreik_faction_key
+                end,
+                function()
+                    local attacker_mf = context2:get_general():military_force()
+                    local attacker_cqi = attacker_mf:command_queue_index();     -- Invader.
+                    local defender_cqi = mf:command_queue_index();              -- Player.
+
+                    -- Lock the AI army so it doesn't run away.
+                    cm:set_force_has_retreated_this_turn(attacker_mf);
+                    cm:force_attack_of_opportunity(attacker_cqi, defender_cqi, false);
+                end,
+                false
+            );
+
+            cm:force_declare_war(self.ubersreik_faction_key, faction_name, false, false)
+        end,
+        false,
+        false,
+        false
+    )
+end
+
+-- This function generates the "Reward" army for completing the Ubersreik battle.
+function disaster_vermintide:generate_ubersreik_army(faction_key)
+
+    -- In case no more valid positions are found, retry with a bigger radious.
+    local pos_x, pos_y = cm:find_valid_spawn_location_for_character_from_settlement(faction_key, self.ubersreik_region_key, false, true, 10)
+    if pos_x == -1 or pos_y == -1 then
+        out("Frodo45127: Armies failed to spawn at region " .. self.ubersreik_region_key .. ". Retrying with bigger radious.");
+        pos_x, pos_y = cm:find_valid_spawn_location_for_character_from_settlement(faction_key, self.ubersreik_region_key, false, true, 10)
+    end
+
+    -- In case no more valid positions are found, retry with a much bigger radious.
+    if pos_x == -1 or pos_y == -1 then
+        out("Frodo45127: Armies failed to spawn at region " .. self.ubersreik_region_key .. ". Retrying with much bigger radious.");
+        pos_x, pos_y = cm:find_valid_spawn_location_for_character_from_settlement(faction_key, self.ubersreik_region_key, false, true, 15)
+    end
+
+    -- If they're still invalid, we cannot spawn the army anymore.
+    if pos_x == -1 or pos_y == -1 then
+        out("Frodo45127: Armies failed to spawn again. Returning without trying again.");
+        return;
+    end
+
+    -- Make sure we don't get events for the army/character spawns.
+    cm:disable_event_feed_events(true, "wh_event_category_character", "", "")
+    cm:disable_event_feed_events(true, "wh_event_category_agent", "", "")
+    cm:disable_event_feed_events(true, "wh_event_category_traits_ancillaries", "", "")
+
+    -- Create the army, and attach the relevant heroes to it.
+    cm:create_force(
+        faction_key,
+        self.ubersreik_reward_units,
+        self.ubersreik_region_key,
+        pos_x,
+        pos_y,
+        false,
+        function(cqi)
+            local force = cm:get_character_by_cqi(cqi):military_force()
+            local force_cqi = force:command_queue_index()
+
+            cm:add_experience_to_units_commanded_by_character(cm:char_lookup_str(cqi), 7)
+
+            for i = 1, #self.ubersreik_reward_agents do
+                local agent_x, agent_y = cm:find_valid_spawn_location_for_character_from_settlement(faction_key, self.ubersreik_region_key, false, true, 10)
+                local agent = cm:create_agent(faction_key, self.ubersreik_reward_agents[i].type, self.ubersreik_reward_agents[i].subtype, agent_x, agent_y, nil)
+                local forename = common:get_localised_string(self.ubersreik_reward_agents[i].forename)
+                local family_name = common:get_localised_string(self.ubersreik_reward_agents[i].family_name)
+                cm:change_character_custom_name(agent, forename, family_name, "", "")
+                cm:add_agent_experience(cm:char_lookup_str(agent:command_queue_index()), 25, true)
+                cm:embed_agent_in_force(agent, force);
+            end
+
+            -- Reenable the events for army/character spawns.
+            cm:disable_event_feed_events(false, "wh_event_category_character", "", "")
+            cm:disable_event_feed_events(false, "wh_event_category_agent", "", "")
+            cm:disable_event_feed_events(false, "wh_event_category_traits_ancillaries", "", "")
+
+            -- Trigger an incident informing about the new army.
+            local faction_cqi = cm:get_faction(faction_key):command_queue_index();
+            cm:trigger_incident_with_targets(faction_cqi, self.ubersreik_battle_success_incident_key, 0, 0, 0, force_cqi, 0, 0)
+        end
+    )
+end
+
+-------------------------------------------
+-- Ubersreik battle stuff end
+-------------------------------------------
 
 -- Function to trigger cleanup stuff after the invasion is over.
 function disaster_vermintide:trigger_end_disaster()

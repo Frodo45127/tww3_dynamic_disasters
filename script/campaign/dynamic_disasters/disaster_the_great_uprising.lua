@@ -291,7 +291,7 @@ disaster_the_great_uprising = {
     endgame_mission_name = "the_great_ascendancy",
     effects_global_key = "fro_dyn_dis_great_uprising_global_effects",
     attacker_buffs_key = "fro_dyn_dis_great_uprising_attacker_buffs",
-    ai_personality = "fro_dyn_dis_wh3_combi_skaven_endgame",
+    ai_personality = "wh3_combi_skaven_endgame",
 }
 
 -- Function to set the status of the disaster, initializing the needed listeners in the process.

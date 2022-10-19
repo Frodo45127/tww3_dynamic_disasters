@@ -243,10 +243,10 @@ the_vermintide_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_toolt
 the_vermintide_difficulty_mod:slider_set_min_max(10, 500)
 the_vermintide_difficulty_mod:set_default_value(150)
 the_vermintide_difficulty_mod:slider_set_step_size(13)
-local d = mod:add_new_option("d3", "dummy")
+local d = mod:add_new_option("d111", "dummy")
 d:set_text(" ");
 
-local d = mod:add_new_option("d4", "dummy")
+local d = mod:add_new_option("d112", "dummy")
 d:set_text(" ");
 
 --[[

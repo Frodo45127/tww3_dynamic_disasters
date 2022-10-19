@@ -34,3 +34,10 @@ dyn_dis_aztec_invasion_early_end	lzd/defeat	false	true	Disaster		false
 dyn_dis_chaos_invasion_great_vortex_undone	all/rift_entered	false	true	Disaster		true	
 dyn_dis_realm_divided_trigger	cth/diplomacy	false	true	Disaster		true	
 dyn_dis_chaos_invasion_great_vortex_undone_cancel	hef/ritual_complete	false	true	Disaster		true	
+dyn_dis_vermintide_stage_1_trigger	skv/global_action_fire	false	true	Disaster		true	
+dyn_dis_vermintide_stage_2_trigger	skv/ritual_complete	false	true	Disaster		true	
+dyn_dis_vermintide_stage_3_trigger	skv/under_empire_army	false	true	Disaster		true	
+dyn_dis_vermintide_stage_4_trigger	skv/celebration	false	true	Disaster		true	
+dyn_dis_vermintide_stage_5_trigger	skv/victory	false	true	Disaster		true	
+dyn_dis_vermintide_finish_before_stage_1	skv/settlement_lost	false	true	Disaster		false	
+dyn_dis_vermintide_finish	skv/settlement_lost	false	true	Disaster		false	
