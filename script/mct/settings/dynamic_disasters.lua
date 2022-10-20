@@ -41,6 +41,13 @@ dynamic_disasters_max_simul:slider_set_min_max(1, 50)
 dynamic_disasters_max_simul:set_default_value(4)
 dynamic_disasters_max_simul:slider_set_step_size(1)
 
+local dynamic_disasters_max_total_endgames = mod:add_new_option("dynamic_disasters_max_total_endgames", "slider")
+dynamic_disasters_max_total_endgames:set_text(loc_prefix.."max_total_endgames", true)
+dynamic_disasters_max_total_endgames:set_tooltip_text(loc_prefix.."max_total_endgames_tooltip", true)
+dynamic_disasters_max_total_endgames:slider_set_min_max(1, 50)
+dynamic_disasters_max_total_endgames:set_default_value(4)
+dynamic_disasters_max_total_endgames:slider_set_step_size(1)
+
 local dynamic_disasters_debug = mod:add_new_option("dynamic_disasters_debug", "checkbox")
 dynamic_disasters_debug:set_default_value(false)
 dynamic_disasters_debug:set_text(loc_prefix.."debug", true)

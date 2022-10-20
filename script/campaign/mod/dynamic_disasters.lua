@@ -19,6 +19,8 @@ dynamic_disasters = {
         victory_condition_triggered = false,        -- If a disaster has already triggered a victory condition, as we can't have two at the same time.
         max_endgames_at_the_same_time = 4,          -- Max amount of endgame crisis one can trigger at the same time, to space them out a bit.
         currently_running_endgames = 0,             -- Amount of currently running endgames.
+        max_endgames_per_campaign = 4,              -- Max amount of endgames that can trigger in a single campaign.
+        endgames_triggered = 0,                     -- Amount of endgames triggered this campaign.
     },
 
     vortex_key = "dyn_dis_custom_vortex_ulthuan",   -- Vortex VFX name.
@@ -116,6 +118,10 @@ function dynamic_disasters:load_from_mct(mct)
     local dynamic_disasters_max_simul = mod:get_option_by_key("dynamic_disasters_max_simul")
     local dynamic_disasters_max_simul_setting = dynamic_disasters_max_simul:get_finalized_setting()
     self.settings.max_endgames_at_the_same_time = dynamic_disasters_max_simul_setting
+
+    local dynamic_disasters_max_total_endgames = mod:get_option_by_key("dynamic_disasters_max_total_endgames")
+    local dynamic_disasters_max_total_endgames_setting = dynamic_disasters_max_total_endgames:get_finalized_setting()
+    self.settings.max_endgames_per_campaign = dynamic_disasters_max_total_endgames_setting
 
     for _, disaster in pairs(self.disasters) do
         local disaster_enable = mod:get_option_by_key(disaster.name .. "_enable");
@@ -500,7 +506,7 @@ function dynamic_disasters:process_disasters()
                     -- If it's repeteable, try to trigger it again.
                     if disaster.settings.repeteable == true then
                         if disaster.settings.last_finished_turn > 0 and cm:turn_number() - disaster.settings.last_finished_turn > disaster.settings.wait_turns_between_repeats then
-                            if disaster.settings.is_endgame == false or (disaster.settings.is_endgame == true and self.settings.currently_running_endgames < self.settings.max_endgames_at_the_same_time) then
+                            if disaster.settings.is_endgame == false or (disaster.settings.is_endgame == true and self.settings.currently_running_endgames < self.settings.max_endgames_at_the_same_time and self.settings.max_endgames_per_campaign > self.settings.endgames_triggered) then
 
                                 if disaster:check_start_disaster_conditions() then
                                     out("Frodo45127: Disaster " .. disaster.name .. " triggered (repeated trigger).");
@@ -510,6 +516,7 @@ function dynamic_disasters:process_disasters()
 
                                     if disaster.settings.is_endgame == true then
                                         self.settings.currently_running_endgames = self.settings.currently_running_endgames + 1;
+                                        self.settings.endgames_triggered = self.settings.endgames_triggered + 1;
                                     end
 
                                     disaster:trigger();
@@ -520,7 +527,7 @@ function dynamic_disasters:process_disasters()
 
                 -- If it's not yet started, check if we have the minimum requirements to start it.
                 elseif disaster.settings.started == false then
-                    if cm:turn_number() >= disaster.settings.min_turn and (disaster.settings.is_endgame == false or (disaster.settings.is_endgame == true and self.settings.currently_running_endgames < self.settings.max_endgames_at_the_same_time)) then
+                    if cm:turn_number() >= disaster.settings.min_turn and (disaster.settings.is_endgame == false or (disaster.settings.is_endgame == true and self.settings.currently_running_endgames < self.settings.max_endgames_at_the_same_time and self.settings.max_endgames_per_campaign > self.settings.endgames_triggered)) then
                         if disaster:check_start_disaster_conditions() then
                             out("Frodo45127: Disaster " .. disaster.name .. " triggered (first trigger).");
                             disaster.settings.started = true;
@@ -528,6 +535,7 @@ function dynamic_disasters:process_disasters()
 
                             if disaster.settings.is_endgame == true then
                                 self.settings.currently_running_endgames = self.settings.currently_running_endgames + 1;
+                                self.settings.endgames_triggered = self.settings.endgames_triggered + 1;
                             end
 
                             disaster:trigger();

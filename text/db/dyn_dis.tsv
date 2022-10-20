@@ -232,3 +232,5 @@ missions_localised_title_dyn_dis_the_vermintide_the_vermintide_1	The Vermintide	
 missions_localised_description_dyn_dis_the_vermintide_the_vermintide_1	The Plan of the Skaven has been revealed. For their Great Ascendancy, the world will be turn to ruins! Would you be able to resist the onslaugh?	true
 effect_bundles_localised_title_dyn_dis_vermintide_early_warning	Secret Schemes	true
 effect_bundles_localised_description_dyn_dis_vermintide_early_warning	Something is happening on the Under-Empire.... Prepare for the worst.	true
+mct_dyn_dis_max_total_endgames	Max Total Endgames per Campaign	true
+mct_dyn_dis_max_total_endgames_tooltip	Maximum amount of endgames allowed for the duration of a Campaign.	true
