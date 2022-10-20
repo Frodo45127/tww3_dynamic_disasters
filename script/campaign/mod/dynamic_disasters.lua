@@ -17,9 +17,9 @@ dynamic_disasters = {
         automatic_difficulty = true,                -- If the difficulty must be chosen based on the campaign difficulty.
         disable_vanilla_endgames = true,            -- If this should disable the vanilla endgames, to avoid duplicated disasters. TODO: Fix issues with missions getting overwritten due to this.
         victory_condition_triggered = false,        -- If a disaster has already triggered a victory condition, as we can't have two at the same time.
-        max_endgames_at_the_same_time = 4,          -- Max amount of endgame crisis one can trigger at the same time, to space them out a bit.
+        max_endgames_at_the_same_time = 3,          -- Max amount of endgame crisis one can trigger at the same time, to space them out a bit.
         currently_running_endgames = 0,             -- Amount of currently running endgames.
-        max_endgames_per_campaign = 4,              -- Max amount of endgames that can trigger in a single campaign.
+        max_endgames_per_campaign = 3,              -- Max amount of endgames that can trigger in a single campaign.
         endgames_triggered = 0,                     -- Amount of endgames triggered this campaign.
     },
 
