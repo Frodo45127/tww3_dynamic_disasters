@@ -94,9 +94,6 @@ disaster_aztec_invasion = {
         difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
 
         -- Disaster-specific data.
-        army_template = {
-            lizardmen = "lategame"
-        },
         unit_count = 19,
 
         stage_1_delay = 1,
@@ -205,6 +202,16 @@ disaster_aztec_invasion = {
             cqis = {},                                   -- List of invader's cqi, so we can track them and release them when needed.
             targets = {},                                -- List of regions/factions to invade.
         },
+    },
+
+    army_templates = {
+        wh2_main_lzd_hexoatl = { lizardmen = "lategame" },
+        wh2_main_lzd_last_defenders = { lizardmen = "lategame" },
+        wh2_dlc12_lzd_cult_of_sotek = { lizardmen = "lategame" },
+        wh2_main_lzd_tlaqua = { lizardmen = "lategame" },
+        wh2_main_lzd_itza = { lizardmen = "lategame" },
+        wh2_dlc13_lzd_spirits_of_the_jungle = { lizardmen = "lategame" },
+        wh2_dlc17_lzd_oxyotl = { lizardmen = "lategame" },
     },
 
     early_warning_event_key = "dyn_dis_aztec_invasion_early_warning",
@@ -346,7 +353,7 @@ function disaster_aztec_invasion:trigger_stage_1()
             local army_count = math.ceil(4 * self.settings.difficulty_mod);
             if faction:has_home_region() then
                 local capital = faction:home_region()
-                dynamic_disasters:create_scenario_force(faction_key, capital:name(), self.settings.army_template, self.settings.unit_count, false, army_count, self.name, nil);
+                dynamic_disasters:create_scenario_force(faction_key, capital:name(), self.army_templates[faction_key], self.settings.unit_count, false, army_count, self.name, nil);
 
                 -- Prepare the regions to reveal.
                 dynamic_disasters:prepare_reveal_regions({capital:name()});
@@ -354,7 +361,7 @@ function disaster_aztec_invasion:trigger_stage_1()
             -- If we don't have a home region, spawn wherever the faction leader is, if alive.
             elseif not faction:faction_leader() == nil and faction:faction_leader():has_region() then
                 local region = faction:faction_leader():region();
-                dynamic_disasters:create_scenario_force(faction_key, region:name(), self.settings.army_template, self.settings.unit_count, false, army_count, self.name, nil);
+                dynamic_disasters:create_scenario_force(faction_key, region:name(), self.army_templates[faction_key], self.settings.unit_count, false, army_count, self.name, nil);
             end
         end
 
@@ -383,7 +390,7 @@ function disaster_aztec_invasion:trigger_stage_1()
                         table.insert(self.settings.stage_1_data.targets, region_key)
                     end
 
-                    dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, spawn_pos, self.settings.army_template, self.settings.unit_count, false, army_count, self.name, aztec_invasion_spawn_armies_callback);
+                    dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, spawn_pos, self.army_templates[faction_key], self.settings.unit_count, false, army_count, self.name, aztec_invasion_spawn_armies_callback);
 
                 end
 
@@ -438,7 +445,7 @@ function disaster_aztec_invasion:trigger_stage_2()
                             table.insert(self.settings.stage_2_data.targets, region_key)
                         end
 
-                        dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, spawn_pos, self.settings.army_template, self.settings.unit_count, false, army_count, self.name, aztec_invasion_spawn_armies_callback);
+                        dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, spawn_pos, self.army_templates[faction_key], self.settings.unit_count, false, army_count, self.name, aztec_invasion_spawn_armies_callback);
 
                     end
 
@@ -475,7 +482,7 @@ function disaster_aztec_invasion:trigger_stage_2()
                         table.insert(self.settings.stage_2_data.targets, target_region_key)
                     end
 
-                    dynamic_disasters:create_scenario_force(faction_key, spawn_region, self.settings.army_template, self.settings.unit_count, false, army_count, self.name, aztec_invasion_spawn_armies_callback);
+                    dynamic_disasters:create_scenario_force(faction_key, spawn_region, self.army_templates[faction_key], self.settings.unit_count, false, army_count, self.name, aztec_invasion_spawn_armies_callback);
                 end
             end
 
@@ -502,7 +509,7 @@ function disaster_aztec_invasion:trigger_stage_2()
                     table.insert(self.settings.stage_2_data.targets, region_key)
                 end
 
-                dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, spawn_pos, self.settings.army_template, self.settings.unit_count, false, army_count, self.name, aztec_invasion_spawn_armies_callback);
+                dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, spawn_pos, self.army_templates[faction_key], self.settings.unit_count, false, army_count, self.name, aztec_invasion_spawn_armies_callback);
             end
 
             -- Declare war on all neightbours and coastal region owners.
