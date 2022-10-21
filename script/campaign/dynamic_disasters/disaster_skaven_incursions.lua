@@ -151,6 +151,12 @@ disaster_skaven_incursions = {
         },
     },
 
+    final_buildings = {
+        generic = "wh2_dlc12_under_empire_annexation_war_camp_2",
+        wh2_main_skv_clan_skryre = "wh2_dlc12_under_empire_annexation_doomsday_2",
+        wh2_main_skv_clan_pestilens = "wh2_dlc14_under_empire_annexation_plague_cauldron_2",
+    },
+
     initial_under_empire_placements = {
         wh2_main_skv_clan_mors = {
             "wh3_main_combi_region_karag_orrud",
@@ -197,13 +203,16 @@ function disaster_skaven_incursions:set_status(status)
             "SkavenIncursionsInvasion",
             "WorldStartRound",
             function()
-                if cm:turn_number() >= self.settings.last_triggered_turn and #self.settings.repeat_regions >= 15 then
+                local count = 0
+                for _ in pairs(self.settings.repeat_regions[self.settings.faction]) do count = count + 1 end
+                out("Frodo45127: Regions expanded: " .. count .. ".")
+                if cm:turn_number() >= self.settings.last_triggered_turn and count >= 15 then
                     return true
                 end
                 return false;
             end,
 
-            -- If there are skaven alive, proceed with stage 1.
+            -- If there are skaven alive, proceed with the invasion.
             function()
                 if self:check_end_disaster_conditions() == true then
                     dynamic_disasters:trigger_incident(self.finish_before_stage_1_event_key, nil, 0, nil);
@@ -218,12 +227,14 @@ function disaster_skaven_incursions:set_status(status)
     end
 
     -- Listener to keep retriggering the Under-Empire expansion each turn, as long as the disaster lasts.
-    core:remove_listener("VermintideUnderEmpireExpansion");
+    core:remove_listener("SkavenIncursionsUnderEmpireExpansion");
     core:add_listener(
-        "VermintideUnderEmpireExpansion",
+        "SkavenIncursionsUnderEmpireExpansion",
         "WorldStartRound",
         function()
-            return self.settings.started == true and self.settings.status == STATUS_TRIGGERED;
+            local count = 0
+            for _ in pairs(self.settings.repeat_regions[self.settings.faction]) do count = count + 1 end
+            return self.settings.started == true and self.settings.status == STATUS_TRIGGERED and count < 15;
         end,
         function()
             self:expand_under_empire()
@@ -238,9 +249,13 @@ end
 function disaster_skaven_incursions:trigger()
     out("Frodo45127: Starting disaster: " .. self.name);
 
-    -- Setup strategic under-cities for all factions available, including the recently resurrected ones.
+    -- Setup strategic under-cities for all factions available.
     out("Frodo45127: Setting up initial underempire base for faction " .. self.settings.faction .. ".");
     if self.initial_under_empire_placements[self.settings.faction] ~= nil then
+        if self.settings.repeat_regions[self.settings.faction] == nil then
+            self.settings.repeat_regions[self.settings.faction] = {}
+        end
+
         for _, region_key in pairs(self.initial_under_empire_placements[self.settings.faction]) do
 
             out("Frodo45127: Setting up initial underempire for faction " .. self.settings.faction .. ", region " .. region_key .. ".");
@@ -250,7 +265,7 @@ function disaster_skaven_incursions:trigger()
     end
 
     -- Initialize listeners.
-    dynamic_disasters:trigger_incident(self.warning_event_key, self.warning_event_key, 0, nil);
+    dynamic_disasters:trigger_incident(self.warning_event_key, nil, 0, nil);
     self:set_status(STATUS_TRIGGERED);
 end
 
@@ -270,29 +285,30 @@ function disaster_skaven_incursions:trigger_invasion()
 
     local army_count = math.floor(army_count_base * self.settings.difficulty_mod)
 
-    for _, region_key in pairs(self.settings.repeat_regions) do
-        dynamic_disasters:create_scenario_force(self.settings.faction, region_key, self.army_templates[self.settings.faction], self.settings.base_army_unit_count, false, army_count, self.name, nil)
-    end
+    -- For each region, replace the main building with the one of the anexation branch, so when the turn changes, nukes and armies are deployed.
+    local faction = cm:get_faction(self.settings.faction);
+    if not faction == false and faction:is_null_interface() == false then
+        if self.settings.repeat_regions[self.settings.faction] ~= nil then
+            local foreign_slots = faction:foreign_slot_managers();
+            for i2 = 0, foreign_slots:num_items() -1 do
+                local foreign_slot = foreign_slots:item_at(i2);
+                local region = foreign_slot:region();
+                for region_key, _ in pairs(self.settings.repeat_regions[faction:name()]) do
+                    if region:name() == region_key then
+                        --dynamic_disasters:create_scenario_force(self.settings.faction, region_key, self.army_templates[self.settings.faction], self.settings.base_army_unit_count, false, army_count, self.name, nil)
 
-    -- Setup strategic under-cities for all factions available, including the recently resurrected ones.
-    for _, faction_key in pairs(self.settings.factions) do
-        if self.settings.repeat_regions[faction_key] == nil then
-            self.settings.repeat_regions[faction_key] = {}
-        end
+                        local under_empire_building
+                        if self.final_buildings[faction:name()] ~= nil and (cm:random_number(100, 1) <= self.unique_building_chance or dynamic_disasters.settings.debug_2 == true) then
+                            under_empire_building = self.final_buildings[faction:name()]
+                        else
+                            under_empire_building = self.final_buildings.generic
+                        end
 
-        out("Frodo45127: Setting up initial underempire for faction " .. faction_key .. ".");
-        if self.initial_under_empire_placements[faction_key] ~= nil then
-
-            -- Only spawn new armies here for dead main factions.
-            if cm:get_faction(faction_key):is_dead() == true then
-                dynamic_disasters:create_scenario_force(faction_key, "wh3_main_combi_region_skavenblight", self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil)
-            end
-
-            for _, region_key in pairs(self.initial_under_empire_placements[faction_key]) do
-
-                out("Frodo45127: Setting up initial underempire for faction " .. faction_key .. ", region " .. region_key .. ".");
-                local region = cm:get_region(region_key);
-                self:expand_under_empire_adjacent_region_check(faction_key, region, {}, true, true, true)
+                        local slot = foreign_slot:slots():item_at(0)
+                        cm:foreign_slot_instantly_upgrade_building(slot, under_empire_building);
+                        out("Frodo45127: Invasion triggered, added " .. under_empire_building .. " to " .. region_key .. " for " .. faction:name());
+                    end
+                end
             end
         end
     end
@@ -374,6 +390,7 @@ function disaster_skaven_incursions:expand_under_empire_adjacent_region_check(sn
                     self.settings.repeat_regions[sneaky_skaven][adjacent_region_key] = true
                     chance = self.inital_expansion_chance
                 end
+                out("Frodo45127: TEst " .. adjacent_region_key .. " for " .. sneaky_skaven)
                 local dice_roll = cm:random_number(100, 1)
                 if (dice_roll <= chance or ignore_rolls == true) then
                     out("Frodo45127: Spreading under-empire to " .. adjacent_region_key .. " for " .. sneaky_skaven)
@@ -446,6 +463,7 @@ function disaster_skaven_incursions:check_start_disaster_conditions()
 
     -- Update the potential factions removing the confederated ones.
     self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
+    out("Frodo45127: Disaster: " .. self.name .. ". Factions available: " .. #self.settings.factions .. ".");
 
     -- Do not start if we don't have attackers for stage 1.
     if #self.settings.factions == 0 then
@@ -453,7 +471,6 @@ function disaster_skaven_incursions:check_start_disaster_conditions()
     end
 
     -- Check that Clan Skryre is alive or dead and non-confederated. It's needed to kickstart the disaster.
-    cm:random_sort(self.settings.factions);
     for _, faction_key in pairs(self.settings.factions) do
         local faction = cm:get_faction(faction_key);
         if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false then
@@ -461,6 +478,8 @@ function disaster_skaven_incursions:check_start_disaster_conditions()
             break
         end
     end
+
+    out("Frodo45127: Disaster: " .. self.name .. ". Faction key: " .. self.settings.faction .. ".");
 
     -- Do not start if we don't have a faction.
     if self.settings.faction == "" then
@@ -488,6 +507,18 @@ function disaster_skaven_incursions:check_start_disaster_conditions()
     end
 
     if cm:random_number(1, 0) < base_chance then
+        return true;
+    end
+
+    return false;
+end
+
+
+--- Function to check if the conditions to declare the disaster as "finished" are fulfilled.
+---@return boolean If the disaster will be finished or not.
+function disaster_skaven_incursions:check_end_disaster_conditions()
+    local faction = cm:get_faction(self.settings.faction);
+    if not faction == false and faction:is_null_interface() == false and faction:is_dead() then
         return true;
     end
 
