@@ -205,13 +205,13 @@ disaster_aztec_invasion = {
     },
 
     army_templates = {
-        wh2_main_lzd_hexoatl = { lizardmen = "lategame" },
-        wh2_main_lzd_last_defenders = { lizardmen = "lategame" },
-        wh2_dlc12_lzd_cult_of_sotek = { lizardmen = "lategame" },
-        wh2_main_lzd_tlaqua = { lizardmen = "lategame" },
-        wh2_main_lzd_itza = { lizardmen = "lategame" },
-        wh2_dlc13_lzd_spirits_of_the_jungle = { lizardmen = "lategame" },
-        wh2_dlc17_lzd_oxyotl = { lizardmen = "lategame" },
+        wh2_main_lzd_hexoatl = { lizardmen = "lategame_hexoatl" },
+        wh2_main_lzd_last_defenders = { lizardmen = "lategame_last_defenders" },
+        wh2_dlc12_lzd_cult_of_sotek = { lizardmen = "lategame_cult_of_sotek" },
+        wh2_main_lzd_tlaqua = { lizardmen = "lategame_tlaqua" },
+        wh2_main_lzd_itza = { lizardmen = "lategame_itza" },
+        wh2_dlc13_lzd_spirits_of_the_jungle = { lizardmen = "lategame_spirits_of_the_jungle" },
+        wh2_dlc17_lzd_oxyotl = { lizardmen = "lategame_oxyotl" },
     },
 
     early_warning_event_key = "dyn_dis_aztec_invasion_early_warning",

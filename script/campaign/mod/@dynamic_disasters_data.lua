@@ -1014,14 +1014,179 @@ dyn_dis_army_templates = {
             wh2_dlc13_lzd_mon_razordon_pack_0 = 1,
             wh2_dlc12_lzd_mon_salamander_pack_0 = 1,
             wh2_dlc12_lzd_mon_ancient_salamander_0 = 1,
-            wh2_main_lzd_mon_bastiladon_1 = 1,
+            wh2_main_lzd_mon_bastiladon_1 = 1,          -- Healer boi
             wh2_main_lzd_mon_bastiladon_2 = 1,
-            wh2_dlc12_lzd_mon_bastiladon_3 = 1,
+            wh2_dlc12_lzd_mon_bastiladon_3 = 1,         -- Arc of Sotek
             wh2_main_lzd_mon_ancient_stegadon = 1,
-            wh2_dlc12_lzd_mon_ancient_stegadon_1 = 1,  -- Engine of the gods
+            wh2_dlc12_lzd_mon_ancient_stegadon_1 = 1,   -- Engine of the gods
             wh2_dlc17_lzd_mon_troglodon_0 = 1,
             wh2_main_lzd_mon_carnosaur_0 = 1,
             wh2_dlc13_lzd_mon_dread_saurian_1 = 1,
+
+            --Heroes
+            wh2_main_lzd_cha_saurus_scar_veteran_2 = 1,
+            wh2_main_lzd_cha_skink_priest_beasts_3 = 1,
+        },
+        lategame_hexoatl = {
+
+            --Infantry
+            wh2_main_lzd_inf_saurus_spearmen_0 = 2,
+            wh2_main_lzd_inf_saurus_spearmen_1 = 6,
+            wh2_main_lzd_inf_saurus_warriors_0 = 2,
+            wh2_main_lzd_inf_saurus_warriors_1 = 6,
+            wh2_main_lzd_inf_temple_guards = 4,
+
+            --Cavalry
+            wh2_main_lzd_cav_cold_ones_1 = 2,
+            wh2_main_lzd_cav_cold_one_spearmen_1 = 4,
+            wh2_main_lzd_cav_horned_ones_0 = 4,
+
+            --Monsters
+            wh2_main_lzd_mon_bastiladon_1 = 1,          -- Healer boi
+
+            --Heroes
+            wh2_main_lzd_cha_saurus_scar_veteran_2 = 1,
+        },
+        lategame_last_defenders = {
+
+            --Cavalry
+            wh2_main_lzd_cav_cold_one_spearmen_1 = 2,
+            wh2_main_lzd_cav_horned_ones_0 = 2,
+            wh2_main_lzd_cav_cold_ones_1 = 2,
+            wh2_dlc12_lzd_cav_ripperdactyl_riders_0 = 2, -- Not exactly cavalry, but on the category.
+
+            --Monsters
+            wh2_main_lzd_mon_kroxigors = 4,
+            wh2_dlc13_lzd_mon_razordon_pack_0 = 2,
+            wh2_dlc12_lzd_mon_salamander_pack_0 = 2,
+            wh2_dlc12_lzd_mon_ancient_salamander_0 = 2,
+            wh2_main_lzd_mon_bastiladon_1 = 2,          -- Healer boi
+            wh2_main_lzd_mon_bastiladon_2 = 2,
+            wh2_dlc12_lzd_mon_bastiladon_3 = 2,         -- Arc of Sotek
+            wh2_main_lzd_mon_ancient_stegadon = 2,
+            wh2_dlc12_lzd_mon_ancient_stegadon_1 = 2,   -- Engine of the gods
+            wh2_main_lzd_mon_carnosaur_0 = 4,
+            wh2_dlc13_lzd_mon_dread_saurian_1 = 1,
+
+            --Heroes
+            wh2_main_lzd_cha_saurus_scar_veteran_2 = 1,
+            wh2_main_lzd_cha_skink_priest_beasts_3 = 1,
+        },
+        lategame_cult_of_sotek = {
+
+            --Infantry
+            wh2_main_lzd_inf_saurus_spearmen_0 = 3,
+            wh2_main_lzd_inf_saurus_warriors_0 = 3,
+            wh2_main_lzd_inf_temple_guards = 2,
+            wh2_main_lzd_inf_chameleon_skinks_0 = 8,
+            wh2_dlc17_lzd_inf_chameleon_stalkers_0 = 8,
+
+            --Cavalry
+            wh2_main_lzd_cav_cold_ones_1 = 2,
+            wh2_main_lzd_cav_cold_one_spearmen_1 = 2,
+
+            --Monsters
+            wh2_main_lzd_mon_kroxigors = 4,
+            wh2_dlc12_lzd_mon_salamander_pack_0 = 3,
+            wh2_dlc12_lzd_mon_ancient_salamander_0 = 3,
+            wh2_main_lzd_mon_bastiladon_1 = 2,          -- Healer boi
+            wh2_dlc12_lzd_mon_bastiladon_3 = 2,         -- Arc of Sotek
+            wh2_dlc12_lzd_mon_ancient_stegadon_1 = 1,   -- Engine of the gods
+
+            --Heroes
+            wh2_main_lzd_cha_saurus_scar_veteran_2 = 1,
+            wh2_main_lzd_cha_skink_priest_beasts_3 = 1,
+        },
+        lategame_tlaqua = {
+
+            --Infantry
+            wh2_main_lzd_inf_chameleon_skinks_0 = 4,
+            wh2_dlc17_lzd_inf_chameleon_stalkers_0 = 4,
+
+            --Cavalry
+            wh2_main_lzd_cav_cold_ones_1 = 2,
+            wh2_main_lzd_cav_cold_one_spearmen_1 = 2,
+            wh2_dlc12_lzd_cav_ripperdactyl_riders_0 = 8, -- Not exactly cavalry, but on the category.
+            wh2_dlc12_lzd_cav_terradon_riders_0_tlaqua = 6,
+            wh2_dlc12_lzd_cav_terradon_riders_1_tlaqua = 6,
+
+            --Monsters
+            wh2_dlc13_lzd_mon_razordon_pack_0 = 6,
+            wh2_dlc12_lzd_mon_salamander_pack_0 = 4,
+            wh2_dlc12_lzd_mon_ancient_salamander_0 = 2,
+            wh2_main_lzd_mon_bastiladon_1 = 1,          -- Healer boi
+            wh2_dlc12_lzd_mon_bastiladon_3 = 1,         -- Arc of Sotek
+            wh2_dlc12_lzd_mon_ancient_stegadon_1 = 1,   -- Engine of the gods
+
+            --Heroes
+            wh2_main_lzd_cha_skink_chief_3 = 1,
+            wh2_main_lzd_cha_skink_priest_beasts_3 = 1,
+            wh2_main_lzd_cha_skink_priest_heavens_3 = 1,
+        },
+        lategame_itza = {
+
+            --Infantry
+            wh2_main_lzd_inf_saurus_spearmen_0 = 2,
+            wh2_main_lzd_inf_saurus_spearmen_1 = 6,
+            wh2_main_lzd_inf_saurus_warriors_0 = 2,
+            wh2_main_lzd_inf_saurus_warriors_1 = 6,
+            wh2_main_lzd_inf_temple_guards = 4,
+
+            --Cavalry
+            wh2_main_lzd_cav_cold_ones_1 = 2,
+            wh2_main_lzd_cav_cold_one_spearmen_1 = 4,
+            wh2_main_lzd_cav_horned_ones_0 = 4,
+
+            --Monsters
+            wh2_main_lzd_mon_kroxigors = 2,
+            wh2_main_lzd_mon_bastiladon_1 = 1,          -- Healer boi
+            wh2_dlc12_lzd_mon_bastiladon_3 = 1,         -- Arc of Sotek
+            wh2_dlc13_lzd_mon_dread_saurian_1 = 1,
+
+            --Heroes
+            wh2_main_lzd_cha_saurus_scar_veteran_2 = 1,
+            wh2_main_lzd_cha_skink_priest_beasts_3 = 1,
+        },
+        lategame_spirits_of_the_jungle = {
+
+            --Infantry
+            wh2_main_lzd_inf_saurus_spearmen_1 = 4,
+            wh2_main_lzd_inf_saurus_warriors_1 = 4,
+            wh2_main_lzd_inf_temple_guards = 2,
+
+            --Monsters
+            wh2_main_lzd_mon_kroxigors = 8,
+            wh2_main_lzd_mon_kroxigors_blessed = 4,
+            wh2_main_lzd_mon_bastiladon_1 = 1,          -- Healer boi
+            wh2_main_lzd_mon_ancient_stegadon = 2,
+            wh2_dlc12_lzd_mon_ancient_stegadon_1 = 2,   -- Engine of the gods
+            wh2_dlc13_lzd_mon_dread_saurian_0 = 2,
+            wh2_dlc13_lzd_mon_dread_saurian_1 = 2,
+
+            --Heroes
+            wh2_main_lzd_cha_saurus_scar_veteran_2 = 1,
+            wh2_main_lzd_cha_skink_priest_beasts_3 = 1,
+            wh2_main_lzd_cha_skink_priest_heavens_3 = 1,
+        },
+        lategame_oxyotl = {
+
+            --Infantry
+            wh2_dlc17_lzd_inf_chameleon_stalkers_0 = 8,
+            wh2_main_lzd_inf_chameleon_skinks_0 = 8,
+
+            --Monsters
+            wh2_dlc13_lzd_mon_razordon_pack_0 = 4,
+            wh2_dlc12_lzd_mon_salamander_pack_0 = 4,
+            wh2_main_lzd_mon_bastiladon_1 = 1,          -- Healer boi
+            wh2_dlc12_lzd_mon_ancient_stegadon_1 = 1,   -- Engine of the gods
+            wh2_dlc17_lzd_mon_troglodon_0 = 4,
+            wh2_main_lzd_mon_carnosaur_0 = 2,
+            wh2_dlc13_lzd_mon_dread_saurian_1 = 1,
+
+            --Heroes
+            wh2_main_lzd_cha_skink_chief_3 = 1,
+            wh2_main_lzd_cha_skink_priest_beasts_3 = 1,
+            wh2_main_lzd_cha_skink_priest_heavens_3 = 1,
         },
     },
     skaven = {
