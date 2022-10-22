@@ -283,21 +283,31 @@ function disaster_skaven_incursions:trigger_invasion()
     if not faction == false and faction:is_null_interface() == false then
         if self.settings.repeat_regions[self.settings.faction] ~= nil then
             local foreign_slots = faction:foreign_slot_managers();
-            for i2 = 0, foreign_slots:num_items() -1 do
-                local foreign_slot = foreign_slots:item_at(i2);
+            for i = 0, foreign_slots:num_items() - 1 do
+                local foreign_slot = foreign_slots:item_at(i);
                 local region = foreign_slot:region();
-                for region_key, _ in pairs(self.settings.repeat_regions[faction:name()]) do
-                    if region:name() == region_key then
-                        local under_empire_building
-                        if self.final_buildings[faction:name()] ~= nil and (cm:random_number(100, 1) <= self.unique_building_chance or dynamic_disasters.settings.debug_2 == true) then
-                            under_empire_building = self.final_buildings[faction:name()]
-                        else
-                            under_empire_building = self.final_buildings.generic
-                        end
 
-                        local slot = foreign_slot:slots():item_at(0)
-                        cm:foreign_slot_instantly_upgrade_building(slot, under_empire_building);
-                        out("Frodo45127: Invasion triggered, added " .. under_empire_building .. " to " .. region_key .. " for " .. faction:name());
+                -- If the slot is in a region we need to use for the invasion, check if it has one of the 3 buildings we want exploding and upgrade it.
+                if self.settings.repeat_regions[self.settings.faction][region:name()] then
+                    local slots = foreign_slot:slots();
+                    for i2 = 0, slots:num_items() - 1 do
+                        local slot = slots:item_at(i2)
+                        if not slot:is_null_interface() and slot:has_building() then
+                            local new_building = false;
+                            local building_key = slot:building();
+                            if building_key == "wh2_dlc12_under_empire_annexation_doomsday_1" then
+                                new_building = "wh2_dlc12_under_empire_annexation_doomsday_2";
+                            elseif building_key == "wh2_dlc12_under_empire_annexation_war_camp_1" then
+                                new_building = "wh2_dlc12_under_empire_annexation_war_camp_2";
+                            elseif building_key == "wh2_dlc14_under_empire_annexation_plague_cauldron_1" then
+                                new_building = "wh2_dlc14_under_empire_annexation_plague_cauldron_2";
+                            end
+
+                            if not new_building == false then
+                                cm:foreign_slot_instantly_upgrade_building(slot, new_building);
+                                out("Frodo45127: Invasion triggered, added " .. new_building .. " to " .. region:name() .. " for " .. faction:name());
+                            end
+                        end
                     end
                 end
             end
@@ -377,7 +387,7 @@ function disaster_skaven_incursions:expand_under_empire_adjacent_region_check(sn
                 if self.settings.repeat_regions[sneaky_skaven][adjacent_region_key] == nil then
                     chance = self.inital_expansion_chance
                 end
-                out("Frodo45127: TEst " .. adjacent_region_key .. " for " .. sneaky_skaven)
+
                 local dice_roll = cm:random_number(100, 1)
                 if (dice_roll <= chance or ignore_rolls == true) then
                     out("Frodo45127: Spreading under-empire to " .. adjacent_region_key .. " for " .. sneaky_skaven)
@@ -412,12 +422,12 @@ function disaster_skaven_incursions:expand_under_empire_adjacent_region_check(sn
 
                             local region_cqi = adjacent_region:cqi()
                             local faction_cqi = cm:get_faction(sneaky_skaven):command_queue_index()
-                            foreign_slot = cm:add_foreign_slot_set_to_region_for_faction(faction_cqi, region_cqi, "wh2_dlc12_slot_set_underempire")
+                            local foreign_slot = cm:add_foreign_slot_set_to_region_for_faction(faction_cqi, region_cqi, "wh2_dlc12_slot_set_underempire")
 
                             -- Add the buildings to the underempire.
                             for i3 = 1, #under_empire_buildings do
                                 local building_key = under_empire_buildings[i3]
-                                slot = foreign_slot:slots():item_at(i3-1)
+                                local slot = foreign_slot:slots():item_at(i3-1)
                                 cm:foreign_slot_instantly_upgrade_building(slot, building_key)
                                 out("Frodo45127: Added " .. building_key .. " to " .. adjacent_region:name() .. " for " .. sneaky_skaven)
                             end

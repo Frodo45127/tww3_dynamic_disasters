@@ -150,6 +150,7 @@ disaster_vermintide = {
 
         ubersreik_battle_setup = false,
         ubersreik_battle_fought = false,
+        under_cities_imploding_per_turn = 3,
 
         repeat_regions = {},
 
@@ -720,6 +721,20 @@ function disaster_vermintide:set_status(status)
         true
     )
 
+    -- Listener to keep retriggering the Under-Empire building upgrades each turn, as long as the disaster lasts.
+    core:remove_listener("VermintideUnderEmpireImplosion");
+    core:add_listener(
+        "VermintideUnderEmpireImplosion",
+        "WorldStartRound",
+        function()
+            return self.settings.started == true and self.settings.status > STATUS_TRIGGERED;
+        end,
+        function()
+            self:implode_under_empire()
+        end,
+        true
+    )
+
     -- No need to have a specific listener to end the disaster after no more stages can be triggered, as that's controlled by a mission.
 end
 
@@ -1236,15 +1251,60 @@ function disaster_vermintide:expand_under_empire_adjacent_region_check(sneaky_sk
 
                             local region_cqi = adjacent_region:cqi()
                             local faction_cqi = cm:get_faction(sneaky_skaven):command_queue_index()
-                            foreign_slot = cm:add_foreign_slot_set_to_region_for_faction(faction_cqi, region_cqi, "wh2_dlc12_slot_set_underempire")
+                            local foreign_slot = cm:add_foreign_slot_set_to_region_for_faction(faction_cqi, region_cqi, "wh2_dlc12_slot_set_underempire")
 
                             -- Add the buildings to the underempire.
                             for i3 = 1, #under_empire_buildings do
                                 local building_key = under_empire_buildings[i3]
-                                slot = foreign_slot:slots():item_at(i3-1)
+                                local slot = foreign_slot:slots():item_at(i3-1)
                                 cm:foreign_slot_instantly_upgrade_building(slot, building_key)
                                 out("Frodo45127: Added " .. building_key .. " to " .. adjacent_region:name() .. " for " .. sneaky_skaven)
                             end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+-- This function replaces the main building of an undercity with its max-level equivalent, triggering nukes/rat kings/plagues in the process.
+function disaster_vermintide:implode_under_empire()
+
+    for _, faction_key in pairs(self.settings.factions) do
+        local imploded_undercities = 0;
+        local faction = cm:get_faction(faction_key);
+        if not faction == false and faction:is_null_interface() == false then
+            local foreign_slots = faction:foreign_slot_managers();
+            for i = 0, foreign_slots:num_items() -1 do
+
+                -- Check if we already imploded enough undercities for this faction this turn.
+                if imploded_undercities >= self.settings.under_cities_imploding_per_turn then
+                    break;
+                end
+
+                local foreign_slot = foreign_slots:item_at(i);
+                local slots = foreign_slot:slots();
+                for i2 = 0, slots:num_items() - 1 do
+                    local slot = slots:item_at(i2)
+                    if not slot:is_null_interface() and slot:has_building() then
+                        local new_building = false;
+                        local building_key = slot:building();
+                        if building_key == "wh2_dlc12_under_empire_annexation_doomsday_1" then
+                            new_building = "wh2_dlc12_under_empire_annexation_doomsday_2";
+                        elseif building_key == "wh2_dlc12_under_empire_annexation_war_camp_1" then
+                            new_building = "wh2_dlc12_under_empire_annexation_war_camp_2";
+                        elseif building_key == "wh2_dlc14_under_empire_annexation_plague_cauldron_1" then
+                            new_building = "wh2_dlc14_under_empire_annexation_plague_cauldron_2";
+                        end
+
+                        if not new_building == false then
+                            local region = foreign_slot:region();
+
+                            cm:foreign_slot_instantly_upgrade_building(slot, new_building);
+                            out("Frodo45127: Imploding undercity, added " .. new_building .. " to " .. region:name() .. " for " .. faction:name());
+
+                            imploded_undercities = imploded_undercities + 1;
                         end
                     end
                 end
