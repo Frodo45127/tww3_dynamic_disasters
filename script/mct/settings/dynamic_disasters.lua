@@ -113,6 +113,40 @@ raiding_parties_difficulty_mod:set_default_value(150)
 raiding_parties_difficulty_mod:slider_set_step_size(10)
 
 --[[
+    Skaven Incursions Config
+]]
+local skaven_incursions_enable = mod:add_new_option("skaven_incursions_enable", "checkbox")
+skaven_incursions_enable:set_default_value(true)
+skaven_incursions_enable:set_text(loc_prefix.."skaven_incursions_enable", true)
+skaven_incursions_enable:set_tooltip_text(loc_prefix.."skaven_incursions_enable_tooltip", true)
+
+local skaven_incursions_min_turn_value = mod:add_new_option("skaven_incursions_min_turn_value", "slider")
+skaven_incursions_min_turn_value:set_text(loc_prefix.."min_turn_value", true)
+skaven_incursions_min_turn_value:set_tooltip_text(loc_prefix.."min_turn_value_tooltip", true)
+skaven_incursions_min_turn_value:slider_set_min_max(10, 400)
+skaven_incursions_min_turn_value:set_default_value(30)
+skaven_incursions_min_turn_value:slider_set_step_size(10)
+
+local skaven_incursions_difficulty_mod = mod:add_new_option("skaven_incursions_difficulty_mod", "slider")
+skaven_incursions_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)
+skaven_incursions_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_tooltip", true)
+skaven_incursions_difficulty_mod:slider_set_min_max(10, 500)
+skaven_incursions_difficulty_mod:set_default_value(150)
+skaven_incursions_difficulty_mod:slider_set_step_size(10)
+
+local skaven_incursions_critical_mass = mod:add_new_option("skaven_incursions_critical_mass", "slider")
+skaven_incursions_critical_mass:set_text(loc_prefix.."skaven_incursions_critical_mass", true)
+skaven_incursions_critical_mass:set_tooltip_text(loc_prefix.."skaven_incursions_critical_mass_tooltip", true)
+skaven_incursions_critical_mass:slider_set_min_max(5, 50)
+skaven_incursions_critical_mass:set_default_value(15)
+skaven_incursions_critical_mass:slider_set_step_size(1)
+
+local d = mod:add_new_option("d432", "dummy")
+d:set_text(" ");
+
+local d = mod:add_new_option("d433", "dummy")
+d:set_text(" ");
+--[[
     Chi'an Chi Assault Config
 ]]
 local chianchi_assault_enable = mod:add_new_option("chianchi_assault_enable", "checkbox")

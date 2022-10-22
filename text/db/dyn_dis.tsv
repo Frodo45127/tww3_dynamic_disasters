@@ -234,3 +234,7 @@ effect_bundles_localised_title_dyn_dis_vermintide_early_warning	Secret Schemes	t
 effect_bundles_localised_description_dyn_dis_vermintide_early_warning	Something is happening on the Under-Empire.... Prepare for the worst.	true
 mct_dyn_dis_max_total_endgames	Max Total Endgames per Campaign	true
 mct_dyn_dis_max_total_endgames_tooltip	Maximum amount of endgames allowed for the duration of a Campaign.	true
+mct_dyn_dis_skaven_incursions_enable	Enable "Skaven Incursions" disaster	true
+mct_dyn_dis_skaven_incursions_enable_tooltip	Enable/Disable the "Skaven Incursions" disaster.\\n\\nRumours say there are cities of man-sized rats under our cities, and that in times of abundance of food, their expansion becomes uncontrollable. And it's those rumours that brough you here. Any last words before this Witch Hunter puts a bullet in that rat-sized head of yours?	true
+mct_dyn_dis_skaven_incursions_critical_mass	Critical Mass	true
+mct_dyn_dis_skaven_incursions_critical_mass_tooltip	Amount of Under-Empire expansions allowed before rats come to the surface.	true

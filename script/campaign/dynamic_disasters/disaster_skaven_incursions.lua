@@ -61,20 +61,21 @@ disaster_skaven_incursions = {
         status = 0,                         -- Current status of the disaster. Used to re-initialize the disaster correctly on reload.
         last_triggered_turn = 0,            -- Turn when the disaster was last triggerd.
         last_finished_turn = 0,             -- Turn when the disaster was last finished.
-        wait_turns_between_repeats = 0,     -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
+        wait_turns_between_repeats = 10,    -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
         difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
+        mct_settings = {                    -- Extra settings this disaster may pull from MCT.
+            "critical_mass",
+        },
 
         -- Disaster-specific data.
+        end_next_turn = false,
         base_army_unit_count = 19,
-        invasion_over_delay = 5,
-
+        critical_mass = 15,                 -- Max amount of regions we'll expand the underempire before swapping to rat kings.
         repeat_regions = {},
         faction = "",
 
         -- List of skaven factions that will participate in the uprising.
         factions = {
-
-            -- Major factions
             "wh2_main_skv_clan_mors",           -- Clan Mors (Queek)
             "wh2_main_skv_clan_pestilens",      -- Clan Pestilens (Skrolk)
             "wh2_dlc09_skv_clan_rictus",        -- Clan Rictus (Tretch)
@@ -85,8 +86,6 @@ disaster_skaven_incursions = {
     },
 
     army_templates = {
-
-        -- Major factions use faction-specific templates
         wh2_main_skv_clan_mors = { skaven = "lategame_mors" },
         wh2_main_skv_clan_pestilens = { skaven = "lategame_pestilens" },
         wh2_dlc09_skv_clan_rictus = { skaven = "lategame_rictus" },
@@ -95,15 +94,11 @@ disaster_skaven_incursions = {
         wh2_main_skv_clan_moulder = { skaven = "lategame_moulder" },
     },
 
-    warning_event_key = "wh3_main_ie_incident_endgame_vermintide_1",
-    warning_effect_key = "dyn_dis_vermintide_early_warning",
-    finish_before_stage_1_event_key = "dyn_dis_vermintide_finish_before_stage_1",
-    attacker_buffs_key = "dyn_dis_vermintide_attacker_buffs",
+    warning_event_key = "wh3_main_ie_incident_endgame_vermintide_early_warning",
 
     inital_expansion_chance = 39,   -- Chance for each region to get an under empire expansion each turn
     repeat_expansion_chance = 13,   -- Chance for a region to get an under empire if it didn't get one on the first dice roll
     unique_building_chance = 25,    -- Chance for a region to get one of the special faction-unique under empire templates
-    max_regions_expanded = 15,      -- Max amount of regions we'll expand the underempire before swapping to rat kings.
     under_empire_buildings = {
         generic = {
             {
@@ -195,8 +190,21 @@ disaster_skaven_incursions = {
 function disaster_skaven_incursions:set_status(status)
     self.settings.status = status;
 
-    -- Trigger can trigger twice here, so make sure we don't have duplicated listeners running.
     if self.settings.status == STATUS_TRIGGERED then
+
+        -- Listener to end the disaster 1 turn after all the invasions are triggered.
+        core:add_listener(
+            "SkavenIncursionsEnd",
+            "WorldStartRound",
+            function()
+                return self.settings.end_next_turn;
+            end,
+            function()
+                self:trigger_end_disaster();
+                core:remove_listener("SkavenIncursionsEnd")
+            end,
+            true
+        );
 
         -- This triggers stage one of the disaster if the disaster hasn't been cancelled.
         core:add_listener(
@@ -206,7 +214,7 @@ function disaster_skaven_incursions:set_status(status)
                 local count = 0
                 for _ in pairs(self.settings.repeat_regions[self.settings.faction]) do count = count + 1 end
                 out("Frodo45127: Regions expanded: " .. count .. ".")
-                if cm:turn_number() >= self.settings.last_triggered_turn and count >= 15 then
+                if cm:turn_number() >= self.settings.last_triggered_turn and count >= self.settings.critical_mass then
                     return true
                 end
                 return false;
@@ -215,10 +223,10 @@ function disaster_skaven_incursions:set_status(status)
             -- If there are skaven alive, proceed with the invasion.
             function()
                 if self:check_end_disaster_conditions() == true then
-                    dynamic_disasters:trigger_incident(self.finish_before_stage_1_event_key, nil, 0, nil);
                     self:trigger_end_disaster();
                 else
                     self:trigger_invasion();
+                    self.settings.end_next_turn = true;
                 end
                 core:remove_listener("SkavenIncursionsInvasion")
             end,
@@ -234,15 +242,13 @@ function disaster_skaven_incursions:set_status(status)
         function()
             local count = 0
             for _ in pairs(self.settings.repeat_regions[self.settings.faction]) do count = count + 1 end
-            return self.settings.started == true and self.settings.status == STATUS_TRIGGERED and count < 15;
+            return self.settings.started == true and self.settings.status == STATUS_TRIGGERED and count < self.settings.critical_mass;
         end,
         function()
             self:expand_under_empire()
         end,
         true
     )
-
-    -- No need to have a specific listener to end the disaster after no more stages can be triggered, as that's controlled by a mission.
 end
 
 -- Function to trigger the disaster.
@@ -269,21 +275,8 @@ function disaster_skaven_incursions:trigger()
     self:set_status(STATUS_TRIGGERED);
 end
 
--- Function to trigger the first stage of the Vermintide.
+-- Function to trigger the invasion by swapping the main buildings of the undercities.
 function disaster_skaven_incursions:trigger_invasion()
-
-    -- Spawn a few Skryre armies in Estalia, Tilea and Sartosa. Enough so they're able to expand next.
-    local current_turn = cm:turn_number();
-    local army_count_base = 1
-    if current_turn < 50 then
-        army_count_base = 1;
-    elseif current_turn >= 50 and current_turn < 100 then
-        army_count_base = 1.5;
-    elseif current_turn >= 100 then
-        army_count_base = 2;
-    end
-
-    local army_count = math.floor(army_count_base * self.settings.difficulty_mod)
 
     -- For each region, replace the main building with the one of the anexation branch, so when the turn changes, nukes and armies are deployed.
     local faction = cm:get_faction(self.settings.faction);
@@ -295,8 +288,6 @@ function disaster_skaven_incursions:trigger_invasion()
                 local region = foreign_slot:region();
                 for region_key, _ in pairs(self.settings.repeat_regions[faction:name()]) do
                     if region:name() == region_key then
-                        --dynamic_disasters:create_scenario_force(self.settings.faction, region_key, self.army_templates[self.settings.faction], self.settings.base_army_unit_count, false, army_count, self.name, nil)
-
                         local under_empire_building
                         if self.final_buildings[faction:name()] ~= nil and (cm:random_number(100, 1) <= self.unique_building_chance or dynamic_disasters.settings.debug_2 == true) then
                             under_empire_building = self.final_buildings[faction:name()]
@@ -312,9 +303,6 @@ function disaster_skaven_incursions:trigger_invasion()
             end
         end
     end
-
-    -- Prepare the regions to reveal.
-    dynamic_disasters:prepare_reveal_regions(self.settings.repeat_regions);
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
     self:set_status(STATUS_FULL_INVASION);
@@ -387,13 +375,13 @@ function disaster_skaven_incursions:expand_under_empire_adjacent_region_check(sn
             if not adjacent_region == false and adjacent_region:is_null_interface() == false then
                 local chance = self.repeat_expansion_chance
                 if self.settings.repeat_regions[sneaky_skaven][adjacent_region_key] == nil then
-                    self.settings.repeat_regions[sneaky_skaven][adjacent_region_key] = true
                     chance = self.inital_expansion_chance
                 end
                 out("Frodo45127: TEst " .. adjacent_region_key .. " for " .. sneaky_skaven)
                 local dice_roll = cm:random_number(100, 1)
                 if (dice_roll <= chance or ignore_rolls == true) then
                     out("Frodo45127: Spreading under-empire to " .. adjacent_region_key .. " for " .. sneaky_skaven)
+                    self.settings.repeat_regions[sneaky_skaven][adjacent_region_key] = true;
 
                     -- If the region is abandoned, do not use underempire. Take the region directly.
                     if adjacent_region:is_abandoned() then
@@ -452,6 +440,7 @@ function disaster_skaven_incursions:trigger_end_disaster()
 
         self.settings.repeat_regions = {};
         self.settings.faction = "";
+        self.settings.end_next_turn = false;
 
         dynamic_disasters:finish_disaster(self);
     end

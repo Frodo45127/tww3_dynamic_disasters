@@ -1221,14 +1221,13 @@ dyn_dis_army_templates = {
         lategame_trash = {
 
             --Melee Infantry
-            wh2_main_skv_inf_clanrat_spearmen_0 = 8,
-            wh2_main_skv_inf_clanrat_spearmen_1 = 8,
-            wh2_main_skv_inf_clanrats_0 = 8,
-            wh2_main_skv_inf_clanrats_1 = 8,
+            wh2_main_skv_inf_skavenslave_spearmen_0 = 8,
+            wh2_main_skv_inf_skavenslaves_0 = 8,
+            wh2_main_skv_inf_clanrats_0 = 4,
+            wh2_main_skv_inf_clanrats_1 = 4,
 
             --Ranged Infantry
-            wh2_main_skv_inf_night_runners_0 = 6,
-            wh2_main_skv_inf_night_runners_1 = 6,
+            wh2_main_skv_inf_skavenslave_slingers_0 = 8,
 
             --Monsters
             wh2_main_skv_mon_rat_ogres = 2,
