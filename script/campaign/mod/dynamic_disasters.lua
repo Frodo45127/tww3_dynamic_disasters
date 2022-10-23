@@ -381,22 +381,11 @@ function dynamic_disasters:initialize()
     -- We need to set the vortex status depending on the current disasters.
     --self:toggle_vortex();
 
-    -- Listener for evaluating if a disaster can be started or not. Triggered at the begining of each turn.
-    core:add_listener(
-        "ScriptEventMaybeDisasterTime",
-        "WorldStartRound",
-        true,
-        function ()
-            return self:process_disasters()
-        end,
-        true
-    );
-
     -- Listener to make sure the automatic difficulty works and it's kept updated.
     -- We CANNOT do this on initialization if we use the MCT, so we need to fallback to good ol listener on turn start.
     -- NOTE: leave the aaa in the name, so it triggers before anything else.
     core:add_listener(
-        "aaaDynamicDisastersAutoDifficultyCheck",
+        "DynamicDisastersAutoDifficultyCheck",
         "WorldStartRound",
         true,
         function ()
@@ -424,7 +413,18 @@ function dynamic_disasters:initialize()
             end
         end,
         true
-    )
+    );
+
+    -- Listener for evaluating if a disaster can be started or not. Triggered at the begining of each turn.
+    core:add_listener(
+        "DynamicDisastersMaybeDisasterTime",
+        "WorldStartRound",
+        true,
+        function ()
+            return self:process_disasters()
+        end,
+        true
+    );
 
     -- Listener to check if the Vortex VFX should be enabled or not this turn. This has to trigger after all listeners to work properly.
     --core:add_listener(
