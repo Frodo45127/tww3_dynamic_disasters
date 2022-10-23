@@ -832,7 +832,7 @@ function disaster_vermintide:trigger_stage_2()
         dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count_empire, self.name, nil)
     end
 
-    local army_count_araby = math.ceil(2 * self.settings.difficulty_mod)
+    local army_count_araby = math.ceil(1.5 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_2_araby) do
         local faction_key = self.settings.factions_stage_2_empire_and_araby[cm:random_number(#self.settings.factions_stage_2_empire_and_araby)];
         dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count_araby, self.name, nil)
@@ -840,7 +840,7 @@ function disaster_vermintide:trigger_stage_2()
 
     -- The Attack on Cathay depends on Eshin being available to spawn.
     if #self.settings.factions_stage_2_cathay > 0 then
-        local army_count_cathay = math.ceil(2 * self.settings.difficulty_mod)
+        local army_count_cathay = math.ceil(1.5 * self.settings.difficulty_mod)
         for _, region_key in pairs(self.regions_stage_2_cathay) do
             local faction_key = self.settings.factions_stage_2_cathay[cm:random_number(#self.settings.factions_stage_2_cathay)];
             dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count_cathay, self.name, nil)
@@ -890,7 +890,7 @@ function disaster_vermintide:trigger_stage_3()
     end
 
     -- Spawn a few armies in Lustria.
-    local army_count = math.ceil(2.5 * self.settings.difficulty_mod)
+    local army_count = math.ceil(2 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_3) do
         local faction_key = self.settings.factions_stage_3_lustria[cm:random_number(#self.settings.factions_stage_3_lustria, 1)];
         dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil)
@@ -924,7 +924,7 @@ function disaster_vermintide:trigger_stage_4()
     end
 
     -- Spawn a few armies along the Karak Ankor.
-    local army_count = math.ceil(2 * self.settings.difficulty_mod)
+    local army_count = math.ceil(1.5 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_4) do
         local faction_key = self.settings.factions_stage_4_karaz_ankor[cm:random_number(#self.settings.factions_stage_4_karaz_ankor)];
         dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil)
