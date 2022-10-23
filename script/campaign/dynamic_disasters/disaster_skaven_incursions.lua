@@ -470,6 +470,7 @@ function disaster_skaven_incursions:check_start_disaster_conditions()
     end
 
     -- Check that Clan Skryre is alive or dead and non-confederated. It's needed to kickstart the disaster.
+    self.settings.factions = cm:random_sort_copy(self.settings.factions);
     for _, faction_key in pairs(self.settings.factions) do
         local faction = cm:get_faction(faction_key);
         if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false then
