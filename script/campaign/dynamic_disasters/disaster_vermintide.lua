@@ -150,7 +150,7 @@ disaster_vermintide = {
 
         ubersreik_battle_setup = false,
         ubersreik_battle_fought = false,
-        under_cities_imploding_per_turn = 3,
+        under_cities_imploding_per_turn = 1,
 
         repeat_regions = {},
 
