@@ -389,8 +389,10 @@ vampires_rise_difficulty_mod:slider_set_min_max(10, 500)
 vampires_rise_difficulty_mod:set_default_value(150)
 vampires_rise_difficulty_mod:slider_set_step_size(10)
 
-local d = mod:add_new_option("d9", "dummy")
-d:set_text(" ");
+local vampires_rise_revive_dead_factions = mod:add_new_option("vampires_rise_revive_dead_factions", "checkbox")
+vampires_rise_revive_dead_factions:set_default_value(true)
+vampires_rise_revive_dead_factions:set_text(loc_prefix.."revive_dead_factions", true)
+vampires_rise_revive_dead_factions:set_tooltip_text(loc_prefix.."revive_dead_factions_tooltip", true)
 
 local d = mod:add_new_option("d10", "dummy")
 d:set_text(" ");

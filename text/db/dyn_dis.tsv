@@ -238,3 +238,5 @@ mct_dyn_dis_skaven_incursions_enable	Enable "Skaven Incursions" disaster	true
 mct_dyn_dis_skaven_incursions_enable_tooltip	Enable/Disable the "Skaven Incursions" disaster.\\n\\nRumours say there are cities of man-sized rats under our cities, and that in times of abundance of food, their expansion becomes uncontrollable. And it's those rumours that brough you here. Any last words before this Witch Hunter puts a bullet in that rat-sized head of yours?	true
 mct_dyn_dis_skaven_incursions_critical_mass	Critical Mass	true
 mct_dyn_dis_skaven_incursions_critical_mass_tooltip	Amount of Under-Empire expansions allowed before rats come to the surface.	true
+mct_dyn_dis_revive_dead_factions	Revive Dead Factions	true
+mct_dyn_dis_revive_dead_factions_tooltip	If factions already killed will be revived and be part of the disaster.	true
