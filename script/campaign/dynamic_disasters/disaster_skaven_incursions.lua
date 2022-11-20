@@ -452,6 +452,11 @@ function disaster_skaven_incursions:trigger_end_disaster()
         self.settings.faction = "";
         self.settings.end_next_turn = false;
 
+        -- Cleanup listeners.
+        core:remove_listener("SkavenIncursionsEnd");
+        core:remove_listener("SkavenIncursionsInvasion");
+        core:remove_listener("SkavenIncursionsUnderEmpireExpansion");
+
         dynamic_disasters:finish_disaster(self);
     end
 end
