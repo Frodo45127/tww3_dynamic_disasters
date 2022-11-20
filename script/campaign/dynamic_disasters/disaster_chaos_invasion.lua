@@ -67,6 +67,7 @@
                     - Spawn respawnable rifts across the whole world in any region with over 75 of Corruption.
                     - "Hide" the vortex by removing the VFX.
                     - Give mission to "restore" the Vortex by taking back Gaen Vale, Asurian's Temple, Tor Elyr and White Tower of Hoeth.
+                    - While the mission lasts, chaos spawns are greatly reduced, to compensate for the absurd amount of rifts open.
                     - When the mission is completed, stop its effects and rift respawn outside the chaos wastes and norsca.
 
     -- Reference for the timeline: https://warhammerfantasy.fandom.com/wiki/End_Times_Timeline#Appendix_1_-_Chronology_of_the_End_Times
@@ -954,7 +955,14 @@ function disaster_chaos_invasion:set_status(status)
             local default_owner = "wh_main_chs_chaos";
 
             for i = 0, open_nodes:num_items() - 1 do
-                if (cm:random_number(1, 0) <= (0.05 + (self.settings.difficulty_mod / 20)) or dynamic_disasters.settings.debug_2) then
+
+                -- If ulthuan has fallen, greatly reduce the amount of armies spawned to compensate for the new rifts.
+                local min_spawn_possibility = 0.05;
+                if self.settings.great_vortex_undone then
+                    min_spawn_possibility = 0.005;
+                end
+
+                if (cm:random_number(1, 0) <= (min_spawn_possibility + (self.settings.difficulty_mod / 40)) or dynamic_disasters.settings.debug_2) then
                     local current_node = open_nodes:item_at(i);
                     local x, y = current_node:position();
                     local region_data = world:region_data_at_position(x, y);
