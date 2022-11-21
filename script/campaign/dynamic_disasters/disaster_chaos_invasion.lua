@@ -1992,7 +1992,7 @@ function disaster_chaos_invasion:declare_war_on_unvasalized_norscans(faction, re
     end
 end
 
--- Function to trigger the opening of the Chaos Wastes rifts.
+-- Function to trigger the opening of the provided rifts.
 ---@param nodes table #Numeric-indexed table with the list of node keys to open.
 ---@param percentage number? #Optional. Percentage of the closed nodes of the nodes provided that we're going to open. Accepts values 0-1.
 ---@param min_chaos_required number? #Optional. Minimal amount of chaos required in a province to allow spawning a rift. Accepts values 0-100.
@@ -2080,6 +2080,16 @@ function disaster_chaos_invasion:open_teleportation_nodes(nodes, percentage, min
                 break;
             end
         end;
+    end
+end
+
+-- Function to force-close all the provided nodes of a teleportation network, if open.
+---@param nodes table #Numeric-indexed table with the list of node keys to open.
+function disaster_chaos_invasion:close_teleportation_nodes(nodes)
+    out("Frodo45127: Closing rifts.");
+
+    for i = 1, #nodes do
+        cm:teleportation_network_close_node(nodes[i]);
     end
 end
 
@@ -2303,6 +2313,16 @@ function disaster_chaos_invasion:restore_vortex()
         local faction = faction_list:item_at(i)
         cm:remove_effect_bundle(self.great_vortex_undone_effect_key, faction:name());
     end
+
+    -- Close all the rifts outside the chaos wastes and norsca.
+    self:close_teleportation_nodes(self.teleportation_nodes_cathay);
+    self:close_teleportation_nodes(self.teleportation_nodes_old_world);
+    self:close_teleportation_nodes(self.teleportation_nodes_mountains_of_mourne);
+    self:close_teleportation_nodes(self.teleportation_nodes_dark_lands);
+    self:close_teleportation_nodes(self.teleportation_nodes_southlands);
+    self:close_teleportation_nodes(self.teleportation_nodes_lustria);
+    self:close_teleportation_nodes(self.teleportation_nodes_naggaroth);
+    self:close_teleportation_nodes(self.teleportation_nodes_ulthuan);
 
     --cm:add_vfx(dynamic_disasters.vortex_key, dynamic_disasters.vortex_vfx, 171.925, 431.5, 0)
 end
