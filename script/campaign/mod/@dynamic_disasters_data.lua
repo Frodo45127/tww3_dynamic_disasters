@@ -49,16 +49,28 @@ dyn_dis_coasts = {
         "wh3_main_combi_region_southern_sea_of_chaos",
         "wh3_main_combi_region_the_albion_channel",
     },
-    norsca_south_coast = {
+    norsca_south_coast_1 = {
         "wh3_main_combi_region_southern_sea_of_chaos",
+    },
+
+    norsca_south_coast_2 = {
         "wh3_main_combi_region_gulf_of_kislev",
+    },
+
+    norsca_south_coast_3 = {
         "wh3_main_combi_region_sea_of_claws",
     },
 
     -- We skip the straits of chaos west of norsca. No sense on putting that single province from where they cannot raid anything.
-    norsca_north_coast = {
+    norsca_north_coast_1 = {
         "wh3_main_combi_region_frozen_sea",
+    },
+
+    norsca_north_coast_2 = {
         "wh3_main_combi_region_kraken_sea",
+    },
+
+    norsca_north_coast_3 = {
         "wh3_main_combi_region_northern_sea_of_chaos",
     },
 
@@ -104,10 +116,12 @@ dyn_dis_coasts = {
     },
 
     -- Who the fuck would raid that? The AI, aparently. A lot.
-    antartid = {
+    antartid_east = {
         "wh3_main_combi_region_the_daemonium_coast",
         "wh3_main_combi_region_serpent_coast_sea",
-        "wh3_main_combi_region_the_churning_gulf",
+    },
+
+    antartid_west = {
         "wh3_main_combi_region_daemons_landing",
         "wh3_main_combi_region_the_lustria_straight",
     },
