@@ -215,7 +215,7 @@ function disaster_skaven_incursions:set_status(status)
                 local count = 0
                 for _ in pairs(self.settings.repeat_regions[self.settings.faction]) do count = count + 1 end
                 out("Frodo45127: Regions expanded: " .. count .. ".")
-                if cm:turn_number() >= self.settings.last_triggered_turn and (count >= self.settings.critical_mass or cm:turn_number() >= self.settings.last_triggered_turn + self.settings.max_turns) then
+                if (cm:turn_number() >= self.settings.last_triggered_turn and count >= self.settings.critical_mass) or cm:turn_number() >= self.settings.last_triggered_turn + self.settings.max_turns then
                     return true
                 end
                 return false;
