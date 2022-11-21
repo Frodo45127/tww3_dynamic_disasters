@@ -429,7 +429,9 @@ function disaster_raiding_parties:update_alive()
             local count = 0;
             for _, faction_key in pairs(factions) do
                 local faction = cm:get_faction(faction_key, true);
-                if not faction == false and faction:is_null_interface() == false and not faction:is_dead() then
+
+                -- Do not use vassals for this, as we may ran into an issue with your own vassals declaring war on you.
+                if not faction == false and faction:is_null_interface() == false and not faction:is_dead() and not faction:is_vassal() then
                     count = count + 1;
                     table.insert(factions_alive, faction_key);
                 end
