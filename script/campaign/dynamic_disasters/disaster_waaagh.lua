@@ -390,6 +390,7 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
 
                 -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
                 cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
+                cm:instantly_research_all_technologies(faction_key)
                 endgame:no_peace_no_confederation_only_war(faction_key)
                 dynamic_disasters:declare_war_for_owners_and_neightbours(faction, { region_key }, true, { "wh_main_sc_grn_greenskins", "wh_main_sc_grn_savage_orcs" })
                 cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)
