@@ -212,6 +212,10 @@ function disaster_skaven_incursions:set_status(status)
             "SkavenIncursionsInvasion",
             "WorldStartRound",
             function()
+                if self.settings.repeat_regions[self.settings.faction] == nil then
+                    self.settings.repeat_regions[self.settings.faction] = {}
+                end
+
                 local count = 0
                 for _ in pairs(self.settings.repeat_regions[self.settings.faction]) do count = count + 1 end
                 out("Frodo45127: Regions expanded: " .. count .. ".")
@@ -241,6 +245,10 @@ function disaster_skaven_incursions:set_status(status)
         "SkavenIncursionsUnderEmpireExpansion",
         "WorldStartRound",
         function()
+            if self.settings.repeat_regions[self.settings.faction] == nil then
+                self.settings.repeat_regions[self.settings.faction] = {}
+            end
+
             local count = 0
             for _ in pairs(self.settings.repeat_regions[self.settings.faction]) do count = count + 1 end
             return self.settings.started == true and self.settings.status == STATUS_TRIGGERED and count < self.settings.critical_mass;

@@ -91,6 +91,9 @@
             - If chaos keeps all dark fortresses, trigger some kind of event about getting the favourt of the 4 chaos gods (TBD).
             - Put static reinforcements on all dark fortresses (1 army of each god).
             - Trigger an endgame event (you lose) if chaos keeps the fortresses for too long.
+        - At any point:
+            - Trigger events when chaos controls more than half the world, when pushed back, and when they control it again and when they're pushed back again.
+            - Trigger lore event when a main faction province falls.
 
 
     NOTE:
