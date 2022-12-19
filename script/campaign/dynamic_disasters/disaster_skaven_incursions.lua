@@ -425,7 +425,7 @@ function disaster_skaven_incursions:expand_under_empire_adjacent_region_check(sn
                             if self.under_empire_buildings[sneaky_skaven] ~= nil and (cm:random_number(100, 1) <= self.unique_building_chance or force_unique_setup == true) then
                                 under_empire_buildings = self.under_empire_buildings[sneaky_skaven]
                             else
-                                local random_index = cm:random_number(#self.under_empire_buildings.generic, 1)
+                                local random_index = cm:random_number(#self.under_empire_buildings.generic)
                                 under_empire_buildings = self.under_empire_buildings.generic[random_index]
                             end
 
@@ -520,7 +520,7 @@ function disaster_skaven_incursions:check_start_disaster_conditions()
         end
     end
 
-    if cm:random_number(1, 0) < base_chance then
+    if cm:random_number(100, 0) / 100 < base_chance then
         return true;
     end
 

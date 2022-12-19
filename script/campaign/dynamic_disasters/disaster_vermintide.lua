@@ -995,7 +995,7 @@ function disaster_vermintide:morrslieb_gaze_is_upon_us(duration)
     local base_chance = self.settings.status / 10;
     for i = 0, province_list:num_items() - 1 do
         local province = province_list:item_at(i);
-        local chance = cm:random_number(1, 0);
+        local chance = cm:random_number(100, 0) / 100;
         if chance > base_chance then
             cm:force_winds_of_magic_change(province:key(), "wom_strength_5");
         end
@@ -1242,10 +1242,10 @@ function disaster_vermintide:expand_under_empire_adjacent_region_check(sneaky_sk
 
                             -- Pick the underempire setup at random.
                             local under_empire_buildings
-                            if self.under_empire_buildings[sneaky_skaven] ~= nil and (cm:random_number(100, 1) <= self.unique_building_chance or force_unique_setup == true) then
+                            if self.under_empire_buildings[sneaky_skaven] ~= nil and (cm:random_number(100) <= self.unique_building_chance or force_unique_setup == true) then
                                 under_empire_buildings = self.under_empire_buildings[sneaky_skaven]
                             else
-                                local random_index = cm:random_number(#self.under_empire_buildings.generic, 1)
+                                local random_index = cm:random_number(#self.under_empire_buildings.generic)
                                 under_empire_buildings = self.under_empire_buildings.generic[random_index]
                             end
 
@@ -1378,7 +1378,7 @@ function disaster_vermintide:check_start_disaster_conditions()
         end
     end
 
-    if cm:random_number(1, 0) < base_chance then
+    if cm:random_number(100, 0) / 100 < base_chance then
         return true;
     end
 

@@ -297,7 +297,7 @@ function disaster_pyramid_of_nagash:check_start_disaster_conditions()
     end
 
     local base_chance = 0.015;
-    if cm:random_number(1, 0) < base_chance then
+    if cm:random_number(100, 0) / 100 < base_chance then
         return true;
     end
 

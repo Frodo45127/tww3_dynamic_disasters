@@ -262,7 +262,7 @@ function disaster_vampires_rise:check_start_disaster_conditions()
         end
     end
 
-    if cm:random_number(1, 0) < base_chance then
+    if cm:random_number(100, 0) / 100 < base_chance then
         return true;
     end
 

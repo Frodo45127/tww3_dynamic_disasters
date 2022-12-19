@@ -965,7 +965,7 @@ function disaster_chaos_invasion:set_status(status)
                     min_spawn_possibility = 0.005;
                 end
 
-                if (cm:random_number(1, 0) <= (min_spawn_possibility + (self.settings.difficulty_mod / 40)) or dynamic_disasters.settings.debug_2) then
+                if (cm:random_number(100, 0) / 100 <= (min_spawn_possibility + (self.settings.difficulty_mod / 40)) or dynamic_disasters.settings.debug_2) then
                     local current_node = open_nodes:item_at(i);
                     local x, y = current_node:position();
                     local region_data = world:region_data_at_position(x, y);
@@ -1356,12 +1356,12 @@ function disaster_chaos_invasion:set_status(status)
 
             -- Precalculate the template to get.
             local template = from_template_key;
-            if cm:random_number(1, 0) > 0.5 then
+            if cm:random_number(100, 0) > 50 then
                 template = to_template_key;
             end
 
             -- If we're trying to travel through the Chaos Realms, you get a chance of receiving a trait.
-            if cm:random_number(1, 0) <= 0.1 or dynamic_disasters.settings.debug_2 then
+            if cm:random_number(100, 0) <= 10 or dynamic_disasters.settings.debug_2 then
                 local realm = self.teleportation_nodes_realm_by_templates[template];
 
                 out("Frodo45127: Trying to add chaos realm trait. Realm: " .. tostring(realm) .. ".");
@@ -1375,7 +1375,7 @@ function disaster_chaos_invasion:set_status(status)
             end
 
             -- If we're lucky, trigger a dilemma to choose between fight a battle and get an artifact, or just ran away.
-            if cm:random_number(1, 0) <= 0.1 or dynamic_disasters.settings.debug_2 then
+            if cm:random_number(100, 0) <= 10 or dynamic_disasters.settings.debug_2 then
                 local dilemma_key = nil;
                 local effect_key = nil;
 
@@ -2436,7 +2436,7 @@ function disaster_chaos_invasion:check_start_disaster_conditions()
 
     -- Base chance: 1/100 turns (1%).
     local base_chance = 0.01;
-    if cm:random_number(1, 0) < base_chance then
+    if cm:random_number(100, 0) / 100 < base_chance then
         return true;
     end
 

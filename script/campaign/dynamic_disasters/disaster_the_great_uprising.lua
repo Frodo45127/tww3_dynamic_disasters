@@ -715,7 +715,7 @@ function disaster_the_great_uprising:morrslieb_gaze_is_upon_us(duration)
     local base_chance = self.settings.status / 10;
     for i = 0, province_list:num_items() - 1 do
         local province = province_list:item_at(i);
-        local chance = cm:random_number(1, 0);
+        local chance = cm:random_number(100, 0) / 100;
         if chance > base_chance then
             cm:force_winds_of_magic_change(province:key(), "wom_strength_5");
         end
@@ -791,7 +791,7 @@ function disaster_the_great_uprising:check_start_disaster_conditions()
         end
     end
 
-    if cm:random_number(1, 0) < base_chance then
+    if cm:random_number(100, 0) / 100 < base_chance then
         return true;
     end
 

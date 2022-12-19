@@ -352,7 +352,7 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
     -- Same for minor factions, but this one there's a chance it doesn't trigger.
     for _, faction_key in pairs(self.settings.factions.minor) do
         local faction = cm:get_faction(faction_key)
-        if faction:is_dead() == false or cm:random_number(1, 0) <= (0.2 + self.settings.difficulty_mod / 10) then
+        if faction:is_dead() == false or cm:random_number(100, 0) <= (0.2 + self.settings.difficulty_mod / 10) * 100 then
             local region_key = nil
 
             -- Seriously????
@@ -471,7 +471,7 @@ function disaster_waaagh:check_start_disaster_conditions()
         end
     end
 
-    if cm:random_number(1, 0) < base_chance then
+    if cm:random_number(100, 0) / 100 < base_chance then
         return true;
     end
 

@@ -186,7 +186,7 @@ function disaster_chianchi_assault:set_status(status)
             function()
                 local armies_to_spawn_per_gate = math.floor(1 * math.ceil(self.settings.difficulty_mod / 2));
                 for _, location in pairs(Bastion.spawn_locations_by_gate) do
-                    local spawn_pos = location.spawn_locations[cm:random_number(#location.spawn_locations, 1)]
+                    local spawn_pos = location.spawn_locations[cm:random_number(#location.spawn_locations)]
                     dynamic_disasters:create_scenario_force_at_coords(self.settings.faction, location.gate_key, spawn_pos, self.settings.army_template, self.settings.base_army_unit_count, true, armies_to_spawn_per_gate, self.name, nil)
                 end
             end,
