@@ -148,6 +148,12 @@ function dynamic_disasters:load_from_mct(mct)
             disaster.settings.difficulty_mod = difficulty_mod_setting / 100;
         end
 
+        local revive_dead_factions = mod:get_option_by_key(disaster.name .. "_revive_dead_factions");
+        if not revive_dead_factions == false then
+            local revive_dead_factions_setting = revive_dead_factions:get_finalized_setting();
+            disaster.settings.revive_dead_factions = revive_dead_factions_setting;
+        end
+
         for i = 1, #disaster.settings.mct_settings do
             local setting = disaster.name .. "_" .. disaster.settings.mct_settings[i];
             out("Frodo45127: Trying to get setting " .. setting .. " from the MCT.")
