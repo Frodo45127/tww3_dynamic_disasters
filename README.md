@@ -25,6 +25,7 @@ Currently, the framework has mod integrations with the following mods:
 * Expanded Roster - Dark Elves
 * Expanded Roster - Greenskins - Goblin Pack
 * Expanded Roster - Greenskins - Orc Pack
+* Expanded Roster - Norsca
 * Expanded Roster - Vampire Counts
 * Yin-Yin, the Sea Dragon & Warriors of the Jade Sea
 
