@@ -184,7 +184,7 @@ function disaster_vampires_rise:trigger_the_great_vampiric_war()
 
             cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
             cm:instantly_research_all_technologies(faction_key)
-            endgame:no_peace_no_confederation_only_war(faction_key)
+            dynamic_disasters:no_peace_no_confederation_only_war(faction_key)
             dynamic_disasters:declare_war_for_owners_and_neightbours(faction, { region_key }, true, { "wh_main_sc_vmp_vampire_counts" })
 
             cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)

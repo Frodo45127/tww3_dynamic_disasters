@@ -774,7 +774,7 @@ function disaster_vermintide:trigger_stage_1()
         -- Apply the relevant CAI changes only to Clan Skryre and declare the appropiate wars.
         local faction = cm:get_faction(faction_key);
         cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
-        endgame:no_peace_no_confederation_only_war(faction_key)
+        dynamic_disasters:no_peace_no_confederation_only_war(faction_key)
         dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.regions_stage_1, true, {"wh2_main_sc_skv_skaven"})
     end
 
@@ -859,7 +859,7 @@ function disaster_vermintide:trigger_stage_2()
         local faction = cm:get_faction(faction_key);
         cm:instantly_research_all_technologies(faction_key);
         cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
-        endgame:no_peace_no_confederation_only_war(faction_key)
+        dynamic_disasters:no_peace_no_confederation_only_war(faction_key)
         dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.regions_stage_2_empire, true, {"wh2_main_sc_skv_skaven"});
         dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.regions_stage_2_araby, true, {"wh2_main_sc_skv_skaven"});
         dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.regions_stage_2_cathay, true, {"wh2_main_sc_skv_skaven"});

@@ -194,7 +194,7 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
 		dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_template, self.settings.unit_count, false, army_count, self.name, nil)
 
         -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
-        endgame:no_peace_no_confederation_only_war(faction_key)
+        dynamic_disasters:no_peace_no_confederation_only_war(faction_key)
 
         -- In the case of Karak Izor, also spawn armies in Karak Eight Peaks if it controls it.
         if faction_key == "wh_main_dwf_karak_izor" then

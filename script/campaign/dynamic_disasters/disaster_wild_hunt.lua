@@ -189,7 +189,7 @@ function disaster_wild_hunt:trigger_the_wild_hunt()
             local oak_of_ages_region = cm:get_region("wh3_main_combi_region_the_oak_of_ages");
             if oak_of_ages_region:owning_faction():name() == faction_key then
                 dynamic_disasters:create_scenario_force(faction_key, "wh3_main_combi_region_the_oak_of_ages", self.army_template, self.settings.unit_count, false, army_count, self.name, nil)
-                endgame:no_peace_no_confederation_only_war(faction_key)
+                dynamic_disasters:no_peace_no_confederation_only_war(faction_key)
                 dynamic_disasters:declare_war_for_owners_and_neightbours(invasion_faction, { "wh3_main_combi_region_the_oak_of_ages" }, true, { self.subculture })
                 table.insert(self.settings.regions, "wh3_main_combi_region_the_oak_of_ages");
             end
@@ -205,7 +205,7 @@ function disaster_wild_hunt:trigger_the_wild_hunt()
         -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
         cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
         cm:instantly_research_all_technologies(faction_key);
-        endgame:no_peace_no_confederation_only_war(faction_key)
+        dynamic_disasters:no_peace_no_confederation_only_war(faction_key)
         dynamic_disasters:declare_war_for_owners_and_neightbours(invasion_faction, { region_key }, true, { self.subculture })
 
         cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)
