@@ -555,23 +555,27 @@ function dynamic_disasters:process_disasters()
 
                 -- If it's not yet started, check if we have the minimum requirements to start it.
                 elseif disaster.settings.started == false then
-                    if cm:turn_number() >= disaster.settings.min_turn and (disaster.settings.is_endgame == false or (disaster.settings.is_endgame == true and self.settings.currently_running_endgames < self.settings.max_endgames_at_the_same_time and self.settings.max_endgames_per_campaign > self.settings.endgames_triggered)) then
-                        if disaster:check_start_disaster_conditions() then
-                            out("Frodo45127: Disaster " .. disaster.name .. " triggered (first trigger).");
-                            disaster.settings.started = true;
-                            disaster.settings.last_triggered_turn = cm:turn_number();
+                    if cm:turn_number() >= disaster.settings.min_turn then
+                        if disaster.settings.is_endgame == false or (disaster.settings.is_endgame == true and self.settings.currently_running_endgames < self.settings.max_endgames_at_the_same_time and self.settings.max_endgames_per_campaign > self.settings.endgames_triggered) then
+                            if disaster:check_start_disaster_conditions() then
+                                out("Frodo45127: Disaster " .. disaster.name .. " triggered (first trigger).");
+                                disaster.settings.started = true;
+                                disaster.settings.last_triggered_turn = cm:turn_number();
 
-                            if disaster.settings.is_endgame == true then
-                                self.settings.currently_running_endgames = self.settings.currently_running_endgames + 1;
-                                self.settings.endgames_triggered = self.settings.endgames_triggered + 1;
+                                if disaster.settings.is_endgame == true then
+                                    self.settings.currently_running_endgames = self.settings.currently_running_endgames + 1;
+                                    self.settings.endgames_triggered = self.settings.endgames_triggered + 1;
+                                end
+
+                                disaster:trigger();
+                            else
+                                out("Frodo45127: Disaster ".. disaster.name .. " ignored due to not fulfilling trigger conditions.");
                             end
-
-                            disaster:trigger();
                         else
-                            out("Frodo45127: Disaster ".. disaster.name .. " ignored due to not fulfilling trigger conditions.");
+                            out("Frodo45127: Disaster ".. disaster.name .. " ignored due to endgame limits.");
                         end
                     else
-                        out("Frodo45127: Disaster ".. disaster.name .. " ignored due to either turn limits or endgame limits.");
+                        out("Frodo45127: Disaster ".. disaster.name .. " ignored due to turn limits.");
                     end
                 else
                     out("Frodo45127: Disaster ".. disaster.name .. " ignored due to being in progress.");
