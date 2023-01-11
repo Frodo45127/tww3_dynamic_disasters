@@ -274,13 +274,12 @@ function last_stance:rohan_arrives(faction)
             if faction_status == nil or (not faction_status == nil and faction_status >= cm:turn_number()) then
 
                 out("Frodo45127: Faction " .. faction:name() .. " is in last stance and out of grace period. Trying to call for reinforcements.")
-                local army_spawned = false;
 
                 -- Test case. Only for debug mode.
                 local region = faction:home_region();
                 if dynamic_disasters.settings.debug_2 == true then
                     local army_template = self:choose_army_template(faction, nil);
-                    army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, 20, false, 1, self.name, nil);
+                    local army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, 20, false, 1, self.name, nil);
                     out("Frodo45127: Faction " .. faction:name() .. " receives debug army as reinforcements.")
 
                     if army_spawned == true then
@@ -289,6 +288,7 @@ function last_stance:rohan_arrives(faction)
                 end
 
                 -- Common check: allied armies.
+                local army_spawned = false;
                 local allies = faction:factions_military_allies_with();
                 for j = 0, allies:num_items() - 1 do
                     local ally = allies:item_at(j);
