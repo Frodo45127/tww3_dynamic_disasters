@@ -13,7 +13,7 @@
         - Trigger/Early Warning:
             - "The end is nigh" message
         - Invasion:
-            - All major and minor non-confederated dwarfen factions declare war on owner of attacked provinces and adjacent regions.
+            - All major and minor non-confederated dwarfen factions declare war on everyone not dwarf.
             - All major and minor non-confederated dwarfen factions gets disabled diplomacy and full-retard AI.
             - If no other disaster has triggered a Victory Condition yet, this will trigger one.
         - Finish:
@@ -194,7 +194,7 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
 		dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_template, self.settings.unit_count, false, army_count, self.name, nil)
 
         -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
-        dynamic_disasters:no_peace_no_confederation_only_war(faction_key)
+        dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
 
         -- In the case of Karak Izor, also spawn armies in Karak Eight Peaks if it controls it.
         if faction_key == "wh_main_dwf_karak_izor" then
@@ -216,7 +216,7 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
         -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
         cm:instantly_research_all_technologies(faction_key)
 		cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
-		dynamic_disasters:declare_war_for_owners_and_neightbours(invasion_faction, { region_key }, true, { "wh_main_sc_dwf_dwarfs" })
+		dynamic_disasters:declare_war_to_all(invasion_faction, { "wh_main_sc_dwf_dwarfs" }, true)
 
 		cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)
         table.insert(self.settings.regions, region_key);

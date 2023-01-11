@@ -22,7 +22,7 @@
                     - Valkia: Naggarond.
                     - Vilich: Great Bastion.
                 - Spawn each faction's armies in provinces we expect they have by now.
-                - Each attacker faction declares war on all non-chaos/non vassal of chaos owners of said provinces and on all its neightbours.
+                - Each attacker faction declares war on all non-chaos/non vassal of chaos factions.
                 - (TODO: UI is broken)If player is Cathay, "Flow of the Polar Gates" increases bastion thread.
                 - Trigger "Flow of the Polar Gates" incident (global chaos corruption).
                 - Trigger "Chaos Rises" video.
@@ -47,7 +47,7 @@
                 - Azzazel: Tor Sethai, Vaul's Anvil (Ulthuan), Lothern.
 
             - Spawn each faction's armies in provinces we expect they have by now, at sea, or near their objectives.
-            - Each attacker faction declares war on all non-chaos/non vassal of chaos owners of said provinces and on all its neightbours.
+            - Each attacker faction declares war on all non-chaos/non vassal of chaos.
             - Trigger "Flow of the Polar Gates" incident (global chaos corruption).
             - Trigger "Chaos Invasion" (Sarthorael's spawn) video.
             - Give all non player-controlled dark fortresses to chaos armies, if they're owned by norsca.
@@ -1740,9 +1740,9 @@ function disaster_chaos_invasion:trigger_stage_1()
         end
         local faction = cm:get_faction(faction_key);
         cm:instantly_research_all_technologies(faction_key);
-        dynamic_disasters:no_peace_no_confederation_only_war(faction_key)
-        dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.stage_1_data.regions[faction_key], true, self.denied_for_sc)
-        self:declare_war_on_unvasalized_norscans(faction, self.stage_1_data.regions[faction_key])
+        dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy);
+        dynamic_disasters:declare_war_to_all(faction, self.denied_for_sc, true);
+        self:declare_war_on_unvasalized_norscans(faction)
     end
 
     -- Make sure every attacker is allied with each other. This is to ensure all of them are on the same chaos-tide.
@@ -1799,15 +1799,11 @@ function disaster_chaos_invasion:trigger_stage_2()
 
             -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
             cm:instantly_research_all_technologies(faction_key);
-            dynamic_disasters:no_peace_no_confederation_only_war(faction_key)
+            dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
 
             -- War declarations against AI.
-            dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.stage_2_data.regions[faction_key].land.regions, true, self.denied_for_sc)
-            self:declare_war_on_unvasalized_norscans(faction, self.stage_2_data.regions[faction_key].land.regions)
-            if self.stage_2_data.regions[faction_key]["land"]["targets"] ~= nil then
-                dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.stage_2_data.regions[faction_key].land.targets, true, self.denied_for_sc)
-                self:declare_war_on_unvasalized_norscans(faction, self.stage_2_data.regions[faction_key].land.targets)
-            end
+            dynamic_disasters:declare_war_to_all(faction, self.denied_for_sc, true);
+            self:declare_war_on_unvasalized_norscans(faction)
         end
 
         -- Sea spawns are coordinate based with a region key of a land region nearby. We need to pass them a callback so they're out of the AI control until their target falls.
@@ -1826,9 +1822,9 @@ function disaster_chaos_invasion:trigger_stage_2()
             end
 
             local faction = cm:get_faction(faction_key);
-            dynamic_disasters:no_peace_no_confederation_only_war(faction_key)
-            dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.stage_2_data.regions[faction_key].sea.targets, true, self.denied_for_sc)
-            self:declare_war_on_unvasalized_norscans(faction, self.stage_2_data.regions[faction_key].sea.targets)
+            dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
+            dynamic_disasters:declare_war_to_all(faction, self.denied_for_sc, true)
+            self:declare_war_on_unvasalized_norscans(faction)
         end
 
         -- After spawning armies and declaring wars, try to give certain dark fortresses to specific factions. Only if norsca holds them.
@@ -1900,95 +1896,44 @@ function disaster_chaos_invasion:trigger_stage_2()
     self:set_status(STATUS_STAGE_2);
 end
 
--- Function to declare war on unvasalized norscans to actually vassaile them.
+-- Function to declare war on unvasalized norscans to actually vassalize them.
 ---@param faction FACTION_SCRIPT_INTERFACE #Faction that will declare war.
----@param regions string #Regions keys to declare war on.
-function disaster_chaos_invasion:declare_war_on_unvasalized_norscans(faction, regions)
+function disaster_chaos_invasion:declare_war_on_unvasalized_norscans(faction)
+    local vassalizers = {
+        "wh3_main_sc_dae_daemons",
+        "wh3_main_sc_kho_khorne",
+        "wh3_main_sc_nur_nurgle",
+        "wh3_main_sc_sla_slaanesh",
+        "wh3_main_sc_tze_tzeentch",
+        "wh_dlc03_sc_bst_beastmen",
+        "wh_main_sc_chs_chaos",
+    };
 
-    -- If the owners are norsca AND not a vassal of chaos, declare war on them too to kinda trigger a vasallization by force.
-    for _, region_key in pairs(regions) do
-        local region = cm:get_region(region_key);
-        if not region == false and region:is_null_interface() == false and region:is_abandoned() == false then
-            local region_owner = region:owning_faction()
+    local faction_list = cm:model():world():faction_list()
+    for i = 0, faction_list:num_items() - 1 do
+        local faction_to_war = faction_list:item_at(i);
+        if not faction_to_war == false and faction_to_war:is_null_interface() == false and faction_to_war:is_dead() == false then
 
-            -- NOTE: there are a few chaos factions that we need to consider "norscan" for this check, or they cause issues with war declarations.
-            if region_owner:is_null_interface() == false and region_owner:name() ~= "rebels" and (
-                region_owner:subculture() == "wh_dlc08_sc_nor_norsca"
-                --region_owner:name() == "wh2_dlc16_chs_acolytes_of_the_keeper" or
-                --region_owner:name() == "wh3_main_chs_dreaded_wo" or
-                --region_owner:name() == "wh3_main_chs_gharhar" or
-                --region_owner:name() == "wh3_main_chs_khazag" or
-                --region_owner:name() == "wh3_main_chs_kvellig" or
-                --region_owner:name() == "wh3_main_chs_tong"
-            ) and not faction:at_war_with(region_owner) then
+            -- TODO: add the undivided extra factions to this check.
+            if faction_to_war:subculture() == "wh_dlc08_sc_nor_norsca" then
+                local ignore_faction = false;
 
-                -- The chaos check must ignore the fake norscans.
-                local is_vassal_of_chaos = false;
-                for _, chaos_faction_key in pairs(self.default_settings.factions) do
-                    if region_owner:is_vassal(chaos_faction_key) then
-                        is_vassal_of_chaos = true;
-                        break;
+                -- Ignore factions already at war.
+                if faction_to_war:factions_at_war_with(faction) == true then
+                    ignore_faction = true;
+                end
+
+                -- Ignore factions already vassalized by chaos.
+                if ignore_faction == false then
+                    local master = faction_to_war:master();
+                    if not master == false and master:is_null_interface() == false then
+                        ignore_faction = dynamic_disasters:faction_subculture_in_list(master, vassalizers);
                     end
                 end
 
-                -- NOTE: This fails to declare war on certain chaos factions (Khazag, Tong,...) which are considered internally as Chaos.
-                if not is_vassal_of_chaos then
-                    local vassalizers = {
-                        "wh3_main_sc_dae_daemons",
-                        "wh3_main_sc_kho_khorne",
-                        "wh3_main_sc_nur_nurgle",
-                        "wh3_main_sc_sla_slaanesh",
-                        "wh3_main_sc_tze_tzeentch",
-                        "wh_dlc03_sc_bst_beastmen",
-                        "wh_main_sc_chs_chaos",
-                    };
-
-                    dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions, true, vassalizers)
-                end
-            end
-
-            -- After checking the region owner, check the neighbours too for the same thing.
-            local adjacent_regions = region:adjacent_region_list()
-            for i = 0, adjacent_regions:num_items() - 1 do
-                local ad_region = adjacent_regions:item_at(i)
-                if not ad_region == false and ad_region:is_null_interface() == false and ad_region:is_abandoned() == false then
-                    local ad_region_owner = ad_region:owning_faction()
-
-                    -- NOTE: there are a few chaos factions that we need to consider "norscan" for this check, or they cause issues with war declarations.
-                    if ad_region_owner:is_null_interface() == false and ad_region_owner:name() ~= "rebels" and (
-                        ad_region_owner:subculture() == "wh_dlc08_sc_nor_norsca"
-                        --ad_region_owner:name() == "wh2_dlc16_chs_acolytes_of_the_keeper" or
-                        --ad_region_owner:name() == "wh3_main_chs_dreaded_wo" or
-                        --ad_region_owner:name() == "wh3_main_chs_gharhar" or
-                        --ad_region_owner:name() == "wh3_main_chs_khazag" or
-                        --ad_region_owner:name() == "wh3_main_chs_kvellig" or
-                        --ad_region_owner:name() == "wh3_main_chs_tong"
-                    ) and not faction:at_war_with(ad_region_owner) then
-
-                        -- The chaos check must ignore the fake norscans.
-                        local is_vassal_of_chaos = false;
-                        for _, chaos_faction_key in pairs(self.default_settings.factions) do
-                            if ad_region_owner:is_vassal(chaos_faction_key) then
-                                is_vassal_of_chaos = true;
-                                break;
-                            end
-                        end
-
-                        -- NOTE: This fails to declare war on certain chaos factions (Khazag, Tong,...) which are considered internally as Chaos.
-                        if not is_vassal_of_chaos then
-                            local vassalizers = {
-                                "wh3_main_sc_dae_daemons",
-                                "wh3_main_sc_kho_khorne",
-                                "wh3_main_sc_nur_nurgle",
-                                "wh3_main_sc_sla_slaanesh",
-                                "wh3_main_sc_tze_tzeentch",
-                                "wh_dlc03_sc_bst_beastmen",
-                                "wh_main_sc_chs_chaos",
-                            };
-
-                            dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions, true, vassalizers)
-                        end
-                    end
+                -- Ignore factions already vassalized by chaos.
+                if ignore_faction == false then
+                    dynamic_disasters:declare_war_to_all(faction, vassalizers, true);
                 end
             end
         end

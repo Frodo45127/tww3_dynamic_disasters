@@ -1,5 +1,5 @@
 key	text	tooltip
-#Loc PackedFile;1;text/db/dyn_dis.loc		
+#Loc;1;text/db/dyn_dis.loc		
 incidents_localised_title_dyn_dis_aztec_invasion_stage_2_trigger	The Enactment of the Great Plan	true
 incidents_localised_title_dyn_dis_aztec_invasion_stage_1_trigger	The Silence of the Southern Seas	true
 incidents_localised_title_dyn_dis_aztec_invasion_early_warning	Tremors from the Jungle	true
@@ -240,3 +240,5 @@ mct_dyn_dis_skaven_incursions_critical_mass	Critical Mass	true
 mct_dyn_dis_skaven_incursions_critical_mass_tooltip	Amount of Under-Empire expansions allowed before rats come to the surface.	true
 mct_dyn_dis_revive_dead_factions	Revive Dead Factions	true
 mct_dyn_dis_revive_dead_factions_tooltip	If factions already killed will be revived and be part of the disaster.	true
+mct_dyn_dis_enable_diplomacy	Enable diplomacy	true
+mct_dyn_dis_enable_diplomacy_tooltip	Enable diplomacy with the disaster factions.\\n\\nNot recommended, it may trivialize the disasters.	true

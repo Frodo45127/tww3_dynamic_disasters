@@ -273,6 +273,7 @@ function disaster_raiding_parties:trigger_raiding_parties()
     end
 
     -- Make every attacking faction go full retard against the owner of the coastal provinces.
+    -- TODO: Fix vassals attacking you properly.
     if not faction == false and faction:is_null_interface() == false and not faction:is_dead() then
         for _, sea_region in pairs(dyn_dis_coasts[coast_to_attack]) do
             dynamic_disasters:declare_war_for_owners_and_neightbours(faction, dyn_dis_sea_regions[sea_region].coastal_regions, false, {self.settings.subculture});

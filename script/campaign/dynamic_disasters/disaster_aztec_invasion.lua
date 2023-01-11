@@ -368,7 +368,7 @@ function disaster_aztec_invasion:trigger_stage_1()
 
         -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
         cm:instantly_research_all_technologies(faction_key);
-        dynamic_disasters:no_peace_no_confederation_only_war(faction_key)
+        dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
 
         -- The rest of the armies should be spawned regardless of the faction being dead.
         for _, coast in pairs(self.settings.stage_1_data.regions[faction_key]) do
@@ -450,9 +450,9 @@ function disaster_aztec_invasion:trigger_stage_2()
 
                     end
 
-                    -- Declare war on all neightbours and coastal region owners.
+                    -- Declare war on everyone.
                     if not faction == false and faction:is_null_interface() == false then
-                        dynamic_disasters:declare_war_for_owners_and_neightbours(faction, dyn_dis_sea_regions[sea_region].coastal_regions, true, {"wh2_main_sc_lzd_lizardmen"});
+                        dynamic_disasters:declare_war_to_all(faction, { "wh2_main_sc_lzd_lizardmen" }, true);
                     end
                 end
             end
@@ -487,9 +487,9 @@ function disaster_aztec_invasion:trigger_stage_2()
                 end
             end
 
-            -- Declare war on all neightbours and coastal region owners.
+            -- Declare war on everyone.
             if not faction == false and faction:is_null_interface() == false then
-                dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions.land, true, {"wh2_main_sc_lzd_lizardmen"});
+                dynamic_disasters:declare_war_to_all(faction, { "wh2_main_sc_lzd_lizardmen" }, true);
             end
         end
 
@@ -513,9 +513,9 @@ function disaster_aztec_invasion:trigger_stage_2()
                 dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, spawn_pos, self.army_templates[faction_key], self.settings.unit_count, false, army_count, self.name, aztec_invasion_spawn_armies_callback);
             end
 
-            -- Declare war on all neightbours and coastal region owners.
+            -- Declare war on everyone.
             if not faction == false and faction:is_null_interface() == false then
-                dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions.land, true, {"wh2_main_sc_lzd_lizardmen"});
+                dynamic_disasters:declare_war_to_all(faction, { "wh2_main_sc_lzd_lizardmen" }, true);
             end
         end
 

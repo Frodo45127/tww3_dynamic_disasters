@@ -26,14 +26,7 @@ local dynamic_disasters_automatic_difficulty_enable = mod:add_new_option("dynami
 dynamic_disasters_automatic_difficulty_enable:set_default_value(true)
 dynamic_disasters_automatic_difficulty_enable:set_text(loc_prefix.."automatic_difficulty_enable", true)
 dynamic_disasters_automatic_difficulty_enable:set_tooltip_text(loc_prefix.."automatic_difficulty_enable_tooltip", true)
---[[
-local dynamic_disasters_global_difficulty = mod:add_new_option("dynamic_disasters_global_difficulty", "slider")
-dynamic_disasters_global_difficulty:set_text(loc_prefix.."global_difficulty", true)
-dynamic_disasters_global_difficulty:set_tooltip_text(loc_prefix.."global_difficulty_tooltip", true)
-dynamic_disasters_global_difficulty:slider_set_min_max(1, 4)
-dynamic_disasters_global_difficulty:set_default_value(2)
-dynamic_disasters_global_difficulty:slider_set_step_size(1)
-]]--
+
 local dynamic_disasters_max_simul = mod:add_new_option("dynamic_disasters_max_simul", "slider")
 dynamic_disasters_max_simul:set_text(loc_prefix.."max_simul", true)
 dynamic_disasters_max_simul:set_tooltip_text(loc_prefix.."max_simul_tooltip", true)
@@ -84,8 +77,11 @@ aztec_invasion_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_toolt
 aztec_invasion_difficulty_mod:slider_set_min_max(10, 500)
 aztec_invasion_difficulty_mod:set_default_value(150)
 aztec_invasion_difficulty_mod:slider_set_step_size(10)
-local d = mod:add_new_option("d1", "dummy")
-d:set_text(" ");
+
+local aztec_invasion_enable_diplomacy = mod:add_new_option("aztec_invasion_enable_diplomacy", "checkbox")
+aztec_invasion_enable_diplomacy:set_default_value(false)
+aztec_invasion_enable_diplomacy:set_text(loc_prefix.."enable_diplomacy", true)
+aztec_invasion_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy", true)
 
 local d = mod:add_new_option("d2", "dummy")
 d:set_text(" ");
@@ -253,6 +249,7 @@ realm_divided_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_toolti
 realm_divided_difficulty_mod:slider_set_min_max(10, 500)
 realm_divided_difficulty_mod:set_default_value(150)
 realm_divided_difficulty_mod:slider_set_step_size(10)
+
 local d = mod:add_new_option("d97", "dummy")
 d:set_text(" ");
 
@@ -284,8 +281,11 @@ the_vermintide_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_toolt
 the_vermintide_difficulty_mod:slider_set_min_max(10, 500)
 the_vermintide_difficulty_mod:set_default_value(150)
 the_vermintide_difficulty_mod:slider_set_step_size(13)
-local d = mod:add_new_option("d111", "dummy")
-d:set_text(" ");
+
+local the_vermintide_enable_diplomacy = mod:add_new_option("the_vermintide_enable_diplomacy", "checkbox")
+the_vermintide_enable_diplomacy:set_default_value(false)
+the_vermintide_enable_diplomacy:set_text(loc_prefix.."enable_diplomacy", true)
+the_vermintide_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy", true)
 
 local d = mod:add_new_option("d112", "dummy")
 d:set_text(" ");
@@ -319,8 +319,10 @@ grudge_too_far_difficulty_mod:slider_set_min_max(10, 500)
 grudge_too_far_difficulty_mod:set_default_value(150)
 grudge_too_far_difficulty_mod:slider_set_step_size(10)
 
-local d = mod:add_new_option("d5", "dummy")
-d:set_text(" ");
+local grudge_too_far_enable_diplomacy = mod:add_new_option("grudge_too_far_enable_diplomacy", "checkbox")
+grudge_too_far_enable_diplomacy:set_default_value(false)
+grudge_too_far_enable_diplomacy:set_text(loc_prefix.."enable_diplomacy", true)
+grudge_too_far_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy", true)
 
 local d = mod:add_new_option("d6", "dummy")
 d:set_text(" ");
@@ -354,8 +356,10 @@ pyramid_of_nagash_difficulty_mod:slider_set_min_max(10, 500)
 pyramid_of_nagash_difficulty_mod:set_default_value(150)
 pyramid_of_nagash_difficulty_mod:slider_set_step_size(10)
 
-local d = mod:add_new_option("d7", "dummy")
-d:set_text(" ");
+local pyramid_of_nagash_enable_diplomacy = mod:add_new_option("pyramid_of_nagash_enable_diplomacy", "checkbox")
+pyramid_of_nagash_enable_diplomacy:set_default_value(false)
+pyramid_of_nagash_enable_diplomacy:set_text(loc_prefix.."enable_diplomacy", true)
+pyramid_of_nagash_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy", true)
 
 local d = mod:add_new_option("d8", "dummy")
 d:set_text(" ");
@@ -394,8 +398,10 @@ vampires_rise_revive_dead_factions:set_default_value(true)
 vampires_rise_revive_dead_factions:set_text(loc_prefix.."revive_dead_factions", true)
 vampires_rise_revive_dead_factions:set_tooltip_text(loc_prefix.."revive_dead_factions_tooltip", true)
 
-local d = mod:add_new_option("d10", "dummy")
-d:set_text(" ");
+local vampires_rise_enable_diplomacy = mod:add_new_option("vampires_rise_enable_diplomacy", "checkbox")
+vampires_rise_enable_diplomacy:set_default_value(false)
+vampires_rise_enable_diplomacy:set_text(loc_prefix.."enable_diplomacy", true)
+vampires_rise_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy", true)
 
 --[[
     Vanilla Waaagh Config
@@ -426,8 +432,10 @@ waaagh_difficulty_mod:slider_set_min_max(10, 500)
 waaagh_difficulty_mod:set_default_value(150)
 waaagh_difficulty_mod:slider_set_step_size(10)
 
-local d = mod:add_new_option("d11", "dummy")
-d:set_text(" ");
+local waaagh_enable_diplomacy = mod:add_new_option("waaagh_enable_diplomacy", "checkbox")
+waaagh_enable_diplomacy:set_default_value(false)
+waaagh_enable_diplomacy:set_text(loc_prefix.."enable_diplomacy", true)
+waaagh_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy", true)
 
 local d = mod:add_new_option("d12", "dummy")
 d:set_text(" ");
@@ -461,8 +469,12 @@ wild_hunt_difficulty_mod:slider_set_min_max(10, 500)
 wild_hunt_difficulty_mod:set_default_value(150)
 wild_hunt_difficulty_mod:slider_set_step_size(10)
 
-local d = mod:add_new_option("d13", "dummy")
-d:set_text(" ");
+local wild_hunt_revive_dead_factions = mod:add_new_option("wild_hunt_revive_dead_factions", "checkbox")
+wild_hunt_revive_dead_factions:set_default_value(true)
+wild_hunt_revive_dead_factions:set_text(loc_prefix.."revive_dead_factions", true)
+wild_hunt_revive_dead_factions:set_tooltip_text(loc_prefix.."revive_dead_factions_tooltip", true)
 
-local d = mod:add_new_option("d14", "dummy")
-d:set_text(" ");
+local wild_hunt_enable_diplomacy = mod:add_new_option("wild_hunt_enable_diplomacy", "checkbox")
+wild_hunt_enable_diplomacy:set_default_value(false)
+wild_hunt_enable_diplomacy:set_text(loc_prefix.."enable_diplomacy", true)
+wild_hunt_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy", true)

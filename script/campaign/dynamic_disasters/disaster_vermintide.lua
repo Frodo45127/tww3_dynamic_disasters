@@ -29,7 +29,7 @@
             - If not:
                 - Targets: Estalia, Tilea and Sartosa.
                 - Spawn Clan Skyre armies on Estalia, Tilea and Sartosa.
-                - Clan Skryre declares war on all non-skaven owners of said provinces and on all its neightbours.
+                - Clan Skryre declares war on everyone not skaven.
                 - Clan Skryre gets disabled diplomacy and full-retard AI.
                 - Trigger "The Green Shine of MorrsLieb" effect (50% Probability of Storm of Magic).
                 - Wait 6-10 turns for more info.
@@ -40,22 +40,22 @@
             - Spawn random skaven factions's armies on the Empire and Araby's North Coast.
             - If Eshin has not been confederated:
                 - Spawn Clan Eshin armies on Cathay's Hearthlands.
-            - All major and minot non-confederated skaven factions declare war on owner of attacked provinces and adjacent regions if not skaven.
-            - All major and minot non-confederated skaven factions gets disabled diplomacy and full-retard AI.
+            - All major and minor non-confederated skaven factions declare war on everyone not skaven.
+            - All major and minor non-confederated skaven factions gets disabled diplomacy and full-retard AI.
             - Trigger "The Green Shine of MorrsLieb" effect (50% Probability of Storm of Magic).
             - Wait 4-7 turns for more info.
         - Stage 3:
             - Targets: Xlanhuapec, Itza and Tlaxtlan (Lustria).
             - Spawn Clans Pestilens and Skryre armies in Lustria.
-            - All major and minot non-confederated skaven factions declare war on owner of attacked provinces and adjacent regions if not skaven.
-            - All major and minot non-confederated skaven factions gets disabled diplomacy and full-retard AI.
+            - All major and minor non-confederated skaven factions declare war on everyone not skaven.
+            - All major and minor non-confederated skaven factions gets disabled diplomacy and full-retard AI.
             - Trigger "The Green Shine of MorrsLieb" effect (50% Probability of Storm of Magic).
             - Wait 4-6 turns for more info.
         - Stage 4:
             - Targets: Major settlments of the Karaz Ankor.
             - Spawn a mix of clans armies on settlements of the Karaz Ankor.
-            - All major and minot non-confederated skaven factions declare war on owner of attacked provinces and adjacent regions if not skaven.
-            - All major and minot non-confederated skaven factions gets disabled diplomacy and full-retard AI.
+            - All major and minor non-confederated skaven factions declares war on everyone not skaven.
+            - All major and minor non-confederated skaven factions gets disabled diplomacy and full-retard AI.
             - Trigger "The Green Shine of MorrsLieb" effect (50% Probability of Storm of Magic).
             - Wait 6-10 turns for more info.
         - Stage 5 (Optional):
@@ -63,8 +63,8 @@
             - Clan Mors must be alive and not confederated.
             - Kazaz-a-Karak must be controlled by a dwarven faction.
             - Spawn a few Clan Mors armies in Karaz-a-Karak.
-            - All major and minot non-confederated skaven factions declare war on owner of attacked provinces and adjacent regions if not skaven.
-            - All major and minot non-confederated skaven factions gets disabled diplomacy and full-retard AI.
+            - All major and minor non-confederated skaven factions declares war on everyone not skaven.
+            - All major and minor non-confederated skaven factions gets disabled diplomacy and full-retard AI.
             - Trigger "The Green Shine of MorrsLieb" effect (50% Probability of Storm of Magic).
             - "The Green Shine of MorrsLieb" effect will last 10 more turns.
 
@@ -774,8 +774,8 @@ function disaster_vermintide:trigger_stage_1()
         -- Apply the relevant CAI changes only to Clan Skryre and declare the appropiate wars.
         local faction = cm:get_faction(faction_key);
         cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
-        dynamic_disasters:no_peace_no_confederation_only_war(faction_key)
-        dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.regions_stage_1, true, {"wh2_main_sc_skv_skaven"})
+        dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
+        dynamic_disasters:declare_war_to_all(faction, {"wh2_main_sc_skv_skaven"}, true)
     end
 
     -- Setup strategic under-cities for all factions available, including the recently resurrected ones.
@@ -859,10 +859,8 @@ function disaster_vermintide:trigger_stage_2()
         local faction = cm:get_faction(faction_key);
         cm:instantly_research_all_technologies(faction_key);
         cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
-        dynamic_disasters:no_peace_no_confederation_only_war(faction_key)
-        dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.regions_stage_2_empire, true, {"wh2_main_sc_skv_skaven"});
-        dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.regions_stage_2_araby, true, {"wh2_main_sc_skv_skaven"});
-        dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.regions_stage_2_cathay, true, {"wh2_main_sc_skv_skaven"});
+        dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
+        dynamic_disasters:declare_war_to_all(faction, {"wh2_main_sc_skv_skaven"}, true)
     end
 
     -- Trigger the effect about Morrslieb.
@@ -899,7 +897,7 @@ function disaster_vermintide:trigger_stage_3()
     -- Force war against every skaven faction for each faction the skaven attack.
     for _, faction_key in pairs(self.settings.factions) do
         local faction = cm:get_faction(faction_key);
-        dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.regions_stage_3, true, {"wh2_main_sc_skv_skaven"});
+        dynamic_disasters:declare_war_to_all(faction, {"wh2_main_sc_skv_skaven"}, true)
     end
 
     -- Prepare the regions to reveal.
@@ -933,7 +931,7 @@ function disaster_vermintide:trigger_stage_4()
     -- Force war against every skaven faction for each faction the skaven attack.
     for _, faction_key in pairs(self.settings.factions) do
         local faction = cm:get_faction(faction_key);
-        dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.regions_stage_4, true, {"wh2_main_sc_skv_skaven"});
+        dynamic_disasters:declare_war_to_all(faction, {"wh2_main_sc_skv_skaven"}, true)
     end
 
     -- Prepare the regions to reveal.
@@ -961,7 +959,7 @@ function disaster_vermintide:trigger_stage_5()
     -- Force war against every skaven faction for each faction the skaven attack.
     for _, faction_key in pairs(self.settings.factions) do
         local faction = cm:get_faction(faction_key);
-        dynamic_disasters:declare_war_for_owners_and_neightbours(faction, self.regions_stage_5, true, {"wh2_main_sc_skv_skaven"});
+        dynamic_disasters:declare_war_to_all(faction, {"wh2_main_sc_skv_skaven"}, true)
     end
 
     -- Prepare the regions to reveal.
