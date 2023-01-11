@@ -510,6 +510,7 @@ function dynamic_disasters:process_disasters()
 
         out("Frodo45127: Processing disasters on turn " .. cm:turn_number() .. ".");
         for _, disaster in ipairs(self.disasters) do
+
             out("Frodo45127: Processing disaster ".. disaster.name);
             if disaster.settings.enabled == true then
 
@@ -533,9 +534,17 @@ function dynamic_disasters:process_disasters()
                                     end
 
                                     disaster:trigger();
+                                else
+                                    out("Frodo45127: Disaster ".. disaster.name .. " ignored due to not fulfilling trigger conditions.");
                                 end
+                            else
+                                out("Frodo45127: Disaster ".. disaster.name .. " ignored due to either turn limits or endgame limits.");
                             end
+                        else
+                            out("Frodo45127: Disaster ".. disaster.name .. " ignored due to being inside the wait period between triggers.");
                         end
+                    else
+                        out("Frodo45127: Disaster ".. disaster.name .. " ignored due to being finished and non-repeteable.");
                     end
 
                 -- If it's not yet started, check if we have the minimum requirements to start it.
@@ -552,9 +561,17 @@ function dynamic_disasters:process_disasters()
                             end
 
                             disaster:trigger();
+                        else
+                            out("Frodo45127: Disaster ".. disaster.name .. " ignored due to not fulfilling trigger conditions.");
                         end
+                    else
+                        out("Frodo45127: Disaster ".. disaster.name .. " ignored due to either turn limits or endgame limits.");
                     end
+                else
+                    out("Frodo45127: Disaster ".. disaster.name .. " ignored due to being in progress.");
                 end
+            else
+                out("Frodo45127: Disaster ".. disaster.name .. " ignored due to being disabled.");
             end
         end
     end
