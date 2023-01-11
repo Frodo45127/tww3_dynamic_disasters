@@ -287,7 +287,7 @@ end
 
 -- Function to trigger the disaster. From here until the end of the disaster, everything is managed by the disaster itself.
 function disaster_realm_divided:trigger()
-    out("Frodo45127: Disaster: " .. self.name .. ". Triggering early warning.");
+    out("Frodo45127: Disaster: " .. self.name .. ". Triggering disaster.");
 
     -- Force all Cathayan factions to ally and declare war on you.
     local player_faction_key = cm:get_human_factions()[1];
