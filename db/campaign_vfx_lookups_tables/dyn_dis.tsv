@@ -1,3 +1,3 @@
-key	vfx_event	vfx_description	faction_filter	culture_filter	agent_filter
+key	agent_filter	culture_filter	faction_filter	vfx_description	vfx_event
 #campaign_vfx_lookups_tables;0;db/campaign_vfx_lookups_tables/dyn_dis					
-12345678	scripted_effect17	dyn_dis_custom_vortex_ulthuan			
+12345678				dyn_dis_custom_vortex_ulthuan	scripted_effect17

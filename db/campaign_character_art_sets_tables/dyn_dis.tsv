@@ -1,6 +1,6 @@
-art_set_id	is_custom	agent_type	faction	culture	subculture	is_male	agent_subtype	campaign_map_scale
+art_set_id	agent_type	culture	subculture	faction	is_custom	is_male	agent_subtype	campaign_map_scale
 #campaign_character_art_sets_tables;6;db/campaign_character_art_sets_tables/dyn_dis								
-dyn_dis_wh3_kho_cha_daemon_prince_of_khorne	false	general				true	dyn_dis_wh3_kho_cha_daemon_prince_of_khorne	1.0000
-dyn_dis_wh3_nur_cha_daemon_prince_of_nurgle	false	general				true	dyn_dis_wh3_nur_cha_daemon_prince_of_nurgle	1.0000
-dyn_dis_wh3_sla_cha_daemon_prince_of_slaanesh	false	general				true	dyn_dis_wh3_sla_cha_daemon_prince_of_slaanesh	1.0000
-dyn_dis_wh3_tze_cha_daemon_prince_of_tzeentch	false	general				true	dyn_dis_wh3_tze_cha_daemon_prince_of_tzeentch	1.0000
+dyn_dis_wh3_kho_cha_daemon_prince_of_khorne	general				false	true	dyn_dis_wh3_kho_cha_daemon_prince_of_khorne	1.0000
+dyn_dis_wh3_nur_cha_daemon_prince_of_nurgle	general				false	true	dyn_dis_wh3_nur_cha_daemon_prince_of_nurgle	1.0000
+dyn_dis_wh3_sla_cha_daemon_prince_of_slaanesh	general				false	true	dyn_dis_wh3_sla_cha_daemon_prince_of_slaanesh	1.0000
+dyn_dis_wh3_tze_cha_daemon_prince_of_tzeentch	general				false	true	dyn_dis_wh3_tze_cha_daemon_prince_of_tzeentch	1.0000
