@@ -1142,13 +1142,11 @@ function dynamic_disasters:no_peace_no_confederation_only_war(hostile_faction_ke
         endgame:declare_war(hostile_faction_key, cm:get_faction(human_factions[i]):name())
     end
 
-    if enable_diplomacy == true then
+    if not enable_diplomacy == true then
         cm:force_diplomacy("faction:" .. hostile_faction_key, "all", "form confederation", false, false, true, false)
         cm:force_diplomacy("faction:" .. hostile_faction_key, "all", "peace", false, false, true, false)
     end
 end
-
-
 
 -- This function disables peace treaties with for the faction for all human players. It allows confederations.
 ---@param hostile_faction_key string #Faction that will get the war declaration.
@@ -1159,7 +1157,7 @@ function dynamic_disasters:no_peace_only_war(hostile_faction_key, enable_diploma
         dynamic_disasters:declare_war(hostile_faction_key, cm:get_faction(human_factions[i]):name(), true, true)
     end
 
-    if enable_diplomacy == true then
+    if not enable_diplomacy == true then
         cm:force_diplomacy("faction:" .. hostile_faction_key, "all", "peace", false, false, true, false)
     end
 end
