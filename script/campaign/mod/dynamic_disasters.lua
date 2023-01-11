@@ -90,8 +90,9 @@ core:add_listener(
 -- Function to load settings from the mct.
 ---@param mct userdata #MCT object.
 function dynamic_disasters:load_from_mct(mct)
-    local mod = mct:get_mod_by_key("dynamic_disasters")
+    out("Frodo45127: Saving settings from MCT.")
 
+    local mod = mct:get_mod_by_key("dynamic_disasters")
     local dynamic_disasters_enable = mod:get_option_by_key("dynamic_disasters_enable")
     local dynamic_disasters_enable_setting = dynamic_disasters_enable:get_finalized_setting()
     self.settings.enabled = dynamic_disasters_enable_setting
@@ -406,8 +407,13 @@ function dynamic_disasters:initialize()
             -- If we have auto difficulty enabled, set the difficulty based on campaign difficulty.
             if self.settings.automatic_difficulty == true then
                 local difficulty = cm:get_difficulty();
-                self.settings.max_endgames_at_the_same_time = difficulty;
-                out("\tFrodo45127: Automatic difficulty detected. Setting max concurrent endgame disasters to " .. self.settings.max_endgames_at_the_same_time ..", based on campaign difficulty.")
+                if not self.settings.debug_2 == true then
+                    self.settings.max_endgames_at_the_same_time = difficulty;
+                    out("\tFrodo45127: Automatic difficulty detected. Setting max concurrent endgame disasters to " .. self.settings.max_endgames_at_the_same_time ..", based on campaign difficulty.")
+                else
+                    out("\tFrodo45127: Skipping automatic difficulty changing max endgames due to debug mode.")
+                end
+
                 for _, disaster in ipairs(self.disasters) do
                     disaster.settings.difficulty_mod = difficulty / 2.5;
                     out("\tFrodo45127: Automatic difficulty detected. Setting difficulty of disaster "..disaster.name.." to ".. disaster.settings.difficulty_mod .. ", based on campaign difficulty.")
