@@ -74,6 +74,14 @@ core:add_listener(
 
 -- Function to track aggression due to battles fought against a specific faction.
 function faction_stats_tracker:battle_completed()
+
+    -- Check for a draw and ignore it.
+    if not cm:pending_battle_cache_attacker_victory() and not cm:pending_battle_cache_defender_victory() then
+        out("Frodo45127: Ignoring battle due to no winners found.")
+        return
+    end
+
+
     local num_attackers = cm:pending_battle_cache_num_attackers();
     local num_defenders = cm:pending_battle_cache_num_defenders();
 
