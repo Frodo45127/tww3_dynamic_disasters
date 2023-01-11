@@ -134,7 +134,8 @@ disaster_aztec_invasion = {
                     "cathay_eastern_coast",
                 },
                 wh2_dlc17_lzd_oxyotl = {
-                    "antartid",
+                    "antartid_east",
+                    "antartid_west",
                 },
             },
             cqis = {},                                   -- List of invader's cqi, so we can track them and release them when needed.
