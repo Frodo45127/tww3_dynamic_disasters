@@ -81,7 +81,7 @@ aztec_invasion_difficulty_mod:slider_set_step_size(10)
 local aztec_invasion_enable_diplomacy = mod:add_new_option("aztec_invasion_enable_diplomacy", "checkbox")
 aztec_invasion_enable_diplomacy:set_default_value(false)
 aztec_invasion_enable_diplomacy:set_text(loc_prefix.."enable_diplomacy", true)
-aztec_invasion_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy", true)
+aztec_invasion_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy_tooltip", true)
 
 local d = mod:add_new_option("d2", "dummy")
 d:set_text(" ");
@@ -285,7 +285,7 @@ the_vermintide_difficulty_mod:slider_set_step_size(13)
 local the_vermintide_enable_diplomacy = mod:add_new_option("the_vermintide_enable_diplomacy", "checkbox")
 the_vermintide_enable_diplomacy:set_default_value(false)
 the_vermintide_enable_diplomacy:set_text(loc_prefix.."enable_diplomacy", true)
-the_vermintide_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy", true)
+the_vermintide_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy_tooltip", true)
 
 local d = mod:add_new_option("d112", "dummy")
 d:set_text(" ");
@@ -322,7 +322,7 @@ grudge_too_far_difficulty_mod:slider_set_step_size(10)
 local grudge_too_far_enable_diplomacy = mod:add_new_option("grudge_too_far_enable_diplomacy", "checkbox")
 grudge_too_far_enable_diplomacy:set_default_value(false)
 grudge_too_far_enable_diplomacy:set_text(loc_prefix.."enable_diplomacy", true)
-grudge_too_far_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy", true)
+grudge_too_far_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy_tooltip", true)
 
 local d = mod:add_new_option("d6", "dummy")
 d:set_text(" ");
@@ -359,7 +359,7 @@ pyramid_of_nagash_difficulty_mod:slider_set_step_size(10)
 local pyramid_of_nagash_enable_diplomacy = mod:add_new_option("pyramid_of_nagash_enable_diplomacy", "checkbox")
 pyramid_of_nagash_enable_diplomacy:set_default_value(false)
 pyramid_of_nagash_enable_diplomacy:set_text(loc_prefix.."enable_diplomacy", true)
-pyramid_of_nagash_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy", true)
+pyramid_of_nagash_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy_tooltip", true)
 
 local d = mod:add_new_option("d8", "dummy")
 d:set_text(" ");
@@ -401,7 +401,7 @@ vampires_rise_revive_dead_factions:set_tooltip_text(loc_prefix.."revive_dead_fac
 local vampires_rise_enable_diplomacy = mod:add_new_option("vampires_rise_enable_diplomacy", "checkbox")
 vampires_rise_enable_diplomacy:set_default_value(false)
 vampires_rise_enable_diplomacy:set_text(loc_prefix.."enable_diplomacy", true)
-vampires_rise_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy", true)
+vampires_rise_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy_tooltip", true)
 
 --[[
     Vanilla Waaagh Config
@@ -435,7 +435,7 @@ waaagh_difficulty_mod:slider_set_step_size(10)
 local waaagh_enable_diplomacy = mod:add_new_option("waaagh_enable_diplomacy", "checkbox")
 waaagh_enable_diplomacy:set_default_value(false)
 waaagh_enable_diplomacy:set_text(loc_prefix.."enable_diplomacy", true)
-waaagh_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy", true)
+waaagh_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy_tooltip", true)
 
 local d = mod:add_new_option("d12", "dummy")
 d:set_text(" ");
@@ -477,4 +477,4 @@ wild_hunt_revive_dead_factions:set_tooltip_text(loc_prefix.."revive_dead_faction
 local wild_hunt_enable_diplomacy = mod:add_new_option("wild_hunt_enable_diplomacy", "checkbox")
 wild_hunt_enable_diplomacy:set_default_value(false)
 wild_hunt_enable_diplomacy:set_text(loc_prefix.."enable_diplomacy", true)
-wild_hunt_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy", true)
+wild_hunt_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy_tooltip", true)
