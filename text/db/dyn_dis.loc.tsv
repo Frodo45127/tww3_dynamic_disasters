@@ -242,3 +242,21 @@ mct_dyn_dis_revive_dead_factions	Revive Dead Factions	true
 mct_dyn_dis_revive_dead_factions_tooltip	If factions already killed will be revived and be part of the disaster.	true
 mct_dyn_dis_enable_diplomacy	Enable diplomacy	true
 mct_dyn_dis_enable_diplomacy_tooltip	Enable diplomacy with the disaster factions.\\n\\nNot recommended, it may trivialize the disasters.	true
+mct_dyn_dis_last_stance_enable	Enable "Last Stance" disaster	true
+mct_dyn_dis_last_stance_enable_tooltip	Not a disaster per-se, but rather it gives factions that are reduced to one settlement the possibility of receiving "reinforcements" from allies, passing mercenaries, dark gods,...	true
+incidents_localised_title_dyn_dis_last_stand_allies	Allies rally to their help!	true
+incidents_localised_description_dyn_dis_last_stand_allies	Our enemy, surrounded and desesperate, has called for help.... and someone responded. Seems like ending them will not be as easy as we though.	true
+incidents_localised_title_dyn_dis_last_stand_master	Their master comes to their help!	true
+incidents_localised_description_dyn_dis_last_stand_master	Our enemy has called upon his master to honor their vassalage treaty, and their master responded sending reinforcements in their hour of need! 	true
+incidents_localised_title_dyn_dis_last_stand_vassal_normal	Their vassals come to their help!	true
+incidents_localised_description_dyn_dis_last_stand_vassal_normal	Our enemy has called upon his vassals to help him in its hour of need, and some of them responded sending him reinforcements!	true
+incidents_localised_title_dyn_dis_last_stand_vassal_betrayal	Their vassals come to... betray them?!	true
+incidents_localised_description_dyn_dis_last_stand_vassal_betrayal	Our enemy has called upon his vassals to help him in its hour of need, and some of them responded sending him reinforcements... which seems to have betrayed him!	true
+incidents_localised_title_dyn_dis_last_stand_chaos_gods	The Chaos Gods will not let them die...	true
+incidents_localised_description_dyn_dis_last_stand_chaos_gods	Our enemy's faith in their Chaos Gods has open a portal to the Chaos Realms, and daemons poured out to help them!	true
+incidents_localised_title_dyn_dis_last_stand_mercs	Money buys their last help!	true
+incidents_localised_description_dyn_dis_last_stand_mercs	It seems our enemy has managed to recruit a band of passing mercenaries with the money it had left.... But would that be enough to save them?	true
+incidents_localised_title_dyn_dis_last_stand_skaven_betrayed	The Skaven menace comes from below... them?	true
+incidents_localised_description_dyn_dis_last_stand_skaven_betrayed	It seems that from somewhere in the vast Underempire of the Skaven reinforcements have come to.... kill our enemy before us?	true
+incidents_localised_title_dyn_dis_last_stand_skaven_normal	The Skaven menace comes from below!	true
+incidents_localised_description_dyn_dis_last_stand_skaven_normal	It seems that from somewhere in the vast Underempire of the Skaven reinforcements have come to help our enemy in their hour of need!	true

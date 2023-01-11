@@ -15,9 +15,9 @@ disaster_example = {
     name = "example",
 
     -- Values for categorizing the disaster.
-    is_global = false;
-    allowed_for_sc = {},
-    denied_for_sc = {},
+    is_global = false,                  -- If the disaster should be allowed to happen for all factions.
+    allowed_for_sc = {},                -- Subcultures that will trigger the disaster. Unused if the disaster is global.
+    denied_for_sc = {},                 -- Subcultures that will not trigger the disaster.
     campaigns = {                       -- Campaigns this disaster works on.
         "main_warhammer",
     },

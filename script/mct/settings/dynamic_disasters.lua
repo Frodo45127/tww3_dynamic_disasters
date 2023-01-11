@@ -235,11 +235,30 @@ chaos_invasion_enable_rifts:set_tooltip_text(loc_prefix.."chaos_invasion_enable_
 local d = mod:add_new_option("d98", "dummy")
 d:set_text(" ");
 
+
+--[[
+    Last Stand Config
+]]
+local last_stance_enable = mod:add_new_option("last_stance_enable", "checkbox")
+last_stance_enable:set_default_value(true)
+last_stance_enable:set_text(loc_prefix.."last_stance_enable", true)
+last_stance_enable:set_tooltip_text(loc_prefix.."last_stance_enable_tooltip", true)
+
+local last_stance_difficulty_mod = mod:add_new_option("last_stance_difficulty_mod", "slider")
+last_stance_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)
+last_stance_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_tooltip", true)
+last_stance_difficulty_mod:slider_set_min_max(10, 500)
+last_stance_difficulty_mod:set_default_value(150)
+last_stance_difficulty_mod:slider_set_step_size(10)
+
+local d = mod:add_new_option("dd97", "dummy")
+d:set_text(" ");
+
 --[[
     Realm Divided Config
 ]]
 local realm_divided_enable = mod:add_new_option("realm_divided_enable", "checkbox")
-realm_divided_enable:set_default_value(false)
+realm_divided_enable:set_default_value(true)
 realm_divided_enable:set_text(loc_prefix.."realm_divided_enable", true)
 realm_divided_enable:set_tooltip_text(loc_prefix.."realm_divided_enable_tooltip", true)
 
@@ -250,7 +269,7 @@ realm_divided_difficulty_mod:slider_set_min_max(10, 500)
 realm_divided_difficulty_mod:set_default_value(150)
 realm_divided_difficulty_mod:slider_set_step_size(10)
 
-local d = mod:add_new_option("d97", "dummy")
+local d = mod:add_new_option("dddd97", "dummy")
 d:set_text(" ");
 
 --[[

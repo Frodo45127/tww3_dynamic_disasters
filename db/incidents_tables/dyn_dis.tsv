@@ -41,3 +41,11 @@ dyn_dis_vermintide_stage_4_trigger	false	skv/celebration	true	Disaster		true
 dyn_dis_vermintide_stage_5_trigger	false	skv/victory	true	Disaster		true	
 dyn_dis_vermintide_finish_before_stage_1	false	skv/settlement_lost	true	Disaster		false	
 dyn_dis_vermintide_finish	false	skv/settlement_lost	true	Disaster		false	
+dyn_dis_last_stand_allies	false	cth/diplomacy	true	Disaster		false	
+dyn_dis_last_stand_master	false	cth/diplomacy	true	Disaster		false	
+dyn_dis_last_stand_vassal_normal	false	cth/diplomacy	true	Disaster		false	
+dyn_dis_last_stand_vassal_betrayal	false	cth/diplomacy	true	Disaster		false	
+dyn_dis_last_stand_chaos_gods	false	cth/diplomacy	true	Disaster		false	
+dyn_dis_last_stand_mercs	false	cth/diplomacy	true	Disaster		false	
+dyn_dis_last_stand_skaven_betrayed	false	cth/diplomacy	true	Disaster		false	
+dyn_dis_last_stand_skaven_normal	false	cth/diplomacy	true	Disaster		false	

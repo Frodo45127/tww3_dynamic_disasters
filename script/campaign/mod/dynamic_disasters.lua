@@ -611,7 +611,7 @@ end
 ---@param duration integer #Optional. Duration for the effect bundle.
 ---@param region_key string #Optional. Region key for the region this incident will allow to zoom in.
 function dynamic_disasters:execute_payload(incident_key, effect_bundle_key, duration, region_key)
-    self:trigger_incident(incident_key, effect_bundle_key, duration, region_key)
+    self:trigger_incident(incident_key, effect_bundle_key, duration, region_key, nil)
 end
 
 -- Function to trigger an incident for a disaster. It can have an associated effect and a payload that lasts the provided duration.
@@ -619,7 +619,8 @@ end
 ---@param effect_bundle_key string #Optional. Effect Bundle key for the effect bundle to trigger with this incident. Must exists in the DB.
 ---@param duration integer #Optional. Duration for the effect bundle.
 ---@param region_key string #Optional. Region key for the region this incident will allow to zoom in.
-function dynamic_disasters:trigger_incident(incident_key, effect_bundle_key, duration, region_key)
+---@param faction_key string #Optional. Faction key for the faction this incident will allow to zoom in.
+function dynamic_disasters:trigger_incident(incident_key, effect_bundle_key, duration, region_key, faction_key)
     if duration == nil then
         duration = 0;
     end
@@ -636,9 +637,12 @@ function dynamic_disasters:trigger_incident(incident_key, effect_bundle_key, dur
             payload_builder:effect_bundle_to_faction(payload)
         end
 
-        -- This doesn't work.
         if region_key ~= nil then
             incident_builder:add_target("default", cm:get_region(region_key));
+        end
+
+        if faction_key ~= nil then
+            incident_builder:add_target("default", cm:get_faction(faction_key));
         end
 
         out("Frodo45127: triggering incident " .. incident_key .. ", " .. tostring(incident_builder) .. ".")
