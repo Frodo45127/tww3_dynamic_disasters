@@ -12,10 +12,10 @@
         - Invasion:
         	- If a player or a non Vampire and non Tomb Kings faction holds the Black Pyramid:
         		- Spawn armies from "Sentinels of Nagash" around it.
-        		- Declare war on the player and adjacent regions.
+        		- Declare war on every non tomb king faction.
         	- If a Vampire or a Tomb Kings faction holds the Black Pyramid:
         		- Spawn armies of said faction around it.
-        		- Declare war on the player and adjacent regions.
+        		- Declare war on every faction not of the same subculture as the owner of the Black Pyramid.
             - Keep respawning armies every (10 / difficulty_multiplier) turns as long as they hold the Black Pyramid.
         - Finish:
             - Capture the Black Pyramid or destroy its owner.
@@ -233,8 +233,8 @@ function disaster_pyramid_of_nagash:trigger_resurection_of_nagash()
 	local faction = cm:get_faction(self.settings.faction_data.faction_key)
 	cm:force_change_cai_faction_personality(self.settings.faction_data.faction_key, self.settings.faction_data.ai_personality)
 	cm:instantly_research_all_technologies(data.faction_key)
-	dynamic_disasters:no_peace_no_confederation_only_war(self.settings.faction_data.faction_key)
-	dynamic_disasters:declare_war_for_owners_and_neightbours(faction, { self.region_key }, true, { self.settings.faction_data.subculture })
+	dynamic_disasters:no_peace_no_confederation_only_war(self.settings.faction_data.faction_key, self.settings.enable_diplomacy);
+	dynamic_disasters:declare_war_to_all(faction, { self.settings.faction_data.subculture }, true);
 
 	cm:apply_effect_bundle(self.settings.faction_data.faction_bundle, self.settings.faction_data.faction_key, 0)
 	cm:apply_effect_bundle_to_region(self.settings.faction_data.region_bundle, self.region_key, 0)

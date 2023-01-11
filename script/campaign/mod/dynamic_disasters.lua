@@ -1241,24 +1241,13 @@ function dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regio
 
                     -- Get if we should ignore the current region.
                     local region_subculture = region_owner:subculture();
-                    local ignore_region = false;
-                    for j = 1, #subcultures_to_ignore do
-                        if subcultures_to_ignore[j] == region_subculture then
-                            ignore_region = true;
-                            break;
-                        end
-                    end
+                    local ignore_region = self:faction_subculture_in_list(region_owner, subcultures_to_ignore);
 
                     -- Make sure we don't declare wars on vassals of ignored subcultures.
                     if ignore_region == false then
-                        local master = faction:master();
+                        local master = region_owner:master();
                         if not master == false and master:is_null_interface() == false then
-                            for j = 1, #subcultures_to_ignore do
-                                if subcultures_to_ignore[j] == master:subculture() then
-                                    ignore_region = true;
-                                    break;
-                                end
-                            end
+                            ignore_faction = self:faction_subculture_in_list(master, subcultures_to_ignore);
                         end
                     end
 
@@ -1303,30 +1292,92 @@ function dynamic_disasters:declare_war_on_adjacent_region_owners(faction, base_r
 
                     -- Get if we should ignore the current region.
                     local region_subculture = region_owner:subculture();
-                    local ignore_region = false;
-                    for j = 1, #subcultures_to_ignore do
-                        if subcultures_to_ignore[j] == region_subculture then
-                            ignore_region = true;
-                            break;
-                        end
-                    end
+                    local ignore_region = self:faction_subculture_in_list(region_owner, subcultures_to_ignore);
 
                     -- Make sure we don't declare wars on vassals of ignored subcultures.
                     if ignore_region == false then
-                        local master = faction:master();
+                        local master = region_owner:master();
                         if not master == false and master:is_null_interface() == false then
-                            for j = 1, #subcultures_to_ignore do
-                                if subcultures_to_ignore[j] == master:subculture() then
-                                    ignore_region = true;
-                                    break;
-                                end
-                            end
+                            ignore_faction = self:faction_subculture_in_list(master, subcultures_to_ignore);
                         end
                     end
 
                     if ignore_region == false then
                         dynamic_disasters:declare_war(faction:name(), region_owner:name(), true, true)
                     end
+                end
+            end
+        end
+    end
+end
+
+-- Function to check if a faction's subculture is part of the provided list.
+---@param faction FACTION_SCRIPT_INTERFACE #Faction object
+---@param subcultures table #List of subcultures to check against.
+function dynamic_disasters:faction_subculture_in_list(faction, subcultures)
+    local is_subculture = false;
+    local faction_subculture = faction:subculture();
+
+    for j = 1, #subcultures do
+        if subcultures[j] == faction_subculture then
+            is_subculture = true;
+            break;
+        end
+    end
+
+    return is_subculture;
+end
+
+-- Function to declare war on all factions, except the ones of the provided subculture.
+--
+-- TODO: Make this function allow to ignore allies when declaring war.
+---@param faction FACTION_SCRIPT_INTERFACE #Faction object
+---@param subcultures_to_ignore table #List of subcultures to ignore on war declarations.
+---@param declare_war_on_allies boolean #If we should betray allies.
+function dynamic_disasters:declare_war_to_all(faction, subcultures_to_ignore, declare_war_on_allies)
+    if declare_war_on_allies == nil then
+        declare_war_on_allies = false;
+    end
+
+    if not faction == false and faction:is_null_interface() == false then
+        local faction_list = cm:model():world():faction_list()
+        for i = 0, faction_list:num_items() - 1 do
+            local faction_to_war = faction_list:item_at(i);
+            if not faction_to_war == false and faction_to_war:is_null_interface() == false and not faction_to_war:is_dead() then
+                local ignore_faction = false;
+
+                -- Ignore factions already at war with the warring faction. This should discard rebel factions too.
+                if faction_to_war:at_war_with(faction) == true then
+                    ignore_faction = true;
+                end
+
+                -- Ignore vassals of the warring faction.
+                if faction_to_war:is_vassal_of(faction) == true then
+                    ignore_faction = true;
+                end
+
+                -- Get if we should ignore the current faction due subculture.
+                if ignore_faction == false then
+                    ignore_faction = self:faction_subculture_in_list(faction_to_war, subcultures_to_ignore);
+                end
+
+                -- Get if we should ignore the current faction due to being a vassal of an ignored faction.
+                if ignore_faction == false then
+                    local master = faction_to_war:master();
+                    if not master == false and master:is_null_interface() == false then
+                        ignore_faction = self:faction_subculture_in_list(master, subcultures_to_ignore);
+                    end
+                end
+
+                -- Get if we should ignore the current faction due to being a direct ally of the warring faction.
+                if ignore_faction == false and declare_war_on_allies == false then
+                    if faction_to_war:is_ally_vassal_or_client_state_of(faction) == true then
+                        ignore_faction = true;
+                    end
+                end
+
+                if ignore_faction == false then
+                    dynamic_disasters:declare_war(faction:name(), faction_to_war:name(), true, false);
                 end
             end
         end

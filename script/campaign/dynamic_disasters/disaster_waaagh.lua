@@ -13,7 +13,7 @@
         - Trigger/Early Warning:
             - "The end is nigh" message
         - Invasion:
-            - All major and minor non-confederated Greenskin factions declare war on owner of attacked provinces and adjacent regions.
+            - All major and minor non-confederated Greenskin factions declare war on every non Greenskin faction.
             - All major and minor non-confederated Greenskin factions gets disabled diplomacy and full-retard AI.
             - If no other disaster has triggered a Victory Condition yet, this will trigger one.
         - Finish:
@@ -341,8 +341,8 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
             -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
 			cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
             cm:instantly_research_all_technologies(faction_key);
-			dynamic_disasters:no_peace_no_confederation_only_war(faction_key)
-            dynamic_disasters:declare_war_for_owners_and_neightbours(faction, { region_key }, true, { "wh_main_sc_grn_greenskins", "wh_main_sc_grn_savage_orcs" })
+			dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy);
+            dynamic_disasters:declare_war_to_all(faction, self.denied_for_sc, true);
 			cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)
             table.insert(self.settings.regions, region_key);
             table.insert(factions, faction_key);
@@ -391,8 +391,8 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
                 -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
                 cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
                 cm:instantly_research_all_technologies(faction_key)
-                dynamic_disasters:no_peace_no_confederation_only_war(faction_key)
-                dynamic_disasters:declare_war_for_owners_and_neightbours(faction, { region_key }, true, { "wh_main_sc_grn_greenskins", "wh_main_sc_grn_savage_orcs" })
+                dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy);
+                dynamic_disasters:declare_war_to_all(faction, self.denied_for_sc, true);
                 cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)
                 table.insert(self.settings.regions, region_key);
                 table.insert(factions, faction_key);
