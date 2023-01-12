@@ -186,9 +186,6 @@ end
 -- Extended from endgames.lua to keep things more or less compatible.
 function dynamic_disasters:initialize()
 
-    -- Initialize randomizer.
-    math.randomseed(os.time())
-
     -- Before loading disasters, initialize the army templates.
     out("Frodo45127: Initializing army templates.");
     self.army_templates = table.copy(dyn_dis_army_templates);
@@ -1269,7 +1266,6 @@ function dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regio
                 if not region_owner == false and region_owner:is_null_interface() == false then
 
                     -- Get if we should ignore the current region.
-                    local region_subculture = region_owner:subculture();
                     local ignore_region = self:faction_subculture_in_list(region_owner, subcultures_to_ignore);
 
                     -- Make sure we don't declare wars on vassals of ignored subcultures.
@@ -1320,7 +1316,6 @@ function dynamic_disasters:declare_war_on_adjacent_region_owners(faction, base_r
                 if not region_owner == false and region_owner:is_null_interface() == false then
 
                     -- Get if we should ignore the current region.
-                    local region_subculture = region_owner:subculture();
                     local ignore_region = self:faction_subculture_in_list(region_owner, subcultures_to_ignore);
 
                     -- Make sure we don't declare wars on vassals of ignored subcultures.
