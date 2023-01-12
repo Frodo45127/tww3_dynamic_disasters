@@ -331,7 +331,8 @@ function last_stand:rohan_arrives(faction)
                 local region = faction:home_region();
                 if dynamic_disasters.settings.debug_2 == true then
                     local army_template = self:choose_army_template(faction, nil);
-                    local army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, 20, false, 1, self.name, rohan_army_callback);
+                    local army_size = cm:random_number(20, 14);
+                    local army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, army_size, false, 1, self.name, rohan_army_callback);
                     out("Frodo45127: Faction " .. faction:name() .. " receives debug army as reinforcements.")
 
                     if army_spawned == true then
@@ -347,7 +348,8 @@ function last_stand:rohan_arrives(faction)
                     local chance = cm:random_number(100, 0);
                     if (chance < 10 + self.settings.difficulty_mod * 10) or dynamic_disasters.settings.debug_2 == true then
                         local army_template = self:choose_army_template(ally, nil);
-                        local spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, 20, false, 1, self.name, rohan_army_callback);
+                        local army_size = cm:random_number(20, 14);
+                        local spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, army_size, false, 1, self.name, rohan_army_callback);
                         if army_spawned == false then
                             army_spawned = spawned;
                         end
@@ -368,7 +370,8 @@ function last_stand:rohan_arrives(faction)
                     if (chance < 10 + self.settings.difficulty_mod * 10) or dynamic_disasters.settings.debug_2 == true then
                         local master = faction:master();
                         local army_template = self:choose_army_template(master, nil);
-                        army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, 20, false, 1, self.name, rohan_army_callback);
+                        local army_size = cm:random_number(20, 14);
+                        army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, army_size, false, 1, self.name, rohan_army_callback);
                         out("Frodo45127: Faction " .. faction:name() .. " receives reinforcement army from master " .. master:name() .. ".")
 
                         if army_spawned == true then
@@ -389,17 +392,18 @@ function last_stand:rohan_arrives(faction)
                             local vassal = vassals:item_at(j)
                             local army_template = self:choose_army_template(vassal, nil);
                             local chance_betray = cm:random_number(100, 0);
+                            local army_size = cm:random_number(20, 14);
 
                             out("Frodo45127: Faction " .. faction:name() .. " receives reinforcement army from vassal " .. vassal:name() .. ".")
                             if chance_betray < 25 then
-                                army_spawned = dynamic_disasters:create_scenario_force(vassal:name(), region:name(), army_template, 20, true, 1, self.name, rohan_army_callback);
+                                army_spawned = dynamic_disasters:create_scenario_force(vassal:name(), region:name(), army_template, army_size, true, 1, self.name, rohan_army_callback);
                                 out("Frodo45127: Faction " .. faction:name() .. " gets backstabbed by the reinforcement army from the vassal " .. vassal:name() .. ".")
 
                                 if army_spawned == true then
                                     dynamic_disasters:trigger_incident(self.incident_key_vassal_betrayal, nil, nil, region:name(), faction:name());
                                 end
                             else
-                                army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, 20, false, 1, self.name, rohan_army_callback);
+                                army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, army_size, false, 1, self.name, rohan_army_callback);
 
                                 if army_spawned == true then
                                     dynamic_disasters:trigger_incident(self.incident_key_vassal_normal, nil, nil, region:name(), faction:name());
@@ -416,13 +420,14 @@ function last_stand:rohan_arrives(faction)
                 if faction:subculture() == "wh_dlc08_sc_nor_norsca" or faction:subculture() == "wh_main_sc_chs_chaos" then
                     local chance = cm:random_number(100, 0);
                     if (chance < 10 + self.settings.difficulty_mod * 10) or dynamic_disasters.settings.debug_2 == true then
+                        local army_size = cm:random_number(20, 14);
                         local army_template = self:choose_army_template(faction, {
                             "wh3_main_sc_kho_khorne",
                             "wh3_main_sc_nur_nurgle",
                             "wh3_main_sc_sla_slaanesh",
                             "wh3_main_sc_tze_tzeentch",
                         });
-                        army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, 20, false, 1, self.name, rohan_army_callback);
+                        army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, army_size, false, 1, self.name, rohan_army_callback);
                         out("Frodo45127: Faction " .. faction:name() .. " receives reinforcement army from chaos gods.")
 
                         if army_spawned == true then
@@ -441,8 +446,9 @@ function last_stand:rohan_arrives(faction)
                     faction:subculture() == "wh_main_sc_emp_empire" then
                     local chance = cm:random_number(100, 0);
                     if (chance < 10 + self.settings.difficulty_mod * 10) or dynamic_disasters.settings.debug_2 == true then
+                        local army_size = cm:random_number(20, 14);
                         local army_template = self:choose_army_template(faction, { "wh_main_sc_teb_teb" });
-                        army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, 20, false, 1, self.name, rohan_army_callback);
+                        army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, army_size, false, 1, self.name, rohan_army_callback);
                         out("Frodo45127: Faction " .. faction:name() .. " receives reinforcement army from mercenaries passing by.")
 
                         if army_spawned == true then
@@ -475,15 +481,16 @@ function last_stand:rohan_arrives(faction)
                         local army_template = self:choose_army_template(cm:get_faction(betrayer_faction_key), nil);
                         out("Frodo45127: Faction " .. faction:name() .. " receives reinforcement army from the underempire.")
 
+                        local army_size = cm:random_number(20, 14);
                         if #possible_skaven_betrayers_alive > 0 and chance_betray < 50 then
-                            army_spawned = dynamic_disasters:create_scenario_force(betrayer_faction_key, region:name(), army_template, 20, true, 1, self.name, rohan_army_callback);
+                            army_spawned = dynamic_disasters:create_scenario_force(betrayer_faction_key, region:name(), army_template, army_size, true, 1, self.name, rohan_army_callback);
                             out("Frodo45127: Faction " .. faction:name() .. " gets backstabbed by the reinforcement army from the underempire.")
 
                             if army_spawned == true then
                                 dynamic_disasters:trigger_incident(self.incident_key_skaven_betrayed, nil, nil, region:name(), faction:name());
                             end
                         else
-                            army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, 20, false, 1, self.name, rohan_army_callback);
+                            army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, army_size, false, 1, self.name, rohan_army_callback);
 
                             if army_spawned == true then
                                 dynamic_disasters:trigger_incident(self.incident_key_skaven_normal, nil, nil, region:name(), faction:name());
@@ -505,6 +512,11 @@ end
 ---@param subcultures table #Optional. List of subcultures to choose a random template from instead of from the faction provided.
 ---@return table #Army template.
 function last_stand:choose_army_template(faction, subcultures)
+    if subcultures == nil then
+        subcultures = {};
+    end
+
+    -- Generic armies: use early/mid/late generic race templates depending on the turn.
     local template_key = "earlygame";
     local current_turn = cm:turn_number();
     if current_turn >= 50 and current_turn < 100 then
@@ -513,12 +525,19 @@ function last_stand:choose_army_template(faction, subcultures)
         template_key = "lategame";
     end
 
+    -- DEBUG: TO BE REMOVED.
+    template_key = "lategame";
+
     -- TODO: Take into account faction_specific armies, and populate all subcultures with the three army templates.
+
+    -- Select a subculture to get a template from. If we have a list of subcultures, pick one of them at random.
+    -- If not, fallback to the faction subculture.
     local subculture = faction:subculture();
-    if not subcultures == nil and not table.is_empty(subcultures) then
+    if not table.is_empty(subcultures) then
         subculture = subcultures[cm:random_number(#subcultures, 1)];
     end
 
+    -- Each army template may be compossed of multiple templates we'll mix together.
     local template = table.copy(self.army_templates[subculture]);
     for key, value in pairs(template) do
         template[key] = template_key;
