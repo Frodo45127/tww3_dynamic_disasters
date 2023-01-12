@@ -2164,7 +2164,75 @@ dyn_dis_army_templates = {
             wh3_main_nur_mon_soul_grinder_0 = 1,
         }
     },
-    ogre_kingdoms = {},
+    ogre_kingdoms = {
+        earlygame = {
+
+            --Melee Infantry
+            wh3_main_ogr_inf_gnoblars_0 = 4,
+
+            --Ranged Infantry
+            wh3_main_ogr_inf_gnoblars_1 = 6,
+
+            --Cavalry
+            wh3_main_ogr_cav_mournfang_cavalry_0 = 4,
+
+            --Monsters
+            wh3_main_ogr_mon_sabretusk_pack_0 = 2,
+            wh3_main_ogr_inf_ogres_0 = 4,
+            wh3_main_ogr_inf_ogres_1 = 8,
+            wh3_main_ogr_inf_ogres_2 = 4,
+            wh3_main_ogr_mon_gorgers_0 = 6,
+            wh3_main_ogr_inf_leadbelchers_0 = 2,
+
+            -- Artillery
+            wh3_main_ogr_veh_gnoblar_scraplauncher_0 = 1,
+        },
+        midgame = {
+
+            --Ranged Infantry
+            wh3_main_ogr_inf_gnoblars_1 = 4,
+
+            --Cavalry
+            wh3_main_ogr_cav_mournfang_cavalry_1 = 4,
+            wh3_main_ogr_cav_mournfang_cavalry_2 = 4,
+
+            --Monsters
+            wh3_main_ogr_mon_sabretusk_pack_0 = 2,
+            wh3_main_ogr_inf_maneaters_0 = 8,
+            wh3_main_ogr_inf_maneaters_1 = 4,
+            wh3_main_ogr_inf_maneaters_2 = 4,
+            wh3_main_ogr_inf_maneaters_3 = 8,
+            wh3_main_ogr_inf_ironguts_0 = 4,
+            wh3_main_ogr_mon_gorgers_0 = 4,
+            wh3_main_ogr_inf_leadbelchers_0 = 2,
+
+            -- Artillery
+            wh3_main_ogr_veh_gnoblar_scraplauncher_0 = 1,
+        },
+        lategame = {
+
+            --Ranged Infantry
+            wh3_main_ogr_inf_gnoblars_1 = 4,
+
+            --Cavalry
+            wh3_main_ogr_cav_crushers_0 = 4,
+            wh3_main_ogr_cav_crushers_1 = 4,
+
+            --Monsters
+            wh3_main_ogr_inf_maneaters_1 = 4,
+            wh3_main_ogr_inf_maneaters_2 = 6,
+            wh3_main_ogr_inf_maneaters_3 = 6,
+            wh3_main_ogr_inf_ironguts_0 = 4,
+            wh3_main_ogr_mon_gorgers_0 = 4,
+            wh3_main_ogr_inf_leadbelchers_0 = 4,
+            wh3_main_ogr_mon_stonehorn_0 = 2,
+            wh3_main_ogr_mon_stonehorn_1 = 2,
+
+            -- Artillery
+            wh3_main_ogr_veh_gnoblar_scraplauncher_0 = 1,
+            wh3_main_ogr_veh_ironblaster_0 = 1,
+        },
+    },
     slaanesh = {
         earlygame = {
 
@@ -2397,26 +2465,146 @@ dyn_dis_army_templates = {
             wh3_main_tze_mon_soul_grinder_0 = 1,
         }
     },
-    beastmen = {},
-    wood_elves = {
+    beastmen = {
+        earlygame = {
+
+            --Melee Infantry
+            wh_dlc03_bst_inf_gor_herd_0 = 6,
+            wh_dlc03_bst_inf_gor_herd_1 = 6,
+            wh_dlc03_bst_inf_ungor_spearmen_0 = 8,
+            wh_dlc03_bst_inf_ungor_spearmen_1 = 8,
+
+            --Ranged Infantry
+            wh_dlc03_bst_inf_ungor_raiders_0 = 6,
+
+            --Cavalry
+            wh_dlc03_bst_inf_centigors_0 = 2,
+            wh_dlc03_bst_inf_centigors_1 = 4,
+            wh_dlc03_bst_inf_centigors_2 = 4,
+            wh2_dlc17_bst_cav_tuskgor_chariot_0 = 2,
+
+            --Monsters
+            wh_dlc03_bst_inf_chaos_warhounds_1 = 2,
+            wh_dlc05_bst_mon_harpies_0 = 2,
+            wh_dlc03_bst_inf_razorgor_herd_0 = 2,
+        },
+        midgame = {
+
+            --Melee Infantry
+            wh_dlc03_bst_inf_gor_herd_0 = 8,
+            wh_dlc03_bst_inf_gor_herd_1 = 8,
+            wh_dlc03_bst_inf_bestigor_herd_0 = 4,
+
+            --Ranged Infantry
+            wh_dlc03_bst_inf_ungor_raiders_0 = 6,
+
+            --Cavalry
+            wh_dlc03_bst_inf_centigors_1 = 4,
+            wh_dlc03_bst_inf_centigors_2 = 4,
+            wh2_dlc17_bst_cav_tuskgor_chariot_0 = 2,
+            wh_dlc03_bst_cav_razorgor_chariot_0 = 1,
+
+            --Monsters
+            wh_dlc03_bst_inf_chaos_warhounds_1 = 2,
+            wh_dlc05_bst_mon_harpies_0 = 2,
+            wh_dlc03_bst_inf_razorgor_herd_0 = 2,
+            wh_dlc03_bst_inf_minotaurs_0 = 1,
+            wh_dlc03_bst_inf_cygor_0 = 1,
+            wh_dlc03_bst_mon_chaos_spawn_0 = 3,
+        },
         lategame = {
 
-            --Infantry
+            --Melee Infantry
+            wh_dlc03_bst_inf_gor_herd_0 = 4,
+            wh_dlc03_bst_inf_gor_herd_1 = 4,
+            wh_dlc03_bst_inf_bestigor_herd_0 = 8,
+
+            --Ranged Infantry
+            wh_dlc03_bst_inf_ungor_raiders_0 = 6,
+
+            --Cavalry
+            wh_dlc03_bst_inf_centigors_1 = 4,
+            wh_dlc03_bst_inf_centigors_2 = 4,
+            wh_dlc03_bst_cav_razorgor_chariot_0 = 2,
+
+            --Monsters
+            wh_dlc03_bst_inf_minotaurs_1 = 4,
+            wh_dlc03_bst_inf_minotaurs_2 = 4,
+            wh_dlc03_bst_inf_cygor_0 = 1,
+            wh_dlc03_bst_mon_chaos_spawn_0 = 3,
+            wh2_dlc17_bst_mon_ghorgon_0 = 1,
+            wh2_dlc17_bst_mon_jabberslythe_0 = 1,
+        },
+    },
+    wood_elves = {
+        earlygame = {
+
+            --Melee Infantry
             wh_dlc05_wef_inf_eternal_guard_0 = 8,
             wh_dlc05_wef_inf_eternal_guard_1 = 8,
-            wh_dlc05_wef_inf_dryads_0 = 4,
-            wh_dlc05_wef_inf_wardancers_1 = 8,
-            wh_dlc05_wef_inf_wildwood_rangers_0 = 4,
+            wh_dlc05_wef_inf_wardancers_0 = 2,
+            wh_dlc05_wef_inf_wardancers_1 = 2,
+
+            --Ranged Infantry
+            wh_dlc05_wef_inf_glade_guard_1 = 8,
             wh_dlc05_wef_inf_glade_guard_2 = 8,
+            wh_dlc05_wef_inf_deepwood_scouts_1 = 4,
+
+            --Cavalry
+            wh_dlc05_wef_cav_glade_riders_0 = 4,
+            wh_dlc05_wef_cav_glade_riders_1 = 4,
+            wh_dlc05_wef_cav_hawk_riders_0 = 2,
+
+            --Monsters
+            wh_dlc05_wef_mon_treekin_0 = 2,
+            wh_dlc05_wef_mon_great_eagle_0 = 2,
+        },
+        midgame = {
+
+            --Melee Infantry
+            wh_dlc05_wef_inf_eternal_guard_1 = 6,
+            wh_dlc05_wef_inf_wildwood_rangers_0 = 2,
+            wh_dlc05_wef_inf_wardancers_0 = 6,
+            wh_dlc05_wef_inf_wardancers_1 = 6,
+
+            --Ranged Infantry
+            wh_dlc05_wef_inf_glade_guard_1 = 6,
+            wh_dlc05_wef_inf_glade_guard_2 = 6,
+            wh_dlc05_wef_inf_deepwood_scouts_1 = 8,
+            wh_dlc05_wef_inf_waywatchers_0 = 2,
+
+            --Cavalry
+            wh_dlc05_wef_cav_wild_riders_0 = 2,
+            wh_dlc05_wef_cav_wild_riders_1 = 2,
+            wh_dlc05_wef_cav_glade_riders_0 = 4,
+            wh_dlc05_wef_cav_glade_riders_1 = 4,
+            wh_dlc05_wef_cav_hawk_riders_0 = 2,
+
+            --Monsters
+            wh_dlc05_wef_mon_treekin_0 = 2,
+            wh_dlc05_wef_mon_treeman_0 = 2,
+            wh_dlc05_wef_mon_great_eagle_0 = 2,
+            wh_dlc05_wef_forest_dragon_0 = 1,
+        },
+        lategame = {
+
+            --Melee Infantry
+            wh_dlc05_wef_inf_wildwood_rangers_0 = 4,
+            wh_dlc05_wef_inf_wardancers_0 = 8,
+            wh_dlc05_wef_inf_wardancers_1 = 8,
+            wh2_dlc16_wef_inf_bladesingers_0 = 4,
+
+            --Ranged Infantry
             wh_dlc05_wef_inf_deepwood_scouts_1 = 8,
             wh_dlc05_wef_inf_waywatchers_0 = 6,
 
             --Cavalry
-            wh_dlc05_wef_cav_wild_riders_1 = 6,
-            wh_dlc05_wef_cav_glade_riders_0 = 6,
+            wh_dlc05_wef_cav_wild_riders_0 = 6,
+            wh_dlc05_wef_cav_wild_riders_1 = 4,
+            wh_dlc05_wef_cav_glade_riders_0 = 4,
             wh_dlc05_wef_cav_glade_riders_1 = 2,
             wh_dlc05_wef_cav_hawk_riders_0 = 1,
-            wh_dlc05_wef_cav_sisters_thorn_0 = 1,
+            wh_dlc05_wef_cav_sisters_thorn_0 = 2,
 
             --Monsters
             wh_dlc05_wef_mon_treekin_0 = 4,
@@ -2489,7 +2677,92 @@ dyn_dis_army_templates = {
             wh_dlc08_nor_mon_fimir_1 = 2,
         },
     },
-    bretonnia = {},
+    bretonnia = {
+        earlygame = {
+
+            --Melee Infantry
+            wh_dlc07_brt_inf_peasant_mob_0 = 4,
+            wh_dlc07_brt_inf_men_at_arms_1 = 6,
+            wh_dlc07_brt_inf_men_at_arms_2 = 3,
+            wh_dlc07_brt_inf_spearmen_at_arms_1 = 6,
+            wh_dlc07_brt_inf_grail_reliquae_0 = 1,
+
+            --Range Infantry
+            wh_main_brt_inf_peasant_bowmen = 2,
+            wh_dlc07_brt_inf_peasant_bowmen_1 = 6,
+            wh_dlc07_brt_inf_peasant_bowmen_2 = 6,
+
+            --Cavalry
+            wh_main_brt_cav_mounted_yeomen_0 = 2,
+            wh_main_brt_cav_mounted_yeomen_1 = 2,
+            wh_dlc07_brt_cav_knights_errant_0 = 6,
+            wh_main_brt_cav_knights_of_the_realm = 4,
+
+            --Artillery
+            wh_main_brt_art_field_trebuchet = 1,
+
+            --Heroes
+            wh_dlc07_brt_cha_damsel_life_0 = 1,
+            wh_dlc07_brt_cha_damsel_beasts_0 = 1,
+        },
+        midgame = {
+
+            --Melee Infantry
+            wh_dlc07_brt_inf_peasant_mob_0 = 2,
+            wh_dlc07_brt_inf_men_at_arms_1 = 6,
+            wh_dlc07_brt_inf_men_at_arms_2 = 4,
+            wh_dlc07_brt_inf_spearmen_at_arms_1 = 4,
+            wh_dlc07_brt_inf_grail_reliquae_0 = 1,
+            wh_dlc07_brt_inf_battle_pilgrims_0 = 2,
+            wh_dlc07_brt_inf_foot_squires_0 = 3,
+
+            --Range Infantry
+            wh_main_brt_inf_peasant_bowmen = 2,
+            wh_dlc07_brt_inf_peasant_bowmen_1 = 6,
+            wh_dlc07_brt_inf_peasant_bowmen_2 = 6,
+
+            --Cavalry
+            wh_main_brt_cav_mounted_yeomen_1 = 2,
+            wh_dlc07_brt_cav_knights_errant_0 = 6,
+            wh_main_brt_cav_knights_of_the_realm = 6,
+            wh_main_brt_cav_pegasus_knights = 1,
+            wh_dlc07_brt_cav_questing_knights_0 = 2,
+
+            --Artillery
+            wh_dlc07_brt_art_blessed_field_trebuchet_0 = 1,
+
+            --Heroes
+            wh_dlc07_brt_cha_damsel_life_0 = 1,
+            wh_dlc07_brt_cha_damsel_beasts_0 = 1,
+        },
+        lategame = {
+
+            --Melee Infantry
+            wh_dlc07_brt_inf_men_at_arms_2 = 4,
+            wh_dlc07_brt_inf_grail_reliquae_0 = 1,
+            wh_dlc07_brt_inf_battle_pilgrims_0 = 4,
+            wh_dlc07_brt_inf_foot_squires_0 = 6,
+
+            --Range Infantry
+            wh_main_brt_inf_peasant_bowmen = 2,
+            wh_dlc07_brt_inf_peasant_bowmen_1 = 6,
+            wh_dlc07_brt_inf_peasant_bowmen_2 = 6,
+
+            --Cavalry
+            wh_dlc07_brt_cav_questing_knights_0 = 6,
+            wh_main_brt_cav_grail_knights = 6,
+            wh_dlc07_brt_cav_grail_guardians_0 = 2,
+            wh_dlc07_brt_cav_royal_hippogryph_knights_0 = 2,
+            wh_main_brt_cav_pegasus_knights = 2,
+
+            --Artillery
+            wh_dlc07_brt_art_blessed_field_trebuchet_0 = 1,
+
+            --Heroes
+            wh_dlc07_brt_cha_damsel_life_0 = 1,
+            wh_dlc07_brt_cha_damsel_beasts_0 = 1,
+        },
+    },
     chaos = {
         earlygame = {
 
@@ -2623,19 +2896,67 @@ dyn_dis_army_templates = {
         },
     },
     dwarfs = {
+        earlygame = {
+
+            --Melee Infantry
+            wh_main_dwf_inf_miners_0 = 4,
+            wh_main_dwf_inf_miners_1 = 4,
+            wh_main_dwf_inf_dwarf_warrior_0 = 8,
+            wh_main_dwf_inf_dwarf_warrior_1 = 8,
+            wh_main_dwf_inf_slayers = 4,
+
+            --Ranged Infantry
+            wh_main_dwf_inf_quarrellers_0 = 8,
+            wh_main_dwf_inf_quarrellers_1 = 8,
+            wh_main_dwf_inf_thunderers_0 = 2,
+
+            --Artillery
+            wh_dlc06_dwf_art_bolt_thrower_0 = 2,
+            wh_main_dwf_art_grudge_thrower = 2,
+        },
+        midgame = {
+
+            --Melee Infantry
+            wh_main_dwf_inf_dwarf_warrior_0 = 6,
+            wh_main_dwf_inf_dwarf_warrior_1 = 6,
+            wh_main_dwf_inf_longbeards = 2,
+            wh_main_dwf_inf_longbeards_1 = 2,
+            wh_main_dwf_inf_hammerers = 2,
+            wh_main_dwf_inf_ironbreakers = 2,
+            wh_main_dwf_inf_slayers = 4,
+
+            --Ranged Infantry
+            wh_main_dwf_inf_quarrellers_0 = 4,
+            wh_main_dwf_inf_quarrellers_1 = 4,
+            wh_main_dwf_inf_thunderers_0 = 6,
+            wh_main_dwf_inf_irondrakes_0 = 2,
+            wh_main_dwf_inf_irondrakes_2 = 2,
+            wh_dlc06_dwf_inf_rangers_0 = 2,
+            wh_dlc06_dwf_inf_rangers_1 = 2,
+
+            --Artillery
+            wh_main_dwf_art_grudge_thrower = 2,
+            wh_main_dwf_art_cannon = 4,
+            wh_main_dwf_art_organ_gun = 2,
+
+            --Vehicles
+            wh_main_dwf_veh_gyrocopter_0 = 1,
+            wh_main_dwf_veh_gyrocopter_1 = 1,
+        },
         lategame = {
 
-            --Infantry
-            wh_main_dwf_inf_miners_1 = 6,
+            --Melee Infantry
+            wh_main_dwf_inf_longbeards = 4,
+            wh_main_dwf_inf_longbeards_1 = 6,
             wh_main_dwf_inf_hammerers = 8,
             wh_main_dwf_inf_ironbreakers = 8,
-            wh_main_dwf_inf_longbeards = 4,
-            wh_main_dwf_inf_longbeards_1 = 8,
             wh_main_dwf_inf_slayers = 6,
             wh2_dlc10_dwf_inf_giant_slayers = 4,
+
+            --Ranged Infantry
             wh_main_dwf_inf_thunderers_0 = 8,
             wh_main_dwf_inf_irondrakes_0 = 4,
-            wh_main_dwf_inf_irondrakes_2 = 6,
+            wh_main_dwf_inf_irondrakes_2 = 4,
             wh_dlc06_dwf_inf_rangers_0 = 2,
             wh_dlc06_dwf_inf_rangers_1 = 4,
             wh_dlc06_dwf_inf_bugmans_rangers_0 = 2,
@@ -2653,25 +2974,23 @@ dyn_dis_army_templates = {
         },
     },
     empire = {
-        lategame = {
+        earlygame = {
 
-            --Infantry
-            wh_main_emp_inf_swordsmen = 5,
-            wh_main_emp_inf_halberdiers = 5,
-            wh_main_emp_inf_greatswords = 5,
-            wh_main_emp_inf_crossbowmen = 2,
-            wh_dlc04_emp_inf_free_company_militia_0 = 1,
-            wh_main_emp_inf_handgunners = 3,
+            --Melee Infantry
+            wh_dlc04_emp_inf_flagellants_0 = 2,
+            wh_main_emp_inf_swordsmen = 8,
+            wh_main_emp_inf_halberdiers = 6,
+
+            --Ranged Infantry
+            wh_main_emp_inf_crossbowmen = 6,
+            wh_main_emp_inf_handgunners = 2,
+            wh2_dlc13_emp_inf_archers_0 = 4,
 
             --Cavalry
-            wh_main_emp_cav_empire_knights = 4,
-            wh_main_emp_cav_reiksguard = 1,
-            wh_main_emp_cav_pistoliers_1 = 2,
-            wh_main_emp_cav_outriders_0 = 1,
-            wh_main_emp_cav_outriders_1 = 2,
-            wh_dlc04_emp_cav_knights_blazing_sun_0 = 1,
-            wh_main_emp_cav_demigryph_knights_0 = 2,
-            wh_main_emp_cav_demigryph_knights_1 = 2,
+            wh_main_emp_cav_pistoliers_1 = 4,
+            wh_main_emp_cav_outriders_0 = 4,
+            wh_main_emp_cav_outriders_1 = 4,
+            wh_main_emp_cav_empire_knights = 2,
 
             --Artillery
             wh_main_emp_art_mortar = 1,
@@ -2679,8 +2998,118 @@ dyn_dis_army_templates = {
             wh_main_emp_art_helblaster_volley_gun = 1,
             wh_main_emp_art_helstorm_rocket_battery = 1,
         },
+        midgame = {
+
+            --Melee Infantry
+            wh_dlc04_emp_inf_flagellants_0 = 2,
+            wh_main_emp_inf_swordsmen = 6,
+            wh_main_emp_inf_halberdiers = 6,
+            wh_main_emp_inf_greatswords = 4,
+
+            --Ranged Infantry
+            wh_main_emp_inf_crossbowmen = 4,
+            wh_main_emp_inf_handgunners = 6,
+            wh_dlc04_emp_inf_free_company_militia_0 = 1,
+
+            --Cavalry
+            wh_main_emp_cav_outriders_0 = 2,
+            wh_main_emp_cav_outriders_1 = 2,
+            wh_main_emp_cav_empire_knights = 4,
+            wh_main_emp_cav_reiksguard = 2,
+            wh_dlc04_emp_cav_knights_blazing_sun_0 = 2,
+
+            --Artillery
+            wh_main_emp_art_mortar = 1,
+            wh_main_emp_art_great_cannon = 1,
+            wh_main_emp_art_helblaster_volley_gun = 1,
+            wh_main_emp_art_helstorm_rocket_battery = 1,
+        },
+        lategame = {
+
+            --Melee Infantry
+            wh_dlc04_emp_inf_flagellants_0 = 3,
+            wh_main_emp_inf_halberdiers = 6,
+            wh_main_emp_inf_greatswords = 8,
+
+            --Ranged Infantry
+            wh_main_emp_inf_crossbowmen = 4,
+            wh_main_emp_inf_handgunners = 6,
+            wh_dlc04_emp_inf_free_company_militia_0 = 1,
+
+            --Cavalry
+            wh_main_emp_cav_empire_knights = 4,
+            wh_main_emp_cav_reiksguard = 1,
+            wh_dlc04_emp_cav_knights_blazing_sun_0 = 1,
+            wh_main_emp_cav_demigryph_knights_0 = 2,
+            wh_main_emp_cav_demigryph_knights_1 = 2,
+
+            --Artillery
+            wh_main_emp_art_great_cannon = 1,
+            wh_main_emp_art_helblaster_volley_gun = 1,
+            wh_main_emp_art_helstorm_rocket_battery = 2,
+        },
     },
     greenskins = {
+        earlygame = {
+
+            --Melee Infantry
+            wh_main_grn_inf_night_goblins = 4,
+            wh_dlc06_grn_inf_nasty_skulkers_0 = 2,
+            wh_main_grn_inf_orc_boyz = 8,
+            wh_main_grn_inf_orc_big_uns = 2,
+
+            --Ranged Infantry
+            wh_main_grn_inf_night_goblin_archers = 4,
+            wh_main_grn_inf_orc_arrer_boyz = 6,
+            wh_main_grn_inf_savage_orc_arrer_boyz = 2,
+
+            --Cavalry
+            wh_main_grn_cav_orc_boar_boyz = 4,
+            wh_main_grn_cav_orc_boar_chariot = 2,
+
+            --Monsters
+            wh2_dlc15_grn_mon_river_trolls_0 = 2,
+            wh2_dlc15_grn_mon_stone_trolls_0 = 2,
+            wh_main_grn_mon_giant = 1,
+
+            --Artillery
+            wh_main_grn_art_goblin_rock_lobber = 1,
+            wh_main_grn_art_doom_diver_catapult = 2,
+
+            --Hero
+            wh2_pro09_grn_cha_black_orc_big_boss_0 = 1,
+            wh_main_grn_cha_orc_shaman_0 = 1,
+        },
+        midgame = {
+
+            --Melee Infantry
+            wh_dlc06_grn_inf_nasty_skulkers_0 = 2,
+            wh_main_grn_inf_orc_boyz = 6,
+            wh_main_grn_inf_orc_big_uns = 8,
+
+            --Ranged Infantry
+            wh_main_grn_inf_night_goblin_archers = 4,
+            wh_main_grn_inf_orc_arrer_boyz = 6,
+            wh_main_grn_inf_savage_orc_arrer_boyz = 2,
+
+            --Cavalry
+            wh_main_grn_cav_orc_boar_boyz = 4,
+            wh_main_grn_cav_orc_boar_boy_big_uns = 6,
+            wh_main_grn_cav_orc_boar_chariot = 2,
+
+            --Monsters
+            wh2_dlc15_grn_mon_river_trolls_0 = 2,
+            wh2_dlc15_grn_mon_stone_trolls_0 = 2,
+            wh_main_grn_mon_giant = 2,
+
+            --Artillery
+            wh_main_grn_art_goblin_rock_lobber = 2,
+            wh_main_grn_art_doom_diver_catapult = 4,
+
+            --Hero
+            wh2_pro09_grn_cha_black_orc_big_boss_0 = 1,
+            wh_main_grn_cha_orc_shaman_0 = 1,
+        },
         lategame_orcs = {
 
             --Infantry
@@ -2780,11 +3209,59 @@ dyn_dis_army_templates = {
     },
     teb = {},
     vampire_counts = {
+        earlygame = {
+
+            --Infantry
+            wh_main_vmp_inf_zombie = 6,
+            wh_main_vmp_inf_skeleton_warriors_1 = 6,
+            wh_main_vmp_inf_crypt_ghouls = 6,
+            wh_main_vmp_inf_cairn_wraiths = 4,
+            wh_main_vmp_inf_grave_guard_0 = 2,
+
+            --Cavalry
+            wh_main_vmp_cav_black_knights_0 = 2,
+            wh_main_vmp_cav_hexwraiths = 1,
+
+            --Monsters
+            wh_main_vmp_mon_fell_bats = 1,
+            wh_main_vmp_mon_dire_wolves = 1,
+            wh_main_vmp_mon_crypt_horrors = 4,
+            wh_main_vmp_mon_vargheists = 2,
+
+            --Vehicles
+            wh_dlc04_vmp_veh_corpse_cart_1 = 1,
+            wh_dlc04_vmp_veh_corpse_cart_2 = 1,
+        },
+        midgame = {
+
+            --Infantry
+            wh_main_vmp_inf_skeleton_warriors_1 = 4,
+            wh_main_vmp_inf_crypt_ghouls = 6,
+            wh_main_vmp_inf_cairn_wraiths = 4,
+            wh_main_vmp_inf_grave_guard_0 = 8,
+            wh_main_vmp_inf_grave_guard_1 = 8,
+
+            --Cavalry
+            wh_main_vmp_cav_black_knights_3 = 2,
+            wh_main_vmp_cav_hexwraiths = 1,
+
+            --Monsters
+            wh_main_vmp_mon_fell_bats = 1,
+            wh_main_vmp_mon_dire_wolves = 1,
+            wh_main_vmp_mon_crypt_horrors = 4,
+            wh_main_vmp_mon_vargheists = 2,
+            wh_main_vmp_mon_varghulf = 1,
+            wh_main_vmp_mon_terrorgheist = 1,
+
+            --Vehicles
+            wh_dlc04_vmp_veh_corpse_cart_1 = 1,
+            wh_dlc04_vmp_veh_corpse_cart_2 = 1,
+            wh_main_vmp_veh_black_coach = 1,
+        },
         lategame = {
 
             --Infantry
-            wh_main_vmp_inf_skeleton_warriors_1 = 2,
-            wh_main_vmp_inf_crypt_ghouls = 4,
+            wh_main_vmp_inf_crypt_ghouls = 2,
             wh_main_vmp_inf_cairn_wraiths = 4,
             wh_main_vmp_inf_grave_guard_0 = 8,
             wh_main_vmp_inf_grave_guard_1 = 8,
