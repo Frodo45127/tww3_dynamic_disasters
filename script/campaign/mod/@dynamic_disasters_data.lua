@@ -2069,6 +2069,52 @@ dyn_dis_army_templates = {
         },
     },
     nurgle = {
+        earlygame = {
+
+            --Infantry
+            wh3_dlc20_chs_inf_chaos_marauders_mnur = 8,
+            wh3_dlc20_chs_inf_chaos_marauders_mnur_greatweapons = 8,
+            wh3_main_nur_inf_nurglings_0 = 6,
+            wh3_dlc20_chs_inf_chaos_warriors_mnur = 4,
+            wh3_dlc20_chs_inf_chaos_warriors_mnur_greatweapons = 4,
+            wh3_main_nur_inf_forsaken_0 = 3,
+            wh3_main_nur_inf_plaguebearers_0 = 6,
+
+            --Cavalry
+            wh3_dlc20_chs_cav_chaos_chariot_mnur = 2,
+
+            --Monsters
+            wh3_main_nur_mon_plague_toads_0 = 2,
+            wh3_main_nur_cav_pox_riders_of_nurgle_0 = 2,
+            wh3_main_nur_mon_spawn_of_nurgle_0 = 2,
+            wh3_main_nur_mon_rot_flies_0 = 2,
+            wh3_main_nur_mon_beast_of_nurgle_0 = 1,
+
+            --Vehicles
+            wh3_dlc20_chs_mon_warshrine_mnur = 1,
+        },
+        midgame = {
+
+            --Infantry
+            wh3_dlc20_chs_inf_chaos_warriors_mnur = 8,
+            wh3_dlc20_chs_inf_chaos_warriors_mnur_greatweapons = 8,
+            wh3_main_nur_inf_forsaken_0 = 3,
+            wh3_main_nur_inf_plaguebearers_0 = 6,
+            wh3_main_nur_inf_plaguebearers_1 = 3,
+
+            --Cavalry
+            wh3_dlc20_chs_cav_chaos_chariot_mnur = 2,
+            wh3_dlc20_chs_cav_chaos_knights_mnur_lances = 2,
+
+            --Monsters
+            wh3_main_nur_mon_spawn_of_nurgle_0 = 2,
+            wh3_main_nur_mon_rot_flies_0 = 2,
+            wh3_main_nur_mon_beast_of_nurgle_0 = 1,
+            wh3_main_nur_mon_great_unclean_one_0 = 1,
+
+            --Vehicles
+            wh3_dlc20_chs_mon_warshrine_mnur = 1,
+        },
         lategame = {
 
             --Infantry
@@ -2120,6 +2166,51 @@ dyn_dis_army_templates = {
     },
     ogre_kingdoms = {},
     slaanesh = {
+        earlygame = {
+
+            --Infantry
+            wh3_main_sla_inf_marauders_0 = 6,
+            wh3_main_sla_inf_marauders_1 = 6,
+            wh3_main_sla_inf_marauders_2 = 6,
+            wh3_dlc20_chs_inf_chaos_warriors_msla = 4,
+            wh3_dlc20_chs_inf_chaos_warriors_msla_hellscourges = 2,
+            wh3_dlc20_chs_inf_forsaken_msla = 2,
+            wh3_main_sla_inf_daemonette_0 = 8,
+
+            --Cavalry
+            wh3_dlc20_chs_cav_chaos_knights_msla_lances = 2,
+            wh3_main_sla_cav_hellstriders_0 = 1,
+            wh3_main_sla_veh_seeker_chariot_0 = 1,
+
+            --Monsters
+            wh3_main_sla_mon_spawn_of_slaanesh_0 = 2,
+            wh3_main_sla_mon_fiends_of_slaanesh_0 = 1,
+
+            --Vehicles
+            wh3_dlc20_chs_mon_warshrine_msla = 1,
+        },
+        midgame = {
+
+            --Infantry
+            wh3_dlc20_chs_inf_chaos_warriors_msla = 6,
+            wh3_dlc20_chs_inf_chaos_warriors_msla_hellscourges = 6,
+            wh3_dlc20_chs_inf_forsaken_msla = 3,
+            wh3_main_sla_inf_daemonette_0 = 8,
+            wh3_main_sla_inf_daemonette_1 = 4,
+
+            --Cavalry
+            wh3_dlc20_chs_cav_chaos_knights_msla_lances = 2,
+            wh3_main_sla_cav_hellstriders_0 = 1,
+            wh3_main_sla_cav_hellstriders_1 = 1,
+            wh3_main_sla_veh_seeker_chariot_0 = 2,
+
+            --Monsters
+            wh3_main_sla_mon_spawn_of_slaanesh_0 = 2,
+            wh3_main_sla_mon_fiends_of_slaanesh_0 = 1,
+
+            --Vehicles
+            wh3_dlc20_chs_mon_warshrine_msla = 1,
+        },
         lategame = {
 
             --Infantry
@@ -2312,11 +2403,11 @@ dyn_dis_army_templates = {
 
             --Infantry
             wh_dlc05_wef_inf_eternal_guard_0 = 8,
-            wh_dlc05_wef_inf_eternal_guard_1 = 12,
+            wh_dlc05_wef_inf_eternal_guard_1 = 8,
             wh_dlc05_wef_inf_dryads_0 = 4,
             wh_dlc05_wef_inf_wardancers_1 = 8,
             wh_dlc05_wef_inf_wildwood_rangers_0 = 4,
-            wh_dlc05_wef_inf_glade_guard_2 = 12,
+            wh_dlc05_wef_inf_glade_guard_2 = 8,
             wh_dlc05_wef_inf_deepwood_scouts_1 = 8,
             wh_dlc05_wef_inf_waywatchers_0 = 6,
 

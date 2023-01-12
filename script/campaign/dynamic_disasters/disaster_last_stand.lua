@@ -27,6 +27,18 @@
             - 10% + difficulty_mod * 10 chance of spawning army of skaven.
             - 50% chance of said army attacking them, switching sides.
 
+    - Ideas:
+        - Skaven in badlands or darklands:
+            - 5% chance of goblin army.
+        - Chaos faction in the old world:
+            - 5% chance of beastmen army.
+        - Dwarven in mountains of the old world:
+            - 5% chance of passing throng.
+            - 5% chance of roaming skaven army.
+            - 5% chance of roaming greenskin army.
+
+        - Vary chance based on local corruption.
+
 ]]
 
 -- Status list for this disaster.
