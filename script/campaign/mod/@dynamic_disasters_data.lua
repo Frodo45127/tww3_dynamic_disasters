@@ -1757,8 +1757,164 @@ dyn_dis_army_templates = {
             wh3_main_cth_cha_astromancer_0 = 1,
         }
     },
-    daemons = {},
+    daemons = {
+        earlygame = {
+
+            --Infantry
+            wh3_main_nur_inf_nurglings_0 = 8,
+            wh3_main_tze_inf_blue_horrors_0 = 8,
+            wh3_main_nur_inf_plaguebearers_0 = 8,
+            wh3_main_sla_inf_daemonette_0 = 8,
+
+            --Ranged Infantry
+            wh3_main_tze_inf_pink_horrors_0 = 6,
+
+            --Monsters
+            wh3_main_nur_mon_beast_of_nurgle_0 = 2,
+            wh3_main_nur_mon_plague_toads_0 = 3,
+            wh3_main_tze_mon_screamers_0 = 2,
+            wh3_main_kho_inf_flesh_hounds_of_khorne_0 = 2,
+
+            --Heroes
+            wh3_main_kho_cha_bloodreaper_0 = 1,
+            wh3_main_tze_cha_iridescent_horror_metal_0 = 1,
+            wh3_main_tze_cha_iridescent_horror_tzeentch_0 = 1,
+            wh3_main_nur_cha_plagueridden_death_0 = 1,
+            wh3_main_nur_cha_plagueridden_nurgle_0 = 1,
+            wh3_main_sla_cha_alluress_shadow_0 = 1,
+            wh3_main_sla_cha_alluress_slaanesh_0 = 1,
+        },
+        midgame = {
+
+            --Infantry
+            wh3_main_nur_inf_nurglings_0 = 4,
+            wh3_main_nur_inf_plaguebearers_1 = 8,
+            wh3_main_sla_inf_daemonette_1 = 8,
+            wh3_main_kho_inf_bloodletters_0 = 8,
+
+            --Ranged Infantry
+            wh3_main_tze_inf_pink_horrors_1 = 6,
+
+            --Cavalry
+            wh3_main_tze_veh_burning_chariot_0 = 2,
+
+            --Monsters
+            wh3_main_nur_cav_pox_riders_of_nurgle_0 = 2,
+            wh3_main_sla_mon_fiends_of_slaanesh_0 = 3,
+            wh3_main_nur_mon_rot_flies_0 = 3,
+            wh3_main_tze_cha_exalted_lord_of_change_tzeentch_0 = 1,
+            wh3_main_tze_mon_flamers_0 = 1,
+
+            --Artillery
+            wh3_main_kho_veh_blood_shrine_0 = 1,
+            wh3_main_kho_veh_skullcannon_0 = 1,
+
+            --Heroes
+            wh3_main_kho_cha_bloodreaper_0 = 1,
+            wh3_main_tze_cha_iridescent_horror_metal_0 = 1,
+            wh3_main_tze_cha_iridescent_horror_tzeentch_0 = 1,
+            wh3_main_nur_cha_plagueridden_death_0 = 1,
+            wh3_main_nur_cha_plagueridden_nurgle_0 = 1,
+            wh3_main_sla_cha_alluress_shadow_0 = 1,
+            wh3_main_sla_cha_alluress_slaanesh_0 = 1,
+        },
+        lategame = {
+
+            --Infantry
+            wh3_main_nur_inf_plaguebearers_1 = 8,
+            wh3_main_sla_inf_daemonette_1 = 8,
+            wh3_main_kho_inf_bloodletters_1 = 8,
+
+            --Ranged Infantry
+            wh3_main_tze_inf_pink_horrors_1 = 6,
+
+            --Cavalry
+            wh3_main_tze_veh_burning_chariot_0 = 2,
+
+            --Monsters
+            wh3_main_nur_cav_plague_drones_0 = 2,
+            wh3_main_sla_mon_fiends_of_slaanesh_0 = 3,
+            wh3_main_nur_mon_great_unclean_one_0 = 1,
+            wh3_main_sla_mon_keeper_of_secrets_0 = 1,
+            wh3_main_tze_cha_exalted_lord_of_change_tzeentch_0 = 1,
+            wh3_main_kho_mon_bloodthirster_0 = 1,
+
+            --Artillery
+            wh3_main_kho_mon_soul_grinder_0 = 1,
+            wh3_main_nur_mon_soul_grinder_0 = 1,
+            wh3_main_sla_mon_soul_grinder_0 = 1,
+            wh3_main_tze_mon_soul_grinder_0 = 1,
+            wh3_main_kho_veh_blood_shrine_0 = 1,
+            wh3_main_kho_veh_skullcannon_0 = 1,
+            wh3_main_tze_mon_exalted_flamer_0 = 1,
+
+            --Heroes
+            wh3_main_kho_cha_bloodreaper_0 = 1,
+            wh3_main_tze_cha_iridescent_horror_metal_0 = 1,
+            wh3_main_tze_cha_iridescent_horror_tzeentch_0 = 1,
+            wh3_main_nur_cha_plagueridden_death_0 = 1,
+            wh3_main_nur_cha_plagueridden_nurgle_0 = 1,
+            wh3_main_sla_cha_alluress_shadow_0 = 1,
+            wh3_main_sla_cha_alluress_slaanesh_0 = 1,
+        },
+    },
     khorne = {
+        earlygame = {
+
+            --Infantry
+            wh3_main_kho_inf_chaos_warriors_0 = 4,
+            wh3_main_kho_inf_chaos_warriors_1 = 4,
+            wh3_main_kho_inf_chaos_warriors_2 = 4,
+            wh3_dlc20_chs_inf_forsaken_mkho = 4,
+            wh3_main_kho_inf_bloodletters_0 = 8,
+
+            --Cavalry
+            wh3_dlc20_chs_cav_chaos_knights_mkho_lances = 2,
+            wh3_dlc20_chs_cav_chaos_chariot_mkho = 1,
+
+            --Monsters
+            wh3_main_kho_mon_spawn_of_khorne_0 = 2,
+
+            --Artillery
+            wh3_main_kho_veh_skullcannon_0 = 1,
+
+            --Vehicles
+            wh3_dlc20_chs_mon_warshrine_mkho = 1,
+
+            --Heroes
+            wh3_main_kho_cha_bloodreaper_0 = 1,
+        },
+        midgame = {
+
+            --Infantry
+            wh3_main_kho_inf_chaos_warriors_0 = 6,
+            wh3_main_kho_inf_chaos_warriors_1 = 6,
+            wh3_main_kho_inf_chaos_warriors_2 = 6,
+            wh3_dlc20_chs_inf_chosen_mkho = 2,
+            wh3_dlc20_chs_inf_forsaken_mkho = 4,
+            wh3_main_kho_inf_bloodletters_0 = 8,
+            wh3_main_kho_inf_bloodletters_1 = 4,
+
+            --Cavalry
+            wh3_dlc20_chs_cav_chaos_knights_mkho = 2,
+            wh3_dlc20_chs_cav_chaos_knights_mkho_lances = 2,
+            wh3_dlc20_chs_cav_chaos_chariot_mkho = 1,
+
+            --Monsters
+            wh3_main_kho_mon_spawn_of_khorne_0 = 2,
+            wh3_main_kho_mon_khornataurs_0 = 1,
+            wh3_main_kho_mon_bloodthirster_0 = 1,
+
+            --Artillery
+            wh3_main_kho_veh_skullcannon_0 = 1,
+
+            --Vehicles
+            wh3_dlc20_chs_mon_warshrine_mkho = 1,
+            wh3_main_kho_veh_blood_shrine_0 = 1,
+
+            --Heroes
+            wh3_main_kho_cha_bloodreaper_0 = 1,
+        },
         lategame = {
 
             --Infantry
@@ -1786,6 +1942,9 @@ dyn_dis_army_templates = {
             --Vehicles
             wh3_dlc20_chs_mon_warshrine_mkho = 1,
             wh3_main_kho_veh_blood_shrine_0 = 1,
+
+            --Heroes
+            wh3_main_kho_cha_bloodreaper_0 = 1,
         },
         lategame_humans_only = {
 
@@ -1824,7 +1983,91 @@ dyn_dis_army_templates = {
             wh3_main_kho_veh_blood_shrine_0 = 1,
         }
     },
-    kislev = {},
+    kislev = {
+        earlygame = {
+
+            --Melee Infantry
+            wh3_main_ksl_inf_armoured_kossars_0 = 8,
+            wh3_main_ksl_inf_armoured_kossars_1 = 8,
+
+            --Ranged Infantry
+            wh3_main_ksl_inf_kossars_0 = 8,
+            wh3_main_ksl_inf_kossars_1 = 8,
+
+            --Cavalry
+            wh3_main_ksl_cav_horse_archers_0 = 3,
+            wh3_main_ksl_cav_kossovite_dervishes_0 = 2,
+
+            --Monsters
+            wh3_main_ksl_mon_snow_leopard_0 = 1,
+
+            --Artillery
+            wh3_main_ksl_veh_little_grom_0 = 1,
+
+            --Heroes
+            wh3_main_ksl_cha_patriarch_0 = 1,
+            wh3_main_ksl_cha_frost_maiden_ice_0 = 1,
+        },
+        midgame = {
+
+            --Melee Infantry
+            wh3_main_ksl_inf_armoured_kossars_0 = 6,
+            wh3_main_ksl_inf_armoured_kossars_1 = 6,
+            wh3_main_ksl_inf_tzar_guard_0 = 3,
+            wh3_main_ksl_inf_tzar_guard_1 = 3,
+
+            --Ranged Infantry
+            wh3_main_ksl_inf_kossars_0 = 6,
+            wh3_main_ksl_inf_kossars_1 = 6,
+            wh3_main_ksl_inf_streltsi_0 = 4,
+
+            --Cavalry
+            wh3_main_ksl_cav_winged_lancers_0 = 2,
+            wh3_main_ksl_veh_light_war_sled_0 = 2,
+            wh3_main_ksl_veh_heavy_war_sled_0 = 2,
+
+            --Monsters
+            wh3_main_ksl_mon_snow_leopard_0 = 1,
+            wh3_main_ksl_mon_elemental_bear_0 = 1,
+
+            --Artillery
+            wh3_main_ksl_veh_little_grom_0 = 1,
+
+            --Heroes
+            wh3_main_ksl_cha_patriarch_0 = 1,
+            wh3_main_ksl_cha_frost_maiden_ice_0 = 1,
+        },
+        lategame = {
+
+            --Melee Infantry
+            wh3_main_ksl_inf_armoured_kossars_0 = 3,
+            wh3_main_ksl_inf_armoured_kossars_1 = 3,
+            wh3_main_ksl_inf_tzar_guard_0 = 6,
+            wh3_main_ksl_inf_tzar_guard_1 = 6,
+
+            --Ranged Infantry
+            wh3_main_ksl_inf_streltsi_0 = 4,
+            wh3_main_ksl_inf_ice_guard_0 = 6,
+            wh3_main_ksl_inf_ice_guard_1 = 6,
+
+            --Cavalry
+            wh3_main_ksl_cav_gryphon_legion_0 = 2,
+            wh3_main_ksl_cav_war_bear_riders_1 = 2,
+            wh3_main_ksl_veh_light_war_sled_0 = 2,
+            wh3_main_ksl_veh_heavy_war_sled_0 = 2,
+
+            --Monsters
+            wh3_main_ksl_mon_snow_leopard_0 = 1,
+            wh3_main_ksl_mon_elemental_bear_0 = 1,
+
+            --Artillery
+            wh3_main_ksl_veh_little_grom_0 = 1,
+
+            --Heroes
+            wh3_main_ksl_cha_patriarch_0 = 1,
+            wh3_main_ksl_cha_frost_maiden_ice_0 = 1,
+        },
+    },
     nurgle = {
         lategame = {
 

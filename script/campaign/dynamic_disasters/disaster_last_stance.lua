@@ -194,30 +194,75 @@ function last_stance:set_status(status)
     -- Listener that need to be initialized after the disaster is triggered.
     if self.settings.status == STATUS_SETUP_AND_READY then
 
-        -- Listener to watch for last stance situations and act accordingly.
-        -- Specifically, we check after every battle if the defender has one region.
-        -- TODO: Check that we had 2 regions before the battle.
-        core:remove_listener("LastStanceWatcher");
+        -- Listener to query the state of a faction previous to a battle.
+        core:remove_listener("LastStandPreBattleWatcher");
         core:add_listener(
-            "LastStanceWatcher",
-            "BattleCompleted",
+            "LastStandPreBattleWatcher",
+            "PendingBattle",
             function()
-                return self.settings.started and cm:model():pending_battle():has_been_fought()
+                return self.settings.started and not cm:get_saved_value("LastStandPreBattleData")
             end,
-            function(context)
-                local char_cqi, mf_cqi, faction_name = cm:pending_battle_cache_get_defender(1);
+            function()
+                local _, _, faction_name = cm:pending_battle_cache_get_defender(1);
                 local faction = cm:get_faction(faction_name);
                 if not faction == false and faction:is_null_interface() == false then
-                    self.settings.factions_to_spawn[faction:name()] = true;
+                    local region_count = faction:region_list():num_items();
+                    cm:set_saved_value("LastStandPreBattleData", {faction:name(), region_count});
+
+                    out("Frodo45127: Faction " .. faction:name() .. " pre-battle with " .. region_count .. " regions.")
                 end
             end,
             true
         );
 
-        -- Listener to spawn armies that should be spawned in the current turn.
-        core:remove_listener("LastStanceSpawner");
+        -- Listener to query the state of a faction after a battle.
+        core:remove_listener("LastStandPostBattleWatcher");
         core:add_listener(
-            "LastStanceSpawner",
+            "LastStandPostBattleWatcher",
+            "BattleCompleted",
+            function()
+                return self.settings.started and cm:get_saved_value("LastStandPreBattleData");
+            end,
+            function()
+                local pre_battle_data = cm:get_saved_value("LastStandPreBattleData");
+
+                -- If the defender lost and has gone from 2 settlements to 1, set him up for reinforcements.
+                local faction_name = pre_battle_data[1];
+                local pre_region_count = pre_battle_data[2];
+
+                local faction = cm:get_faction(faction_name);
+                if not faction == false and faction:is_null_interface() == false then
+                    local post_region_count = faction:region_list():num_items();
+                    out("Frodo45127: Faction " .. faction:name() .. " post-battle with " .. post_region_count .. " regions.")
+
+                    if pre_region_count > 1 and post_region_count == 1 then
+                        self.settings.factions_to_spawn[faction:name()] = true;
+                    end
+                end
+
+                cm:set_saved_value("LastStandPreBattleData", false);
+            end,
+            true
+        );
+
+        -- Listener to check if the character ran away and cleanup accordingly.
+        core:remove_listener("LastStandCleanupAfterRetreat");
+        core:add_listener(
+            "LastStandCleanupAfterRetreat",
+            "CharacterWithdrewFromBattle",
+            function()
+                return cm:get_saved_value("LastStandPreBattleData");
+            end,
+            function()
+                cm:set_saved_value("LastStandPreBattleData", false);
+            end,
+            true
+        );
+
+        -- Listener to spawn armies that should be spawned in the current turn.
+        core:remove_listener("LastStandSpawner");
+        core:add_listener(
+            "LastStandSpawner",
             "FactionTurnStart",
             function(context)
                 return self.settings.started and self.settings.factions_to_spawn[context:faction():name()] == true
@@ -279,7 +324,7 @@ function last_stance:rohan_arrives(faction)
                 local region = faction:home_region();
                 if dynamic_disasters.settings.debug_2 == true then
                     local army_template = self:choose_army_template(faction, nil);
-                    local army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, 20, false, 1, self.name, nil);
+                    local army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, 20, false, 1, self.name, rohan_army_callback);
                     out("Frodo45127: Faction " .. faction:name() .. " receives debug army as reinforcements.")
 
                     if army_spawned == true then
@@ -295,7 +340,7 @@ function last_stance:rohan_arrives(faction)
                     local chance = cm:random_number(100, 0);
                     if (chance < 10 + self.settings.difficulty_mod * 10) or dynamic_disasters.settings.debug_2 == true then
                         local army_template = self:choose_army_template(ally, nil);
-                        local spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, 20, false, 1, self.name, nil);
+                        local spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, 20, false, 1, self.name, rohan_army_callback);
                         if army_spawned == false then
                             army_spawned = spawned;
                         end
@@ -316,7 +361,7 @@ function last_stance:rohan_arrives(faction)
                     if (chance < 10 + self.settings.difficulty_mod * 10) or dynamic_disasters.settings.debug_2 == true then
                         local master = faction:master();
                         local army_template = self:choose_army_template(master, nil);
-                        army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, 20, false, 1, self.name, nil);
+                        army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, 20, false, 1, self.name, rohan_army_callback);
                         out("Frodo45127: Faction " .. faction:name() .. " receives reinforcement army from master " .. master:name() .. ".")
 
                         if army_spawned == true then
@@ -340,14 +385,14 @@ function last_stance:rohan_arrives(faction)
 
                             out("Frodo45127: Faction " .. faction:name() .. " receives reinforcement army from vassal " .. vassal:name() .. ".")
                             if chance_betray < 25 then
-                                army_spawned = dynamic_disasters:create_scenario_force(vassal:name(), region:name(), army_template, 20, true, 1, self.name, nil);
+                                army_spawned = dynamic_disasters:create_scenario_force(vassal:name(), region:name(), army_template, 20, true, 1, self.name, rohan_army_callback);
                                 out("Frodo45127: Faction " .. faction:name() .. " gets backstabbed by the reinforcement army from the vassal " .. vassal:name() .. ".")
 
                                 if army_spawned == true then
                                     dynamic_disasters:trigger_incident(self.incident_key_vassal_betrayal, nil, nil, region:name(), faction:name());
                                 end
                             else
-                                army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, 20, false, 1, self.name, nil);
+                                army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, 20, false, 1, self.name, rohan_army_callback);
 
                                 if army_spawned == true then
                                     dynamic_disasters:trigger_incident(self.incident_key_vassal_normal, nil, nil, region:name(), faction:name());
@@ -370,7 +415,7 @@ function last_stance:rohan_arrives(faction)
                             "wh3_main_sc_sla_slaanesh",
                             "wh3_main_sc_tze_tzeentch",
                         });
-                        army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, 20, false, 1, self.name, nil);
+                        army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, 20, false, 1, self.name, rohan_army_callback);
                         out("Frodo45127: Faction " .. faction:name() .. " receives reinforcement army from chaos gods.")
 
                         if army_spawned == true then
@@ -390,7 +435,7 @@ function last_stance:rohan_arrives(faction)
                     local chance = cm:random_number(100, 0);
                     if (chance < 10 + self.settings.difficulty_mod * 10) or dynamic_disasters.settings.debug_2 == true then
                         local army_template = self:choose_army_template(faction, { "wh_main_sc_teb_teb" });
-                        army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, 20, false, 1, self.name, nil);
+                        army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, 20, false, 1, self.name, rohan_army_callback);
                         out("Frodo45127: Faction " .. faction:name() .. " receives reinforcement army from mercenaries passing by.")
 
                         if army_spawned == true then
@@ -424,14 +469,14 @@ function last_stance:rohan_arrives(faction)
                         out("Frodo45127: Faction " .. faction:name() .. " receives reinforcement army from the underempire.")
 
                         if #possible_skaven_betrayers_alive > 0 and chance_betray < 50 then
-                            army_spawned = dynamic_disasters:create_scenario_force(betrayer_faction_key, region:name(), army_template, 20, true, 1, self.name, nil);
+                            army_spawned = dynamic_disasters:create_scenario_force(betrayer_faction_key, region:name(), army_template, 20, true, 1, self.name, rohan_army_callback);
                             out("Frodo45127: Faction " .. faction:name() .. " gets backstabbed by the reinforcement army from the underempire.")
 
                             if army_spawned == true then
                                 dynamic_disasters:trigger_incident(self.incident_key_skaven_betrayed, nil, nil, region:name(), faction:name());
                             end
                         else
-                            army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, 20, false, 1, self.name, nil);
+                            army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, 20, false, 1, self.name, rohan_army_callback);
 
                             if army_spawned == true then
                                 dynamic_disasters:trigger_incident(self.incident_key_skaven_normal, nil, nil, region:name(), faction:name());
@@ -477,6 +522,18 @@ function last_stance:choose_army_template(faction, subcultures)
     end
 
     return template;
+end
+
+-- Callback function to pass to a create_force function. Main difference with the default callback is that it limits the free unkeep duration, so the army ends up working as a normal army, and the AI may disband it.
+---@param cqi integer #CQI of the army.
+function rohan_army_callback(cqi)
+    out("Frodo45127: Callback for force " .. tostring(cqi) .. " triggered.")
+
+    local character = cm:char_lookup_str(cqi)
+    cm:apply_effect_bundle_to_characters_force("wh_main_bundle_military_upkeep_free_force", cqi, 5)
+    cm:apply_effect_bundle_to_characters_force("wh3_main_ie_scripted_endgame_force_immune_to_regionless_attrition", cqi, 5)
+    cm:add_agent_experience(character, cm:random_number(25, 15), true)
+    cm:add_experience_to_units_commanded_by_character(character, cm:random_number(7, 3))
 end
 
 -- Return the disaster so the manager can read it.
