@@ -1,5 +1,5 @@
 --[[
-    Last Stance disaster, By Frodo45127.
+    Last StanD disaster, By Frodo45127.
 
     This disaster gives factions with only one province left armies near their capital from other factions.
 
@@ -33,8 +33,8 @@
 local STATUS_SETUP_AND_READY = 1;
 
 -- Object representing the disaster.
-last_stance = {
-    name = "last_stance",
+last_stand = {
+    name = "last_stand",
 
     -- Values for categorizing the disaster.
     is_global = true,                   -- If the disaster should be allowed to happen for all factions.
@@ -66,7 +66,7 @@ last_stance = {
         mct_settings = {},                  -- Extra settings this disaster may pull from MCT.
 
         -- Disaster-specific data.
-        factions_last_stance_status = {},   -- Status of each faction's last stance situation, to track when each faction can still receive a last stance and when not.
+        factions_last_stand_status = {},   -- Status of each faction's last stance situation, to track when each faction can still receive a last stance and when not.
         grace_period = 10,                  -- Grace period between last stance triggers for a faction.
         factions_to_spawn = {},             -- List of factions calling for reinforcements.
     },
@@ -142,9 +142,16 @@ last_stance = {
         wh_main_sc_grn_savage_orcs = {
             savage_orcs = "",
         },
+
+        -- This one is a mix of factions, as it's intended to represent mercenaries.
         wh_main_sc_teb_teb = {
-            teb = "",
+            --teb = "",             -- These are empire, ignore them for now.
+            --empire = "",
+            --bretonnia = "",
+            kislev = "",
+            cathay = "",
         },
+
         wh_main_sc_vmp_vampire_counts = {
             vampire_counts = "",
         },
@@ -188,7 +195,7 @@ last_stance = {
 }
 
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
-function last_stance:set_status(status)
+function last_stand:set_status(status)
     self.settings.status = status;
 
     -- Listener that need to be initialized after the disaster is triggered.
@@ -278,7 +285,7 @@ function last_stance:set_status(status)
 end
 
 -- Function to trigger the disaster setup.
-function last_stance:trigger()
+function last_stand:trigger()
     out("Frodo45127: Initializing Last Stance disaster.")
     self:set_status(STATUS_SETUP_AND_READY);
 end
@@ -286,7 +293,7 @@ end
 -- Function to trigger cleanup stuff after the disaster is over.
 --
 -- It has to call the dynamic_disasters:finish_disaster(self) at the end.
-function last_stance:trigger_end_disaster()
+function last_stand:trigger_end_disaster()
     if self.settings.started == true then
         out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
         dynamic_disasters:finish_disaster(self);
@@ -297,14 +304,14 @@ end
 -- Checks for min turn are already done in the manager, so they're not needed here.
 --
 -- @return boolean If the disaster will be triggered or not.
-function last_stance:check_start_disaster_conditions()
+function last_stand:check_start_disaster_conditions()
     return true;
 end
 
 -- Function to check if a faction can receive reinforcements, and spawn the reinforcement armies.
 --
 ---@param faction FACTION_SCRIPT_INTERFACE #Faction to check if it needs reinforcements.
-function last_stance:rohan_arrives(faction)
+function last_stand:rohan_arrives(faction)
 
     --and not faction:name() == "rebels"
     if not faction == false and faction:is_null_interface() == false and not faction:is_dead() == true then
@@ -314,7 +321,7 @@ function last_stance:rohan_arrives(faction)
         if region_count == 1 then
 
             -- Check if we're not in the grace period from a previous last stance.
-            local faction_status = self.settings.factions_last_stance_status[faction:name()];
+            local faction_status = self.settings.factions_last_stand_status[faction:name()];
             out("Frodo45127: Status for faction " .. faction:name() .. ": " .. tostring(faction_status) .. ".")
             if faction_status == nil or (not faction_status == nil and faction_status >= cm:turn_number()) then
 
@@ -486,7 +493,7 @@ function last_stance:rohan_arrives(faction)
                 end
 
                 -- Set/Update the faction status.
-                self.settings.factions_last_stance_status[faction:name()] = cm:turn_number() + self.settings.grace_period;
+                self.settings.factions_last_stand_status[faction:name()] = cm:turn_number() + self.settings.grace_period;
             end
         end
     end
@@ -497,16 +504,12 @@ end
 ---@param faction FACTION_SCRIPT_INTERFACE #Faction to check if it needs reinforcements.
 ---@param subcultures table #Optional. List of subcultures to choose a random template from instead of from the faction provided.
 ---@return table #Army template.
-function last_stance:choose_army_template(faction, subcultures)
+function last_stand:choose_army_template(faction, subcultures)
     local template_key = "earlygame";
     local current_turn = cm:turn_number();
     if current_turn >= 50 and current_turn < 100 then
         template_key = "midgame";
     elseif current_turn >= 100 then
-        template_key = "lategame";
-    end
-
-    if dynamic_disasters.settings.debug_2 == true then
         template_key = "lategame";
     end
 
@@ -537,4 +540,4 @@ function rohan_army_callback(cqi)
 end
 
 -- Return the disaster so the manager can read it.
-return last_stance
+return last_stand

@@ -242,8 +242,8 @@ mct_dyn_dis_revive_dead_factions	Revive Dead Factions	true
 mct_dyn_dis_revive_dead_factions_tooltip	If factions already killed will be revived and be part of the disaster.	true
 mct_dyn_dis_enable_diplomacy	Enable diplomacy	true
 mct_dyn_dis_enable_diplomacy_tooltip	Enable diplomacy with the disaster factions.\\n\\nNot recommended, it may trivialize the disasters.	true
-mct_dyn_dis_last_stance_enable	Enable "Last Stance" disaster	true
-mct_dyn_dis_last_stance_enable_tooltip	Not a disaster per-se, but rather it gives factions that are reduced to one settlement the possibility of receiving "reinforcements" from allies, passing mercenaries, dark gods,...	true
+mct_dyn_dis_last_stand_enable	Enable "Last Stance" disaster	true
+mct_dyn_dis_last_stand_enable_tooltip	Not a disaster per-se, but rather it gives factions that are reduced to one settlement the possibility of receiving "reinforcements" from allies, passing mercenaries, dark gods,...	true
 incidents_localised_title_dyn_dis_last_stand_allies	Allies rally to their help!	true
 incidents_localised_description_dyn_dis_last_stand_allies	Our enemy, surrounded and desesperate, has called for help.... and someone responded. Seems like ending them will not be as easy as we though.	true
 incidents_localised_title_dyn_dis_last_stand_master	Their master comes to their help!	true
