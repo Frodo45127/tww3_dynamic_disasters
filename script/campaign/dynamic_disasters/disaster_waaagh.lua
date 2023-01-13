@@ -324,19 +324,19 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
             region_key = potential_greenskins[faction_key];
             if not region_key == nil then
 
-            -- Transfer the region only if it's their original one.
+                -- Transfer the region only if it's their original one, not owned by a human or by a greenskin faction.
                 local region = cm:get_region(region_key)
                 local region_owner = region:owning_faction()
-                if region_owner == false or region_owner:is_null_interface() or (region_owner:name() ~= faction_key and region_owner:is_human() == false and region_owner:subculture() ~= "wh_main_sc_grn_greenskins" and region_owner:subculture() ~= "wh_main_sc_grn_savage_orcs") then
+                if region:is_abandoned() or (not region_owner == false and region_owner:is_null_interface() == false and region_owner:is_human() == false and region_owner:subculture() ~= "wh_main_sc_grn_greenskins" and region_owner:subculture() ~= "wh_main_sc_grn_savage_orcs") then
                     cm:transfer_region_to_faction(region_key, faction_key)
                 end
             end
 		end
 
-		if region_key ~= nil then
-            local army_count = math.floor(self.settings.army_count_per_province * self.settings.difficulty_mod);
-            local army_template = self.army_templates[faction_key];
-            dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, self.settings.unit_count, false, army_count, self.name, nil)
+        -- Try to spawn the army.
+        local army_count = math.floor(self.settings.army_count_per_province * self.settings.difficulty_mod);
+        local army_template = self.army_templates[faction_key];
+        if dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, army_template, self.settings.unit_count, false, army_count, self.name, nil, self.settings.factions.major) then
 
             -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
 			cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
@@ -377,16 +377,15 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
                     -- Transfer the region only if it's their original one.
                     local region = cm:get_region(region_key)
                     local region_owner = region:owning_faction()
-                    if region_owner == false or region_owner:is_null_interface() or (region_owner:name() ~= faction_key and region_owner:is_human() == false and region_owner:subculture() ~= "wh_main_sc_grn_greenskins" and region_owner:subculture() ~= "wh_main_sc_grn_savage_orcs")  then
+                    if region:is_abandoned() or (not region_owner == false and region_owner:is_null_interface() == false and region_owner:is_human() == false and region_owner:subculture() ~= "wh_main_sc_grn_greenskins" and region_owner:subculture() ~= "wh_main_sc_grn_savage_orcs")  then
                         cm:transfer_region_to_faction(region_key, faction_key)
                     end
                 end
             end
 
-            if region_key ~= nil then
-                local army_count = math.floor(self.settings.army_count_per_province * self.settings.difficulty_mod);
-                local army_template = self.army_templates[faction_key_fixed];
-                dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, self.settings.unit_count, false, army_count, self.name, nil)
+            local army_count = math.floor(self.settings.army_count_per_province * self.settings.difficulty_mod);
+            local army_template = self.army_templates[faction_key_fixed];
+            if dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, army_template, self.settings.unit_count, false, army_count, self.name, nil, self.settings.factions.major) then
 
                 -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
                 cm:force_change_cai_faction_personality(faction_key, self.ai_personality)

@@ -1248,6 +1248,22 @@ function dynamic_disasters:is_any_faction_alive_from_list(factions)
     return is_alive;
 end
 
+-- Function to check if any faction from a list is alive.
+---@param factions table #Faction keys to check for alive factions.
+---@return boolean|string #If at least one of the factions is alive.
+function dynamic_disasters:first_faction_alive_from_list_with_home_region(factions)
+    local is_alive = false;
+    for i = 1, #factions do
+        local faction = cm:get_faction(factions[i]);
+        if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false and faction:has_home_region() then
+           is_alive = factions[i];
+           break;
+        end
+    end
+
+    return is_alive;
+end
+
 -- Function to get the "base" region for a faction, being the home region/region with the faction leader, or a default one we pass.
 ---@param faction FACTION_SCRIPT_INTERFACE #Faction object.
 ---@param default_region string #Region to use if we cannot use the capital/leader region.
@@ -1617,6 +1633,60 @@ function dynamic_disasters:is_goblin_focused_faction(faction_key)
     end
 
     return goblin;
+end
+
+--- Function to spawn one or more armies for the provided faction on the provided region if possible. If not, we try to spawn them at one of the backup faction's region.
+--- Will fail if none of the backup factions has a home region.
+---
+--- NOTE: We consider invalid regions regions that belong to a player.
+---@param faction_key string #Faction key of the owner of the armies.
+---@param region_key string #Land region key used for spawning and declaring war.
+---@param army_template table #Table with the faction->template format. The templates MUST exists in the dynamic_disasters object.
+---@param unit_count integer #Amount of non-mandatory units on the army.
+---@param declare_war boolean #If war should be declared between the owner of the armies and the owner of the region where they'll spawn.
+---@param total_armies integer #Amount of armies to spawn. If not provided, it'll spawn 1.
+---@param disaster_name string #Name of the disaster that will use this army.
+---@param success_callback function #Optional. Custom success callback.
+---@param backup_faction_keys table #List of faction keys we can use as backup.
+---@return boolean #If at least one army has been spawned, or all armies failed to spawn due to invalid coordinates.
+function dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, army_template, unit_count, declare_war, total_armies, disaster_name, success_callback, backup_faction_keys)
+    local faction = cm:get_faction(faction_key);
+    local region = cm:get_region(region_key);
+    local owner = region:owning_faction();
+    local spawned = false;
+
+    -- First try in the intended region, if it's either abandoned or not owned by the player.
+    if not region == false and region:is_abandoned() or (not owner == false and owner:is_null_interface() == false and not owner:is_human()) then
+        spawned = dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, unit_count, declare_war, total_armies, disaster_name, success_callback)
+        dynamic_disasters:prepare_reveal_regions({ region:name() });
+
+    -- If that fails, try in their own home region, if they have one.
+    elseif not faction == false and faction:is_null_interface() == false and faction:has_home_region() then
+        region = faction:home_region();
+        spawned = dynamic_disasters:create_scenario_force(faction_key, region:name(), army_template, unit_count, false, total_armies, disaster_name, success_callback)
+        dynamic_disasters:prepare_reveal_regions({ region:name() });
+
+
+    -- If that fails, try with the backup factions. We need to find one alive and with a home region.
+    else
+        local faction_alive_key = self:first_faction_alive_from_list_with_home_region(backup_faction_keys)
+        if not faction_alive_key == false then
+            local faction_alive = cm:get_faction(faction_alive_key);
+            if not faction_alive == false and faction_alive:is_null_interface() == false and faction_alive:has_home_region() then
+                region = faction_alive:home_region();
+                spawned = dynamic_disasters:create_scenario_force(faction_key, region:name(), army_template, unit_count, false, total_armies, disaster_name, success_callback)
+                dynamic_disasters:prepare_reveal_regions({ region:name() });
+            else
+                out("Frodo45127: ERROR: We tried to spawn armies on " .. region_key .. " but the backup faction " .. faction_alive_key .. " was unusable.");
+            end
+
+        -- If everything fails, ... we can't do shit.
+        else
+            out("Frodo45127: ERROR: We tried to spawn armies on " .. region_key .. " but we couldn't use neither that nor the home region of any of the backup factions.");
+        end
+    end
+
+    return spawned;
 end
 
 -- Function to toggle the Vortex VFX on and off depending on if a disaster has forced disabling it.

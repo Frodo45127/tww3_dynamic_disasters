@@ -671,10 +671,10 @@ function disaster_vermintide:set_status(status)
     core:add_listener(
         "VermintideUbersreikBattleCleanupAfterRetreat",
         "CharacterWithdrewFromBattle",
-        function(context)
+        function()
             return cm:get_saved_value("VermintideUbersreikBattleActive");
         end,
-        function(context)
+        function()
             out("Frodo45127: Listener VermintideUbersreikBattleCleanupAfterRetreat triggered.")
             invasion_manager:kill_invasion_by_key("VermintideUbersreikInvasion");
             dynamic_disasters:kill_faction_silently(self.ubersreik_faction_key);
@@ -772,7 +772,7 @@ function disaster_vermintide:trigger_stage_1()
         local faction = cm:get_faction(faction_key);
         if not faction == false and faction:is_null_interface() == false then
             for _, region_key in pairs(self.regions_stage_1) do
-                self:create_army_with_backup_plan(faction_key, region_key, army_count)
+                dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil, { "wh2_main_skv_clan_skryre" })
             end
 
             -- Apply the relevant CAI changes only to Clan Skryre and declare the appropiate wars.
@@ -793,7 +793,7 @@ function disaster_vermintide:trigger_stage_1()
 
             -- Only spawn new armies here for dead main factions.
             if cm:get_faction(faction_key):is_dead() == true then
-                dynamic_disasters:create_scenario_force(faction_key, "wh3_main_combi_region_skavenblight", self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil)
+                dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, "wh3_main_combi_region_skavenblight", self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil, { "wh2_main_skv_clan_skryre" })
             end
 
             for _, region_key in pairs(self.initial_under_empire_placements[faction_key]) do
@@ -833,13 +833,13 @@ function disaster_vermintide:trigger_stage_2()
     local army_count_empire = math.ceil(1.5 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_2_empire) do
         local faction_key = self.settings.factions_stage_2_empire_and_araby[cm:random_number(#self.settings.factions_stage_2_empire_and_araby)];
-        self:create_army_with_backup_plan(faction_key, region_key, army_count_empire)
+        dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count_empire, self.name, nil, { "wh2_main_skv_clan_skryre" })
     end
 
     local army_count_araby = math.ceil(1.5 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_2_araby) do
         local faction_key = self.settings.factions_stage_2_empire_and_araby[cm:random_number(#self.settings.factions_stage_2_empire_and_araby)];
-        self:create_army_with_backup_plan(faction_key, region_key, army_count_araby)
+        dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count_araby, self.name, nil, { "wh2_main_skv_clan_skryre" })
     end
 
     -- The Attack on Cathay depends on Eshin being available to spawn.
@@ -847,14 +847,9 @@ function disaster_vermintide:trigger_stage_2()
         local army_count_cathay = math.ceil(1.5 * self.settings.difficulty_mod)
         for _, region_key in pairs(self.regions_stage_2_cathay) do
             local faction_key = self.settings.factions_stage_2_cathay[cm:random_number(#self.settings.factions_stage_2_cathay)];
-            self:create_army_with_backup_plan(faction_key, region_key, army_count_cathay)
+            dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count_cathay, self.name, nil, { "wh2_main_skv_clan_skryre" })
         end
-        dynamic_disasters:prepare_reveal_regions(self.regions_stage_2_cathay);
     end
-
-    -- Prepare the regions to reveal.
-    dynamic_disasters:prepare_reveal_regions(self.regions_stage_2_empire);
-    dynamic_disasters:prepare_reveal_regions(self.regions_stage_2_araby);
 
     -- From this stage, we force all skaven on the map to declare war on everyone a single faction faces.
     -- This includes owners of the attacked region, and owners of nearby regions. Even if its Skaven.
@@ -894,7 +889,7 @@ function disaster_vermintide:trigger_stage_3()
     local army_count = math.ceil(2 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_3) do
         local faction_key = self.settings.factions_stage_3_lustria[cm:random_number(#self.settings.factions_stage_3_lustria, 1)];
-        self:create_army_with_backup_plan(faction_key, region_key, army_count)
+        dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil, { "wh2_main_skv_clan_skryre" })
     end
 
     -- Force war against every skaven faction for each faction the skaven attack.
@@ -928,7 +923,7 @@ function disaster_vermintide:trigger_stage_4()
     local army_count = math.ceil(1.5 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_4) do
         local faction_key = self.settings.factions_stage_4_karaz_ankor[cm:random_number(#self.settings.factions_stage_4_karaz_ankor)];
-        self:create_army_with_backup_plan(faction_key, region_key, army_count)
+        dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil, { "wh2_main_skv_clan_skryre" })
     end
 
     -- Force war against every skaven faction for each faction the skaven attack.
@@ -956,7 +951,7 @@ function disaster_vermintide:trigger_stage_5()
     local army_count = math.ceil(2 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_5) do
         local faction_key = self.settings.factions_stage_5_karaz_a_karak[cm:random_number(#self.settings.factions_stage_5_karaz_a_karak)];
-        self:create_army_with_backup_plan(faction_key, region_key, army_count)
+        dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil, { "wh2_main_skv_clan_skryre" })
     end
 
     -- Force war against every skaven faction for each faction the skaven attack.
@@ -1008,27 +1003,6 @@ function disaster_vermintide:morrslieb_gaze_is_upon_us(duration)
         if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false then
             cm:apply_effect_bundle(self.attacker_buffs_key, faction_key, duration);
         end
-    end
-end
-
---- Function to spawn one or more armies for the provided faction on the provided region if possible. If not, we try to spawn it at Skryre's home region.
----
---- NOTE: We consider invalid regions regions that belong to a player.
----@param faction_key string #Key of the faction that owns the army.
----@param region_key string #Key of the region we're going to try to spawn into.
----@param army_count integer #Amount of armies to spawn.
----@return boolean #If any army was spawned.
-function disaster_vermintide:create_army_with_backup_plan(faction_key, region_key, army_count)
-    local region = cm:get_region(region_key);
-    local owner = region:owning_faction();
-    if region:is_abandoned() or (not owner == false and owner:is_null_interface() == false and not owner:is_human()) then
-        return dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil)
-    elseif faction:has_home_region() then
-        region = faction:home_region();
-        dynamic_disasters:create_scenario_force(faction_key, region:name(), self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil)
-        dynamic_disasters:prepare_reveal_regions({ region:name() });
-    else
-        out("Frodo45127: ERROR: We tried to spawn armies on " .. region_key .. " but we couldn't use neither that nor the home region of Clan Skryre.");
     end
 end
 
