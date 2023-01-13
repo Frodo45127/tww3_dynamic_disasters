@@ -1148,7 +1148,7 @@ end
 function dynamic_disasters:no_peace_no_confederation_only_war(hostile_faction_key, enable_diplomacy)
     local human_factions = cm:get_human_factions()
     for i = 1, #human_factions do
-        endgame:declare_war(hostile_faction_key, cm:get_faction(human_factions[i]):name())
+        dynamic_disasters:declare_war(hostile_faction_key, cm:get_faction(human_factions[i]):name(), true, true)
     end
 
     if not enable_diplomacy == true then
