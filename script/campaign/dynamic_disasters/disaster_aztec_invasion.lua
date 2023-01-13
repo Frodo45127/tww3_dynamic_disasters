@@ -275,7 +275,7 @@ function disaster_aztec_invasion:set_status(status)
 
                 -- Update the potential factions removing the confederated ones and check if we still have factions to use.
                 self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
-                if #self.settings.factions == 0 then
+                if #self.settings.factions == 0 or not dynamic_disasters:is_any_faction_alive_from_list(self.settings.factions) then
                     dynamic_disasters:execute_payload(self.finish_early_incident_key, nil, 0, nil);
                     self:trigger_end_disaster()
                 else
@@ -300,7 +300,7 @@ function disaster_aztec_invasion:set_status(status)
 
                 -- Update the potential factions removing the confederated ones and check if we still have factions to use.
                 self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
-                if #self.settings.factions == 0 then
+                if #self.settings.factions == 0 or not dynamic_disasters:is_any_faction_alive_from_list(self.settings.factions) then
                     dynamic_disasters:execute_payload(self.finish_early_incident_key, nil, 0, nil);
                     self:trigger_end_disaster()
                 else
@@ -348,63 +348,67 @@ function disaster_aztec_invasion:trigger_stage_1()
 
         -- For alive factions, give them armies in their capital and let the AI use them as they please.
         local faction = cm:get_faction(faction_key);
-        if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false then
+        if not faction == false and faction:is_null_interface() == false then
+            if not faction:is_dead() then
+                -- If we have a capital, spawn free armies for the AI there.
+                local army_count = math.ceil(4 * self.settings.difficulty_mod);
+                if faction:has_home_region() then
+                    local capital = faction:home_region()
+                    dynamic_disasters:create_scenario_force(faction_key, capital:name(), self.army_templates[faction_key], self.settings.unit_count, false, army_count, self.name, nil);
 
-            -- If we have a capital, spawn free armies for the AI there.
-            local army_count = math.ceil(4 * self.settings.difficulty_mod);
-            if faction:has_home_region() then
-                local capital = faction:home_region()
-                dynamic_disasters:create_scenario_force(faction_key, capital:name(), self.army_templates[faction_key], self.settings.unit_count, false, army_count, self.name, nil);
+                    -- Prepare the regions to reveal.
+                    dynamic_disasters:prepare_reveal_regions({capital:name()});
 
-                -- Prepare the regions to reveal.
-                dynamic_disasters:prepare_reveal_regions({capital:name()});
-
-            -- If we don't have a home region, spawn wherever the faction leader is, if alive.
-            elseif not faction:faction_leader() == nil and faction:faction_leader():has_region() then
-                local region = faction:faction_leader():region();
-                dynamic_disasters:create_scenario_force(faction_key, region:name(), self.army_templates[faction_key], self.settings.unit_count, false, army_count, self.name, nil);
+                -- If we don't have a home region, spawn wherever the faction leader is, if alive.
+                elseif not faction:faction_leader() == nil and faction:faction_leader():has_region() then
+                    local region = faction:faction_leader():region();
+                    dynamic_disasters:create_scenario_force(faction_key, region:name(), self.army_templates[faction_key], self.settings.unit_count, false, army_count, self.name, nil);
+                end
             end
-        end
 
-        -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
-        cm:instantly_research_all_technologies(faction_key);
-        dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
+            -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
+            cm:instantly_research_all_technologies(faction_key);
+            dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
 
-        -- The rest of the armies should be spawned regardless of the faction being dead.
-        for _, coast in pairs(self.settings.stage_1_data.regions[faction_key]) do
-            out("Frodo45127: Coast " .. tostring(coast) .. ".")
+            -- The rest of the armies should be spawned regardless of the faction being dead.
+            if not faction:is_dead() or (faction:is_dead() and self.settings.revive_dead_factions == true) then
 
-            for j = 1, #dyn_dis_coasts[coast] do
-                local sea_region = dyn_dis_coasts[coast][j];
-                out("Frodo45127: Sea Region " .. tostring(sea_region) .. ".")
+                for _, coast in pairs(self.settings.stage_1_data.regions[faction_key]) do
+                    out("Frodo45127: Coast " .. tostring(coast) .. ".")
 
-                for i = 1, #dyn_dis_sea_regions[sea_region].coastal_regions do
+                    for j = 1, #dyn_dis_coasts[coast] do
+                        local sea_region = dyn_dis_coasts[coast][j];
+                        out("Frodo45127: Sea Region " .. tostring(sea_region) .. ".")
 
-                    -- Armies calculation, per province.
-                    local region_key = dyn_dis_sea_regions[sea_region].coastal_regions[i];
-                    local army_count = cm:random_number(math.ceil(self.settings.difficulty_mod));
-                    local spawn_pos = dyn_dis_sea_regions[sea_region].spawn_positions[cm:random_number(#dyn_dis_sea_regions[sea_region].spawn_positions)];
-                    out("Frodo45127: Armies to spawn: " .. tostring(army_count) .. " for " .. region_key .. " region, spawn pos X: " .. spawn_pos[1] .. ", Y: " .. spawn_pos[2] .. ".");
+                        for i = 1, #dyn_dis_sea_regions[sea_region].coastal_regions do
 
-                    -- Store the region for invasion controls.
-                    for k = 1, army_count do
-                        table.insert(self.settings.stage_1_data.targets, region_key)
+                            -- Armies calculation, per province.
+                            local region_key = dyn_dis_sea_regions[sea_region].coastal_regions[i];
+                            local army_count = cm:random_number(math.ceil(self.settings.difficulty_mod));
+                            local spawn_pos = dyn_dis_sea_regions[sea_region].spawn_positions[cm:random_number(#dyn_dis_sea_regions[sea_region].spawn_positions)];
+                            out("Frodo45127: Armies to spawn: " .. tostring(army_count) .. " for " .. region_key .. " region, spawn pos X: " .. spawn_pos[1] .. ", Y: " .. spawn_pos[2] .. ".");
+
+                            -- Store the region for invasion controls.
+                            for k = 1, army_count do
+                                table.insert(self.settings.stage_1_data.targets, region_key)
+                            end
+
+                            dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, spawn_pos, self.army_templates[faction_key], self.settings.unit_count, false, army_count, self.name, aztec_invasion_spawn_armies_callback);
+
+                        end
+
+                        -- Declare war on all neightbours and coastal region owners.
+                        if not faction == false and faction:is_null_interface() == false then
+                            dynamic_disasters:declare_war_for_owners_and_neightbours(faction, dyn_dis_sea_regions[sea_region].coastal_regions, true, {"wh2_main_sc_lzd_lizardmen"});
+                        end
                     end
-
-                    dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, spawn_pos, self.army_templates[faction_key], self.settings.unit_count, false, army_count, self.name, aztec_invasion_spawn_armies_callback);
-
-                end
-
-                -- Declare war on all neightbours and coastal region owners.
-                if not faction == false and faction:is_null_interface() == false then
-                    dynamic_disasters:declare_war_for_owners_and_neightbours(faction, dyn_dis_sea_regions[sea_region].coastal_regions, true, {"wh2_main_sc_lzd_lizardmen"});
                 end
             end
-        end
 
-        -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
-        cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
-        cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, self.settings.stage_2_delay)
+            -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
+            cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
+            cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, self.settings.stage_2_delay)
+        end
     end
 
     -- Force an alliance between all lizardmen.
@@ -422,104 +426,105 @@ function disaster_aztec_invasion:trigger_stage_2()
 
     for _, faction_key in pairs(self.settings.factions) do
         local faction = cm:get_faction(faction_key);
+        if not faction:is_dead() or (faction:is_dead() and self.settings.revive_dead_factions == true) then
+            if faction_key == "wh2_main_lzd_hexoatl" or
+                faction_key == "wh2_main_lzd_last_defenders" or
+                faction_key == "wh2_dlc12_lzd_cult_of_sotek" or
+                faction_key == "wh2_main_lzd_itza" or
+                faction_key == "wh2_dlc17_lzd_oxyotl" then
 
-        if faction_key == "wh2_main_lzd_hexoatl" or
-            faction_key == "wh2_main_lzd_last_defenders" or
-            faction_key == "wh2_dlc12_lzd_cult_of_sotek" or
-            faction_key == "wh2_main_lzd_itza" or
-            faction_key == "wh2_dlc17_lzd_oxyotl" then
+                local regions = self.settings.stage_2_data.regions[faction_key];
+                for _, coast in pairs(regions.sea) do
+                    for j = 1, #dyn_dis_coasts[coast] do
+                        local sea_region = dyn_dis_coasts[coast][j];
+                        for i = 1, #dyn_dis_sea_regions[sea_region].coastal_regions do
 
-            local regions = self.settings.stage_2_data.regions[faction_key];
-            for _, coast in pairs(regions.sea) do
-                for j = 1, #dyn_dis_coasts[coast] do
-                    local sea_region = dyn_dis_coasts[coast][j];
-                    for i = 1, #dyn_dis_sea_regions[sea_region].coastal_regions do
+                            -- Armies calculation, per province.
+                            local region_key = dyn_dis_sea_regions[sea_region].coastal_regions[i];
+                            local army_count = cm:random_number(math.ceil(self.settings.difficulty_mod));
+                            local spawn_pos = dyn_dis_sea_regions[sea_region].spawn_positions[cm:random_number(#dyn_dis_sea_regions[sea_region].spawn_positions)];
+                            out("Frodo45127: Armies to spawn: " .. tostring(army_count) .. " for " .. region_key .. " region, spawn pos X: " .. spawn_pos[1] .. ", Y: " .. spawn_pos[2] .. ".");
 
-                        -- Armies calculation, per province.
-                        local region_key = dyn_dis_sea_regions[sea_region].coastal_regions[i];
-                        local army_count = cm:random_number(math.ceil(self.settings.difficulty_mod));
-                        local spawn_pos = dyn_dis_sea_regions[sea_region].spawn_positions[cm:random_number(#dyn_dis_sea_regions[sea_region].spawn_positions)];
-                        out("Frodo45127: Armies to spawn: " .. tostring(army_count) .. " for " .. region_key .. " region, spawn pos X: " .. spawn_pos[1] .. ", Y: " .. spawn_pos[2] .. ".");
+                            -- Store the region for invasion controls.
+                            for k = 1, army_count do
+                                table.insert(self.settings.stage_2_data.targets, region_key)
+                            end
 
-                        -- Store the region for invasion controls.
-                        for k = 1, army_count do
-                            table.insert(self.settings.stage_2_data.targets, region_key)
+                            dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, spawn_pos, self.army_templates[faction_key], self.settings.unit_count, false, army_count, self.name, aztec_invasion_spawn_armies_callback);
+
                         end
 
-                        dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, spawn_pos, self.army_templates[faction_key], self.settings.unit_count, false, army_count, self.name, aztec_invasion_spawn_armies_callback);
-
-                    end
-
-                    -- Declare war on everyone.
-                    if not faction == false and faction:is_null_interface() == false then
-                        dynamic_disasters:declare_war_to_all(faction, { "wh2_main_sc_lzd_lizardmen" }, true);
+                        -- Declare war on everyone.
+                        if not faction == false and faction:is_null_interface() == false then
+                            dynamic_disasters:declare_war_to_all(faction, { "wh2_main_sc_lzd_lizardmen" }, true);
+                        end
                     end
                 end
             end
-        end
 
-        -- TikTaq'to only has land spawns in its capital, with target settlements set.
-        if faction_key == "wh2_main_lzd_tlaqua" then
-            local regions = self.settings.stage_2_data.regions[faction_key];
-            for _, target_region_key in pairs(regions.land) do
-                local spawn_region = nil;
+            -- TikTaq'to only has land spawns in its capital, with target settlements set.
+            if faction_key == "wh2_main_lzd_tlaqua" then
+                local regions = self.settings.stage_2_data.regions[faction_key];
+                for _, target_region_key in pairs(regions.land) do
+                    local spawn_region = nil;
 
-                -- Spawns are in its home region, or in the region where the faction leader is.
-                if faction:has_home_region() then
-                    local capital = faction:home_region()
-                    spawm_region = capital:name();
-                elseif not faction:faction_leader() == nil and faction:faction_leader():has_region() then
-                    local region = faction:faction_leader():region();
-                    spawm_region = region:name();
+                    -- Spawns are in its home region, or in the region where the faction leader is.
+                    if faction:has_home_region() then
+                        local capital = faction:home_region()
+                        spawm_region = capital:name();
+                    elseif not faction:faction_leader() == nil and faction:faction_leader():has_region() then
+                        local region = faction:faction_leader():region();
+                        spawm_region = region:name();
+                    end
+
+                    if spawn_region ~= nil then
+
+                        -- Armies calculation, per province.
+                        local army_count = cm:random_number(math.ceil(self.settings.difficulty_mod));
+
+                        -- Store the region for invasion controls.
+                        for i = 1, army_count do
+                            table.insert(self.settings.stage_2_data.targets, target_region_key)
+                        end
+
+                        dynamic_disasters:create_scenario_force(faction_key, spawn_region, self.army_templates[faction_key], self.settings.unit_count, false, army_count, self.name, aztec_invasion_spawn_armies_callback);
+                    end
                 end
 
-                if spawn_region ~= nil then
+                -- Declare war on everyone.
+                if not faction == false and faction:is_null_interface() == false then
+                    dynamic_disasters:declare_war_to_all(faction, { "wh2_main_sc_lzd_lizardmen" }, true);
+                end
+            end
+
+            -- Nakai has sea spawns, but the invasion targets are deep in land.
+            if faction_key == "wh2_dlc13_lzd_spirits_of_the_jungle" then
+                local regions = self.settings.stage_2_data.regions[faction_key];
+                local coast = regions.sea[1]
+                local sea_region = dyn_dis_coasts[coast][cm:random_number(#dyn_dis_coasts[coast])];
+                for _, region_key in pairs(regions.land) do
 
                     -- Armies calculation, per province.
-                    local army_count = cm:random_number(math.ceil(self.settings.difficulty_mod));
+                    local army_count = cm:random_number(math.ceil(self.settings.difficulty_mod * 0.75));
+                    local spawn_pos = dyn_dis_sea_regions[sea_region].spawn_positions[cm:random_number(#dyn_dis_sea_regions[sea_region].spawn_positions)];
+                    out("Frodo45127: Armies to spawn: " .. tostring(army_count) .. " for " .. region_key .. " region, spawn pos X: " .. spawn_pos[1] .. ", Y: " .. spawn_pos[2] .. ".");
 
                     -- Store the region for invasion controls.
                     for i = 1, army_count do
-                        table.insert(self.settings.stage_2_data.targets, target_region_key)
+                        table.insert(self.settings.stage_2_data.targets, region_key)
                     end
 
-                    dynamic_disasters:create_scenario_force(faction_key, spawn_region, self.army_templates[faction_key], self.settings.unit_count, false, army_count, self.name, aztec_invasion_spawn_armies_callback);
+                    dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, spawn_pos, self.army_templates[faction_key], self.settings.unit_count, false, army_count, self.name, aztec_invasion_spawn_armies_callback);
+                end
+
+                -- Declare war on everyone.
+                if not faction == false and faction:is_null_interface() == false then
+                    dynamic_disasters:declare_war_to_all(faction, { "wh2_main_sc_lzd_lizardmen" }, true);
                 end
             end
 
-            -- Declare war on everyone.
-            if not faction == false and faction:is_null_interface() == false then
-                dynamic_disasters:declare_war_to_all(faction, { "wh2_main_sc_lzd_lizardmen" }, true);
-            end
+            cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 10)
         end
-
-        -- Nakai has sea spawns, but the invasion targets are deep in land.
-        if faction_key == "wh2_dlc13_lzd_spirits_of_the_jungle" then
-            local regions = self.settings.stage_2_data.regions[faction_key];
-            local coast = regions.sea[1]
-            local sea_region = dyn_dis_coasts[coast][cm:random_number(#dyn_dis_coasts[coast])];
-            for _, region_key in pairs(regions.land) do
-
-                -- Armies calculation, per province.
-                local army_count = cm:random_number(math.ceil(self.settings.difficulty_mod * 0.75));
-                local spawn_pos = dyn_dis_sea_regions[sea_region].spawn_positions[cm:random_number(#dyn_dis_sea_regions[sea_region].spawn_positions)];
-                out("Frodo45127: Armies to spawn: " .. tostring(army_count) .. " for " .. region_key .. " region, spawn pos X: " .. spawn_pos[1] .. ", Y: " .. spawn_pos[2] .. ".");
-
-                -- Store the region for invasion controls.
-                for i = 1, army_count do
-                    table.insert(self.settings.stage_2_data.targets, region_key)
-                end
-
-                dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, spawn_pos, self.army_templates[faction_key], self.settings.unit_count, false, army_count, self.name, aztec_invasion_spawn_armies_callback);
-            end
-
-            -- Declare war on everyone.
-            if not faction == false and faction:is_null_interface() == false then
-                dynamic_disasters:declare_war_to_all(faction, { "wh2_main_sc_lzd_lizardmen" }, true);
-            end
-        end
-
-        cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 10)
     end
 
     -- Force an alliance between all lizardmen, in case something happen and they broke the previous one.
@@ -630,18 +635,8 @@ function disaster_aztec_invasion:check_start_disaster_conditions()
         return false;
     end
 
-    -- Check if any of the attackers if actually alive.
-    local attackers_still_alive = false;
-    for _, faction_key in pairs(self.settings.factions) do
-        local faction = cm:get_faction(faction_key);
-        if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false then
-            attackers_still_alive = true;
-            break;
-        end
-    end
-
     -- Do not start if we don't have any alive attackers.
-    if attackers_still_alive == false then
+    if not dynamic_disasters:is_any_faction_alive_from_list(self.settings.factions) then
         return false;
     end
 

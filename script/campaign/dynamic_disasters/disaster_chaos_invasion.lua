@@ -1731,18 +1731,20 @@ function disaster_chaos_invasion:trigger_stage_1()
     -- Spawn all the initial chaos armies.
     local army_count = math.ceil(3 * self.settings.difficulty_mod);
     for _, faction_key in pairs(self.settings.stage_1_data.factions) do
-        local army_template = self.stage_1_data.army_templates[faction_key];
-        for _, region_key in pairs(self.stage_1_data.regions[faction_key]) do
-            dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
-
-            -- Prepare the regions to reveal. Only shown them in stage 1.
-            dynamic_disasters:prepare_reveal_regions(self.stage_1_data.regions[faction_key]);
-        end
         local faction = cm:get_faction(faction_key);
-        cm:instantly_research_all_technologies(faction_key);
-        dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy);
-        dynamic_disasters:declare_war_to_all(faction, self.denied_for_sc, true);
-        self:declare_war_on_unvasalized_norscans(faction)
+        if not faction:is_dead() or (faction:is_dead() and self.settings.revive_dead_factions == true) then
+            local army_template = self.stage_1_data.army_templates[faction_key];
+            for _, region_key in pairs(self.stage_1_data.regions[faction_key]) do
+                dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
+
+                -- Prepare the regions to reveal. Only shown them in stage 1.
+                dynamic_disasters:prepare_reveal_regions(self.stage_1_data.regions[faction_key]);
+            end
+            cm:instantly_research_all_technologies(faction_key);
+            dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy);
+            dynamic_disasters:declare_war_to_all(faction, self.denied_for_sc, true);
+            self:declare_war_on_unvasalized_norscans(faction)
+        end
     end
 
     -- Make sure every attacker is allied with each other. This is to ensure all of them are on the same chaos-tide.
@@ -1766,98 +1768,100 @@ function disaster_chaos_invasion:trigger_stage_2()
 
     -- Spawn all the stage 2 chaos armies. This is where hell breaks loose... literally.
     for _, faction_key in pairs(self.settings.stage_2_data.factions) do
+        local faction = cm:get_faction(faction_key);
+        if not faction:is_dead() or (faction:is_dead() and self.settings.revive_dead_factions == true) then
 
-        -- Land spawns are region-based, so we spawn them using their region key.
-        local army_count = math.ceil(2 * self.settings.difficulty_mod);
-        local army_template = self.stage_2_data.army_templates[faction_key];
-        if self.stage_2_data.regions[faction_key]["land"] ~= nil and self.stage_2_data.regions[faction_key]["land"]["regions"] ~= nil then
-            for j, region_key in pairs(self.stage_2_data.regions[faction_key].land.regions) do
-                if self.stage_2_data.regions[faction_key]["land"]["targets"] ~= nil then
-                    local target_region_key = self.stage_2_data.regions[faction_key].land.targets[j];
+            -- Land spawns are region-based, so we spawn them using their region key.
+            local army_count = math.ceil(2 * self.settings.difficulty_mod);
+            local army_template = self.stage_2_data.army_templates[faction_key];
+            if self.stage_2_data.regions[faction_key]["land"] ~= nil and self.stage_2_data.regions[faction_key]["land"]["regions"] ~= nil then
+                for j, region_key in pairs(self.stage_2_data.regions[faction_key].land.regions) do
+                    if self.stage_2_data.regions[faction_key]["land"]["targets"] ~= nil then
+                        local target_region_key = self.stage_2_data.regions[faction_key].land.targets[j];
+                        if target_region_key ~= nil then
+                            for i = 1, army_count do
+                                table.insert(self.settings.stage_2_data.targets, target_region_key)
+                            end
+
+                            dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, self.settings.base_army_unit_count, false, army_count, self.name, chaos_invasion_spawn_armies_callback_sea)
+                        else
+                            script_error("ERROR: Missing target region for spawn at land.")
+                        end
+                    else
+                        dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
+                    end
+                end
+
+                -- Skarbrand has to spawn troops on its capital too.
+                if faction_key == "wh3_main_kho_exiles_of_khorne" then
+                    local region = faction:home_region();
+                    if not region == false and region:is_null_interface() == false then
+                        dynamic_disasters:create_scenario_force(faction_key, region:name(), army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
+                    end
+                end
+
+                -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
+                cm:instantly_research_all_technologies(faction_key);
+                dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
+
+                -- War declarations against AI.
+                dynamic_disasters:declare_war_to_all(faction, self.denied_for_sc, true);
+                self:declare_war_on_unvasalized_norscans(faction)
+            end
+
+            -- Sea spawns are coordinate based with a region key of a land region nearby. We need to pass them a callback so they're out of the AI control until their target falls.
+            if self.stage_2_data.regions[faction_key]["sea"] ~= nil and self.stage_2_data.regions[faction_key]["sea"]["coords"] ~= nil and self.stage_2_data.regions[faction_key]["sea"]["targets"] ~= nil then
+                for j, coords in pairs(self.stage_2_data.regions[faction_key].sea.coords) do
+                    local target_region_key = self.stage_2_data.regions[faction_key].sea.targets[j];
                     if target_region_key ~= nil then
                         for i = 1, army_count do
                             table.insert(self.settings.stage_2_data.targets, target_region_key)
                         end
 
-                        dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, self.settings.base_army_unit_count, false, army_count, self.name, chaos_invasion_spawn_armies_callback_sea)
+                        dynamic_disasters:create_scenario_force_at_coords(faction_key, target_region_key, coords, army_template, self.settings.base_army_unit_count, false, army_count, self.name, chaos_invasion_spawn_armies_callback_sea)
                     else
-                        script_error("ERROR: Missing target region for spawn at land.")
+                        script_error("ERROR: Missing target region for spawn at sea.")
                     end
-                else
-                    dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
                 end
+
+                local faction = cm:get_faction(faction_key);
+                dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
+                dynamic_disasters:declare_war_to_all(faction, self.denied_for_sc, true)
+                self:declare_war_on_unvasalized_norscans(faction)
             end
 
-            -- Skarbrand has to spawn troops on its capital too.
-            local faction = cm:get_faction(faction_key);
-            if faction_key == "wh3_main_kho_exiles_of_khorne" then
-                local region = faction:home_region();
-                if not region == false and region:is_null_interface() == false then
-                    dynamic_disasters:create_scenario_force(faction_key, region:name(), army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
-                end
-            end
+            -- After spawning armies and declaring wars, try to give certain dark fortresses to specific factions. Only if norsca holds them.
+            if self.dark_fortress_regions[faction_key] ~= nil then
+                for i = 1, #self.dark_fortress_regions[faction_key] do
+                    local region_key = self.dark_fortress_regions[faction_key][i];
+                    local region = cm:get_region(region_key)
+                    if not region == false and region:is_null_interface() == false then
+                        local region_owner = region:owning_faction()
+                        if region_owner == false or region_owner:is_null_interface() or (region_owner:name() == "wh_dlc08_sc_nor_norsca" and region_owner:is_human() == false) then
 
-            -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
-            cm:instantly_research_all_technologies(faction_key);
-            dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
+                            -- Do not get a hold of the dark fortresses if they're arleady owned by another demon faction.
+                            local is_not_owned_by_ignored = true
+                            local ignored_subcultures_for_transfer = {
+                                "wh3_main_sc_dae_daemons",
+                                "wh3_main_sc_kho_khorne",
+                                "wh3_main_sc_nur_nurgle",
+                                "wh3_main_sc_sla_slaanesh",
+                                "wh3_main_sc_tze_tzeentch",
+                                "wh_main_sc_chs_chaos",
+                            };
 
-            -- War declarations against AI.
-            dynamic_disasters:declare_war_to_all(faction, self.denied_for_sc, true);
-            self:declare_war_on_unvasalized_norscans(faction)
-        end
-
-        -- Sea spawns are coordinate based with a region key of a land region nearby. We need to pass them a callback so they're out of the AI control until their target falls.
-        if self.stage_2_data.regions[faction_key]["sea"] ~= nil and self.stage_2_data.regions[faction_key]["sea"]["coords"] ~= nil and self.stage_2_data.regions[faction_key]["sea"]["targets"] ~= nil then
-            for j, coords in pairs(self.stage_2_data.regions[faction_key].sea.coords) do
-                local target_region_key = self.stage_2_data.regions[faction_key].sea.targets[j];
-                if target_region_key ~= nil then
-                    for i = 1, army_count do
-                        table.insert(self.settings.stage_2_data.targets, target_region_key)
-                    end
-
-                    dynamic_disasters:create_scenario_force_at_coords(faction_key, target_region_key, coords, army_template, self.settings.base_army_unit_count, false, army_count, self.name, chaos_invasion_spawn_armies_callback_sea)
-                else
-                    script_error("ERROR: Missing target region for spawn at sea.")
-                end
-            end
-
-            local faction = cm:get_faction(faction_key);
-            dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
-            dynamic_disasters:declare_war_to_all(faction, self.denied_for_sc, true)
-            self:declare_war_on_unvasalized_norscans(faction)
-        end
-
-        -- After spawning armies and declaring wars, try to give certain dark fortresses to specific factions. Only if norsca holds them.
-        if self.dark_fortress_regions[faction_key] ~= nil then
-            for i = 1, #self.dark_fortress_regions[faction_key] do
-                local region_key = self.dark_fortress_regions[faction_key][i];
-                local region = cm:get_region(region_key)
-                if not region == false and region:is_null_interface() == false then
-                    local region_owner = region:owning_faction()
-                    if region_owner == false or region_owner:is_null_interface() or (region_owner:name() == "wh_dlc08_sc_nor_norsca" and region_owner:is_human() == false) then
-
-                        -- Do not get a hold of the dark fortresses if they're arleady owned by another demon faction.
-                        local is_not_owned_by_ignored = true
-                        local ignored_subcultures_for_transfer = {
-                            "wh3_main_sc_dae_daemons",
-                            "wh3_main_sc_kho_khorne",
-                            "wh3_main_sc_nur_nurgle",
-                            "wh3_main_sc_sla_slaanesh",
-                            "wh3_main_sc_tze_tzeentch",
-                            "wh_main_sc_chs_chaos",
-                        };
-
-                        if not region_owner == false and region_owner:is_null_interface() == false then
-                            for j = 1, #ignored_subcultures_for_transfer do
-                                if region_owner:subculture() == ignored_subcultures_for_transfer[j] then
-                                    is_not_owned_by_ignored = false;
-                                    break;
+                            if not region_owner == false and region_owner:is_null_interface() == false then
+                                for j = 1, #ignored_subcultures_for_transfer do
+                                    if region_owner:subculture() == ignored_subcultures_for_transfer[j] then
+                                        is_not_owned_by_ignored = false;
+                                        break;
+                                    end
                                 end
                             end
-                        end
 
-                        if is_not_owned_by_ignored == true then
-                            cm:transfer_region_to_faction(region_key, faction_key)
+                            if is_not_owned_by_ignored == true then
+                                cm:transfer_region_to_faction(region_key, faction_key)
+                            end
                         end
                     end
                 end
@@ -2394,19 +2398,14 @@ function disaster_chaos_invasion:check_end_disaster_conditions()
 
     -- Update the list of available factions and check if are all dead.
     self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.default_settings.factions);
-    local all_attackers_dead = true;
 
-    if #self.settings.factions > 0 then
-        for _, faction_key in pairs(self.settings.factions) do
-            local faction = cm:get_faction(faction_key);
-            if not faction == false and faction:is_null_interface() == false and not faction:is_dead() then
-                all_attackers_dead = false;
-            end
-        end
+    -- Stop if we have no more attackers.
+    if #self.settings.factions == 0 then
+        return false;
     end
 
     -- If all chaos factions are dead, end the disaster. If not, check depending on the state we're about to trigger.
-    if all_attackers_dead == true then
+    if not dynamic_disasters:is_any_faction_alive_from_list(self.settings.factions) then
         return true;
     end
 

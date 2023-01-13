@@ -56,8 +56,10 @@ aztec_invasion_enable:set_default_value(true)
 aztec_invasion_enable:set_text(loc_prefix.."aztec_invasion_enable", true)
 aztec_invasion_enable:set_tooltip_text(loc_prefix.."aztec_invasion_enable_tooltip", true)
 
-local d = mod:add_new_option("d2", "dummy")
-d:set_text(" ");
+local aztec_invasion_revive_dead_factions = mod:add_new_option("aztec_invasion_revive_dead_factions", "checkbox")
+aztec_invasion_revive_dead_factions:set_default_value(false)
+aztec_invasion_revive_dead_factions:set_text(loc_prefix.."revive_dead_factions", true)
+aztec_invasion_revive_dead_factions:set_tooltip_text(loc_prefix.."revive_dead_factions_tooltip", true)
 
 local aztec_invasion_enable_diplomacy = mod:add_new_option("aztec_invasion_enable_diplomacy", "checkbox")
 aztec_invasion_enable_diplomacy:set_default_value(false)
@@ -225,8 +227,10 @@ chaos_invasion_enable:set_default_value(true)
 chaos_invasion_enable:set_text(loc_prefix.."chaos_invasion_enable", true)
 chaos_invasion_enable:set_tooltip_text(loc_prefix.."chaos_invasion_enable_tooltip", true)
 
-local d = mod:add_new_option("d98", "dummy")
-d:set_text(" ");
+local chaos_invasion_revive_dead_factions = mod:add_new_option("chaos_invasion_revive_dead_factions", "checkbox")
+chaos_invasion_revive_dead_factions:set_default_value(false)
+chaos_invasion_revive_dead_factions:set_text(loc_prefix.."revive_dead_factions", true)
+chaos_invasion_revive_dead_factions:set_tooltip_text(loc_prefix.."revive_dead_factions_tooltip", true)
 
 local chaos_invasion_enable_rifts = mod:add_new_option("chaos_invasion_enable_rifts", "checkbox")
 chaos_invasion_enable_rifts:set_default_value(true)
