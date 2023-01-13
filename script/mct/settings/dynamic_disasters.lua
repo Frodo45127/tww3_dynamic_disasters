@@ -470,8 +470,10 @@ waaagh_enable:set_default_value(true)
 waaagh_enable:set_text(loc_prefix.."waaagh_enable", true)
 waaagh_enable:set_tooltip_text(loc_prefix.."waaagh_enable_tooltip", true)
 
-local d = mod:add_new_option("d12", "dummy")
-d:set_text(" ");
+local waaagh_revive_dead_factions = mod:add_new_option("waaagh_revive_dead_factions", "checkbox")
+waaagh_revive_dead_factions:set_default_value(true)
+waaagh_revive_dead_factions:set_text(loc_prefix.."revive_dead_factions", true)
+waaagh_revive_dead_factions:set_tooltip_text(loc_prefix.."revive_dead_factions_tooltip", true)
 
 local waaagh_enable_diplomacy = mod:add_new_option("waaagh_enable_diplomacy", "checkbox")
 waaagh_enable_diplomacy:set_default_value(false)
