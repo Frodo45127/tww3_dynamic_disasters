@@ -22,8 +22,7 @@ mct_dyn_dis_enable	Enable Dynamic Disasters	true
 mct_dyn_dis_enable_tooltip	Enable/Disable the whole mod. \\n\\nSafe to disable mid-campaign, but on-going disasters will still finish.	true
 mct_dyn_dis_aztec_invasion_enable	Enable "Enactment of the Great Plan" disaster	true
 mct_dyn_dis_aztec_invasion_enable_tooltip	Enable/Disable the "Enactment of the Great Plan" disaster.\\n\\nThe Slann of Lustria have finally understood the Great Plan. And they plan to Enact it.\\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
-mct_dyn_dis_mod_config	1.Global Config	true
-mct_dyn_dis_disasters_config	2.Disaster Specific Config	true
+mct_dyn_dis_mod_config	Global Config	true
 mct_dyn_dis_min_turn_value	Minimum Turn	true
 mct_dyn_dis_difficulty_mod	Difficulty Modifier	true
 mct_dyn_dis_min_turn_value_tooltip	Minimum turn required for this disaster to trigger.	true
@@ -260,3 +259,17 @@ incidents_localised_title_dyn_dis_last_stand_skaven_betrayed	The Skaven menace c
 incidents_localised_description_dyn_dis_last_stand_skaven_betrayed	It seems that from somewhere in the vast Underempire of the Skaven reinforcements have come to.... kill our enemy before us?	true
 incidents_localised_title_dyn_dis_last_stand_skaven_normal	The Skaven menace comes from below!	true
 incidents_localised_description_dyn_dis_last_stand_skaven_normal	It seems that from somewhere in the vast Underempire of the Skaven reinforcements have come to help our enemy in their hour of need!	true
+mct_dyn_dis_aztec_invasion_config	Aztec Invasion	true
+mct_dyn_dis_raiding_parties_config	Raiding Parties	true
+mct_dyn_dis_skaven_incursions_config	Skaven Incursions	true
+mct_dyn_dis_chianchi_assault_config	Chi'an Chi Assault	true
+mct_dyn_dis_the_great_uprising_config	The Great Ascendancy (legacy)	true
+mct_dyn_dis_chaos_invasion_config	Chaos Invasion	true
+mct_dyn_dis_last_stand_config	Last Stand	true
+mct_dyn_dis_realm_divided_config	Realm Divided	true
+mct_dyn_dis_the_vermintide_config	The Vermintide	true
+mct_dyn_dis_grudge_too_far_config	A Grudge Too Far (Vanilla+)	true
+mct_dyn_dis_pyramid_of_nagash_config	Pyramid of Nagash (Vanilla+)	true
+mct_dyn_dis_vampires_rise_config	Vampire's Rise (Vanilla+)	true
+mct_dyn_dis_waaagh_config	Da Biggest Waaagh (Vanilla+)	true
+mct_dyn_dis_wild_hunt_config	The Wild Hunt (Vanilla+)	true

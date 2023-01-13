@@ -39,6 +39,9 @@
 
         - Vary chance based on local corruption.
 
+        - Find a way to tell the player who sent the reinforcements (incidents seem to only accept one faction input, and I'm using it for the one that receives the reinforcements).
+        - Make faction-specific incidents, to use their faction's image instead of the player's image in the incident.
+
 ]]
 
 -- Status list for this disaster.
@@ -68,7 +71,7 @@ last_stand = {
         is_endgame = false,                 -- If the disaster is an endgame.
         revive_dead_factions = true,        -- If true, dead factions will be revived if needed.
         enable_diplomacy = false,           -- If true, you will still be able to use diplomacy with disaster-related factions. Broken beyond believe, can make the game a cakewalk.
-        min_turn = 2,                      -- Minimum turn required for the disaster to trigger.
+        min_turn = 30,                      -- Minimum turn required for the disaster to trigger.
         max_turn = 0,                       -- If the disaster hasn't trigger at this turn, we try to trigger it. Set to 0 to not check for max turn. Used only for some disasters.
         status = 0,                         -- Current status of the disaster. Used to re-initialize the disaster correctly on reload.
         last_triggered_turn = 0,            -- Turn when the disaster was last triggerd.
