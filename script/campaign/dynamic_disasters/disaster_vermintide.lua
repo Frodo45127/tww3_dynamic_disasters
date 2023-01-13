@@ -765,17 +765,21 @@ function disaster_vermintide:trigger_stage_1()
     end
 
     -- Spawn a few Skryre armies in Estalia, Tilea and Sartosa. Enough so they're able to expand next.
+    -- If they're owned by the player, spawn the armies in the home region of Skryre instead.
+    -- If Clan Skryre has no home region, spawn
     local army_count = math.floor(1.5 * self.settings.difficulty_mod)
     for _, faction_key in pairs(self.settings.factions_stage_1) do
-        for _, region_key in pairs(self.regions_stage_1) do
-            dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil)
-        end
-
-        -- Apply the relevant CAI changes only to Clan Skryre and declare the appropiate wars.
         local faction = cm:get_faction(faction_key);
-        cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
-        dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
-        dynamic_disasters:declare_war_to_all(faction, {"wh2_main_sc_skv_skaven"}, true)
+        if not faction == false and faction:is_null_interface() == false then
+            for _, region_key in pairs(self.regions_stage_1) do
+                self:create_army_with_backup_plan(faction_key, region_key, army_count)
+            end
+
+            -- Apply the relevant CAI changes only to Clan Skryre and declare the appropiate wars.
+            cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
+            dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
+            dynamic_disasters:declare_war_to_all(faction, {"wh2_main_sc_skv_skaven"}, true)
+        end
     end
 
     -- Setup strategic under-cities for all factions available, including the recently resurrected ones.
@@ -829,13 +833,13 @@ function disaster_vermintide:trigger_stage_2()
     local army_count_empire = math.ceil(1.5 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_2_empire) do
         local faction_key = self.settings.factions_stage_2_empire_and_araby[cm:random_number(#self.settings.factions_stage_2_empire_and_araby)];
-        dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count_empire, self.name, nil)
+        self:create_army_with_backup_plan(faction_key, region_key, army_count_empire)
     end
 
     local army_count_araby = math.ceil(1.5 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_2_araby) do
         local faction_key = self.settings.factions_stage_2_empire_and_araby[cm:random_number(#self.settings.factions_stage_2_empire_and_araby)];
-        dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count_araby, self.name, nil)
+        self:create_army_with_backup_plan(faction_key, region_key, army_count_araby)
     end
 
     -- The Attack on Cathay depends on Eshin being available to spawn.
@@ -843,9 +847,8 @@ function disaster_vermintide:trigger_stage_2()
         local army_count_cathay = math.ceil(1.5 * self.settings.difficulty_mod)
         for _, region_key in pairs(self.regions_stage_2_cathay) do
             local faction_key = self.settings.factions_stage_2_cathay[cm:random_number(#self.settings.factions_stage_2_cathay)];
-            dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count_cathay, self.name, nil)
+            self:create_army_with_backup_plan(faction_key, region_key, army_count_cathay)
         end
-
         dynamic_disasters:prepare_reveal_regions(self.regions_stage_2_cathay);
     end
 
@@ -891,7 +894,7 @@ function disaster_vermintide:trigger_stage_3()
     local army_count = math.ceil(2 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_3) do
         local faction_key = self.settings.factions_stage_3_lustria[cm:random_number(#self.settings.factions_stage_3_lustria, 1)];
-        dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil)
+        self:create_army_with_backup_plan(faction_key, region_key, army_count)
     end
 
     -- Force war against every skaven faction for each faction the skaven attack.
@@ -925,7 +928,7 @@ function disaster_vermintide:trigger_stage_4()
     local army_count = math.ceil(1.5 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_4) do
         local faction_key = self.settings.factions_stage_4_karaz_ankor[cm:random_number(#self.settings.factions_stage_4_karaz_ankor)];
-        dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil)
+        self:create_army_with_backup_plan(faction_key, region_key, army_count)
     end
 
     -- Force war against every skaven faction for each faction the skaven attack.
@@ -953,7 +956,7 @@ function disaster_vermintide:trigger_stage_5()
     local army_count = math.ceil(2 * self.settings.difficulty_mod)
     for _, region_key in pairs(self.regions_stage_5) do
         local faction_key = self.settings.factions_stage_5_karaz_a_karak[cm:random_number(#self.settings.factions_stage_5_karaz_a_karak)];
-        dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil)
+        self:create_army_with_backup_plan(faction_key, region_key, army_count)
     end
 
     -- Force war against every skaven faction for each faction the skaven attack.
@@ -1006,6 +1009,37 @@ function disaster_vermintide:morrslieb_gaze_is_upon_us(duration)
             cm:apply_effect_bundle(self.attacker_buffs_key, faction_key, duration);
         end
     end
+end
+
+--- Function to spawn one or more armies for the provided faction on the provided region if possible. If not, we try to spawn it at Skryre's home region.
+---
+--- NOTE: We consider invalid regions regions that belong to a player.
+---@param faction_key string #Key of the faction that owns the army.
+---@param region_key string #Key of the region we're going to try to spawn into.
+---@param army_count integer #Amount of armies to spawn.
+---@return boolean #If any army was spawned.
+function disaster_vermintide:create_army_with_backup_plan(faction_key, region_key, army_count)
+    local region = cm:get_region(region_key);
+    local owner = region:owning_faction();
+    if region:is_abandoned() or (not owner == false and owner:is_null_interface() == false and not owner:is_human()) then
+        return dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil)
+    elseif faction:has_home_region() then
+        region = faction:home_region();
+        dynamic_disasters:create_scenario_force(faction_key, region:name(), self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil)
+        dynamic_disasters:prepare_reveal_regions({ region:name() });
+    else
+        out("Frodo45127: ERROR: We tried to spawn armies on " .. region_key .. " but we couldn't use neither that nor the home region of Clan Skryre.");
+    end
+end
+
+--- Function to check if Clan Skryre still has a home region.
+function disaster_vermintide:is_skryre_available()
+    local faction = cm:get_faction("wh2_main_skv_clan_skryre");
+    if not faction == false and faction:is_null_interface() == false then
+        return faction:has_home_region();
+    end
+
+    return false;
 end
 
 -------------------------------------------
@@ -1335,18 +1369,8 @@ function disaster_vermintide:check_start_disaster_conditions()
         return false;
     end
 
-    -- Check that Clan Skryre is alive or dead and non-confederated. It's needed to kickstart the disaster.
-    local is_skryre_available = false;
-    for _, faction_key in pairs(self.settings.factions) do
-        local faction = cm:get_faction(faction_key);
-        if not faction == false and faction:is_null_interface() == false and faction_key == "wh2_main_skv_clan_skryre" and faction:was_confederated() == false then
-            is_skryre_available = true;
-            break
-        end
-    end
-
     -- Do not start if Clan Skryre is not available to use.
-    if is_skryre_available == false then
+    if not dynamic_disasters:is_any_faction_alive_from_list(self.settings.factions_stage_1) then
         return false;
     end
 
@@ -1389,37 +1413,17 @@ function disaster_vermintide:check_end_disaster_conditions()
 
     -- Update the list of available factions and check if are all dead.
     self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
-    local all_attackers_dead = true;
-
-    if #self.settings.factions > 0 then
-        for _, faction_key in pairs(self.settings.factions) do
-            local faction = cm:get_faction(faction_key);
-            if not faction == false and faction:is_null_interface() == false and not faction:is_dead() then
-                all_attackers_dead = false;
-            end
-        end
-    end
 
     -- If all skaven factions are dead, end the disaster. If not, check depending on the state we're about to trigger.
-    if all_attackers_dead == true then
+    if not dynamic_disasters:is_any_faction_alive_from_list(self.settings.factions) then
         return true;
     end
 
-    -- If we haven't triggered the first stage, just check if Skryre is dead. If so, we end the disaster here.
+    -- If we haven't triggered the first stage, we need to check if Skryre is dead or alive with no home region. If so, we end the disaster here.
     if self.settings.status == STATUS_TRIGGERED then
         self.settings.factions_stage_1 = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions_stage_1);
-        local all_attackers_unavailable_stage_1 = true;
 
-        if #self.settings.factions_stage_1 > 0 then
-            for _, faction_key in pairs(self.settings.factions_stage_1) do
-                local faction = cm:get_faction(faction_key);
-                if not faction == false and faction:is_null_interface() == false and faction:was_confederated() == false then
-                    all_attackers_unavailable_stage_1 = false;
-                end
-            end
-        end
-
-        return all_attackers_unavailable_stage_1;
+        return not disaster_vermintide:is_skryre_available() or not dynamic_disasters:is_any_faction_alive_from_list(self.settings.factions_stage_1);
     end
 
     -- If we're about to trigger Stage 2, make sure we have minor factions to do it. Otherwise, end the invasion here.
@@ -1428,52 +1432,22 @@ function disaster_vermintide:check_end_disaster_conditions()
         -- Update the list of available factions. Ignore cathay for ending the disaster as it's optional.
         self.settings.factions_stage_2_empire_and_araby = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions_stage_2_empire_and_araby);
         self.settings.factions_stage_2_cathay = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions_stage_2_cathay);
-        local all_attackers_unavailable_stage_2 = true;
 
-        if #self.settings.factions_stage_2_empire_and_araby > 0 then
-            for _, faction_key in pairs(self.settings.factions_stage_2_empire_and_araby) do
-                local faction = cm:get_faction(faction_key);
-                if not faction == false and faction:is_null_interface() == false and not faction:is_dead() then
-                    all_attackers_unavailable_stage_2 = false;
-                end
-            end
-        end
-
-        return all_attackers_unavailable_stage_2;
+        return not disaster_vermintide:is_skryre_available() or not dynamic_disasters:is_any_faction_alive_from_list(self.settings.factions_stage_2_empire_and_araby);
     end
 
     -- If we're about to trigger Stage 3, make sure either Skryre or Pestilens are still alive.
     if self.settings.status == STATUS_STAGE_2 then
         self.settings.factions_stage_3_lustria = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions_stage_3_lustria);
-        local all_attackers_unavailable_stage_3 = true;
 
-        if #self.settings.factions_stage_3_lustria > 0 then
-            for _, faction_key in pairs(self.settings.factions_stage_3_lustria) do
-                local faction = cm:get_faction(faction_key);
-                if not faction == false and faction:is_null_interface() == false and not faction:is_dead() then
-                    all_attackers_unavailable_stage_3 = false;
-                end
-            end
-        end
-
-        return all_attackers_unavailable_stage_3;
+        return not disaster_vermintide:is_skryre_available() or not dynamic_disasters:is_any_faction_alive_from_list(self.settings.factions_stage_3_lustria);
     end
 
     -- If we're about to trigger Stage 4, make sure we have factions for it.
     if self.settings.status == STATUS_STAGE_3 then
         self.settings.factions_stage_4_karaz_ankor = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions_stage_4_karaz_ankor);
-        local all_attackers_unavailable_stage_4 = true;
 
-        if #self.settings.factions_stage_4_karaz_ankor > 0 then
-            for _, faction_key in pairs(self.settings.factions_stage_4_karaz_ankor) do
-                local faction = cm:get_faction(faction_key);
-                if not faction == false and faction:is_null_interface() == false and not faction:is_dead() then
-                    all_attackers_unavailable_stage_4 = false;
-                end
-            end
-        end
-
-        return all_attackers_unavailable_stage_4;
+        return not disaster_vermintide:is_skryre_available() or not dynamic_disasters:is_any_faction_alive_from_list(self.settings.factions_stage_4_karaz_ankor);
     end
 
     if self.settings.status == STATUS_STAGE_4 then
@@ -1491,18 +1465,8 @@ function disaster_vermintide:check_end_disaster_conditions()
 
         -- If we're about to trigger Stage 5, make sure Clan Mors is still alive.
         self.settings.factions_stage_5_karaz_a_karak = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions_stage_5_karaz_a_karak);
-        local all_attackers_unavailable_stage_5 = true;
 
-        if #self.settings.factions_stage_5_karaz_a_karak > 0 then
-            for _, faction_key in pairs(self.settings.factions_stage_5_karaz_a_karak) do
-                local faction = cm:get_faction(faction_key);
-                if not faction == false and faction:is_null_interface() == false and not faction:is_dead() then
-                    all_attackers_unavailable_stage_5 = false;
-                end
-            end
-        end
-
-        return all_attackers_unavailable_stage_5;
+        return not disaster_vermintide:is_skryre_available() or not dynamic_disasters:is_any_faction_alive_from_list(self.settings.factions_stage_5_karaz_a_karak);
     end
 
     return false;
