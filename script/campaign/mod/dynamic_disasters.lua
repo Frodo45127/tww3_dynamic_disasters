@@ -1639,6 +1639,8 @@ end
 --- Will fail if none of the backup factions has a home region.
 ---
 --- NOTE: We consider invalid regions regions that belong to a player.
+---
+--- TODO: Add the faction leader region as backup.
 ---@param faction_key string #Faction key of the owner of the armies.
 ---@param region_key string #Land region key used for spawning and declaring war.
 ---@param army_template table #Table with the faction->template format. The templates MUST exists in the dynamic_disasters object.
