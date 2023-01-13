@@ -1251,10 +1251,11 @@ end
 -- Function to check if any faction from a list is alive.
 ---@param factions table #Faction keys to check for alive factions.
 ---@return boolean|string #If at least one of the factions is alive.
-function dynamic_disasters:first_faction_alive_from_list_with_home_region(factions)
+function dynamic_disasters:random_faction_alive_from_list_with_home_region(factions)
+    local factions_random = cm:random_sort_copy(factions);
     local is_alive = false;
-    for i = 1, #factions do
-        local faction = cm:get_faction(factions[i]);
+    for i = 1, #factions_random do
+        local faction = cm:get_faction(factions_random[i]);
         if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false and faction:has_home_region() then
            is_alive = factions[i];
            break;
@@ -1671,7 +1672,7 @@ function dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, r
 
     -- If that fails, try with the backup factions. We need to find one alive and with a home region.
     else
-        local faction_alive_key = self:first_faction_alive_from_list_with_home_region(backup_faction_keys)
+        local faction_alive_key = self:random_faction_alive_from_list_with_home_region(backup_faction_keys)
         if not faction_alive_key == false then
             local faction_alive = cm:get_faction(faction_alive_key);
             if not faction_alive == false and faction_alive:is_null_interface() == false and faction_alive:has_home_region() then
