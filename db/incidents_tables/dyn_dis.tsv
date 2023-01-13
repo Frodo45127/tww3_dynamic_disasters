@@ -9,14 +9,6 @@ fro_dyn_dis_chianchi_assault_warning	false	tze/faction	true	Disaster		false
 fro_dyn_dis_chianchi_assault_wall_assault_trigger	false	tze/army_morale_up	true	Disaster		false	
 fro_dyn_dis_chianchi_assault_daemonic_invasion_trigger	false	tze/victory	true	Disaster		false	
 fro_dyn_dis_chianchi_assault_finish_before_assault	false	cth/celebration	true	Disaster		false	
-fro_dyn_dis_great_uprising_stage_1_warning	false	skv/politics	true	Disaster		false	
-fro_dyn_dis_great_uprising_stage_1_trigger	false	skv/global_action_fire	true	Disaster		true	
-fro_dyn_dis_great_uprising_stage_2_trigger	false	skv/ritual_complete	true	Disaster		true	
-fro_dyn_dis_great_uprising_stage_3_trigger	false	skv/under_empire_army	true	Disaster		true	
-fro_dyn_dis_great_uprising_stage_4_trigger	false	skv/celebration	true	Disaster		true	
-fro_dyn_dis_great_uprising_stage_5_trigger	false	skv/victory	true	Disaster		true	
-fro_dyn_dis_great_uprising_finish_before_stage_1	false	skv/settlement_lost	true	Disaster		false	
-fro_dyn_dis_great_uprising_finish	false	skv/settlement_lost	true	Disaster		false	
 fro_dyn_dis_raiding_parties_early_end	false	cst/sea_monster_attack	true	Disaster		false	
 dyn_dis_chaos_invasion_stage_early_warning	false	chs/soul_gift	true	Disaster		true	
 dyn_dis_chaos_invasion_stage_1_trigger	false	chs/diplomacy	true	Disaster		true	

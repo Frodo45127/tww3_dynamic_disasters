@@ -55,30 +55,8 @@ incidents_localised_description_fro_dyn_dis_chianchi_assault_warning	Chi'an Chi 
 incidents_localised_description_fro_dyn_dis_chianchi_assault_wall_assault_trigger	Chi'an Chi has send reinforcements to the Great Kurgan horde attacking the Great Bastion! The bastion must not fall!	true
 incidents_localised_description_fro_dyn_dis_chianchi_assault_daemonic_invasion_trigger	The Great Bastion has been breached! Send messengers to all the corners of Grand Cathay! We need to rebuild it soon, or the hordes of Chi'an Chi will flood our lands!	true
 incidents_localised_description_fro_dyn_dis_chianchi_assault_finish_before_assault	The Great Bastion has resisted the attack and the Chaos Hordes have been repelled... but was this part of Chi'an Chi's plan?	true
-incidents_localised_title_fro_dyn_dis_great_uprising_stage_1_warning	Morrslieb is... growing?	true
-incidents_localised_title_fro_dyn_dis_great_uprising_stage_1_trigger	The Under-Empire strikes back!	true
-incidents_localised_title_fro_dyn_dis_great_uprising_stage_2_trigger	The Empires under attack!	true
-incidents_localised_title_fro_dyn_dis_great_uprising_stage_3_trigger	The Great Lustrian War has begun!	true
-incidents_localised_title_fro_dyn_dis_great_uprising_stage_4_trigger	The Karaz Ankor besieged!	true
-incidents_localised_title_fro_dyn_dis_great_uprising_stage_5_trigger	Karaz-a-Karak besieged!	true
-incidents_localised_description_fro_dyn_dis_great_uprising_stage_1_warning	Scholars all around the world are perplex. For the first time in recorded history, Morrslieb has grown in size. Nobody knows why.... yet.	true
-incidents_localised_description_fro_dyn_dis_great_uprising_stage_1_trigger	As news of hordes of Skaven (they do exists!) running wild over Estalia and Tilea reached us, we found new information: Morrslieb is not bigger, is closer! And it's already affecting the winds of magic all around the world!	true
-incidents_localised_description_fro_dyn_dis_great_uprising_stage_2_trigger	The Skaven are a secret no more! Hordes are pouring into the Empire, the northern coast of Arabia, and even the hearthlands of Grand Cathay!	true
-incidents_localised_description_fro_dyn_dis_great_uprising_stage_3_trigger	The Great Trans-oceanic Intercontinental Tunnels have been repaired. The Skaven hordes have arrived to Lustria. The Great Lustrian War has begun!	true
-incidents_localised_description_fro_dyn_dis_great_uprising_stage_4_trigger	The Karaz Ankor, the great network of dwarven Karaks spanning across the whole old World, is under siege by all sides by hordes of Skaven!	true
-incidents_localised_description_fro_dyn_dis_great_uprising_stage_5_trigger	Karaz-a-Karak, the ancestral home of the Dawi, is under siege by hordes and hordes of Skaven! May this be the end of the Dawi?	true
-mct_dyn_dis_the_great_uprising_enable	Enable "The Great Ascendancy (legacy)" disaster	true
-mct_dyn_dis_the_great_uprising_enable_tooltip	Enable/Disable the "The Great Ascendancy" disaster.\\n\\nThirteen times thirteen passes of the Chaos moon I will give you. Thirteen times thirteen moons I will wait. Go to your legions and your workshops! Bring me victory. Bring me dominance over this mortal realm! You must be as one, work as one, as single-minded as a swarm pouring from a sewer-pipe -- all rats scurry-flood in same direction. Only then will you inherit the ruins of this world, only then will you rule. Thirteen times thirteen moons! Fail, and all will suffer the fate of the seer.\\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
-diplomacy_strings_string_personality_desc_short_skaven_great_uprising	The Vermintide	true
-diplomacy_strings_string_personality_desc_long_skaven_great_uprising	It comes from the deepest holes of the world, to burn the surface on the name of the Horned Rat.	true
-effect_bundles_localised_description_fro_dyn_dis_great_uprising_global_effects	Morrslieb, The Green Moon, is closer than ever, nobody knows why. But the effects of being so close to that accursed moon are already showing around the world.	true
-effect_bundles_localised_title_fro_dyn_dis_great_uprising_global_effects	The Green Shine of Morrslieb	true
 effects_description_fro_dyn_dis_skaven_corruption_mapwide	Skaven corruption: %+n	true
 effects_description_fro_dyn_dis_storm_of_magic_all_factions	Possibility of Storms of Magic across the whole world.	true
-incidents_localised_title_fro_dyn_dis_great_uprising_finish_before_stage_1	The Skaven menace is no more!	true
-incidents_localised_title_fro_dyn_dis_great_uprising_finish	Morrslieb recedes!	true
-incidents_localised_description_fro_dyn_dis_great_uprising_finish_before_stage_1	Morrslieb seems to have gone back to its normal size. It seems we will never know what caused such phenomenom.	true
-incidents_localised_description_fro_dyn_dis_great_uprising_finish	After all that destruction, Morrslieb has returned to its natural orbit.	true
 mct_dyn_dis_max_simul	Max Concurrent Endgames	true
 mct_dyn_dis_max_simul_tooltip	Maximum amount of concurrent endgame disasters that can be run at the same time.	true
 incidents_localised_title_fro_dyn_dis_raiding_parties_early_end	Bless Manaan!	true
@@ -138,8 +116,6 @@ incidents_localised_title_dyn_dis_chaos_invasion_finish	An Age of Peace?	true
 incidents_localised_description_dyn_dis_chaos_invasion_finish	As the last of the Chaos hordes is scoured from the face of the world, an awful silence descends. More than a silence; an absence of sound which echoes the all-consuming void without. All creation is stilled, breath held in anticipation of the final cataclysm.\\n\\nThen, tentatively, gently, life reasserts itself. Not in a grand way to echo those who sought to end everything, but in the small ways which of themselves are life. Birdsong pierces the silence, hesitant at first, then swelling; a defiant hymn to creation, borne on a soft wind that sifts dust onto the scattered corpses littering the bloody plain of battle. And the spell is broken. Bloodied veterans, survivors, refugees - all draw breath into their aching lungs and weep at the taste and smell of victory, peace, and life.\\n\\nYet what is life if not the constant striving of one against the other? After all, every hedgerow is a bloody battleground, every plant a murderer, every creature red in tooth and claw. Even as the weak raise their eyes to a golden future, the wise are glancing about to see who will make the first move in seizing it for themselves. The shield of civilisation which turned aside the deadly thrust of Chaos is now a heavy and cumbersome thing. Those who are first to cast it aside will be quickest with their blades, and a knife in the back is surest of all. Comrades who stood shoulder-to-shoulder in the shield wall now step apart and take each other’s measure. Alliances begin to unravel and the storm clouds gather once more.	true
 mct_dyn_dis_chaos_invasion_enable	Enable "Chaos Invasion" disaster	true
 mct_dyn_dis_wild_hunt_enable_tooltip	Enable/Disable the "The Wild Hunt" disaster (Vanilla). \\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
-missions_localised_title_dyn_dis_the_great_uprising_the_great_ascendancy_1	The Great Ascendancy	true
-missions_localised_description_dyn_dis_the_great_uprising_the_great_ascendancy_1	The Plan of the Skaven has been revealed. For their Great Ascendancy, the world will be turn to ruins! Would you be able to resist the onslaugh?	true
 effect_bundles_localised_description_fro_dyn_dis_chaos_invasion_global_effects	The Winds of Magic are flowing with an intensity not seen since the last of Ursun Roars.	true
 effect_bundles_localised_description_dyn_dis_chaos_invasion_stage_early_warning	Rumours say a new Champion of Chaos has appeared, deep in the Chaos Wastes.... Prepare for the worst.	true
 effect_bundles_localised_title_dyn_dis_chaos_invasion_stage_early_warning	Rumours of a Champion of Chaos	true
@@ -149,8 +125,6 @@ effect_bundles_localised_title_dyn_dis_black_pyramid_early_warning	The Black Pyr
 effect_bundles_localised_description_dyn_dis_black_pyramid_early_warning	The Black Pyramid has begun to tremble. Prepare for the worst.	true
 effect_bundles_localised_title_dyn_dis_raiding_parties_early_warning	Black and Tattered Sails	true
 effect_bundles_localised_description_dyn_dis_raiding_parties_early_warning	Black sails have been spotted in the horizon. We don't know their target yet, but... Prepare for the worst.	true
-effect_bundles_localised_title_dyn_dis_the_great_uprising_early_warning	Secret Schemes	true
-effect_bundles_localised_description_dyn_dis_the_great_uprising_early_warning	Something is happening on the Under-Empire.... Prepare for the worst.	true
 effect_bundles_localised_title_dyn_dis_vampires_rise_early_warning	Death and Decay	true
 effect_bundles_localised_description_dyn_dis_vampires_rise_early_warning	Death and Decay covers the land like never before.... Prepare for the worst.	true
 effect_bundles_localised_title_dyn_dis_waaagh_early_warning	Da Greatest WAAAGH!	true
@@ -263,7 +237,6 @@ mct_dyn_dis_aztec_invasion_config	Enactment of the Great Plan	true
 mct_dyn_dis_raiding_parties_config	Raiding Parties	true
 mct_dyn_dis_skaven_incursions_config	Skaven Incursions	true
 mct_dyn_dis_chianchi_assault_config	Chi'an Chi Assault	true
-mct_dyn_dis_the_great_uprising_config	The Great Ascendancy (legacy)	true
 mct_dyn_dis_chaos_invasion_config	Chaos Invasion	true
 mct_dyn_dis_last_stand_config	Last Stand	true
 mct_dyn_dis_realm_divided_config	Realm Divided	true
