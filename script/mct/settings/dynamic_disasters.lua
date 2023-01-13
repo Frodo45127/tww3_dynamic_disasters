@@ -181,42 +181,6 @@ chianchi_assault_min_turn_value:slider_set_min_max(10, 400)
 chianchi_assault_min_turn_value:set_default_value(30)   -- This should teach people the Geat Bastion MUST BE DEFENDED.
 chianchi_assault_min_turn_value:slider_set_step_size(10)
 
---[[
-    The Great Ascendancy Config
-]]
-local disasters_individual_config_section_the_great_uprising = mod:add_new_section("the_great_uprising", loc_prefix.."the_great_uprising_config", true)
-local the_great_uprising_enable = mod:add_new_option("the_great_uprising_enable", "checkbox")
-the_great_uprising_enable:set_default_value(false)
-the_great_uprising_enable:set_text(loc_prefix.."the_great_uprising_enable", true)
-the_great_uprising_enable:set_tooltip_text(loc_prefix.."the_great_uprising_enable_tooltip", true)
-
-local d = mod:add_new_option("d3", "dummy")
-d:set_text(" ");
-
-local d = mod:add_new_option("d4", "dummy")
-d:set_text(" ");
-
-local the_great_uprising_difficulty_mod = mod:add_new_option("the_great_uprising_difficulty_mod", "slider")
-the_great_uprising_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)
-the_great_uprising_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_tooltip", true)
-the_great_uprising_difficulty_mod:slider_set_min_max(10, 500)
-the_great_uprising_difficulty_mod:set_default_value(150)
-the_great_uprising_difficulty_mod:slider_set_step_size(13)
-
-local the_great_uprising_min_turn_value = mod:add_new_option("the_great_uprising_min_turn_value", "slider")
-the_great_uprising_min_turn_value:set_text(loc_prefix.."min_turn_value", true)
-the_great_uprising_min_turn_value:set_tooltip_text(loc_prefix.."min_turn_value_tooltip", true)
-the_great_uprising_min_turn_value:slider_set_min_max(13, 390)
-the_great_uprising_min_turn_value:set_default_value(130)
-the_great_uprising_min_turn_value:slider_set_step_size(13)
-
-local the_great_uprising_max_turn_value = mod:add_new_option("the_great_uprising_max_turn_value", "slider")
-the_great_uprising_max_turn_value:set_text(loc_prefix.."max_turn_value", true)
-the_great_uprising_max_turn_value:set_tooltip_text(loc_prefix.."max_turn_value_tooltip", true)
-the_great_uprising_max_turn_value:slider_set_min_max(0, 600)
-the_great_uprising_max_turn_value:set_default_value(0)
-the_great_uprising_max_turn_value:slider_set_step_size(13)
-
 
 --[[
     Chaos Invasion Config
