@@ -1232,6 +1232,22 @@ function dynamic_disasters:remove_confederated_factions_from_list(factions)
     return clean_factions;
 end
 
+-- Function to check if any faction from a list is alive.
+---@param factions table #Faction keys to check for alive factions.
+---@return boolean #If at least one of the factions is alive.
+function dynamic_disasters:is_any_faction_alive_from_list(factions)
+    local is_alive = false;
+    for i = 1, #factions do
+        local faction = cm:get_faction(factions[i]);
+        if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false then
+           is_alive = true;
+           break;
+        end
+    end
+
+    return is_alive;
+end
+
 -- Function to get the "base" region for a faction, being the home region/region with the faction leader, or a default one we pass.
 ---@param faction FACTION_SCRIPT_INTERFACE #Faction object.
 ---@param default_region string #Region to use if we cannot use the capital/leader region.

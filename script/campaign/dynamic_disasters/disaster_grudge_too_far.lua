@@ -155,7 +155,7 @@ function disaster_grudge_too_far:set_status(status)
 
                 -- Update the potential factions removing the confederated ones and check if we still have factions to use.
                 self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
-                if #self.settings.factions == 0 then
+                if #self.settings.factions == 0 or not dynamic_disasters:is_any_faction_alive_from_list(self.settings.factions) then
                     dynamic_disasters:execute_payload(self.finish_early_incident_key, nil, 0, nil);
                     self:trigger_end_disaster()
                 else
@@ -189,37 +189,39 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
 	for _, faction_key in pairs(self.settings.factions) do
         local region_key = potential_dwarfs[faction_key];
 		local invasion_faction = cm:get_faction(faction_key)
+        if not invasion_faction:is_dead() or (invasion_faction:is_dead() and self.settings.revive_dead_factions == true) then
 
-        local army_count = math.floor(self.settings.army_count_per_province * self.settings.difficulty_mod);
-		dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_template, self.settings.unit_count, false, army_count, self.name, nil)
+            local army_count = math.floor(self.settings.army_count_per_province * self.settings.difficulty_mod);
+    		dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_template, self.settings.unit_count, false, army_count, self.name, nil)
 
-        -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
-        dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
+            -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
+            dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
 
-        -- In the case of Karak Izor, also spawn armies in Karak Eight Peaks if it controls it.
-        if faction_key == "wh_main_dwf_karak_izor" then
-            local karak_eight_peaks_region = cm:get_region("wh3_main_combi_region_karak_eight_peaks");
-			if karak_eight_peaks_region:owning_faction():name() == faction_key then
-				dynamic_disasters:create_scenario_force(faction_key, "wh3_main_combi_region_karak_eight_peaks", self.army_template, self.settings.unit_count, false, army_count, self.name, nil)
-                dynamic_disasters:declare_war_for_owners_and_neightbours(invasion_faction, { "wh3_main_combi_region_karak_eight_peaks" }, true, { "wh_main_sc_dwf_dwarfs" })
-                table.insert(self.settings.regions, region_key);
-			end
-		end
+            -- In the case of Karak Izor, also spawn armies in Karak Eight Peaks if it controls it.
+            if faction_key == "wh_main_dwf_karak_izor" then
+                local karak_eight_peaks_region = cm:get_region("wh3_main_combi_region_karak_eight_peaks");
+    			if karak_eight_peaks_region:owning_faction():name() == faction_key then
+    				dynamic_disasters:create_scenario_force(faction_key, "wh3_main_combi_region_karak_eight_peaks", self.army_template, self.settings.unit_count, false, army_count, self.name, nil)
+                    dynamic_disasters:declare_war_for_owners_and_neightbours(invasion_faction, { "wh3_main_combi_region_karak_eight_peaks" }, true, { "wh_main_sc_dwf_dwarfs" })
+                    table.insert(self.settings.regions, region_key);
+    			end
+    		end
 
-		-- Give the invasion region to the invader if it isn't owned by them or a human, or by another dwarf.
-		local region = cm:get_region(region_key)
-		local region_owner = region:owning_faction()
-		if region_owner == false or region_owner:is_null_interface() or (region_owner:name() ~= faction_key and region_owner:is_human() == false and region_owner:subculture() ~= "wh_main_sc_dwf_dwarfs") then
-			cm:transfer_region_to_faction(region_key, faction_key)
-		end
+    		-- Give the invasion region to the invader if it isn't owned by them or a human, or by another dwarf.
+    		local region = cm:get_region(region_key)
+    		local region_owner = region:owning_faction()
+    		if region_owner == false or region_owner:is_null_interface() or (region_owner:name() ~= faction_key and region_owner:is_human() == false and region_owner:subculture() ~= "wh_main_sc_dwf_dwarfs") then
+    			cm:transfer_region_to_faction(region_key, faction_key)
+    		end
 
-        -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
-        cm:instantly_research_all_technologies(faction_key)
-		cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
-		dynamic_disasters:declare_war_to_all(invasion_faction, { "wh_main_sc_dwf_dwarfs" }, true)
+            -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
+            cm:instantly_research_all_technologies(faction_key)
+    		cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
+    		dynamic_disasters:declare_war_to_all(invasion_faction, { "wh_main_sc_dwf_dwarfs" }, true)
 
-		cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)
-        table.insert(self.settings.regions, region_key);
+    		cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)
+            table.insert(self.settings.regions, region_key);
+        end
 	end
 
     -- Force an alliance between all dwarfen holds.
@@ -263,18 +265,8 @@ function disaster_grudge_too_far:check_start_disaster_conditions()
         return false;
     end
 
-    -- Check if any of the attackers if actually alive.
-    local attackers_still_alive = false;
-    for _, faction_key in pairs(self.settings.factions) do
-        local faction = cm:get_faction(faction_key);
-        if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false then
-            attackers_still_alive = true;
-            break;
-        end
-    end
-
     -- Do not start if we don't have any alive attackers.
-    if attackers_still_alive == false then
+    if not dynamic_disasters:is_any_faction_alive_from_list(self.settings.factions) then
         return false;
     end
 
