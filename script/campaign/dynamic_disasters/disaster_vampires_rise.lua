@@ -142,7 +142,7 @@ function disaster_vampires_rise:set_status(status)
 
                 -- Update the potential factions removing the confederated ones and check if we still have factions to use.
                 self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
-                if #self.settings.factions == 0 then
+                if #self.settings.factions == 0 or not dynamic_disasters:is_any_faction_alive_from_list(self.settings.factions) then
                     dynamic_disasters:execute_payload(self.finish_early_incident_key, nil, 0, nil);
                     self:trigger_end_disaster()
                 else
@@ -230,18 +230,8 @@ function disaster_vampires_rise:check_start_disaster_conditions()
         return false;
     end
 
-    -- Check if any of the attackers if actually alive.
-    local attackers_still_alive = false;
-    for _, faction_key in pairs(self.settings.factions) do
-        local faction = cm:get_faction(faction_key);
-        if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false then
-            attackers_still_alive = true;
-            break;
-        end
-    end
-
     -- Do not start if we don't have any alive attackers.
-    if attackers_still_alive == false then
+    if not dynamic_disasters:is_any_faction_alive_from_list(self.settings.factions) then
         return false;
     end
 
