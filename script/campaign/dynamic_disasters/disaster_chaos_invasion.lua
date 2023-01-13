@@ -1735,10 +1735,7 @@ function disaster_chaos_invasion:trigger_stage_1()
         if not faction:is_dead() or (faction:is_dead() and self.settings.revive_dead_factions == true) then
             local army_template = self.stage_1_data.army_templates[faction_key];
             for _, region_key in pairs(self.stage_1_data.regions[faction_key]) do
-                dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
-
-                -- Prepare the regions to reveal. Only shown them in stage 1.
-                dynamic_disasters:prepare_reveal_regions(self.stage_1_data.regions[faction_key]);
+                dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil, self.settings.stage_1_data.factions)
             end
             cm:instantly_research_all_technologies(faction_key);
             dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy);
@@ -1788,7 +1785,7 @@ function disaster_chaos_invasion:trigger_stage_2()
                             script_error("ERROR: Missing target region for spawn at land.")
                         end
                     else
-                        dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
+                        dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil, self.settings.stage_2_data.factions)
                     end
                 end
 
@@ -1796,7 +1793,7 @@ function disaster_chaos_invasion:trigger_stage_2()
                 if faction_key == "wh3_main_kho_exiles_of_khorne" then
                     local region = faction:home_region();
                     if not region == false and region:is_null_interface() == false then
-                        dynamic_disasters:create_scenario_force(faction_key, region:name(), army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil)
+                        dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region:name(), army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil, self.settings.stage_2_data.factions)
                     end
                 end
 
@@ -2411,9 +2408,12 @@ function disaster_chaos_invasion:check_end_disaster_conditions()
 
     -- If we haven't triggered the first stage, just check if Archaon is confederated. If so, we end the disaster here.
     if self.settings.status == STATUS_TRIGGERED then
-
-        -- Update the list of available factions.
         self.settings.stage_1_data.factions = dynamic_disasters:remove_confederated_factions_from_list(self.default_settings.stage_1_data.factions);
+
+        -- If all chaos factions are dead, end the disaster. If not, check depending on the state we're about to trigger.
+        if not dynamic_disasters:is_any_faction_alive_from_list(self.settings.stage_1_data.factions) then
+            return true;
+        end
 
         local faction_key = "wh_main_chs_chaos";
         local faction = cm:get_faction(faction_key);
@@ -2425,19 +2425,9 @@ function disaster_chaos_invasion:check_end_disaster_conditions()
 
         -- Update the list of available factions.
         self.settings.stage_2_data.factions = dynamic_disasters:remove_confederated_factions_from_list(self.default_settings.stage_2_data.factions);
-        local all_attackers_unavailable_stage_2 = true;
 
-        if #self.settings.stage_2_data.factions > 0 then
-            for _, faction_key in pairs(self.settings.stage_2_data.factions) do
-                local faction = cm:get_faction(faction_key);
-                if not faction == false and faction:is_null_interface() == false and faction:was_confederated() == false then
-                    all_attackers_unavailable_stage_2 = false;
-                    break;
-                end
-            end
-        end
-
-        return all_attackers_unavailable_stage_2;
+        -- If all chaos factions are dead, end the disaster. If not, check depending on the state we're about to trigger.
+        return not dynamic_disasters:is_any_faction_alive_from_list(self.settings.stage_2_data.factions)
     end
 
     return false;

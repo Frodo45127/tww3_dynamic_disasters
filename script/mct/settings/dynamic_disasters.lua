@@ -57,7 +57,7 @@ aztec_invasion_enable:set_text(loc_prefix.."aztec_invasion_enable", true)
 aztec_invasion_enable:set_tooltip_text(loc_prefix.."aztec_invasion_enable_tooltip", true)
 
 local aztec_invasion_revive_dead_factions = mod:add_new_option("aztec_invasion_revive_dead_factions", "checkbox")
-aztec_invasion_revive_dead_factions:set_default_value(false)
+aztec_invasion_revive_dead_factions:set_default_value(true)
 aztec_invasion_revive_dead_factions:set_text(loc_prefix.."revive_dead_factions", true)
 aztec_invasion_revive_dead_factions:set_tooltip_text(loc_prefix.."revive_dead_factions_tooltip", true)
 
@@ -192,7 +192,7 @@ chaos_invasion_enable:set_text(loc_prefix.."chaos_invasion_enable", true)
 chaos_invasion_enable:set_tooltip_text(loc_prefix.."chaos_invasion_enable_tooltip", true)
 
 local chaos_invasion_revive_dead_factions = mod:add_new_option("chaos_invasion_revive_dead_factions", "checkbox")
-chaos_invasion_revive_dead_factions:set_default_value(false)
+chaos_invasion_revive_dead_factions:set_default_value(true)
 chaos_invasion_revive_dead_factions:set_text(loc_prefix.."revive_dead_factions", true)
 chaos_invasion_revive_dead_factions:set_tooltip_text(loc_prefix.."revive_dead_factions_tooltip", true)
 
@@ -323,7 +323,7 @@ grudge_too_far_enable:set_text(loc_prefix.."grudge_too_far_enable", true)
 grudge_too_far_enable:set_tooltip_text(loc_prefix.."grudge_too_far_enable_tooltip", true)
 
 local grudge_too_far_revive_dead_factions = mod:add_new_option("grudge_too_far_revive_dead_factions", "checkbox")
-grudge_too_far_revive_dead_factions:set_default_value(false)
+grudge_too_far_revive_dead_factions:set_default_value(true)
 grudge_too_far_revive_dead_factions:set_text(loc_prefix.."revive_dead_factions", true)
 grudge_too_far_revive_dead_factions:set_tooltip_text(loc_prefix.."revive_dead_factions_tooltip", true)
 
@@ -401,7 +401,7 @@ vampires_rise_enable:set_text(loc_prefix.."vampires_rise_enable", true)
 vampires_rise_enable:set_tooltip_text(loc_prefix.."vampires_rise_enable_tooltip", true)
 
 local vampires_rise_revive_dead_factions = mod:add_new_option("vampires_rise_revive_dead_factions", "checkbox")
-vampires_rise_revive_dead_factions:set_default_value(false)
+vampires_rise_revive_dead_factions:set_default_value(true)
 vampires_rise_revive_dead_factions:set_text(loc_prefix.."revive_dead_factions", true)
 vampires_rise_revive_dead_factions:set_tooltip_text(loc_prefix.."revive_dead_factions_tooltip", true)
 
@@ -441,7 +441,7 @@ waaagh_enable:set_text(loc_prefix.."waaagh_enable", true)
 waaagh_enable:set_tooltip_text(loc_prefix.."waaagh_enable_tooltip", true)
 
 local waaagh_revive_dead_factions = mod:add_new_option("waaagh_revive_dead_factions", "checkbox")
-waaagh_revive_dead_factions:set_default_value(false)
+waaagh_revive_dead_factions:set_default_value(true)
 waaagh_revive_dead_factions:set_text(loc_prefix.."revive_dead_factions", true)
 waaagh_revive_dead_factions:set_tooltip_text(loc_prefix.."revive_dead_factions_tooltip", true)
 
@@ -482,7 +482,7 @@ wild_hunt_enable:set_text(loc_prefix.."wild_hunt_enable", true)
 wild_hunt_enable:set_tooltip_text(loc_prefix.."wild_hunt_enable_tooltip", true)
 
 local wild_hunt_revive_dead_factions = mod:add_new_option("wild_hunt_revive_dead_factions", "checkbox")
-wild_hunt_revive_dead_factions:set_default_value(false)
+wild_hunt_revive_dead_factions:set_default_value(true)
 wild_hunt_revive_dead_factions:set_text(loc_prefix.."revive_dead_factions", true)
 wild_hunt_revive_dead_factions:set_tooltip_text(loc_prefix.."revive_dead_factions_tooltip", true)
 

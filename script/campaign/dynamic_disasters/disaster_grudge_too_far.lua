@@ -192,35 +192,36 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
         if not invasion_faction:is_dead() or (invasion_faction:is_dead() and self.settings.revive_dead_factions == true) then
 
             local army_count = math.floor(self.settings.army_count_per_province * self.settings.difficulty_mod);
-    		dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_template, self.settings.unit_count, false, army_count, self.name, nil)
+            if dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_template, self.settings.unit_count, false, army_count, self.name, nil, self.settings.factions) then
 
-            -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
-            dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
+                -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
+                dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
 
-            -- In the case of Karak Izor, also spawn armies in Karak Eight Peaks if it controls it.
-            if faction_key == "wh_main_dwf_karak_izor" then
-                local karak_eight_peaks_region = cm:get_region("wh3_main_combi_region_karak_eight_peaks");
-    			if karak_eight_peaks_region:owning_faction():name() == faction_key then
-    				dynamic_disasters:create_scenario_force(faction_key, "wh3_main_combi_region_karak_eight_peaks", self.army_template, self.settings.unit_count, false, army_count, self.name, nil)
-                    dynamic_disasters:declare_war_for_owners_and_neightbours(invasion_faction, { "wh3_main_combi_region_karak_eight_peaks" }, true, { "wh_main_sc_dwf_dwarfs" })
-                    table.insert(self.settings.regions, region_key);
-    			end
-    		end
+                -- In the case of Karak Izor, also spawn armies in Karak Eight Peaks if it controls it.
+                if faction_key == "wh_main_dwf_karak_izor" then
+                    local karak_eight_peaks_region = cm:get_region("wh3_main_combi_region_karak_eight_peaks");
+        			if karak_eight_peaks_region:owning_faction():name() == faction_key then
+        				dynamic_disasters:create_scenario_force(faction_key, "wh3_main_combi_region_karak_eight_peaks", self.army_template, self.settings.unit_count, false, army_count, self.name, nil)
+                        dynamic_disasters:declare_war_for_owners_and_neightbours(invasion_faction, { "wh3_main_combi_region_karak_eight_peaks" }, true, { "wh_main_sc_dwf_dwarfs" })
+                        table.insert(self.settings.regions, region_key);
+        			end
+        		end
 
-    		-- Give the invasion region to the invader if it isn't owned by them or a human, or by another dwarf.
-    		local region = cm:get_region(region_key)
-    		local region_owner = region:owning_faction()
-    		if region_owner == false or region_owner:is_null_interface() or (region_owner:name() ~= faction_key and region_owner:is_human() == false and region_owner:subculture() ~= "wh_main_sc_dwf_dwarfs") then
-    			cm:transfer_region_to_faction(region_key, faction_key)
-    		end
+        		-- Give the invasion region to the invader if it isn't owned by them or a human, or by another dwarf.
+        		local region = cm:get_region(region_key)
+        		local region_owner = region:owning_faction()
+        		if region_owner == false or region_owner:is_null_interface() or (region_owner:name() ~= faction_key and region_owner:is_human() == false and region_owner:subculture() ~= "wh_main_sc_dwf_dwarfs") then
+        			cm:transfer_region_to_faction(region_key, faction_key)
+        		end
 
-            -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
-            cm:instantly_research_all_technologies(faction_key)
-    		cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
-    		dynamic_disasters:declare_war_to_all(invasion_faction, { "wh_main_sc_dwf_dwarfs" }, true)
+                -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
+                cm:instantly_research_all_technologies(faction_key)
+        		cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
+        		dynamic_disasters:declare_war_to_all(invasion_faction, { "wh_main_sc_dwf_dwarfs" }, true)
 
-    		cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)
-            table.insert(self.settings.regions, region_key);
+        		cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)
+                table.insert(self.settings.regions, region_key);
+            end
         end
 	end
 
@@ -235,9 +236,6 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
     for i = 1, #self.settings.factions do
         table.insert(self.objectives[1].conditions, "faction " .. self.settings.factions[i])
     end
-
-    -- Reveal all regions subject to capture.
-    dynamic_disasters:prepare_reveal_regions(self.settings.regions);
 
     -- Trigger either the victory mission, or just the related incident.
     dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.invasion_incident_key, self.settings.regions[1], self.settings.factions[1], function () self:trigger_end_disaster() end, false)

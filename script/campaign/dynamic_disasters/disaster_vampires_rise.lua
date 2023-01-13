@@ -176,19 +176,18 @@ function disaster_vampires_rise:trigger_the_great_vampiric_war()
     for _, faction_key in pairs(self.settings.factions) do
 		local faction = cm:get_faction(faction_key)
         if not faction:is_dead() or (faction:is_dead() and self.settings.revive_dead_factions == true) then
-
             local region_key = potential_vampires[faction_key];
-
             local army_count = math.floor(self.army_count_per_province * self.settings.difficulty_mod);
-            dynamic_disasters:create_scenario_force(faction_key, region_key, self.army_template, self.unit_count, false, army_count, self.name, nil)
 
-            cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
-            cm:instantly_research_all_technologies(faction_key)
-            dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy);
-            dynamic_disasters:declare_war_to_all(faction, { "wh_main_sc_vmp_vampire_counts" }, true);
+            if dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_template, self.unit_count, false, army_count, self.name, nil, self.settings.factions) then
+                cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
+                cm:instantly_research_all_technologies(faction_key)
+                dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy);
+                dynamic_disasters:declare_war_to_all(faction, { "wh_main_sc_vmp_vampire_counts" }, true);
 
-            cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)
-            table.insert(self.settings.regions, region_key);
+                cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)
+                table.insert(self.settings.regions, region_key);
+            end
         end
 	end
 
@@ -199,9 +198,6 @@ function disaster_vampires_rise:trigger_the_great_vampiric_war()
     for i = 1, #self.settings.factions do
         table.insert(self.objectives[1].conditions, "faction " .. self.settings.factions[i])
     end
-
-    -- Reveal all regions subject to capture.
-    dynamic_disasters:prepare_reveal_regions(self.settings.regions);
 
     -- Trigger either the victory mission, or just the related incident.
     dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.invasion_incident_key, self.settings.regions[1], self.settings.factions[1], function () self:trigger_end_disaster() end, false)
