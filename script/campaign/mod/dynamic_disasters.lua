@@ -1472,17 +1472,21 @@ end
 
 -- Function to add new units to a specific template, so it's used by disasters using that template.
 ---@param race string #Race owning the army template. Check the dyn_dis_army_templates object for valid races.
----@param template string #Template of that race which will receive the unit.
+---@param template string #Template of that race which will receive the unit. Pass "all" to put the unit into every template for the provided race.
 ---@param unit_key string #Key of the unit that will be added to the template. Must be a valid unit key from the DB.
 ---@param weight integer #Weight of that unit for army generation. 8-> will surely appear multiple times, 1-> will rarely appear more than once.
 ---@return boolean|string #True if the unit got added, an error message if there was an error while adding it.
 function dynamic_disasters:add_unit_to_army_template(race, template, unit_key, weight)
     if self.army_templates[race] == nil then
         return "ERROR: Race " .. tostring(race) .. " not found in the army templates.";
-    elseif self.army_templates[race][template] == nil then
-        return "ERROR: Template " .. tostring(template) .. " not found in the army templates for race " .. tostring(race) .. ".";
     elseif common.get_localised_string("land_units_onscreen_name_" .. unit_key) == "" then
         return "ERROR: Unit " .. tostring(unit_key) .. " not found in the db. Maybe is for a mod not yet installed or integration needs updating?";
+    elseif template == "all" then
+        for template_key, _ in pairs(self.army_templates[race]) do
+            self.army_templates[race][template_key][unit_key] = weight;
+        end
+    elseif self.army_templates[race][template] == nil then
+        return "ERROR: Template " .. tostring(template) .. " not found in the army templates for race " .. tostring(race) .. ".";
     else
         self.army_templates[race][template][unit_key] = weight;
     end

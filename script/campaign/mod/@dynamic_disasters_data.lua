@@ -2616,11 +2616,13 @@ dyn_dis_army_templates = {
     norsca = {
         earlygame = {
 
-            --Infantry
+            --Melee Infantry
             wh_main_nor_inf_chaos_marauders_0 = 8,
             wh_main_nor_inf_chaos_marauders_1 = 8,
             wh_dlc08_nor_inf_marauder_spearman_0 = 8,
             wh_dlc08_nor_inf_marauder_berserkers_0 = 2,
+
+            --Ranged Infantry
             wh_dlc08_nor_inf_marauder_hunters_0 = 4,
             wh_dlc08_nor_inf_marauder_hunters_1 = 4,
 
@@ -2636,11 +2638,13 @@ dyn_dis_army_templates = {
         },
         midgame = {
 
-            --Infantry
-            wh_main_nor_inf_chaos_marauders_0 = 8,
+            --Melee Infantry
             wh_main_nor_inf_chaos_marauders_1 = 8,
             wh_dlc08_nor_inf_marauder_spearman_0 = 4,
-            wh_dlc08_nor_inf_marauder_berserkers_0 = 4,
+            wh_dlc08_nor_inf_marauder_berserkers_0 = 6,
+            wh_dlc08_nor_inf_marauder_champions_0 = 2,
+
+            --Ranged Infantry
             wh_dlc08_nor_inf_marauder_hunters_0 = 4,
 
             --Cavalry
@@ -2657,10 +2661,12 @@ dyn_dis_army_templates = {
         },
         lategame = {
 
-            --Infantry
+            --Melee Infantry
             wh_dlc08_nor_inf_marauder_champions_0 = 8,
             wh_dlc08_nor_inf_marauder_champions_1 = 8,
             wh_dlc08_nor_inf_marauder_berserkers_0 = 4,
+
+            --Ranged Infantry
             wh_dlc08_nor_inf_marauder_hunters_0 = 4,
 
             --Cavalry
@@ -3239,7 +3245,7 @@ dyn_dis_army_templates = {
             wh_main_vmp_inf_crypt_ghouls = 6,
             wh_main_vmp_inf_cairn_wraiths = 4,
             wh_main_vmp_inf_grave_guard_0 = 8,
-            wh_main_vmp_inf_grave_guard_1 = 8,
+            wh_main_vmp_inf_grave_guard_1 = 4,
 
             --Cavalry
             wh_main_vmp_cav_black_knights_3 = 2,

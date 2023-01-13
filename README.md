@@ -22,6 +22,10 @@ For spawning armies, this mod uses hardcoded army templates (similar to what the
 
 Currently, the framework has mod integrations with the following mods:
 
+* Dead's Cathay Unit Pack
+* Dead's Kislev Units
+* Dwarf Thunderbarge
+* Expanded Roster - Beastmen
 * Expanded Roster - Dark Elves
 * Expanded Roster - Greenskins - Goblin Pack
 * Expanded Roster - Greenskins - Orc Pack
