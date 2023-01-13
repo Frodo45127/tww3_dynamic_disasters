@@ -407,9 +407,6 @@ function disaster_waaagh:trigger_da_biggest_waaagh()
         table.insert(self.objectives[1].conditions, "faction " .. factions[i])
     end
 
-    -- Reveal all regions subject to capture.
-    dynamic_disasters:prepare_reveal_regions(self.settings.regions);
-
     -- Trigger either the victory mission, or just the related incident.
     dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.invasion_incident_key, self.settings.regions[1], factions[1], function () self:trigger_end_disaster() end, false)
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_grn_greenskins")
