@@ -3287,3 +3287,47 @@ dyn_dis_army_templates = {
         },
     },
 }
+
+-- Greenskin factions focused on orcs.
+dyn_dis_greenskin_orc_factions = {
+    "wh_main_grn_orcs_of_the_bloody_hand",
+    "wh2_dlc15_grn_bonerattlaz",
+    "wh_main_grn_crooked_moon",
+    "wh_main_grn_teef_snatchaz",
+    "wh_main_grn_skullsmasherz",
+    "wh_main_grn_skull_takerz",
+    "wh_main_grn_scabby_eye",
+    "wh_main_grn_red_fangs",
+    "wh_main_grn_red_eye",
+    "wh_main_grn_broken_nose",
+    "wh_main_grn_bloody_spearz",
+    "wh_dlc03_grn_black_pit",
+    "wh3_main_grn_tusked_sunz",
+    "wh3_main_grn_slaves_of_zharr",
+    "wh3_main_grn_moon_howlerz",
+    "wh3_main_grn_dark_land_orcs",
+    "wh3_main_grn_da_cage_breakaz",
+    "wh2_main_grn_blue_vipers",
+    "wh2_dlc16_grn_naggaroth_orcs",
+    "wh2_dlc16_grn_creeping_death",
+    "wh2_dlc15_grn_skull_crag",
+    "wh2_dlc14_grn_red_cloud",
+    "wh2_dlc12_grn_leaf_cutterz_tribe",
+}
+
+-- Greenskin factions focused on goblins.
+dyn_dis_greenskin_goblin_factions = {
+    "wh2_dlc15_grn_broken_axe",
+    "wh2_dlc15_grn_bonerattlaz",
+    "wh_main_grn_crooked_moon",
+    "wh_main_grn_red_eye",
+    "wh_main_grn_necksnappers",
+    "wh_main_grn_broken_nose",
+    "wh_main_grn_bloody_spearz",
+    "wh_main_grn_black_venom",
+    "wh_dlc03_grn_black_pit",
+    "wh3_main_grn_moon_howlerz",
+    "wh2_main_grn_arachnos",
+    "wh2_dlc16_grn_naggaroth_orcs",
+    "wh2_dlc16_grn_creeping_death",
+}

@@ -608,7 +608,7 @@ end
 ---@param duration integer #Optional. Duration for the effect bundle.
 ---@param region_key string #Optional. Region key for the region this incident will allow to zoom in.
 function dynamic_disasters:execute_payload(incident_key, effect_bundle_key, duration, region_key)
-    self:trigger_incident(incident_key, effect_bundle_key, duration, region_key, nil)
+    self:trigger_incident(incident_key, effect_bundle_key, duration, region_key, nil, nil)
 end
 
 -- Function to trigger an incident for a disaster. It can have an associated effect and a payload that lasts the provided duration.
@@ -617,13 +617,17 @@ end
 ---@param duration integer #Optional. Duration for the effect bundle.
 ---@param region_key string #Optional. Region key for the region this incident will allow to zoom in.
 ---@param faction_key string #Optional. Faction key for the faction this incident will allow to zoom in.
-function dynamic_disasters:trigger_incident(incident_key, effect_bundle_key, duration, region_key, faction_key)
+---@param factions_to_receive_it string #Optional. Factions that will receive the incident. If missing, the incident will trigger for all human factions..
+function dynamic_disasters:trigger_incident(incident_key, effect_bundle_key, duration, region_key, faction_key, factions_to_receive_it)
     if duration == nil then
         duration = 0;
     end
 
-    local human_factions = cm:get_human_factions()
-    for i = 1, #human_factions do
+    if factions_to_receive_it == nil then
+        factions_to_receive_it = cm:get_human_factions();
+    end
+
+    for i = 1, #factions_to_receive_it do
         local incident_builder = cm:create_incident_builder(incident_key)
         local payload_builder = cm:create_payload()
 
@@ -642,9 +646,9 @@ function dynamic_disasters:trigger_incident(incident_key, effect_bundle_key, dur
             incident_builder:add_target("default", cm:get_faction(faction_key));
         end
 
-        out("Frodo45127: triggering incident " .. incident_key .. ", " .. tostring(incident_builder) .. ".")
+        out("Frodo45127: triggering incident " .. incident_key .. ", faction: " .. factions_to_receive_it[i] .. ".")
         incident_builder:set_payload(payload_builder)
-        cm:launch_custom_incident_from_builder(incident_builder, cm:get_faction(human_factions[i]))
+        cm:launch_custom_incident_from_builder(incident_builder, cm:get_faction(factions_to_receive_it[i]))
     end
 end
 
@@ -1561,6 +1565,38 @@ function dynamic_disasters:is_chaos_faction(faction_key)
     end
 
     return is_chaos_faction;
+end
+
+-- Function to determine if a faction is currently considered a Greenskin orc-focused faction or not.
+---@param faction_key string #Faction key to check.
+---@return boolean #If the faction is considered a Greenskin orc-focused faction or not. Returns false if the key is invalid or the faction is not considered orc-focused.
+function dynamic_disasters:is_orc_focused_faction(faction_key)
+    local orc = false;
+
+    for _, orc_faction_key in pairs(dyn_dis_greenskin_orc_factions) do
+        if faction_key == orc_faction_key then
+            orc = true;
+            break;
+        end
+    end
+
+    return orc;
+end
+
+-- Function to determine if a faction is currently considered a Greenskin goblin-focused faction or not.
+---@param faction_key string #Faction key to check.
+---@return boolean #If the faction is considered a Greenskin goblin-focused faction or not. Returns false if the key is invalid or the faction is not considered goblin-focused.
+function dynamic_disasters:is_goblin_focused_faction(faction_key)
+    local goblin = false;
+
+    for _, goblin_faction_key in pairs(dyn_dis_greenskin_goblin_factions) do
+        if faction_key == goblin_faction_key then
+            goblin = true;
+            break;
+        end
+    end
+
+    return goblin;
 end
 
 -- Function to toggle the Vortex VFX on and off depending on if a disaster has forced disabling it.

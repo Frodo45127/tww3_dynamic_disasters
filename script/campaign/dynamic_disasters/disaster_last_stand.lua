@@ -158,8 +158,8 @@ last_stand = {
         -- This one is a mix of factions, as it's intended to represent mercenaries.
         wh_main_sc_teb_teb = {
             --teb = "",             -- These are empire, ignore them for now.
-            --empire = "",
-            --bretonnia = "",
+            empire = "",
+            bretonnia = "",
             kislev = "",
             cathay = "",
         },
@@ -327,8 +327,20 @@ function last_stand:rohan_arrives(faction)
 
     --and not faction:name() == "rebels"
     if not faction == false and faction:is_null_interface() == false and not faction:is_dead() == true then
-        local region_count = faction:region_list():num_items();
 
+        -- Calculate what player factions should receive the incidents triggered by this.
+        -- We only one people at war with the faction to receive it.
+        local human_factions_at_war_with_faction = {};
+        local human_factions = cm:get_human_factions();
+        for _, human_faction_key in pairs(human_factions) do
+            local human_faction = cm:get_faction(human_faction_key)
+            if human_faction:at_war_with(faction) then
+                out("Frodo45127: Player " .. human_faction_key .. " is at war with " .. faction:name() .. ".")
+                table.insert(human_factions_at_war_with_faction, human_faction_key)
+            end
+        end
+
+        local region_count = faction:region_list():num_items();
         out("Frodo45127: Region count for faction " .. faction:name() .. ": " .. tostring(region_count) .. ".")
         if region_count == 1 then
 
@@ -348,7 +360,7 @@ function last_stand:rohan_arrives(faction)
                     out("Frodo45127: Faction " .. faction:name() .. " receives debug army as reinforcements.")
 
                     if army_spawned == true then
-                        dynamic_disasters:trigger_incident(self.incident_key_allies, nil, nil, region:name(), faction:name());
+                        dynamic_disasters:trigger_incident(self.incident_key_allies, nil, nil, region:name(), faction:name(), human_factions_at_war_with_faction);
                     end
                 end
 
@@ -370,7 +382,7 @@ function last_stand:rohan_arrives(faction)
                 end
 
                 if army_spawned == true then
-                    dynamic_disasters:trigger_incident(self.incident_key_allies, nil, nil, region:name(), faction:name());
+                    dynamic_disasters:trigger_incident(self.incident_key_allies, nil, nil, region:name(), faction:name(), human_factions_at_war_with_faction);
                 end
 
                 -- Common check: master armies to reinforce a vassal.
@@ -387,7 +399,7 @@ function last_stand:rohan_arrives(faction)
                         out("Frodo45127: Faction " .. faction:name() .. " receives reinforcement army from master " .. master:name() .. ".")
 
                         if army_spawned == true then
-                            dynamic_disasters:trigger_incident(self.incident_key_master, nil, nil, region:name(), faction:name());
+                            dynamic_disasters:trigger_incident(self.incident_key_master, nil, nil, region:name(), faction:name(), human_factions_at_war_with_faction);
                         end
                     end
                 end
@@ -412,13 +424,13 @@ function last_stand:rohan_arrives(faction)
                                 out("Frodo45127: Faction " .. faction:name() .. " gets backstabbed by the reinforcement army from the vassal " .. vassal:name() .. ".")
 
                                 if army_spawned == true then
-                                    dynamic_disasters:trigger_incident(self.incident_key_vassal_betrayal, nil, nil, region:name(), faction:name());
+                                    dynamic_disasters:trigger_incident(self.incident_key_vassal_betrayal, nil, nil, region:name(), faction:name(), human_factions_at_war_with_faction);
                                 end
                             else
                                 army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, army_size, false, 1, self.name, rohan_army_callback);
 
                                 if army_spawned == true then
-                                    dynamic_disasters:trigger_incident(self.incident_key_vassal_normal, nil, nil, region:name(), faction:name());
+                                    dynamic_disasters:trigger_incident(self.incident_key_vassal_normal, nil, nil, region:name(), faction:name(), human_factions_at_war_with_faction);
                                 end
                             end
                         end
@@ -443,7 +455,7 @@ function last_stand:rohan_arrives(faction)
                         out("Frodo45127: Faction " .. faction:name() .. " receives reinforcement army from chaos gods.")
 
                         if army_spawned == true then
-                            dynamic_disasters:trigger_incident(self.incident_key_chaos_gods, nil, nil, region:name(), faction:name());
+                            dynamic_disasters:trigger_incident(self.incident_key_chaos_gods, nil, nil, region:name(), faction:name(), human_factions_at_war_with_faction);
                         end
                     end
                 end
@@ -464,7 +476,7 @@ function last_stand:rohan_arrives(faction)
                         out("Frodo45127: Faction " .. faction:name() .. " receives reinforcement army from mercenaries passing by.")
 
                         if army_spawned == true then
-                            dynamic_disasters:trigger_incident(self.incident_key_mercenaries, nil, nil, region:name(), faction:name());
+                            dynamic_disasters:trigger_incident(self.incident_key_mercenaries, nil, nil, region:name(), faction:name(), human_factions_at_war_with_faction);
                         end
                     end
                 end
@@ -499,13 +511,13 @@ function last_stand:rohan_arrives(faction)
                             out("Frodo45127: Faction " .. faction:name() .. " gets backstabbed by the reinforcement army from the underempire.")
 
                             if army_spawned == true then
-                                dynamic_disasters:trigger_incident(self.incident_key_skaven_betrayed, nil, nil, region:name(), faction:name());
+                                dynamic_disasters:trigger_incident(self.incident_key_skaven_betrayed, nil, nil, region:name(), faction:name(), human_factions_at_war_with_faction);
                             end
                         else
                             army_spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, army_size, false, 1, self.name, rohan_army_callback);
 
                             if army_spawned == true then
-                                dynamic_disasters:trigger_incident(self.incident_key_skaven_normal, nil, nil, region:name(), faction:name());
+                                dynamic_disasters:trigger_incident(self.incident_key_skaven_normal, nil, nil, region:name(), faction:name(), human_factions_at_war_with_faction);
                             end
                         end
                     end
@@ -537,17 +549,38 @@ function last_stand:choose_army_template(faction, subcultures)
         template_key = "lategame";
     end
 
-    -- DEBUG: TO BE REMOVED.
-    template_key = "lategame";
-
-    -- TODO: Take into account faction_specific armies, and populate all subcultures with the three army templates.
-
     -- Select a subculture to get a template from. If we have a list of subcultures, pick one of them at random.
     -- If not, fallback to the faction subculture.
     local subculture = faction:subculture();
     if not table.is_empty(subcultures) then
         subculture = subcultures[cm:random_number(#subcultures, 1)];
     end
+
+    --[[
+        Custom template manipulation starts here. Mare sure all possible templates here exist.
+    ]]
+
+    -- Custom template: early and mid savage ocs use greenskin templates.
+    if subculture == "wh_main_sc_grn_savage_orcs" then
+        if not template_key == "lategame" then
+            subculture = "wh_main_sc_grn_greenskins";
+        end
+    end
+
+    -- Custom template: lategame greenskin use the lategame_orcs or lategame_goblin, depending on the faction.
+    if subculture == "wh_main_sc_grn_greenskins" then
+        if template_key == "lategame" then
+            if dynamic_disasters:is_goblin_focused_faction(faction:name()) then
+                template_key = "lategame_goblins";
+            else
+                template_key = "lategame_orcs";
+            end
+        end
+    end
+
+    --[[
+        Custom template manipulation ends here.
+    ]]
 
     -- Each army template may be compossed of multiple templates we'll mix together.
     local template = table.copy(self.army_templates[subculture]);
