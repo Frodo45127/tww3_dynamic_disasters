@@ -31,6 +31,7 @@ Currently, the framework has mod integrations with the following mods:
 * Expanded Roster - Greenskins - Orc Pack
 * Expanded Roster - Norsca
 * Expanded Roster - Vampire Counts
+* Skaven Doom Walker
 * Yin-Yin, the Sea Dragon & Warriors of the Jade Sea
 
 The same goes for submods manipulating anything (including trigger conditions) of a disaster. You can overwrite any function of a disaster with your own, altering its behavior, using a lua script in the integrations folder. That's guaranteed to only load after Dynamic Disasters has been fully initialized.
