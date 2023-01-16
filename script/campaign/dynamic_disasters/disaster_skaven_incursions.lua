@@ -336,7 +336,7 @@ function disaster_skaven_incursions:expand_under_empire()
     local potential_skaven = {}
     for _, faction_key in pairs(self.settings.factions) do
         local faction = cm:get_faction(faction_key)
-        if endgame:check_faction_is_valid(faction, false) then
+        if dynamic_disasters:check_faction_is_valid(faction, false) then
             table.insert(potential_skaven, faction_key)
         end
     end
