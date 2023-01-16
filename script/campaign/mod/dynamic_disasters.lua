@@ -1257,7 +1257,7 @@ function dynamic_disasters:random_faction_alive_from_list_with_home_region(facti
     for i = 1, #factions_random do
         local faction = cm:get_faction(factions_random[i]);
         if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false and faction:has_home_region() then
-           is_alive = factions[i];
+           is_alive = factions_random[i];
            break;
         end
     end
