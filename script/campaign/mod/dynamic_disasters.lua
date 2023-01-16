@@ -1,10 +1,11 @@
---[[
+--[[-------------------------------------------------------------------------------------------------------------
 	Script by Frodo45127 for the Dynamic Disasters mod.
 
     Large parts of it are extended functions from the endgames.lua files, for compatibility reasons.
-]]
 
--- TODO: When an event triggers at the same time as this (turn 2->3), that event locks the game. Reproducible with bretonnia and empire on turns 2->5. It needs investigation.
+    TODO: When an event triggers at the same time as this (turn 2->3), that event locks the game.
+    Reproducible with bretonnia and empire on turns 2->5. No disaster triggers that early, but it needs investigation.
+]]---------------------------------------------------------------------------------------------------------------
 
 -- Global Dynamic Disasters manager object, to keep track of all disasters.
 dynamic_disasters = {
@@ -48,6 +49,15 @@ local mandatory_settings = {
     mct_settings = {}                   -- Extra settings this disaster may pull from MCT.
 }
 
+-- Functions required for all disasters. If missing, this manager will error out in the disaster and not load it.
+local mandatory_functions = {
+    "set_status",                           -- Function to set the status/stage of a disaster. Used for advancing disasters and for the save/load logic.
+    "trigger",                              -- Function that starts the disaster.
+    "trigger_end_disaster",                 -- Function that ends the disaster.
+    "check_start_disaster_conditions",      -- Function that checks if a disaster can be started.
+    "check_end_disaster_conditions",        -- Function that checks if a disaster should end.
+}
+
 -- Function to setup the save/load from savegame logic for items.
 --
 -- Pretty much a reusable function to load data from save and set it to be saved on the next save.
@@ -61,9 +71,11 @@ local function setup_save(item, save_key)
     cm:set_saved_value(save_key, item.settings);
 end
 
---[[
-    MCT Helpers, so the users can configure the disasters as they want.
-]]--
+--[[-------------------------------------------------------------------------------------------------------------
+    MCT logic (listeners and helpers), so the users can configure the disasters as they want.
+
+    Contains the logic to load settings to/from the MCT automagically. Users should not touch this.
+]]---------------------------------------------------------------------------------------------------------------
 
 -- Listener to initialize the mod from the MCT settings, if available.
 core:add_listener(
@@ -177,9 +189,12 @@ function dynamic_disasters:load_from_mct(mct)
     end
 end
 
---[[
-    End of MCT Helpers.
-]]--
+--[[-------------------------------------------------------------------------------------------------------------
+    Dynamic disasters initialization and triggering code.
+
+    Contains the logic to load, initialize, configure and trigger disasters and integrations.
+    Users should not alter this code.
+]]---------------------------------------------------------------------------------------------------------------
 
 -- Initialise the disasters available, reading the files from the dynamic_disasters folder preparing the manager.
 --
@@ -245,68 +260,79 @@ function dynamic_disasters:initialize()
         out("\tFrodo45127: Trying to load disaster: " .. disaster.name .. ".")
         local disaster_is_valid = true;
 
-        -- Make sure its valid for all human factions.
-        for _, faction_name in pairs(human_factions) do
-            local faction = cm:get_faction(faction_name);
-
-            -- Check that the disaster supports the campaign we're loading into.
-            -- Each disaster must manually specify which campaign map supports, as it will probably need custom tweaks for each map.
-            local allowed_in_campaign = false;
-            for _, campaign_supported in pairs(disaster.campaigns) do
-                if campaign_supported == campaign_key then
-                    allowed_in_campaign = true;
-                    break;
-                end
+        -- Check that the disaster has the required functionality.
+        for _, function_name in pairs(mandatory_functions) do
+            if not disaster[function_name] then
+                disaster_is_valid = false;
+                out("\tFrodo45127: disaster " .. disaster.name .. " fails validation due to missing function: " .. function_name .. ".")
             end
+        end
 
-            if allowed_in_campaign then
+        if disaster_is_valid then
 
-                -- Global disasters may be blacklisted for certain subcultures.
-                if disaster.is_global == true then
-                    local allowed = true;
+            -- Make sure its valid for all human factions.
+            for _, faction_name in pairs(human_factions) do
+                local faction = cm:get_faction(faction_name);
 
-                    for _, subculture in pairs(disaster.denied_for_sc) do
-                        if subculture == faction:subculture() then
-                            allowed = false;
-                            break;
-                        end
+                -- Check that the disaster supports the campaign we're loading into.
+                -- Each disaster must manually specify which campaign map supports, as it will probably need custom tweaks for each map.
+                local allowed_in_campaign = false;
+                for _, campaign_supported in pairs(disaster.campaigns) do
+                    if campaign_supported == campaign_key then
+                        allowed_in_campaign = true;
+                        break;
                     end
+                end
 
-                    if allowed == false then
-                        disaster_is_valid = false;
-                    end
+                if allowed_in_campaign then
 
-                -- If the disaster is not global, check if it's allowed and not denied for your subculture.
-                else
-                    local allowed = false;
+                    -- Global disasters may be blacklisted for certain subcultures.
+                    if disaster.is_global == true then
+                        local allowed = true;
 
-                    for _, subculture in pairs(disaster.allowed_for_sc) do
-                        if subculture == faction:subculture() then
-                            allowed = true;
-                            break;
-                        end
-                    end
-
-                    if allowed == true then
                         for _, subculture in pairs(disaster.denied_for_sc) do
                             if subculture == faction:subculture() then
                                 allowed = false;
                                 break;
                             end
                         end
-                    end
 
-                    if allowed == false then
-                        disaster_is_valid = false;
+                        if allowed == false then
+                            disaster_is_valid = false;
+                        end
+
+                    -- If the disaster is not global, check if it's allowed and not denied for your subculture.
+                    else
+                        local allowed = false;
+
+                        for _, subculture in pairs(disaster.allowed_for_sc) do
+                            if subculture == faction:subculture() then
+                                allowed = true;
+                                break;
+                            end
+                        end
+
+                        if allowed == true then
+                            for _, subculture in pairs(disaster.denied_for_sc) do
+                                if subculture == faction:subculture() then
+                                    allowed = false;
+                                    break;
+                                end
+                            end
+                        end
+
+                        if allowed == false then
+                            disaster_is_valid = false;
+                        end
                     end
+                else
+                    disaster_is_valid = false;
                 end
-            else
-                disaster_is_valid = false;
             end
-        end
 
-        if disaster_is_valid then
-            table.insert(self.disasters, disaster)
+            if disaster_is_valid then
+                table.insert(self.disasters, disaster)
+            end
         end
     end
 
@@ -600,6 +626,12 @@ function dynamic_disasters:finish_disaster(disaster)
     end
 end
 
+--[[-------------------------------------------------------------------------------------------------------------
+    Dynamic disasters incident/dilemma helpers.
+
+    Contains helpers to easily trigger incidents/dilemmas.
+]]---------------------------------------------------------------------------------------------------------------
+
 -- Function to trigger an incident for a phase of a disaster. It can have an associated effect and a payload that lasts the provided duration.
 --
 -- Deprecated. Use trigger_incident instead.
@@ -627,6 +659,7 @@ function dynamic_disasters:trigger_incident(incident_key, effect_bundle_key, dur
         factions_to_receive_it = cm:get_human_factions();
     end
 
+    -- TODO: check if we can use the same builders for all players.
     for i = 1, #factions_to_receive_it do
         local incident_builder = cm:create_incident_builder(incident_key)
         local payload_builder = cm:create_payload()
@@ -717,6 +750,12 @@ function dynamic_disasters:trigger_dilemma(faction, dilemma_key, choices, target
     out("Frodo45127: Triggering dilemma: " .. dilemma_key .. " with " .. #choices .. " choices.")
     cm:launch_custom_dilemma_from_builder(dilemma_builder, faction);
 end
+
+--[[-------------------------------------------------------------------------------------------------------------
+    Dynamic disasters mission helpers.
+
+    Contains helpers to easily trigger missions.
+]]---------------------------------------------------------------------------------------------------------------
 
 -- Function to add a mission for a disaster. Use this if you want to setup an incident with an associated mission for a disaster. Mission applies to all players.
 ---@param objectives table #List of objectives this mission should have.
@@ -845,6 +884,12 @@ function dynamic_disasters:add_objectives_to_mission(mm, objectives, faction_key
     end
 
 end
+
+--[[-------------------------------------------------------------------------------------------------------------
+    Dynamic disasters army helpers.
+
+    Contains helpers to easily spawn armies, with custom templates, locations, and scripted behavior if needed.
+]]---------------------------------------------------------------------------------------------------------------
 
 -- Function to spawn armies at a specific land region on the campaign map. This ensures the spawn position is valid within the region.
 -- If passed an invalid/sea region, this function will fail.
@@ -1001,92 +1046,98 @@ function dynamic_disasters:create_scenario_force_at_coords(faction_key, region_k
     return army_spawn;
 end
 
--- Function to release invasion-controlled armies to the AI.
----@param cqis table #List of army CQI in the invasion.
----@param targets table #List of target regions in the invasion.
----@param max_turn integer #Max turn the invasion should keep control of the armies.
-function dynamic_disasters:release_armies(cqis, targets, max_turn)
-    out("\tFrodo45127: Max turn passed for army releases: " .. tostring(max_turn) .. ".")
+--- Function to spawn one or more armies for the provided faction on the provided region if possible. If not, we try to spawn them at one of the backup faction's region.
+--- Will fail if none of the backup factions has a home region.
+---
+--- NOTE: We consider invalid regions regions that belong to a player.
+---
+--- TODO: Add the faction leader region as backup.
+---@param faction_key string #Faction key of the owner of the armies.
+---@param region_key string #Land region key used for spawning and declaring war.
+---@param army_template table #Table with the faction->template format. The templates MUST exists in the dynamic_disasters object.
+---@param unit_count integer #Amount of non-mandatory units on the army.
+---@param declare_war boolean #If war should be declared between the owner of the armies and the owner of the region where they'll spawn.
+---@param total_armies integer #Amount of armies to spawn. If not provided, it'll spawn 1.
+---@param disaster_name string #Name of the disaster that will use this army.
+---@param success_callback function #Optional. Custom success callback.
+---@param backup_faction_keys table #List of faction keys we can use as backup.
+---@return boolean #If at least one army has been spawned, or all armies failed to spawn due to invalid coordinates.
+function dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, army_template, unit_count, declare_war, total_armies, disaster_name, success_callback, backup_faction_keys)
+    local faction = cm:get_faction(faction_key);
+    local region = cm:get_region(region_key);
+    local owner = region:owning_faction();
+    local spawned = false;
 
-    local indexes_to_delete = {};
-    for i = 1, #cqis do
-        local cqi = cqis[i];
+    -- First try in the intended region, if it's either abandoned or not owned by the player.
+    if not region == false and region:is_abandoned() or (not owner == false and owner:is_null_interface() == false and not owner:is_human()) then
+        spawned = dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, unit_count, declare_war, total_armies, disaster_name, success_callback)
+        dynamic_disasters:prepare_reveal_regions({ region:name() });
 
-        ---@type invasion
-        local invasion = invasion_manager:get_invasion(tostring(cqi))
-        if invasion == nil or invasion == false then
-            out("\tFrodo45127: Army with cqi " .. cqi .. " has not been found on an invasion. Probably released after reaching its target. Queued for deletion from the disaster data.")
-            table.insert(indexes_to_delete, i);
-        elseif invasion:has_target() == false then
-            out("\tFrodo45127: Army with cqi " .. cqi .. " has no target. Releasing.")
-            invasion:release();
-            table.insert(indexes_to_delete, i);
+    -- If that fails, try in their own home region, if they have one.
+    elseif not faction == false and faction:is_null_interface() == false and faction:has_home_region() then
+        region = faction:home_region();
+        spawned = dynamic_disasters:create_scenario_force(faction_key, region:name(), army_template, unit_count, false, total_armies, disaster_name, success_callback)
+        dynamic_disasters:prepare_reveal_regions({ region:name() });
+
+
+    -- If that fails, try with the backup factions. We need to find one alive and with a home region.
+    else
+        local faction_alive_key = self:random_faction_alive_from_list_with_home_region(backup_faction_keys)
+        if not faction_alive_key == false then
+            local faction_alive = cm:get_faction(faction_alive_key);
+            if not faction_alive == false and faction_alive:is_null_interface() == false and faction_alive:has_home_region() then
+                region = faction_alive:home_region();
+                spawned = dynamic_disasters:create_scenario_force(faction_key, region:name(), army_template, unit_count, false, total_armies, disaster_name, success_callback)
+                dynamic_disasters:prepare_reveal_regions({ region:name() });
+            else
+                out("Frodo45127: ERROR: We tried to spawn armies on " .. region_key .. " but the backup faction " .. faction_alive_key .. " was unusable.");
+            end
+
+        -- If everything fails, ... we can't do shit.
+        else
+            out("Frodo45127: ERROR: We tried to spawn armies on " .. region_key .. " but we couldn't use neither that nor the home region of any of the backup factions.");
         end
     end
 
-    -- To delete, reverse the table, because I don't know how reindexing works in lua. Doing it in reverse guarantees us that we're removing bottom to top.
-    reverse = {}
-    for i = #indexes_to_delete, 1, -1 do
-        reverse[#reverse+1] = indexes_to_delete[i]
-    end
-    indexes_to_delete = reverse
+    return spawned;
+end
 
-    -- Be careful with always making sure that both tables are kept inline with each other.
-    for i = 1, #indexes_to_delete do
-        local index = indexes_to_delete[i]
+-- Function to generate random armies based on a combination of templates. Allows combination between templates of different races.
+--
+-- For internal use only. Use the `create_scenario_force` functions if you want to spawn a generated army.
+--
+-- NOTE: If you pass an invalid army template, it'll be reported in the logs.
+---@param army_template table #Table with the faction->template format. The templates MUST exists in the dynamic_disasters object.
+---@param unit_count integer #Amount of non-mandatory units on the army.
+---@param disaster_name string #Name of the disaster that will use this army.
+---@return string #A comma separated string of units to spawn in the army.
+function dynamic_disasters:generate_random_army(army_template, unit_count, disaster_name)
+    local ram = random_army_manager
+    ram:remove_force(disaster_name)
+    ram:new_force(disaster_name)
 
-        table.remove(cqis, index)
-        table.remove(targets, index)
-    end
+    for race, template_type in pairs(army_template) do
+        if self.army_templates[race] == nil then
+            out("Frodo45127: ERROR: You passed the race " .. tostring(race) .. " which doesn't have an army template!")
+        elseif self.army_templates[race][template_type] == nil then
+            out("Frodo45127: ERROR: You passed the template " .. tostring(template_type) .. " which doesn't exists for the race " .. tostring(race) .. "!")
 
-    out("\tFrodo45127: Remaining armies: " .. #cqis .. ".")
-
-    -- If we don't have more factions or we reached the end of the grace period, release the armies.
-    if #cqis == 0 or cm:turn_number() == max_turn then
-        if #cqis > 0 then
-
-            out("\tFrodo45127: Releasing all " .. #cqis .. " remaining armies.")
-            for i = 1, #cqis do
-                local cqi = cqis[i];
-
-                ---@type invasion
-                local invasion = invasion_manager:get_invasion(tostring(cqi))
-                if not invasion == nil and not invasion == false then
-                    invasion:release();
-                end
+        else
+            for unit, weight in pairs(self.army_templates[race][template_type]) do
+                ram:add_unit(disaster_name, unit, weight)
             end
         end
+
     end
+
+    return ram:generate_force(disaster_name, unit_count, false);
 end
 
--- Function add a bunch of regions to the list of revealed regions when disasters are processed.
----@param regions table #List of land region keys.
-function dynamic_disasters:prepare_reveal_regions(regions)
-    for i = 1, #regions do
-        table.insert(self.regions_to_reveal, regions[i]);
-    end
-end
+--[[-------------------------------------------------------------------------------------------------------------
+    Dynamic disasters war declaration helpers.
 
--- Function to reveal a bunch of regions for the players, if they can't see them yet.
---
--- NOTE: instead of this, use `dynamic_disasters:prepare_reveal_regions(regions)`. This gets bugged if multiple disasters trigger it at the same turn.
----@param regions table #List of land region keys.
-function dynamic_disasters:reveal_regions(regions)
-    if not regions == nil then
-        self.regions_to_reveal = table.copy(regions)
-    end
-
-    local human_factions = cm:get_human_factions()
-    for i = 1, #human_factions do
-        for i2 = 1, #self.regions_to_reveal do
-
-            out("Frodo45127: Lifting shroud from region: " .. self.regions_to_reveal[i2] .. ".");
-            cm:make_region_visible_in_shroud(human_factions[i], self.regions_to_reveal[i2]);
-        end
-    end
-
-    self.regions_to_reveal = {}
-end
+    Contains helpers to easily declare wars agains specific factions, regions, or all.
+]]---------------------------------------------------------------------------------------------------------------
 
 -- Function to declare wars between factions.
 ---@param attacker_key string #Attacker's faction key.
@@ -1142,142 +1193,47 @@ function dynamic_disasters:declare_war(attacker_key, defender_key, invite_attack
     end
 end
 
--- This function disables peace treaties with for the faction for all human players. It allows confederations.
----@param hostile_faction_key string #Faction that will get the war declaration.
----@param enable_diplomacy boolean #If we shall allow diplomacy between the players and the hostile faction.
-function dynamic_disasters:no_peace_no_confederation_only_war(hostile_faction_key, enable_diplomacy)
-    local human_factions = cm:get_human_factions()
-    for i = 1, #human_factions do
-        dynamic_disasters:declare_war(hostile_faction_key, cm:get_faction(human_factions[i]):name(), true, true)
-    end
+-- Function to declare war on all region owners of provided regions, and optionally on all neigthbors of the provided faction.
+--
+-- TODO: Make this function allow to ignore allies when declaring war.
+---@param faction FACTION_SCRIPT_INTERFACE #Faction object
+---@param regions table #Region keys to declare war to.
+---@param attack_faction_neightbors boolean #If we should declare war on all the current faction neighbours too.
+---@param subcultures_to_ignore table #List of subcultures to ignore on war declarations.
+function dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions, attack_faction_neightbors, subcultures_to_ignore)
+    if not faction == false and faction:is_null_interface() == false then
 
-    if not enable_diplomacy == true then
-        cm:force_diplomacy("faction:" .. hostile_faction_key, "all", "form confederation", false, false, true, false)
-        cm:force_diplomacy("faction:" .. hostile_faction_key, "all", "peace", false, false, true, false)
-    end
-end
+        -- First, declare war on the explicitly provided region owners and its neightbor regions.
+        for _, region_key in pairs(regions) do
+            local region = cm:get_region(region_key);
+            if not region == false and region:is_null_interface() == false then
 
--- This function disables peace treaties with for the faction for all human players. It allows confederations.
----@param hostile_faction_key string #Faction that will get the war declaration.
----@param enable_diplomacy boolean #If we shall allow diplomacy between the players and the hostile faction.
-function dynamic_disasters:no_peace_only_war(hostile_faction_key, enable_diplomacy)
-    local human_factions = cm:get_human_factions()
-    for i = 1, #human_factions do
-        dynamic_disasters:declare_war(hostile_faction_key, cm:get_faction(human_factions[i]):name(), true, true)
-    end
+                -- Try to declare war on its neighbors first, so we don't depend on the status of the current region.
+                self:declare_war_on_adjacent_region_owners(faction, region, subcultures_to_ignore)
 
-    if not enable_diplomacy == true then
-        cm:force_diplomacy("faction:" .. hostile_faction_key, "all", "peace", false, false, true, false)
-    end
-end
+                -- Then get if the current region is occupied and try to declare war on the owner.
+                local region_owner = region:owning_faction()
+                if not region_owner == false and region_owner:is_null_interface() == false then
 
--- Function to force a peace between a list of factions.
----@param factions table #List of faction keys that must sign peace, if they're at war.
----@param force_alliance boolean #Force a military alliance between both factions.
-function dynamic_disasters:force_peace_between_factions(factions, force_alliance)
-    for _, src_faction_key in pairs(factions) do
-        for _, dest_faction_key in pairs(factions) do
-            if src_faction_key ~= dest_faction_key then
-                cm:force_make_peace(src_faction_key, dest_faction_key);
+                    -- Get if we should ignore the current region.
+                    local ignore_region = self:faction_subculture_in_list(region_owner, subcultures_to_ignore);
 
-                if force_alliance == true then
-                    cm:force_alliance(src_faction_key, dest_faction_key, true);
+                    -- Make sure we don't declare wars on vassals of ignored subcultures.
+                    if ignore_region == false then
+                        local master = region_owner:master();
+                        if not master == false and master:is_null_interface() == false then
+                            ignore_faction = self:faction_subculture_in_list(master, subcultures_to_ignore);
+                        end
+                    end
+
+                    -- If the current region is not to be ignored, declate war on the owner.
+                    if ignore_region == false then
+                        dynamic_disasters:declare_war(faction:name(), region_owner:name(), true, true)
+                    end
                 end
             end
         end
     end
-end
-
--- Function to generate random armies based on a combination of templates. Allows combination between different templates.
---
--- NOTE: If you pass an invalid army template, it'll be reported in the logs.
----@param army_template table #Table with the faction->template format. The templates MUST exists in the dynamic_disasters object.
----@param unit_count integer #Amount of non-mandatory units on the army.
----@param disaster_name string #Name of the disaster that will use this army.
----@return string #A comma separated string of units to spawn in the army.
-function dynamic_disasters:generate_random_army(army_template, unit_count, disaster_name)
-    local ram = random_army_manager
-    ram:remove_force(disaster_name)
-    ram:new_force(disaster_name)
-
-    for race, template_type in pairs(army_template) do
-        if self.army_templates[race] == nil then
-            out("Frodo45127: ERROR: You passed the race " .. tostring(race) .. " which doesn't have an army template!")
-        elseif self.army_templates[race][template_type] == nil then
-            out("Frodo45127: ERROR: You passed the template " .. tostring(template_type) .. " which doesn't exists for the race " .. tostring(race) .. "!")
-
-        else
-            for unit, weight in pairs(self.army_templates[race][template_type]) do
-                ram:add_unit(disaster_name, unit, weight)
-            end
-        end
-
-    end
-
-    return ram:generate_force(disaster_name, unit_count, false);
-end
-
--- Function to remove all confederated factions from the provided list of factions, returning the new faction key list.
----@param factions table #Faction keys to check for confederation.
----@return table #Indexed table with the non-confederated faction keys.
-function dynamic_disasters:remove_confederated_factions_from_list(factions)
-    local clean_factions = {};
-    for i = 1, #factions do
-        local faction = cm:get_faction(factions[i]);
-        if not faction == false and faction:is_null_interface() == false and faction:was_confederated() == false then
-           table.insert(clean_factions, factions[i]);
-        end
-    end
-
-    return clean_factions;
-end
-
--- Function to check if any faction from a list is alive.
----@param factions table #Faction keys to check for alive factions.
----@return boolean #If at least one of the factions is alive.
-function dynamic_disasters:is_any_faction_alive_from_list(factions)
-    local is_alive = false;
-    for i = 1, #factions do
-        local faction = cm:get_faction(factions[i]);
-        if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false then
-           is_alive = true;
-           break;
-        end
-    end
-
-    return is_alive;
-end
-
--- Function to check if any faction from a list is alive.
----@param factions table #Faction keys to check for alive factions.
----@return boolean|string #If at least one of the factions is alive.
-function dynamic_disasters:random_faction_alive_from_list_with_home_region(factions)
-    local factions_random = cm:random_sort_copy(factions);
-    local is_alive = false;
-    for i = 1, #factions_random do
-        local faction = cm:get_faction(factions_random[i]);
-        if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false and faction:has_home_region() then
-           is_alive = factions_random[i];
-           break;
-        end
-    end
-
-    return is_alive;
-end
-
--- Function to get the "base" region for a faction, being the home region/region with the faction leader, or a default one we pass.
----@param faction FACTION_SCRIPT_INTERFACE #Faction object.
----@param default_region string #Region to use if we cannot use the capital/leader region.
-function dynamic_disasters:base_region_for_faction(faction, default_region)
-    if not faction == nil and faction:is_null_interface() == false and faction:is_dead() == false then
-        if faction:has_home_region() then
-            return faction:home_region():name()
-        elseif faction:faction_leader():has_region() then
-            return faction:faction_leader():region():name()
-        end
-    end
-
-    return default_region;
 end
 
 -- Function to declare war on all region owners of provided regions, and optionally on all neigthbors of the provided faction.
@@ -1372,23 +1328,6 @@ function dynamic_disasters:declare_war_on_adjacent_region_owners(faction, base_r
     end
 end
 
--- Function to check if a faction's subculture is part of the provided list.
----@param faction FACTION_SCRIPT_INTERFACE #Faction object
----@param subcultures table #List of subcultures to check against.
-function dynamic_disasters:faction_subculture_in_list(faction, subcultures)
-    local is_subculture = false;
-    local faction_subculture = faction:subculture();
-
-    for j = 1, #subcultures do
-        if subcultures[j] == faction_subculture then
-            is_subculture = true;
-            break;
-        end
-    end
-
-    return is_subculture;
-end
-
 -- Function to declare war on all factions, except the ones of the provided subculture.
 --
 -- TODO: Make this function allow to ignore allies when declaring war.
@@ -1445,6 +1384,249 @@ function dynamic_disasters:declare_war_to_all(faction, subcultures_to_ignore, de
     end
 end
 
+--[[-------------------------------------------------------------------------------------------------------------
+    Dynamic disasters ai diplomacy helpers.
+
+    Contains helpers related to changing diplomacy status of factions.
+]]---------------------------------------------------------------------------------------------------------------
+
+-- This function declares war between the hostile faction and all players, and disables peace treaties
+-- with for the faction for all human players. It doesn't allow confederations.
+--
+---@param hostile_faction_key string #Faction that will get the war declaration.
+---@param enable_diplomacy boolean #If we shall allow diplomacy between the players and the hostile faction.
+function dynamic_disasters:no_peace_no_confederation_only_war(hostile_faction_key, enable_diplomacy)
+    local human_factions = cm:get_human_factions()
+    for i = 1, #human_factions do
+        dynamic_disasters:declare_war(hostile_faction_key, cm:get_faction(human_factions[i]):name(), true, true)
+    end
+
+    if not enable_diplomacy == true then
+        cm:force_diplomacy("faction:" .. hostile_faction_key, "all", "form confederation", false, false, true, false)
+        cm:force_diplomacy("faction:" .. hostile_faction_key, "all", "peace", false, false, true, false)
+    end
+end
+
+-- This function declares war between the hostile faction and all players, and disables peace treaties
+-- with for the faction for all human players. It allows confederations.
+--
+---@param hostile_faction_key string #Faction that will get the war declaration.
+---@param enable_diplomacy boolean #If we shall allow diplomacy between the players and the hostile faction.
+function dynamic_disasters:no_peace_only_war(hostile_faction_key, enable_diplomacy)
+    local human_factions = cm:get_human_factions()
+    for i = 1, #human_factions do
+        dynamic_disasters:declare_war(hostile_faction_key, cm:get_faction(human_factions[i]):name(), true, true)
+    end
+
+    if not enable_diplomacy == true then
+        cm:force_diplomacy("faction:" .. hostile_faction_key, "all", "peace", false, false, true, false)
+    end
+end
+
+-- Function to force a peace between a list of factions. Can also force alliances, optionally.
+---@param factions table #List of faction keys that must sign peace, if they're at war.
+---@param force_alliance boolean #Force a military alliance between both factions.
+function dynamic_disasters:force_peace_between_factions(factions, force_alliance)
+    for _, src_faction_key in pairs(factions) do
+        for _, dest_faction_key in pairs(factions) do
+            if src_faction_key ~= dest_faction_key then
+                cm:force_make_peace(src_faction_key, dest_faction_key);
+
+                if force_alliance == true then
+                    cm:force_alliance(src_faction_key, dest_faction_key, true);
+                end
+            end
+        end
+    end
+end
+
+--[[-------------------------------------------------------------------------------------------------------------
+    Dynamic disasters scripted armies helpers.
+
+    Contains helpers related to scripted armies and their behavior.
+]]---------------------------------------------------------------------------------------------------------------
+
+-- Function to release invasion-controlled armies to the AI.
+---@param cqis table #List of army CQI in the invasion.
+---@param targets table #List of target regions in the invasion.
+---@param max_turn integer #Max turn the invasion should keep control of the armies.
+function dynamic_disasters:release_armies(cqis, targets, max_turn)
+    out("\tFrodo45127: Max turn passed for army releases: " .. tostring(max_turn) .. ".")
+
+    local indexes_to_delete = {};
+    for i = 1, #cqis do
+        local cqi = cqis[i];
+
+        ---@type invasion
+        local invasion = invasion_manager:get_invasion(tostring(cqi))
+        if invasion == nil or invasion == false then
+            out("\tFrodo45127: Army with cqi " .. cqi .. " has not been found on an invasion. Probably released after reaching its target. Queued for deletion from the disaster data.")
+            table.insert(indexes_to_delete, i);
+        elseif invasion:has_target() == false then
+            out("\tFrodo45127: Army with cqi " .. cqi .. " has no target. Releasing.")
+            invasion:release();
+            table.insert(indexes_to_delete, i);
+        end
+    end
+
+    -- To delete, reverse the table, because I don't know how reindexing works in lua. Doing it in reverse guarantees us that we're removing bottom to top.
+    reverse = {}
+    for i = #indexes_to_delete, 1, -1 do
+        reverse[#reverse+1] = indexes_to_delete[i]
+    end
+    indexes_to_delete = reverse
+
+    -- Be careful with always making sure that both tables are kept inline with each other.
+    for i = 1, #indexes_to_delete do
+        local index = indexes_to_delete[i]
+
+        table.remove(cqis, index)
+        table.remove(targets, index)
+    end
+
+    out("\tFrodo45127: Remaining armies: " .. #cqis .. ".")
+
+    -- If we don't have more factions or we reached the end of the grace period, release the armies.
+    if #cqis == 0 or cm:turn_number() == max_turn then
+        if #cqis > 0 then
+
+            out("\tFrodo45127: Releasing all " .. #cqis .. " remaining armies.")
+            for i = 1, #cqis do
+                local cqi = cqis[i];
+
+                ---@type invasion
+                local invasion = invasion_manager:get_invasion(tostring(cqi))
+                if not invasion == nil and not invasion == false then
+                    invasion:release();
+                end
+            end
+        end
+    end
+end
+
+--[[-------------------------------------------------------------------------------------------------------------
+    Dynamic disasters shroud helpers.
+
+    Contains helpers related to manipulating the campaign shroud.
+]]---------------------------------------------------------------------------------------------------------------
+
+-- Function add a bunch of regions to the list of revealed regions when disasters are processed.
+---@param regions table #List of land region keys.
+function dynamic_disasters:prepare_reveal_regions(regions)
+    for i = 1, #regions do
+        table.insert(self.regions_to_reveal, regions[i]);
+    end
+end
+
+-- Function to reveal a bunch of regions for the players, if they can't see them yet.
+--
+-- NOTE: instead of this, use `dynamic_disasters:prepare_reveal_regions(regions)`. This gets bugged if multiple disasters trigger it at the same turn.
+---@param regions table #List of land region keys.
+function dynamic_disasters:reveal_regions(regions)
+    if not regions == nil then
+        self.regions_to_reveal = table.copy(regions)
+    end
+
+    local human_factions = cm:get_human_factions()
+    for i = 1, #human_factions do
+        for i2 = 1, #self.regions_to_reveal do
+
+            out("Frodo45127: Lifting shroud from region: " .. self.regions_to_reveal[i2] .. ".");
+            cm:make_region_visible_in_shroud(human_factions[i], self.regions_to_reveal[i2]);
+        end
+    end
+
+    self.regions_to_reveal = {}
+end
+
+--[[-------------------------------------------------------------------------------------------------------------
+    Dynamic disasters faction helpers.
+
+    Contains helpers related to checking data about factions.
+]]---------------------------------------------------------------------------------------------------------------
+
+-- Returns if the faction can be used or not. Invalid are:
+-- - Broken/Nil objects.
+-- - Human factions.
+-- - Confederated factions.
+-- - Rebels.
+-- - Dead factions, if we set can_be_dead to false.
+---@param faction FACTION_SCRIPT_INTERFACE #Faction object to check.
+---@param can_be_dead boolean #If a dead faction is valid (will be revived on army spawns).
+function dynamic_disasters:check_faction_is_valid(faction, can_be_dead)
+    return faction ~= nil and
+        faction:is_null_interface() == false and
+        faction:is_human() == false and
+        faction:was_confederated() == false and
+        faction:name() ~= "rebels" and
+        (can_be_dead == true or faction:is_dead() == false)
+end
+
+-- Function to remove all confederated factions from the provided list of factions, returning the new faction key list.
+--
+-- It's important to use this if your disaster spawns dead factions, as confederated faction's AI is known to be broken.
+---@param factions table #Faction keys to check for confederation.
+---@return table #Indexed table with the non-confederated faction keys.
+function dynamic_disasters:remove_confederated_factions_from_list(factions)
+    local clean_factions = {};
+    for i = 1, #factions do
+        local faction = cm:get_faction(factions[i]);
+        if not faction == false and faction:is_null_interface() == false and faction:was_confederated() == false then
+           table.insert(clean_factions, factions[i]);
+        end
+    end
+
+    return clean_factions;
+end
+
+-- Function to check if any faction from a list is alive.
+---@param factions table #Faction keys to check for alive factions.
+---@return boolean #If at least one of the factions is alive.
+function dynamic_disasters:is_any_faction_alive_from_list(factions)
+    local is_alive = false;
+    for i = 1, #factions do
+        local faction = cm:get_faction(factions[i]);
+        if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false then
+           is_alive = true;
+           break;
+        end
+    end
+
+    return is_alive;
+end
+
+-- Function to get a random faction's key from a list that is alive and has a home region.
+---@param factions table #Faction keys to check for alive factions.
+---@return boolean|string #If at least one of the factions is alive.
+function dynamic_disasters:random_faction_alive_from_list_with_home_region(factions)
+    local factions_random = cm:random_sort_copy(factions);
+    local is_alive = false;
+    for i = 1, #factions_random do
+        local faction = cm:get_faction(factions_random[i]);
+        if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false and faction:has_home_region() then
+           is_alive = factions_random[i];
+           break;
+        end
+    end
+
+    return is_alive;
+end
+
+-- Function to get the "base" region for a faction, being the home region/region with the faction leader, or a default one we pass.
+---@param faction FACTION_SCRIPT_INTERFACE #Faction object.
+---@param default_region string #Region to use if we cannot use the capital/leader region.
+function dynamic_disasters:base_region_for_faction(faction, default_region)
+    if not faction == nil and faction:is_null_interface() == false and faction:is_dead() == false then
+        if faction:has_home_region() then
+            return faction:home_region():name()
+        elseif faction:faction_leader():has_region() then
+            return faction:faction_leader():region():name()
+        end
+    end
+
+    return default_region;
+end
+
 -- This function kills a faction without the killin being reported in the events.
 ---@param faction_key string #Key of the faction to kill.
 function dynamic_disasters:kill_faction_silently(faction_key)
@@ -1479,53 +1661,6 @@ function dynamic_disasters:kill_faction_silently(faction_key)
         );
     end;
 end;
-
--- Returns if the faction can be used or not. Invalid are broken or nil objects, humans, confederated factions, rebels, and dead factions if we set can_be_dead to false.
----@param faction FACTION_SCRIPT_INTERFACE #Faction object to check.
----@param can_be_dead boolean #If a dead faction is valid (will be revived on army spawns).
-function dynamic_disasters:check_faction_is_valid(faction, can_be_dead)
-    return faction ~= nil and faction:is_null_interface() == false and faction:is_human() == false and faction:was_confederated() == false and faction:name() ~= "rebels" and (can_be_dead == true or faction:is_dead() == false)
-end
-
--- Function to add a new army template to a specific race, so it can be used in disasters.
---
--- NOTE: If you pass an existing army template, it'll wipe out its contents.
----@param race string #Race owning the army template. Check the dyn_dis_army_templates object for valid races.
----@param template string #Key of the template we want to add. Must be unique and not exist already.
----@return boolean|string #True if the unit got added, an error message if there was an error while adding it.
-function dynamic_disasters:add_army_template_to_race(race, template)
-    if self.army_templates[race] == nil then
-        return "ERROR: Race " .. tostring(race) .. " not found in the army templates.";
-    else
-        self.army_templates[race][template] = {};
-    end
-
-    return true;
-end
-
--- Function to add new units to a specific template, so it's used by disasters using that template.
----@param race string #Race owning the army template. Check the dyn_dis_army_templates object for valid races.
----@param template string #Template of that race which will receive the unit. Pass "all" to put the unit into every template for the provided race.
----@param unit_key string #Key of the unit that will be added to the template. Must be a valid unit key from the DB.
----@param weight integer #Weight of that unit for army generation. 8-> will surely appear multiple times, 1-> will rarely appear more than once.
----@return boolean|string #True if the unit got added, an error message if there was an error while adding it.
-function dynamic_disasters:add_unit_to_army_template(race, template, unit_key, weight)
-    if self.army_templates[race] == nil then
-        return "ERROR: Race " .. tostring(race) .. " not found in the army templates.";
-    elseif common.get_localised_string("land_units_onscreen_name_" .. unit_key) == "" then
-        return "ERROR: Unit " .. tostring(unit_key) .. " not found in the db. Maybe is for a mod not yet installed or integration needs updating?";
-    elseif template == "all" then
-        for template_key, _ in pairs(self.army_templates[race]) do
-            self.army_templates[race][template_key][unit_key] = weight;
-        end
-    elseif self.army_templates[race][template] == nil then
-        return "ERROR: Template " .. tostring(template) .. " not found in the army templates for race " .. tostring(race) .. ".";
-    else
-        self.army_templates[race][template][unit_key] = weight;
-    end
-
-    return true;
-end
 
 -- Function to determine if a faction is currently considered an order faction or not.
 ---@param faction_key string #Faction key to check.
@@ -1636,61 +1771,74 @@ function dynamic_disasters:is_goblin_focused_faction(faction_key)
     return goblin;
 end
 
---- Function to spawn one or more armies for the provided faction on the provided region if possible. If not, we try to spawn them at one of the backup faction's region.
---- Will fail if none of the backup factions has a home region.
----
---- NOTE: We consider invalid regions regions that belong to a player.
----
---- TODO: Add the faction leader region as backup.
----@param faction_key string #Faction key of the owner of the armies.
----@param region_key string #Land region key used for spawning and declaring war.
----@param army_template table #Table with the faction->template format. The templates MUST exists in the dynamic_disasters object.
----@param unit_count integer #Amount of non-mandatory units on the army.
----@param declare_war boolean #If war should be declared between the owner of the armies and the owner of the region where they'll spawn.
----@param total_armies integer #Amount of armies to spawn. If not provided, it'll spawn 1.
----@param disaster_name string #Name of the disaster that will use this army.
----@param success_callback function #Optional. Custom success callback.
----@param backup_faction_keys table #List of faction keys we can use as backup.
----@return boolean #If at least one army has been spawned, or all armies failed to spawn due to invalid coordinates.
-function dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, army_template, unit_count, declare_war, total_armies, disaster_name, success_callback, backup_faction_keys)
-    local faction = cm:get_faction(faction_key);
-    local region = cm:get_region(region_key);
-    local owner = region:owning_faction();
-    local spawned = false;
+-- Function to check if a faction's subculture is part of the provided list.
+---@param faction FACTION_SCRIPT_INTERFACE #Faction object
+---@param subcultures table #List of subcultures to check against.
+function dynamic_disasters:faction_subculture_in_list(faction, subcultures)
+    local is_subculture = false;
+    local faction_subculture = faction:subculture();
 
-    -- First try in the intended region, if it's either abandoned or not owned by the player.
-    if not region == false and region:is_abandoned() or (not owner == false and owner:is_null_interface() == false and not owner:is_human()) then
-        spawned = dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, unit_count, declare_war, total_armies, disaster_name, success_callback)
-        dynamic_disasters:prepare_reveal_regions({ region:name() });
-
-    -- If that fails, try in their own home region, if they have one.
-    elseif not faction == false and faction:is_null_interface() == false and faction:has_home_region() then
-        region = faction:home_region();
-        spawned = dynamic_disasters:create_scenario_force(faction_key, region:name(), army_template, unit_count, false, total_armies, disaster_name, success_callback)
-        dynamic_disasters:prepare_reveal_regions({ region:name() });
-
-
-    -- If that fails, try with the backup factions. We need to find one alive and with a home region.
-    else
-        local faction_alive_key = self:random_faction_alive_from_list_with_home_region(backup_faction_keys)
-        if not faction_alive_key == false then
-            local faction_alive = cm:get_faction(faction_alive_key);
-            if not faction_alive == false and faction_alive:is_null_interface() == false and faction_alive:has_home_region() then
-                region = faction_alive:home_region();
-                spawned = dynamic_disasters:create_scenario_force(faction_key, region:name(), army_template, unit_count, false, total_armies, disaster_name, success_callback)
-                dynamic_disasters:prepare_reveal_regions({ region:name() });
-            else
-                out("Frodo45127: ERROR: We tried to spawn armies on " .. region_key .. " but the backup faction " .. faction_alive_key .. " was unusable.");
-            end
-
-        -- If everything fails, ... we can't do shit.
-        else
-            out("Frodo45127: ERROR: We tried to spawn armies on " .. region_key .. " but we couldn't use neither that nor the home region of any of the backup factions.");
+    for j = 1, #subcultures do
+        if subcultures[j] == faction_subculture then
+            is_subculture = true;
+            break;
         end
     end
 
-    return spawned;
+    return is_subculture;
 end
+
+--[[-------------------------------------------------------------------------------------------------------------
+    Dynamic disasters integration helpers.
+
+    Contains helpers available for integrations/submods. If you want X mod's units in spawned armies, use these.
+]]---------------------------------------------------------------------------------------------------------------
+
+-- Function to add a new army template to a specific race, so it can be used in disasters.
+--
+-- NOTE: If you pass an existing army template, it'll wipe out its contents.
+---@param race string #Race owning the army template. Check the dyn_dis_army_templates object for valid races.
+---@param template string #Key of the template we want to add. Must be unique and not exist already.
+---@return boolean|string #True if the unit got added, an error message if there was an error while adding it.
+function dynamic_disasters:add_army_template_to_race(race, template)
+    if self.army_templates[race] == nil then
+        return "ERROR: Race " .. tostring(race) .. " not found in the army templates.";
+    else
+        self.army_templates[race][template] = {};
+    end
+
+    return true;
+end
+
+-- Function to add new units to a specific template, so it's used by disasters using that template.
+---@param race string #Race owning the army template. Check the dyn_dis_army_templates object for valid races.
+---@param template string #Template of that race which will receive the unit. Pass "all" to put the unit into every template for the provided race.
+---@param unit_key string #Key of the unit that will be added to the template. Must be a valid unit key from the DB.
+---@param weight integer #Weight of that unit for army generation. 8-> will surely appear multiple times, 1-> will rarely appear more than once.
+---@return boolean|string #True if the unit got added, an error message if there was an error while adding it.
+function dynamic_disasters:add_unit_to_army_template(race, template, unit_key, weight)
+    if self.army_templates[race] == nil then
+        return "ERROR: Race " .. tostring(race) .. " not found in the army templates.";
+    elseif common.get_localised_string("land_units_onscreen_name_" .. unit_key) == "" then
+        return "ERROR: Unit " .. tostring(unit_key) .. " not found in the db. Maybe is for a mod not yet installed or integration needs updating?";
+    elseif template == "all" then
+        for template_key, _ in pairs(self.army_templates[race]) do
+            self.army_templates[race][template_key][unit_key] = weight;
+        end
+    elseif self.army_templates[race][template] == nil then
+        return "ERROR: Template " .. tostring(template) .. " not found in the army templates for race " .. tostring(race) .. ".";
+    else
+        self.army_templates[race][template][unit_key] = weight;
+    end
+
+    return true;
+end
+
+--[[-------------------------------------------------------------------------------------------------------------
+    Dynamic disasters misc helpers.
+
+    Contains helpers that do not fit in any other category.
+]]---------------------------------------------------------------------------------------------------------------
 
 -- Function to toggle the Vortex VFX on and off depending on if a disaster has forced disabling it.
 function dynamic_disasters:toggle_vortex()
