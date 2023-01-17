@@ -16,7 +16,7 @@
             - All major and minor non-confederated Greenskin factions declare war on every non Greenskin faction.
             - All major and minor non-confederated Greenskin factions gets disabled diplomacy and full-retard AI.
             - If no other disaster has triggered a Victory Condition yet, this will trigger one.
-            - Every ceil(10 / (difficulty_mod + 1)) turns spawn an extra army in each magical forest controlled by Greenskins.
+            - Every ceil(10 / (difficulty_mod + 1)) turns spawn an extra army in each Greenskins capital.
         - Finish:
             - All Greenskin factions destroyed.
 
@@ -59,6 +59,8 @@ disaster_waaagh = {
         finished = false,                   -- If the disaster has been finished.
         repeteable = false,                 -- If the disaster can be repeated.
         is_endgame = true,                  -- If the disaster is an endgame.
+        revive_dead_factions = true,        -- If true, dead factions will be revived if needed.
+        enable_diplomacy = false,           -- If true, you will still be able to use diplomacy with disaster-related factions. Broken beyond believe, can make the game a cakewalk.
         min_turn = 100,                     -- Minimum turn required for the disaster to trigger.
         max_turn = 0,                       -- If the disaster hasn't trigger at this turn, we try to trigger it. Set to 0 to not check for max turn. Used only for some disasters.
         status = 0,                         -- Current status of the disaster. Used to re-initialize the disaster correctly on reload.
@@ -66,6 +68,7 @@ disaster_waaagh = {
         last_finished_turn = 0,             -- Turn when the disaster was last finished.
         wait_turns_between_repeats = 0,     -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
         difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
+        mct_settings = {},                  -- Extra settings this disaster may pull from MCT.
 
         army_count_per_province = 4,
         unit_count = 19,

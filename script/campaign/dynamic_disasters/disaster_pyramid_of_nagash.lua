@@ -16,7 +16,7 @@
         	- If a Vampire or a Tomb Kings faction holds the Black Pyramid:
         		- Spawn armies of said faction around it.
         		- Declare war on every faction not of the same subculture as the owner of the Black Pyramid.
-            - Keep respawning armies every (10 / difficulty_multiplier) turns as long as they hold the Black Pyramid.
+            - Every ceil(10 / (difficulty_mod + 1)) turns spawn an extra army in the Black Pyramid, if it's controlled by the disaster faction.
         - Finish:
             - Capture the Black Pyramid or destroy its owner.
 
@@ -80,11 +80,8 @@ disaster_pyramid_of_nagash = {
         difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
 
         --Disaster-specific data.
-		army_template = {},					-- To be filled once we pick a faction for the disaster.
-		army_count_per_province = 8,
-		unit_count = 19,
         early_warning_delay = 10,
-
+		army_template = {},					-- To be filled once we pick a faction for the disaster.
 		faction_data = nil, 				-- To be filled once we pick a faction for the disaster.
 	},
 
@@ -115,11 +112,20 @@ disaster_pyramid_of_nagash = {
 		}
 	},
 
+	unit_count = 19,
+	army_count_per_province = 8,
+
 	region_key = "wh3_main_combi_region_black_pyramid_of_nagash",
     early_warning_incident_key = "wh3_main_ie_incident_endgame_black_pyramid_early_warning",
 	early_warning_effects_key = "dyn_dis_black_pyramid_early_warning",
 	endgame_mission_name = "guess_whos_back",
 }
+
+--[[-------------------------------------------------------------------------------------------------------------
+
+    Mandatory functions.
+
+]]---------------------------------------------------------------------------------------------------------------
 
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
 function disaster_pyramid_of_nagash:set_status(status)
@@ -128,6 +134,7 @@ function disaster_pyramid_of_nagash:set_status(status)
     if self.settings.status == STATUS_TRIGGERED then
 
 	    -- Listener for the disaster.
+        core:remove_listener("PyramidOfNagashStart")
 	    core:add_listener(
 	        "PyramidOfNagashStart",
 	        "WorldStartRound",
@@ -135,28 +142,8 @@ function disaster_pyramid_of_nagash:set_status(status)
 	            return cm:turn_number() == self.settings.last_triggered_turn + self.settings.early_warning_delay
 	        end,
 	        function()
-
-                -- Check if the sentinels are available to use.
-    			local sentinels_available = true;
-    			local region = cm:get_region(self.region_key)
-				local region_owner = region:owning_faction();
-				if region:is_abandoned() or
-					region_owner:is_human() or
-					(
-						region_owner:is_human() == false and
-						region_owner:subculture() ~= "wh2_dlc09_sc_tmb_tomb_kings" and
-						region_owner:subculture() ~= "wh_main_sc_vmp_vampire_counts"
-					) then
-
-					-- The disaster cannot begin if we need the sentinels to spawn and they've been confederated.
-					local faction = cm:get_faction("wh2_dlc09_tmb_the_sentinels");
-				    if faction == false or faction:is_null_interface() == true or faction:was_confederated() == true then
-				    	sentinels_available = false;
-				    end
-				end
-
-                if sentinels_available == false then
-                    dynamic_disasters:trigger_incident(self.settings.faction_data.finish_early_incident_key, nil, 0, nil);
+                if self:check_finish() then
+                    dynamic_disasters:trigger_incident(self.settings.faction_data.finish_early_incident_key, nil, 0, nil, nil, nil);
                     self:finish()
                 else
                     self:trigger_resurection_of_nagash();
@@ -170,17 +157,13 @@ function disaster_pyramid_of_nagash:set_status(status)
 
     if self.settings.status == STATUS_STARTED then
 
-    	-- Fix for older versions of the disaster.
-    	if self.settings.faction_data == nil then
-    		self.settings.faction_data = self.tomb_kings_data;
-    	end
-
-    	-- Listener to keep spawning armies every (10 / difficulty_mod) turns, as long as they hold the Black Pyramid.
+    	-- Listener to keep spawning armies every (10 / (difficulty_mod + 1)) turns, as long as they hold the Black Pyramid.
+        core:remove_listener("PyramidOfNagashStart")
 		core:add_listener(
 			"PyramidOfNagashRespawn",
 			"WorldStartRound",
 			function()
-				return cm:turn_number() % math.ceil(10 / self.settings.difficulty_mod) == 0 and cm:get_faction(self.settings.faction_data.faction_key):has_home_region()
+				return cm:turn_number() % math.ceil(10 / (self.settings.difficulty_mod + 1)) == 0 and cm:get_faction(self.settings.faction_data.faction_key):has_home_region()
 			end,
 			function()
 			    local army_count = math.floor(self.settings.difficulty_mod);
@@ -201,57 +184,25 @@ function disaster_pyramid_of_nagash:start()
         self.settings.early_warning_delay = cm:random_number(12, 8);
     end
 
-	dynamic_disasters:trigger_incident(self.early_warning_incident_key, self.early_warning_effects_key, self.settings.early_warning_delay, nil);
-	self:set_status(STATUS_TRIGGERED);
-end
-
--- Function to trigger the disaster.
-function disaster_pyramid_of_nagash:trigger_resurection_of_nagash()
+	-- Set the faction data here, so the disaster stops if said faction loses the pyramid.
 	local region = cm:get_region(self.region_key)
 	local data = self.tomb_kings_data
 
-	-- Check to see if AI Vampires or Tomb Kings already own the region
-	if not region:is_abandoned() then
-		local owning_faction = region:owning_faction()
-		if not owning_faction:is_human() then
-			if owning_faction:subculture() == "wh2_dlc09_sc_tmb_tomb_kings" then
-				data.faction_key = owning_faction:name()
-			elseif owning_faction:subculture() == "wh_main_sc_vmp_vampire_counts" then
-				data = self.vampires_data
-				data.faction_key = owning_faction:name()
-			end
+	local owning_faction = region:owning_faction()
+	if not owning_faction:is_human() then
+		if owning_faction:subculture() == "wh2_dlc09_sc_tmb_tomb_kings" then
+			data.faction_key = owning_faction:name()
+		elseif owning_faction:subculture() == "wh_main_sc_vmp_vampire_counts" then
+			data = self.vampires_data
+			data.faction_key = owning_faction:name()
 		end
 	end
 
-	-- Set the faction data and army templates to use on the invasion.
 	self.settings.faction_data = data;
 	self.settings.army_template = self.settings.faction_data.army_template;
 
-    local army_count = math.floor(self.settings.army_count_per_province * self.settings.difficulty_mod);
-	dynamic_disasters:create_scenario_force(self.settings.faction_data.faction_key, self.region_key, self.settings.army_template, self.settings.unit_count, false, army_count, self.name, nil)
-
-	local faction = cm:get_faction(self.settings.faction_data.faction_key)
-	cm:force_change_cai_faction_personality(self.settings.faction_data.faction_key, self.settings.faction_data.ai_personality)
-	cm:instantly_research_all_technologies(data.faction_key)
-	dynamic_disasters:no_peace_no_confederation_only_war(self.settings.faction_data.faction_key, self.settings.enable_diplomacy);
-	dynamic_disasters:declare_war_to_all(faction, { self.settings.faction_data.subculture }, true);
-
-	cm:apply_effect_bundle(self.settings.faction_data.faction_bundle, self.settings.faction_data.faction_key, 0)
-	cm:apply_effect_bundle_to_region(self.settings.faction_data.region_bundle, self.region_key, 0)
-
-    -- Prepare the victory mission/disaster end data.
-    table.insert(self.objectives[2].conditions, "faction " .. self.settings.faction_data.faction_key)
-
-    -- Reveal all regions subject to capture.
-    dynamic_disasters:prepare_reveal_regions({ self.region_key });
-
-	-- Make the Black Pyramid fly!
-	cm:override_building_chain_display("wh2_dlc09_special_settlement_pyramid_of_nagash_tmb", "wh2_dlc09_special_settlement_pyramid_of_nagash_floating");
-
-    -- Trigger either the victory mission, or just the related incident.
-    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.settings.faction_data.incident_key, self.region_key, self.settings.faction_data.faction_key, function () self:finish() end, false)
-    cm:activate_music_trigger("ScriptedEvent_Negative", self.settings.faction_data.music)
-    self:set_status(STATUS_STARTED);
+	dynamic_disasters:trigger_incident(self.early_warning_incident_key, self.early_warning_effects_key, self.settings.early_warning_delay, nil, nil, nil);
+	self:set_status(STATUS_TRIGGERED);
 end
 
 -- Function to trigger cleanup stuff after the invasion is over.
@@ -270,20 +221,20 @@ end
 ---@return boolean If the disaster will be triggered or not.
 function disaster_pyramid_of_nagash:check_start()
 	local region = cm:get_region(self.region_key)
+	if region == false or region:is_null_interface() then
+		return false;
+	end
+
+	-- The disaster can only trigger if either vampires or tomb kings control the pyramid.
 	local region_owner = region:owning_faction();
-	if region:is_abandoned() or
-		region_owner:is_human() or
-		(
-			region_owner:is_human() == false and
+	if region:is_abandoned() or (
+		region_owner == false or
+		region_owner:is_null_interface() or
+		region_owner:is_human() or (
 			region_owner:subculture() ~= "wh2_dlc09_sc_tmb_tomb_kings" and
 			region_owner:subculture() ~= "wh_main_sc_vmp_vampire_counts"
-		) then
-
-		-- The disaster cannot begin if we need the sentinels to spawn and they've been confederated.
-		local faction = cm:get_faction("wh2_dlc09_tmb_the_sentinels");
-	    if faction == false or faction:is_null_interface() == true or faction:was_confederated() == true then
-	    	return false;
-	    end
+		)) then
+		return false;
 	end
 
     -- Debug mode support.
@@ -302,6 +253,69 @@ function disaster_pyramid_of_nagash:check_start()
     end
 
     return false;
+end
+
+--- Function to check if the conditions to declare the disaster as "finished" are fulfilled.
+---@return boolean If the disaster will be finished or not.
+function disaster_pyramid_of_nagash:check_finish()
+	local region = cm:get_region(self.region_key)
+	if region == false or region:is_null_interface() then
+		return true;
+	end
+
+	-- If no vampires nor tomb kings control the pyramid, or the previous controlling faction has lost the pyramid, cancel the disaster.
+	local region_owner = region:owning_faction();
+	if region:is_abandoned() or (
+		region_owner == false or
+		region_owner:is_null_interface() or
+		region_owner:is_human() or (
+			region_owner:subculture() ~= "wh2_dlc09_sc_tmb_tomb_kings" and
+			region_owner:subculture() ~= "wh_main_sc_vmp_vampire_counts"
+		) or
+		region_owner:name() ~= self.settings.faction_data.faction_key) then
+		return true;
+	end
+
+    return false;
+end
+
+--[[-------------------------------------------------------------------------------------------------------------
+
+    Disaster-specific functions.
+
+]]---------------------------------------------------------------------------------------------------------------
+
+-- Function to trigger the disaster.
+function disaster_pyramid_of_nagash:trigger_resurection_of_nagash()
+    local army_count = math.floor(self.army_count_per_province * self.settings.difficulty_mod);
+
+    -- Army spawn may fail, but we ignore it here. The checks before this function already ensure the faction is alive, so this is not essential.
+	dynamic_disasters:create_scenario_force(self.settings.faction_data.faction_key, self.region_key, self.settings.army_template, self.unit_count, false, army_count, self.name, nil)
+
+    -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
+    dynamic_disasters:no_peace_no_confederation_only_war(self.settings.faction_data.faction_key, self.settings.enable_diplomacy)
+
+	local faction = cm:get_faction(self.settings.faction_data.faction_key)
+	cm:force_change_cai_faction_personality(self.settings.faction_data.faction_key, self.settings.faction_data.ai_personality)
+	cm:instantly_research_all_technologies(self.settings.faction_data.faction_key)
+	dynamic_disasters:declare_war_to_all(faction, { self.settings.faction_data.subculture }, true);
+
+	cm:apply_effect_bundle(self.settings.faction_data.faction_bundle, self.settings.faction_data.faction_key, 0)
+	cm:apply_effect_bundle_to_region(self.settings.faction_data.region_bundle, self.region_key, 0)
+
+    -- Prepare the victory mission/disaster end data.
+    table.insert(self.objectives[2].conditions, "faction " .. self.settings.faction_data.faction_key)
+
+    -- Reveal all regions subject to capture.
+    dynamic_disasters:prepare_reveal_regions({ self.region_key });
+
+	-- Make the Black Pyramid fly!
+	cm:override_building_chain_display("wh2_dlc09_special_settlement_pyramid_of_nagash_tmb", "wh2_dlc09_special_settlement_pyramid_of_nagash_floating");
+
+    -- Trigger either the victory mission, or just the related incident.
+    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.settings.faction_data.incident_key, self.region_key, self.settings.faction_data.faction_key, function () self:finish() end, false)
+    cm:activate_music_trigger("ScriptedEvent_Negative", self.settings.faction_data.music)
+    self:set_status(STATUS_STARTED);
 end
 
 return disaster_pyramid_of_nagash

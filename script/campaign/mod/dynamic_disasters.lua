@@ -1354,8 +1354,6 @@ function dynamic_disasters:declare_war_on_adjacent_region_owners(faction, base_r
 end
 
 -- Function to declare war on all factions, except the ones of the provided subculture.
---
--- TODO: Make this function allow to ignore allies when declaring war.
 ---@param faction FACTION_SCRIPT_INTERFACE #Faction object
 ---@param subcultures_to_ignore table #List of subcultures to ignore on war declarations.
 ---@param declare_war_on_allies boolean #If we should betray allies.
