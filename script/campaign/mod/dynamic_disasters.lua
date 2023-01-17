@@ -1065,12 +1065,13 @@ function dynamic_disasters:create_scenario_force_at_coords(faction_key, region_k
     return army_spawn;
 end
 
---- Function to spawn one or more armies for the provided faction on the provided region if possible. If not, we try to spawn them at one of the backup faction's region.
+--- Function to spawn one or more armies for the provided faction on the provided region if possible. If not, we default to, in this order:
+--- - The faction's home region (capital).
+--- - The faction's leader current region (if he/she is alive).
+--- - The capital of one of the other factions we passed (picked at random, may fail at spawning armies).
 --- Will fail if none of the backup factions has a home region.
 ---
 --- NOTE: We consider invalid regions regions that belong to a player.
----
---- TODO: Add the faction leader region as backup.
 ---@param faction_key string #Faction key of the owner of the armies.
 ---@param region_key string #Land region key used for spawning and declaring war.
 ---@param army_template table #Table with the faction->template format. The templates MUST exists in the dynamic_disasters object.
@@ -1098,6 +1099,11 @@ function dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, r
         spawned = dynamic_disasters:create_scenario_force(faction_key, region:name(), army_template, unit_count, false, total_armies, disaster_name, success_callback)
         dynamic_disasters:prepare_reveal_regions({ region:name() });
 
+    -- If that fails, try to check if their faction leader is alive, and use the region he/she is in.
+    elseif not faction == false and faction:is_null_interface() == false and faction:has_faction_leader() and faction:faction_leader():has_region() and faction:faction_leader():has_region() then
+        region = faction:faction_leader():region();
+        spawned = dynamic_disasters:create_scenario_force(faction_key, region:name(), army_template, unit_count, false, total_armies, disaster_name, success_callback)
+        dynamic_disasters:prepare_reveal_regions({ region:name() });
 
     -- If that fails, try with the backup factions. We need to find one alive and with a home region.
     else
