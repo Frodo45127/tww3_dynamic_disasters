@@ -458,9 +458,9 @@ function disaster_vermintide:set_status(status)
 
             -- If there are skaven alive, proceed with stage 1.
             function()
-                if self:check_end_disaster_conditions() == true then
+                if self:check_finish() == true then
                     dynamic_disasters:trigger_incident(self.finish_before_stage_1_event_key, nil, 0, nil);
-                    self:trigger_end_disaster();
+                    self:finish();
                 else
                     self:trigger_stage_1();
                 end
@@ -484,10 +484,10 @@ function disaster_vermintide:set_status(status)
 
             -- If there are skaven alive, proceed with stage 1.
             function()
-                if self:check_end_disaster_conditions() == true then
+                if self:check_finish() == true then
                     dynamic_disasters:trigger_incident(self.finish_before_stage_1_event_key, nil, 0, nil);
                     core:remove_listener("VermintideStage1")
-                    self:trigger_end_disaster();
+                    self:finish();
                 else
                     self:setup_ubersreik_battle();
                 end
@@ -512,9 +512,9 @@ function disaster_vermintide:set_status(status)
 
             -- If there are skaven alive, proceed with stage 2.
             function()
-                if self:check_end_disaster_conditions() == true then
+                if self:check_finish() == true then
                     dynamic_disasters:trigger_incident(self.finish_event_key, nil, 0, nil);
-                    self:trigger_end_disaster();
+                    self:finish();
                 else
                     self:trigger_stage_2();
                 end
@@ -539,7 +539,7 @@ function disaster_vermintide:set_status(status)
 
             -- If there are skaven alive, proceed with stage 3.
             function()
-                if self:check_end_disaster_conditions() == true then
+                if self:check_finish() == true then
                     dynamic_disasters:trigger_incident(self.finish_event_key, nil, 0, nil);
                 else
                     self:trigger_stage_3();
@@ -565,7 +565,7 @@ function disaster_vermintide:set_status(status)
 
             -- If there are skaven alive, proceed with stage 4.
             function()
-                if self:check_end_disaster_conditions() == true then
+                if self:check_finish() == true then
                     dynamic_disasters:trigger_incident(self.finish_event_key, nil, 0, nil);
                 else
                     self:trigger_stage_4();
@@ -591,7 +591,7 @@ function disaster_vermintide:set_status(status)
 
             -- If there are skaven alive, proceed with stage 5.
             function()
-                if self:check_end_disaster_conditions() == true then
+                if self:check_finish() == true then
                     dynamic_disasters:trigger_incident(self.finish_event_key, nil, 0, nil);
                 else
                     self:trigger_stage_5();
@@ -739,7 +739,7 @@ function disaster_vermintide:set_status(status)
 end
 
 -- Function to trigger the disaster.
-function disaster_vermintide:trigger()
+function disaster_vermintide:start()
     out("Frodo45127: Starting disaster: " .. self.name);
 
     -- Recalculate the delay to trigger this.
@@ -870,7 +870,7 @@ function disaster_vermintide:trigger_stage_2()
     end
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
-    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.stage_2_event_key, nil, self.settings.factions[1], function () self:trigger_end_disaster() end, true)
+    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.stage_2_event_key, nil, self.settings.factions[1], function () self:finish() end, true)
     dynamic_disasters:trigger_incident(self.stage_2_event_key, self.effects_global_key, self.settings.stage_3_delay, nil);
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_skv_skaven")
     self:set_status(STATUS_STAGE_2);
@@ -1324,7 +1324,7 @@ end
 -------------------------------------------
 
 -- Function to trigger cleanup stuff after the invasion is over.
-function disaster_vermintide:trigger_end_disaster()
+function disaster_vermintide:finish()
     if self.settings.started == true then
         out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
         dynamic_disasters:finish_disaster(self);
@@ -1333,7 +1333,7 @@ end
 
 --- Function to check if the disaster custom conditions are valid and can be trigger.
 ---@return boolean If the disaster will be triggered or not.
-function disaster_vermintide:check_start_disaster_conditions()
+function disaster_vermintide:check_start()
 
     -- Update the potential factions removing the confederated ones.
     self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
@@ -1383,7 +1383,7 @@ end
 
 --- Function to check if the conditions to declare the disaster as "finished" are fulfilled.
 ---@return boolean If the disaster will be finished or not.
-function disaster_vermintide:check_end_disaster_conditions()
+function disaster_vermintide:check_finish()
 
     -- Update the list of available factions and check if are all dead.
     self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);

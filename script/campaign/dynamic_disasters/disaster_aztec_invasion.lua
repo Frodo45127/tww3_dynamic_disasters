@@ -277,7 +277,7 @@ function disaster_aztec_invasion:set_status(status)
                 self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
                 if #self.settings.factions == 0 or not dynamic_disasters:is_any_faction_alive_from_list(self.settings.factions) then
                     dynamic_disasters:execute_payload(self.finish_early_incident_key, nil, 0, nil);
-                    self:trigger_end_disaster()
+                    self:finish()
                 else
                     self:trigger_stage_1();
                 end
@@ -302,7 +302,7 @@ function disaster_aztec_invasion:set_status(status)
                 self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
                 if #self.settings.factions == 0 or not dynamic_disasters:is_any_faction_alive_from_list(self.settings.factions) then
                     dynamic_disasters:execute_payload(self.finish_early_incident_key, nil, 0, nil);
-                    self:trigger_end_disaster()
+                    self:finish()
                 else
                     self:trigger_stage_2();
                 end
@@ -316,7 +316,7 @@ function disaster_aztec_invasion:set_status(status)
 end
 
 -- Function to trigger the disaster.
-function disaster_aztec_invasion:trigger()
+function disaster_aztec_invasion:start()
     out("Frodo45127: Starting disaster: " .. self.name .. ". Triggering early warning.");
 
     -- Recalculate the delay to trigger this.
@@ -533,7 +533,7 @@ function disaster_aztec_invasion:trigger_stage_2()
     end
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
-    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.stage_2_incident_key, nil, self.settings.factions[1], function () self:trigger_end_disaster() end, true)
+    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.stage_2_incident_key, nil, self.settings.factions[1], function () self:finish() end, true)
     dynamic_disasters:execute_payload(self.stage_2_incident_key, self.stage_2_incident_key, 10, nil);
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_lzd_lizardmen")
     self:set_status(STATUS_STAGE_2);
@@ -609,7 +609,7 @@ function aztec_invasion_spawn_armies_callback(cqi)
 end
 
 -- Function to trigger cleanup stuff after the invasion is over.
-function disaster_aztec_invasion:trigger_end_disaster()
+function disaster_aztec_invasion:finish()
     if self.settings.started == true then
         out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
 
@@ -622,7 +622,7 @@ end
 
 --- Function to check if the disaster custom conditions are valid and can be trigger.
 ---@return boolean If the disaster will be triggered or not.
-function disaster_aztec_invasion:check_start_disaster_conditions()
+function disaster_aztec_invasion:check_start()
 
     -- Update the potential factions removing the confederated ones.
     self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);

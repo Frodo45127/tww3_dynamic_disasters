@@ -144,7 +144,7 @@ function disaster_vampires_rise:set_status(status)
                 self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
                 if #self.settings.factions == 0 or not dynamic_disasters:is_any_faction_alive_from_list(self.settings.factions) then
                     dynamic_disasters:execute_payload(self.finish_early_incident_key, nil, 0, nil);
-                    self:trigger_end_disaster()
+                    self:finish()
                 else
                     self:trigger_the_great_vampiric_war();
                 end
@@ -158,7 +158,7 @@ function disaster_vampires_rise:set_status(status)
 end
 
 -- Function to trigger the early warning before the disaster.
-function disaster_vampires_rise:trigger()
+function disaster_vampires_rise:start()
 
     -- Debug mode support.
     if dynamic_disasters.settings.debug_2 == true then
@@ -200,14 +200,14 @@ function disaster_vampires_rise:trigger_the_great_vampiric_war()
     end
 
     -- Trigger either the victory mission, or just the related incident.
-    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.invasion_incident_key, self.settings.regions[1], self.settings.factions[1], function () self:trigger_end_disaster() end, false)
+    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.invasion_incident_key, self.settings.regions[1], self.settings.factions[1], function () self:finish() end, false)
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_vmp_vampire_counts")
     self:set_status(STATUS_STARTED);
 end
 
 
 -- Function to trigger cleanup stuff after the invasion is over.
-function disaster_vampires_rise:trigger_end_disaster()
+function disaster_vampires_rise:finish()
     if self.settings.started == true then
         out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
         dynamic_disasters:finish_disaster(self);
@@ -216,7 +216,7 @@ end
 
 --- Function to check if the disaster custom conditions are valid and can be trigger.
 ---@return boolean If the disaster will be triggered or not.
-function disaster_vampires_rise:check_start_disaster_conditions()
+function disaster_vampires_rise:check_start()
 
     -- Update the potential factions removing the confederated ones.
     self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);

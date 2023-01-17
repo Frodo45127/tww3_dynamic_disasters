@@ -201,7 +201,7 @@ function disaster_skaven_incursions:set_status(status)
                 return self.settings.end_next_turn;
             end,
             function()
-                self:trigger_end_disaster();
+                self:finish();
                 core:remove_listener("SkavenIncursionsEnd")
             end,
             true
@@ -227,8 +227,8 @@ function disaster_skaven_incursions:set_status(status)
 
             -- If there are skaven alive, proceed with the invasion.
             function()
-                if self:check_end_disaster_conditions() == true then
-                    self:trigger_end_disaster();
+                if self:check_finish() == true then
+                    self:finish();
                 else
                     self:trigger_invasion();
                     self.settings.end_next_turn = true;
@@ -261,7 +261,7 @@ function disaster_skaven_incursions:set_status(status)
 end
 
 -- Function to trigger the disaster.
-function disaster_skaven_incursions:trigger()
+function disaster_skaven_incursions:start()
     out("Frodo45127: Starting disaster: " .. self.name);
 
     -- Setup strategic under-cities for all factions available.
@@ -453,7 +453,7 @@ end
 -------------------------------------------
 
 -- Function to trigger cleanup stuff after the invasion is over.
-function disaster_skaven_incursions:trigger_end_disaster()
+function disaster_skaven_incursions:finish()
     if self.settings.started == true then
         out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
 
@@ -472,7 +472,7 @@ end
 
 --- Function to check if the disaster custom conditions are valid and can be trigger.
 ---@return boolean If the disaster will be triggered or not.
-function disaster_skaven_incursions:check_start_disaster_conditions()
+function disaster_skaven_incursions:check_start()
 
     -- Update the potential factions removing the confederated ones.
     self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
@@ -530,7 +530,7 @@ end
 
 --- Function to check if the conditions to declare the disaster as "finished" are fulfilled.
 ---@return boolean If the disaster will be finished or not.
-function disaster_skaven_incursions:check_end_disaster_conditions()
+function disaster_skaven_incursions:check_finish()
     local faction = cm:get_faction(self.settings.faction);
     if not faction == false and faction:is_null_interface() == false and faction:is_dead() then
         return true;

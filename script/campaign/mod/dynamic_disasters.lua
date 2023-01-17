@@ -51,11 +51,22 @@ local mandatory_settings = {
 
 -- Functions required for all disasters. If missing, this manager will error out in the disaster and not load it.
 local mandatory_functions = {
-    "set_status",                           -- Function to set the status/stage of a disaster. Used for advancing disasters and for the save/load logic.
-    "trigger",                              -- Function that starts the disaster.
-    "trigger_end_disaster",                 -- Function that ends the disaster.
-    "check_start_disaster_conditions",      -- Function that checks if a disaster can be started.
-    "check_end_disaster_conditions",        -- Function that checks if a disaster should end.
+    "set_status",                       -- Function to set the status/stage of a disaster. Used for advancing disasters and for the save/load logic.
+    "start",                            -- Function that starts the disaster.
+    "finish",                           -- Function that finishes the disaster.
+    "check_start",                      -- Function that checks if a disaster can be started.
+    "check_finish",                     -- Function that checks if a disaster should finish.
+}
+
+-- Data fields required for all disasters. If missing, this manager will error out in the disaster and not load it.
+local mandatory_data = {
+    "name",
+    "is_global",
+    "allowed_for_sc",
+    "denied_for_sc",
+    "campaigns",
+    "settings",
+    "default_settings",
 }
 
 -- Function to setup the save/load from savegame logic for items.
@@ -262,9 +273,17 @@ function dynamic_disasters:initialize()
 
         -- Check that the disaster has the required functionality.
         for _, function_name in pairs(mandatory_functions) do
-            if not disaster[function_name] then
+            if disaster[function_name] == nil then
                 disaster_is_valid = false;
                 out("\tFrodo45127: disaster " .. disaster.name .. " fails validation due to missing function: " .. function_name .. ".")
+            end
+        end
+
+        -- Check that the disaster has the required data fields.
+        for _, data_name in pairs(mandatory_data) do
+            if disaster[data_name] == nil then
+                disaster_is_valid = false;
+                out("\tFrodo45127: disaster " .. disaster.name .. " fails validation due to missing data field: " .. data_name .. ".")
             end
         end
 
@@ -551,7 +570,7 @@ function dynamic_disasters:process_disasters()
                         if disaster.settings.last_finished_turn > 0 and cm:turn_number() - disaster.settings.last_finished_turn > disaster.settings.wait_turns_between_repeats then
                             if disaster.settings.is_endgame == false or (disaster.settings.is_endgame == true and self.settings.currently_running_endgames < self.settings.max_endgames_at_the_same_time and self.settings.max_endgames_per_campaign > self.settings.endgames_triggered) then
 
-                                if disaster:check_start_disaster_conditions() then
+                                if disaster:check_start() then
                                     out("Frodo45127: Disaster " .. disaster.name .. " triggered (repeated trigger).");
                                     disaster.settings.finished = false;
                                     disaster.settings.started = true;
@@ -562,7 +581,7 @@ function dynamic_disasters:process_disasters()
                                         self.settings.endgames_triggered = self.settings.endgames_triggered + 1;
                                     end
 
-                                    disaster:trigger();
+                                    disaster:start();
                                 else
                                     out("Frodo45127: Disaster ".. disaster.name .. " ignored due to not fulfilling trigger conditions.");
                                 end
@@ -580,7 +599,7 @@ function dynamic_disasters:process_disasters()
                 elseif disaster.settings.started == false then
                     if cm:turn_number() >= disaster.settings.min_turn then
                         if disaster.settings.is_endgame == false or (disaster.settings.is_endgame == true and self.settings.currently_running_endgames < self.settings.max_endgames_at_the_same_time and self.settings.max_endgames_per_campaign > self.settings.endgames_triggered) then
-                            if disaster:check_start_disaster_conditions() then
+                            if disaster:check_start() then
                                 out("Frodo45127: Disaster " .. disaster.name .. " triggered (first trigger).");
                                 disaster.settings.started = true;
                                 disaster.settings.last_triggered_turn = cm:turn_number();
@@ -590,7 +609,7 @@ function dynamic_disasters:process_disasters()
                                     self.settings.endgames_triggered = self.settings.endgames_triggered + 1;
                                 end
 
-                                disaster:trigger();
+                                disaster:start();
                             else
                                 out("Frodo45127: Disaster ".. disaster.name .. " ignored due to not fulfilling trigger conditions.");
                             end
@@ -840,7 +859,7 @@ function dynamic_disasters:create_mission(faction_key, objectives, can_be_victor
         mm:set_victory_type("wh3_combi_victory_type_ultimate")
         mm:set_victory_mission(true)
         mm:set_show_mission(true)
-        mm:trigger()
+        mm:start()
         self.settings.victory_condition_triggered = true;
 
     else
@@ -851,7 +870,7 @@ function dynamic_disasters:create_mission(faction_key, objectives, can_be_victor
             local mm = mission_manager:new(faction_key, "dyn_dis_" .. disaster_name .. "_" .. mission_name .. "_" .. i, success_callback);
             self:add_objectives_to_mission(mm, { objectives[i] }, faction_key, true)
             mm:set_show_mission(true)
-            mm:trigger()
+            mm:start()
         end
     end
 end
@@ -1587,6 +1606,22 @@ function dynamic_disasters:is_any_faction_alive_from_list(factions)
     for i = 1, #factions do
         local faction = cm:get_faction(factions[i]);
         if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false then
+           is_alive = true;
+           break;
+        end
+    end
+
+    return is_alive;
+end
+
+-- Function to check if any faction from a list is alive.
+---@param factions table #Faction keys to check for alive factions.
+---@return boolean #If at least one of the factions is alive.
+function dynamic_disasters:is_any_faction_alive_from_list_with_home_region(factions)
+    local is_alive = false;
+    for i = 1, #factions do
+        local faction = cm:get_faction(factions[i]);
+        if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false and faction:has_home_region() then
            is_alive = true;
            break;
         end

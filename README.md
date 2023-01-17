@@ -11,8 +11,8 @@ Each disaster included in this mod has its behavior documented at the start of i
 This mod dinamically loads disasters from lua scripts present in the ***script/campaign/dynamic_disasters/*** folder. Files should be called **disaster_whateveryouwant.lua**. A disaster file needs to contain an lua object, a few associated functions, and must return the lua object at the end of the script. For an example, check ***disaster_example.lua***. It contains all the stuff needed to just run, with specific documentation about each thing in the script. A couple of extra things to take into account:
 
 * The framework calls *disaster:set_status()* on load. Use it to initialize listeners.
-* The framework calls *disaster:check_start_disaster_conditions()* at the beginning of each turn, if nothing else causes the disaster to not trigger, like not being at the minimum turn. Use it to put conditions on when to trigger the disaster.
-* Remember to call *disaster_example:trigger_end_disaster()* to properly mark the disaster as finished.
+* The framework calls *disaster:check_start()* at the beginning of each turn, if nothing else causes the disaster to not trigger, like not being at the minimum turn. Use it to put conditions on when to trigger the disaster.
+* Remember to call *disaster_example:finish()* to properly mark the disaster as finished.
 * MCT integration is optional. MCT settings are updated when closing the MCT dialog or at the start of each turn, before processing disasters for that turn.
 * To add custom MCT settings for a disaster, add the key of the setting to the *mct_settings* table and the framework will try to load any setting called **disaster_name_setting_key** into disaster.settings.setting_key when loading settings. For an example, check the "enable_rifts" setting in the chaos invasion disaster.
 

@@ -1661,9 +1661,9 @@ function disaster_chaos_invasion:set_status(status)
                 return false;
             end,
             function()
-                if self:check_end_disaster_conditions() == true then
+                if self:check_finish() == true then
                     dynamic_disasters:trigger_incident(self.finish_before_stage_1_event_key, nil, 0, nil);
-                    self:trigger_end_disaster();
+                    self:finish();
                 else
                     self:trigger_stage_1();
                 end
@@ -1686,9 +1686,9 @@ function disaster_chaos_invasion:set_status(status)
                 return false;
             end,
             function()
-                if self:check_end_disaster_conditions() == true then
+                if self:check_finish() == true then
                     dynamic_disasters:trigger_incident(self.finish_event_key, nil, 0, nil);
-                    self:trigger_end_disaster();
+                    self:finish();
                 else
                     self:trigger_stage_2();
                 end
@@ -1702,7 +1702,7 @@ function disaster_chaos_invasion:set_status(status)
 end
 
 -- Function to trigger the disaster. From here until the end of the disaster, everything is managed by the disaster itself.
-function disaster_chaos_invasion:trigger()
+function disaster_chaos_invasion:start()
     out("Frodo45127: Disaster: " .. self.name .. ". Triggering first warning.");
 
     if dynamic_disasters.settings.debug_2 == true then
@@ -1888,7 +1888,7 @@ function disaster_chaos_invasion:trigger_stage_2()
     self:trigger_chaos_effects(0, 10);
 
     -- Trigger the end game mission.
-    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.stage_2_incident_key, nil, self.settings.factions[1], function () self:trigger_end_disaster() end, true)
+    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.stage_2_incident_key, nil, self.settings.factions[1], function () self:finish() end, true)
     dynamic_disasters:trigger_incident(self.stage_2_incident_key, self.effects_global_key, 0, nil);
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_chs_chaos")
     cm:register_instant_movie("Warhammer/chs_invasion");
@@ -2305,7 +2305,7 @@ end
 -- Function to trigger cleanup stuff after the disaster is over.
 --
 -- It has to call the dynamic_disasters:finish_disaster(self) at the end.
-function disaster_chaos_invasion:trigger_end_disaster()
+function disaster_chaos_invasion:finish()
     if self.settings.started == true then
         out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
 
@@ -2345,7 +2345,7 @@ end
 -- Checks for min turn are already done in the manager, so they're not needed here.
 --
 -- @return boolean If the disaster will be triggered or not.
-function disaster_chaos_invasion:check_start_disaster_conditions()
+function disaster_chaos_invasion:check_start()
 
     -- Update the potential factions for stage 1, removing the confederated ones.
     self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
@@ -2391,7 +2391,7 @@ end
 
 --- Function to check if the conditions to declare the disaster as "finished" are fulfilled.
 ---@return boolean If the disaster will be finished or not.
-function disaster_chaos_invasion:check_end_disaster_conditions()
+function disaster_chaos_invasion:check_finish()
 
     -- Update the list of available factions and check if are all dead.
     self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.default_settings.factions);

@@ -300,7 +300,7 @@ function last_stand:set_status(status)
 end
 
 -- Function to trigger the disaster setup.
-function last_stand:trigger()
+function last_stand:start()
     out("Frodo45127: Initializing Last Stance disaster.")
     self:set_status(STATUS_SETUP_AND_READY);
 end
@@ -308,7 +308,7 @@ end
 -- Function to trigger cleanup stuff after the disaster is over.
 --
 -- It has to call the dynamic_disasters:finish_disaster(self) at the end.
-function last_stand:trigger_end_disaster()
+function last_stand:finish()
     if self.settings.started == true then
         out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
         dynamic_disasters:finish_disaster(self);
@@ -319,7 +319,7 @@ end
 -- Checks for min turn are already done in the manager, so they're not needed here.
 --
 -- @return boolean If the disaster will be triggered or not.
-function last_stand:check_start_disaster_conditions()
+function last_stand:check_start()
     return true;
 end
 

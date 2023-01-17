@@ -58,7 +58,7 @@ function disaster_example:set_status(status)
 end
 
 -- Function to trigger the disaster. From here until the end of the disaster, everything is managed by the disaster itself.
-function disaster_example:trigger()
+function disaster_example:start()
 
     -- Initialize listeners.
     self:set_status(STATUS_TRIGGERED);
@@ -67,7 +67,7 @@ end
 -- Function to trigger cleanup stuff after the disaster is over.
 --
 -- It has to call the dynamic_disasters:finish_disaster(self) at the end.
-function disaster_example:trigger_end_disaster()
+function disaster_example:finish()
     if self.settings.started == true then
         out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
         dynamic_disasters:finish_disaster(self);
@@ -78,7 +78,7 @@ end
 -- Checks for min turn are already done in the manager, so they're not needed here.
 --
 -- @return boolean If the disaster will be triggered or not.
-function disaster_example:check_start_disaster_conditions()
+function disaster_example:check_start()
     return true;
 end
 

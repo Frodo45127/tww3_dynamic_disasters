@@ -276,7 +276,7 @@ function disaster_realm_divided:set_status(status)
 
             -- Remove the listener and end the disaster if we ran out of factions to confederate.
             if #self.settings.cathayan_factions == 0 then
-                self:trigger_end_disaster();
+                self:finish();
                 core:remove_listener("RealmDividedConfederationOnFactionDead")
             end
         end,
@@ -286,7 +286,7 @@ function disaster_realm_divided:set_status(status)
 end
 
 -- Function to trigger the disaster. From here until the end of the disaster, everything is managed by the disaster itself.
-function disaster_realm_divided:trigger()
+function disaster_realm_divided:start()
     out("Frodo45127: Disaster: " .. self.name .. ". Triggering disaster.");
 
     -- Force all Cathayan factions to ally and declare war on you.
@@ -365,7 +365,7 @@ function disaster_realm_divided:generate_factions_list()
 end
 
 -- Function to trigger cleanup stuff after the disaster is over.
-function disaster_realm_divided:trigger_end_disaster()
+function disaster_realm_divided:finish()
     if self.settings.started == true then
         out("Frodo45127: Disaster: " .. self.name .. ". Triggering end disaster.");
         dynamic_disasters:finish_disaster(self);
@@ -376,7 +376,7 @@ end
 -- Checks for min turn are already done in the manager, so they're not needed here.
 --
 -- @return boolean If the disaster will be triggered or not.
-function disaster_realm_divided:check_start_disaster_conditions()
+function disaster_realm_divided:check_start()
     self:generate_factions_list()
 
     -- This one is locked only for single-player, due to issues regarding triggering it if there are two cathayan players.

@@ -120,7 +120,7 @@ function disaster_raiding_parties:set_status(status)
 
             -- Finish the disaster after all armies are freed.
             if cm:turn_number() == max_turn then
-                self:trigger_end_disaster();
+                self:finish();
             end
         end,
         true
@@ -138,7 +138,7 @@ function disaster_raiding_parties:set_status(status)
             function()
                 if self:update_alive() == false then
                     dynamic_disasters:execute_payload(self.finish_early_incident_key, nil, 0, nil);
-                    self:trigger_end_disaster();
+                    self:finish();
                 else
                     self:trigger_raiding_parties();
                 end
@@ -150,7 +150,7 @@ function disaster_raiding_parties:set_status(status)
 end
 
 -- Function to trigger the disaster.
-function disaster_raiding_parties:trigger()
+function disaster_raiding_parties:start()
     out("Frodo45127: Starting disaster: " .. self.name);
 
     -- Recalculate the delay for further executions.
@@ -349,7 +349,7 @@ function raiding_parties_spawn_armies_callback(cqi)
 end
 
 -- Function to trigger cleanup stuff after the invasion is over.
-function disaster_raiding_parties:trigger_end_disaster()
+function disaster_raiding_parties:finish()
     if self.settings.started == true then
         out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
 
@@ -361,7 +361,7 @@ end
 
 --- Function to check if the disaster custom conditions are valid and can be trigger.
 ---@return boolean If the disaster will be triggered or not.
-function disaster_raiding_parties:check_start_disaster_conditions()
+function disaster_raiding_parties:check_start()
 
     -- If none of the available factions is alive, do not trigger the disaster.
     if self:update_alive() == false then

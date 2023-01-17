@@ -103,7 +103,7 @@ function disaster_chianchi_assault:set_status(status)
                 else
                     core:remove_listener("ChianchiAssaultGatesDestroyed")
                     core:remove_listener("ChianchiAssaultCountDown")
-                    self:trigger_end_disaster();
+                    self:finish();
                 end
 
                 core:remove_listener("ChianchiAssaultWarning")
@@ -130,7 +130,7 @@ function disaster_chianchi_assault:set_status(status)
                 else
                     dynamic_disasters:execute_payload(self.finish_before_assault_event_key, nil, 0, nil);
                     core:remove_listener("ChianchiAssaultGatesDestroyed")
-                    self:trigger_end_disaster();
+                    self:finish();
                 end
                 core:remove_listener("ChianchiAssaultCountDown")
             end,
@@ -163,7 +163,7 @@ function disaster_chianchi_assault:set_status(status)
                     self:trigger_full_daemonic_invasion();
                 else
                     dynamic_disasters:execute_payload(self.finish_before_assault_event_key, nil, 0, nil);
-                    self:trigger_end_disaster();
+                    self:finish();
                 end
 
                 -- Remove this and the reinforcement event, just in case this triggers before the reinforcements come.
@@ -206,7 +206,7 @@ function disaster_chianchi_assault:set_status(status)
                 return false;
             end,
             function()
-                self:trigger_end_disaster();
+                self:finish();
                 core:remove_listener("ChianchiAssaultGatesDestroyedArmyRespawner")
                 core:remove_listener("ChianchiAssaultGatesFinished")
             end,
@@ -216,7 +216,7 @@ function disaster_chianchi_assault:set_status(status)
 end
 
 -- Function to trigger the disaster.
-function disaster_chianchi_assault:trigger()
+function disaster_chianchi_assault:start()
     out("Frodo45127: Starting disaster: " .. self.name);
 
     -- Recalculate the delays to trigger this after the initial warning.
@@ -296,7 +296,7 @@ function disaster_chianchi_assault:trigger_full_daemonic_invasion()
 end
 
 -- Function to trigger cleanup stuff after the invasion is over.
-function disaster_chianchi_assault:trigger_end_disaster()
+function disaster_chianchi_assault:finish()
     if self.settings.started == true then
         out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
         dynamic_disasters:finish_disaster(self);
@@ -305,7 +305,7 @@ end
 
 --- Function to check if the disaster custom conditions are valid and can be trigger.
 ---@return boolean If the disaster will be triggered or not.
-function disaster_chianchi_assault:check_start_disaster_conditions()
+function disaster_chianchi_assault:check_start()
     local faction = cm:get_faction(self.settings.faction);
     if not faction == false and faction:is_null_interface() == false and faction:was_confederated() == false then
         if Bastion:get_saved_invasion_active_value() == true then

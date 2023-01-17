@@ -157,7 +157,7 @@ function disaster_pyramid_of_nagash:set_status(status)
 
                 if sentinels_available == false then
                     dynamic_disasters:execute_payload(self.settings.faction_data.finish_early_incident_key, nil, 0, nil);
-                    self:trigger_end_disaster()
+                    self:finish()
                 else
                     self:trigger_resurection_of_nagash();
                 end
@@ -192,7 +192,7 @@ function disaster_pyramid_of_nagash:set_status(status)
 end
 
 -- Function to trigger the early warning before the disaster.
-function disaster_pyramid_of_nagash:trigger()
+function disaster_pyramid_of_nagash:start()
 
     -- Debug mode support.
     if dynamic_disasters.settings.debug_2 == true then
@@ -249,13 +249,13 @@ function disaster_pyramid_of_nagash:trigger_resurection_of_nagash()
 	cm:override_building_chain_display("wh2_dlc09_special_settlement_pyramid_of_nagash_tmb", "wh2_dlc09_special_settlement_pyramid_of_nagash_floating");
 
     -- Trigger either the victory mission, or just the related incident.
-    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.settings.faction_data.incident_key, self.region_key, self.settings.faction_data.faction_key, function () self:trigger_end_disaster() end, false)
+    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.settings.faction_data.incident_key, self.region_key, self.settings.faction_data.faction_key, function () self:finish() end, false)
     cm:activate_music_trigger("ScriptedEvent_Negative", self.settings.faction_data.music)
     self:set_status(STATUS_STARTED);
 end
 
 -- Function to trigger cleanup stuff after the invasion is over.
-function disaster_pyramid_of_nagash:trigger_end_disaster()
+function disaster_pyramid_of_nagash:finish()
     if self.settings.started == true then
         out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
 
@@ -268,7 +268,7 @@ end
 
 --- Function to check if the disaster custom conditions are valid and can be trigger.
 ---@return boolean If the disaster will be triggered or not.
-function disaster_pyramid_of_nagash:check_start_disaster_conditions()
+function disaster_pyramid_of_nagash:check_start()
 	local region = cm:get_region(self.region_key)
 	local region_owner = region:owning_faction();
 	if region:is_abandoned() or
