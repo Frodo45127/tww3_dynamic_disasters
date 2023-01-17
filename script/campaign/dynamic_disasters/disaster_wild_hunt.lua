@@ -81,9 +81,6 @@ disaster_wild_hunt = {
         wait_turns_between_repeats = 0,     -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
         difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
         mct_settings = {},                  -- Extra settings this disaster may pull from MCT.
-
-        army_count_per_province = 4,
-        unit_count = 19,
         early_warning_delay = 10,
 
         factions = {
@@ -103,11 +100,13 @@ disaster_wild_hunt = {
 		regions = {},
 	},
 
+    unit_count = 19,
+    army_count_per_province = 4,
     army_template = {
         wood_elves = "lategame"
     },
 
-    factions = {
+    factions_base_regions = {
         wh_dlc05_wef_wood_elves = "wh3_main_combi_region_kings_glade",
         wh_dlc05_wef_wydrioth = "wh3_main_combi_region_crag_halls_of_findol",
         wh3_main_wef_laurelorn = "wh3_main_combi_region_laurelorn_forest",
@@ -195,8 +194,8 @@ function disaster_wild_hunt:set_status(status)
                     local region = cm:get_region(region_key);
                     if not region == false and region:is_null_interface() == false and region:is_abandoned() == false then
                         local owner = region:owning_faction();
-                        if not owner == false and owner:is_null_interface() == false and owner:subculture() == "wh_dlc05_sc_wef_wood_elves" then
-                            dynamic_disasters:create_scenario_force(owner:name(), region_key, self.settings.army_template, self.settings.unit_count, false, 1, self.name, nil)
+                        if not owner == false and owner:is_null_interface() == false and owner:subculture() == self.subculture then
+                            dynamic_disasters:create_scenario_force(owner:name(), region_key, self.settings.army_template, self.unit_count, false, 1, self.name, nil)
                         end
                     end
                 end
@@ -295,9 +294,9 @@ function disaster_wild_hunt:trigger_the_wild_hunt()
         local invasion_faction = cm:get_faction(faction_key)
 
         if not invasion_faction:is_dead() or (invasion_faction:is_dead() and self.settings.revive_dead_factions == true) then
-            local region_key = self.factions[faction_key];
-            local army_count = math.floor(self.settings.army_count_per_province * self.settings.difficulty_mod);
-            if dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_template, self.settings.unit_count, false, army_count, self.name, nil, self.settings.factions) then
+            local region_key = self.factions_base_regions[faction_key];
+            local army_count = math.floor(self.army_count_per_province * self.settings.difficulty_mod);
+            if dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_template, self.unit_count, false, army_count, self.name, nil, self.settings.factions) then
 
                 -- In the case of the main Wood Elf faction, also spawn armies in the Oak of Ages if it owns it.
                 if faction_key == "wh_dlc05_wef_wood_elves" then
@@ -305,7 +304,7 @@ function disaster_wild_hunt:trigger_the_wild_hunt()
                     if not oak_of_ages_region == false and oak_of_ages_region:is_null_interface() == false then
                         local owning_faction = oak_of_ages_region:owning_faction();
                         if not owning_faction == false and owning_faction:is_null_interface() == false and owning_faction:name() == faction_key then
-                            if dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, self.oak_of_ages_region_key, self.army_template, self.settings.unit_count, false, army_count, self.name, nil, self.settings.factions) then
+                            if dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, self.oak_of_ages_region_key, self.army_template, self.unit_count, false, army_count, self.name, nil, self.settings.factions) then
                                 table.insert(self.settings.regions, self.oak_of_ages_region_key);
                             end
                         end
