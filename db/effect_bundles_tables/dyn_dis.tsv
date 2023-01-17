@@ -15,7 +15,6 @@ dyn_dis_chaos_invasion_stage_early_warning			faction	1	disaster.png	true	false	t
 dyn_dis_grudge_too_far_early_warning			faction	1	disaster.png	true	false	true
 dyn_dis_black_pyramid_early_warning			faction	1	disaster.png	true	false	true
 dyn_dis_raiding_parties_early_warning			faction	1	disaster.png	true	false	true
-dyn_dis_vampires_rise_early_warning			faction	1	disaster.png	true	false	true
 dyn_dis_waaagh_early_warning			faction	1	disaster.png	true	false	true
 dyn_dis_wild_hunt_early_warning			faction	1	disaster.png	true	false	true
 dyn_dis_chaos_invasion_rift_chance_of_reward_khorne			faction	1	attribute_mark_khorne.png	false	false	true
@@ -27,3 +26,4 @@ dyn_dis_realm_divided_attacker_buffs	 	 	faction	1	disaster.png	false	false	fals
 dyn_dis_vermintide_global_effects	 	 	faction	1	disaster.png	true	false	false
 dyn_dis_vermintide_attacker_buffs	 	 	faction	1	disaster.png	false	false	false
 dyn_dis_vermintide_early_warning			faction	1	disaster.png	true	false	true
+dyn_dis_vampire_rise_global_effects	 	 	faction	1	disaster.png	true	false	false

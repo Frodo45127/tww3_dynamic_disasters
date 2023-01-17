@@ -298,6 +298,9 @@ function disaster_wild_hunt:trigger_the_wild_hunt()
             local army_count = math.floor(self.army_count_per_province * self.settings.difficulty_mod);
             if dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_template, self.unit_count, false, army_count, self.name, nil, self.settings.factions) then
 
+                -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
+                dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
+
                 -- In the case of the main Wood Elf faction, also spawn armies in the Oak of Ages if it owns it.
                 if faction_key == "wh_dlc05_wef_wood_elves" then
                     local oak_of_ages_region = cm:get_region(self.oak_of_ages_region_key);
@@ -323,7 +326,6 @@ function disaster_wild_hunt:trigger_the_wild_hunt()
                 -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
                 cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
                 cm:instantly_research_all_technologies(faction_key);
-                dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
                 dynamic_disasters:declare_war_to_all(invasion_faction, { self.subculture }, true);
 
                 cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)

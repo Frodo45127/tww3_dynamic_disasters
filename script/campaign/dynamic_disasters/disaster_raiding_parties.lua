@@ -137,7 +137,7 @@ function disaster_raiding_parties:set_status(status)
             end,
             function()
                 if self:update_alive() == false then
-                    dynamic_disasters:execute_payload(self.finish_early_incident_key, nil, 0, nil);
+                    dynamic_disasters:trigger_incident(self.finish_early_incident_key, nil, 0, nil);
                     self:finish();
                 else
                     self:trigger_raiding_parties();
@@ -164,7 +164,7 @@ function disaster_raiding_parties:start()
         self.settings.wait_turns_between_repeats = self.settings.grace_period + 4;
     end
 
-    dynamic_disasters:execute_payload(self.warning_event_key, self.warning_effect_key, self.settings.warning_delay, nil);
+    dynamic_disasters:trigger_incident(self.warning_event_key, self.warning_effect_key, self.settings.warning_delay, nil);
     self:set_status(STATUS_TRIGGERED);
 end
 
@@ -242,7 +242,7 @@ function disaster_raiding_parties:trigger_raiding_parties()
     -- If no coast to attack has been found, just cancel the attack.
     local faction = cm:get_faction(self.settings.faction);
     if #coasts_to_attack < 1 then
-        dynamic_disasters:execute_payload(self.finish_early_incident_key, nil, 0, nil);
+        dynamic_disasters:trigger_incident(self.finish_early_incident_key, nil, 0, nil);
         cm:activate_music_trigger("ScriptedEvent_Negative", self.settings.subculture)
         return
     end
@@ -282,7 +282,7 @@ function disaster_raiding_parties:trigger_raiding_parties()
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
     cm:apply_effect_bundle(self.invader_buffs_effects_key, self.settings.faction, 10)
-    dynamic_disasters:execute_payload(self.raiding_event_key, nil, 0, dyn_dis_sea_regions[first_sea_region].coastal_regions[1]);
+    dynamic_disasters:trigger_incident(self.raiding_event_key, nil, 0, dyn_dis_sea_regions[first_sea_region].coastal_regions[1]);
     cm:activate_music_trigger("ScriptedEvent_Negative", self.settings.subculture)
     self:set_status(STATUS_STARTED);
 end

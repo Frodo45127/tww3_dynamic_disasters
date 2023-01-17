@@ -275,7 +275,7 @@ function disaster_waaagh:set_status(status)
                 self.settings.factions.major = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions.major);
                 self.settings.factions.minor = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions.minor);
                 if #self.settings.factions.major == 0 or not dynamic_disasters:is_any_faction_alive_from_list(self.settings.factions.major) then
-                    dynamic_disasters:execute_payload(self.finish_early_incident_key, nil, 0, nil);
+                    dynamic_disasters:trigger_incident(self.finish_early_incident_key, nil, 0, nil);
                     self:finish()
                 else
                     self:trigger_da_biggest_waaagh();
@@ -299,7 +299,7 @@ function disaster_waaagh:start()
         self.settings.early_warning_delay = cm:random_number(12, 8);
     end
 
-    dynamic_disasters:execute_payload(self.early_warning_incident_key, self.early_warning_effects_key, self.settings.early_warning_delay, nil);
+    dynamic_disasters:trigger_incident(self.early_warning_incident_key, self.early_warning_effects_key, self.settings.early_warning_delay, nil);
     self:set_status(STATUS_TRIGGERED);
 
 end

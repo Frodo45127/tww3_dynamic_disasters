@@ -99,7 +99,7 @@ function disaster_chianchi_assault:set_status(status)
             function()
                 local faction = cm:get_faction(self.settings.faction);
                 if Bastion:get_saved_invasion_active_value() == true and not faction == false and faction:is_null_interface() == false and faction:was_confederated() == false then
-                    dynamic_disasters:execute_payload(self.warning_event_key, nil, 0, nil);
+                    dynamic_disasters:trigger_incident(self.warning_event_key, nil, 0, nil);
                 else
                     core:remove_listener("ChianchiAssaultGatesDestroyed")
                     core:remove_listener("ChianchiAssaultCountDown")
@@ -128,7 +128,7 @@ function disaster_chianchi_assault:set_status(status)
                 if Bastion:get_saved_invasion_active_value() == true and not faction == false and faction:is_null_interface() == false and faction:was_confederated() == false then
                     self:trigger_wall_attack_reinforcement();
                 else
-                    dynamic_disasters:execute_payload(self.finish_before_assault_event_key, nil, 0, nil);
+                    dynamic_disasters:trigger_incident(self.finish_before_assault_event_key, nil, 0, nil);
                     core:remove_listener("ChianchiAssaultGatesDestroyed")
                     self:finish();
                 end
@@ -162,7 +162,7 @@ function disaster_chianchi_assault:set_status(status)
                 if Bastion:get_saved_invasion_active_value() == true and num_razed_gates > 0 and not faction == false and faction:is_null_interface() == false and faction:was_confederated() == false then
                     self:trigger_full_daemonic_invasion();
                 else
-                    dynamic_disasters:execute_payload(self.finish_before_assault_event_key, nil, 0, nil);
+                    dynamic_disasters:trigger_incident(self.finish_before_assault_event_key, nil, 0, nil);
                     self:finish();
                 end
 
@@ -263,7 +263,7 @@ function disaster_chianchi_assault:trigger_wall_attack_reinforcement()
     end
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
-    dynamic_disasters:execute_payload(self.first_attack_event_key, nil, 0, nil);
+    dynamic_disasters:trigger_incident(self.first_attack_event_key, nil, 0, nil);
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh3_main_sc_tze_tzeentch")
 end
 
@@ -290,7 +290,7 @@ function disaster_chianchi_assault:trigger_full_daemonic_invasion()
     end
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
-    dynamic_disasters:execute_payload(self.second_attack_event_key, nil, 0, nil);
+    dynamic_disasters:trigger_incident(self.second_attack_event_key, nil, 0, nil);
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh3_main_sc_tze_tzeentch")
     self:set_status(STATUS_FULL_INVASION);
 end

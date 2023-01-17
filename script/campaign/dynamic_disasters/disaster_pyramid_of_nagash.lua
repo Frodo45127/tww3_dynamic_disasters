@@ -156,7 +156,7 @@ function disaster_pyramid_of_nagash:set_status(status)
 				end
 
                 if sentinels_available == false then
-                    dynamic_disasters:execute_payload(self.settings.faction_data.finish_early_incident_key, nil, 0, nil);
+                    dynamic_disasters:trigger_incident(self.settings.faction_data.finish_early_incident_key, nil, 0, nil);
                     self:finish()
                 else
                     self:trigger_resurection_of_nagash();
@@ -201,7 +201,7 @@ function disaster_pyramid_of_nagash:start()
         self.settings.early_warning_delay = cm:random_number(12, 8);
     end
 
-	dynamic_disasters:execute_payload(self.early_warning_incident_key, self.early_warning_effects_key, self.settings.early_warning_delay, nil);
+	dynamic_disasters:trigger_incident(self.early_warning_incident_key, self.early_warning_effects_key, self.settings.early_warning_delay, nil);
 	self:set_status(STATUS_TRIGGERED);
 end
 

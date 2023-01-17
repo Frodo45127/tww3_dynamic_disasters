@@ -290,6 +290,9 @@ function disaster_vampires_rise:trigger_the_great_vampiric_war()
 
             if dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_template, self.unit_count, false, army_count, self.name, nil, self.settings.factions) then
 
+                -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
+                dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
+
                 -- Give the invasion region to the invader if it isn't owned by them or a human
                 local region = cm:get_region(region_key)
                 if not region == false and region:is_null_interface() == false then
@@ -301,7 +304,6 @@ function disaster_vampires_rise:trigger_the_great_vampiric_war()
 
                 cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
                 cm:instantly_research_all_technologies(faction_key)
-                dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy);
                 dynamic_disasters:declare_war_to_all(faction, { self.subculture }, true);
 
                 cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)

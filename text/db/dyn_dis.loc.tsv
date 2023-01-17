@@ -125,8 +125,8 @@ effect_bundles_localised_title_dyn_dis_black_pyramid_early_warning	The Black Pyr
 effect_bundles_localised_description_dyn_dis_black_pyramid_early_warning	The Black Pyramid has begun to tremble. Prepare for the worst.	true
 effect_bundles_localised_title_dyn_dis_raiding_parties_early_warning	Black and Tattered Sails	true
 effect_bundles_localised_description_dyn_dis_raiding_parties_early_warning	Black sails have been spotted in the horizon. We don't know their target yet, but... Prepare for the worst.	true
-effect_bundles_localised_title_dyn_dis_vampires_rise_early_warning	Death and Decay	true
-effect_bundles_localised_description_dyn_dis_vampires_rise_early_warning	Death and Decay covers the land like never before.... Prepare for the worst.	true
+effect_bundles_localised_title_dyn_dis_vampire_rise_global_effects	Death and Decay	true
+effect_bundles_localised_description_dyn_dis_vampire_rise_global_effects	Death and Decay covers the land like never before....	true
 effect_bundles_localised_title_dyn_dis_waaagh_early_warning	Da Greatest WAAAGH!	true
 effect_bundles_localised_description_dyn_dis_waaagh_early_warning	The hordes of Greenskins are assembling their Waaaghs.... Prepare for the worst.	true
 effect_bundles_localised_title_dyn_dis_wild_hunt_early_warning	The Hunters Prepare...	true

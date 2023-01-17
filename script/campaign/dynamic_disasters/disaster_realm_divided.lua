@@ -341,7 +341,7 @@ function disaster_realm_divided:start()
     -- Force an alliance between all cathayan factions against you.
     dynamic_disasters:force_peace_between_factions(factions, true);
     dynamic_disasters:add_mission(self.objectives, false, self.name, self.mission_name, self.realm_divided_incident_key, nil, factions[1], nil, true)
-    dynamic_disasters:execute_payload(self.realm_divided_incident_key, nil, 10, nil);
+    dynamic_disasters:trigger_incident(self.realm_divided_incident_key, nil, 10, nil);
     self:set_status(STATUS_TRIGGERED);
 end
 
