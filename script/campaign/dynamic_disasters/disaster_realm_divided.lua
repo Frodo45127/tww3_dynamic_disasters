@@ -6,7 +6,6 @@
     Supports debug mode. ONLY FOR SINGLEPLAYER.
 
     Requirements:
-        - Random chance (50%) of happening on a campaign (so it's not a constant).
         - Player must own 45% of Cathay (20 provinces) before turn 35.
     Effects:
         - Trigger:
@@ -116,25 +115,23 @@ disaster_realm_divided = {
         finished = false,                   -- If the disaster has been finished.
         repeteable = false,                 -- If the disaster can be repeated.
         is_endgame = false,                 -- If the disaster is an endgame.
+        revive_dead_factions = true,        -- If true, dead factions will be revived if needed.
+        enable_diplomacy = false,           -- If true, you will still be able to use diplomacy with disaster-related factions. Broken beyond believe, can make the game a cakewalk.
         min_turn = 0,                       -- Minimum turn required for the disaster to trigger.
+        max_turn = 0,                       -- If the disaster hasn't trigger at this turn, we try to trigger it. Set to 0 to not check for max turn. Used only for some disasters.
         status = 0,                         -- Current status of the disaster. Used to re-initialize the disaster correctly on reload.
         last_triggered_turn = 0,            -- Turn when the disaster was last triggerd.
         last_finished_turn = 0,             -- Turn when the disaster was last finished.
         wait_turns_between_repeats = 5,     -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
         difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
+        mct_settings = {},                  -- Extra settings this disaster may pull from MCT.
 
-        -- Disaster-specific data
-        unit_count = 19,
-        choice_taken = 0,
-        faction = "",
+        -- Disaster-specific data.
         cathayan_factions = {},
         cathayan_factions_to_delete = {},
-
-        objectives_completed = 0,
-        needed_objectives_completed = 2,
-
     },
 
+    unit_count = 19,
     army_template = {
         cathay = "earlygame"
     },
@@ -214,75 +211,88 @@ disaster_realm_divided = {
     confederation_dilemma_key = "dyn_dis_realm_divided_confederation_dilemma"
 }
 
+--[[-------------------------------------------------------------------------------------------------------------
+
+    Mandatory functions.
+
+]]---------------------------------------------------------------------------------------------------------------
+
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
 function disaster_realm_divided:set_status(status)
     self.settings.status = status;
 
-    -- Fix for installing this mid-game.
-    if #self.settings.cathayan_factions == 0 and #self.settings.cathayan_factions_to_delete then
-        self:generate_factions_list()
-    end
+    if self.settings.status == STATUS_TRIGGERED then
 
-    out("Frodo45127: Cathayan factions left to confederate: " .. #self.settings.cathayan_factions .. ".")
-    out("Frodo45127: Cathayan factions to confederate next turn: " .. #self.settings.cathayan_factions_to_delete .. ".")
+        -- Populate the list of cathayan factions that are still alive.
+        self:generate_factions_list();
 
-    -- Listener for the confederation dilemma. It should trigger the turn after a faction is killed.
-    core:remove_listener("RealmDividedConfederationOnFactionDead");
-    core:add_listener(
-        "RealmDividedConfederationOnFactionDead",
-        "WorldStartRound",
-        function()
-            for i = 1, #self.settings.cathayan_factions do
-                local faction = cm:get_faction(self.settings.cathayan_factions[i])
+        out("Frodo45127: Cathayan factions left to confederate: " .. #self.settings.cathayan_factions .. ".")
+        out("Frodo45127: Cathayan factions to confederate next turn: " .. #self.settings.cathayan_factions_to_delete .. ".")
 
-                if not faction == false and faction:is_null_interface() == false and faction:is_dead() and not faction:was_confederated() then
-                    table.insert(self.settings.cathayan_factions_to_delete, i)
+        -- Listener for the confederation dilemma. It should trigger the turn after a faction is killed.
+        core:remove_listener("RealmDividedConfederationOnFactionDead");
+        core:add_listener(
+            "RealmDividedConfederationOnFactionDead",
+            "WorldStartRound",
+            function()
+                local should_finish = self:check_finish();
+
+                for i = 1, #self.settings.cathayan_factions do
+                    local faction = cm:get_faction(self.settings.cathayan_factions[i])
+
+                    if not faction == false and faction:is_null_interface() == false and faction:is_dead() then
+                        table.insert(self.settings.cathayan_factions_to_delete, i)
+                    end
                 end
-            end
 
-            out("Frodo45127: Cathayan factions to process this turn: " .. #self.settings.cathayan_factions_to_delete .. ".")
-            return #self.settings.cathayan_factions_to_delete > 0;
-        end,
-        function()
+                out("Frodo45127: Cathayan factions to process this turn: " .. #self.settings.cathayan_factions_to_delete .. ".")
+                return #self.settings.cathayan_factions_to_delete > 0 or should_finish;
+            end,
+            function()
 
-            -- Trigger one dilemma for each faction to delete from the available list.
-            for _, i in pairs(self.settings.cathayan_factions_to_delete) do
-                local faction = cm:get_faction(self.settings.cathayan_factions[i]);
-                local choices = {
-                    {
-                        form_confederation = faction:name(),
-                    },
-                    ""
-                };
+                -- If things got weird and we ran out of factions, finish.
+                if self:check_finish() then
+                    self:finish();
 
-                local human_faction = cm:get_human_factions()[1];
-                dynamic_disasters:trigger_dilemma(cm:get_faction(human_faction), self.confederation_dilemma_key, choices, faction, nil, nil, nil, nil, nil)
-            end
+                -- Otherwise, trigger one dilemma for each faction to delete from the available list.
+                else
+                    for _, i in pairs(self.settings.cathayan_factions_to_delete) do
+                        local faction = cm:get_faction(self.settings.cathayan_factions[i]);
+                        local choices = {
+                            {
+                                form_confederation = faction:name(),
+                            },
+                            ""
+                        };
 
-            -- Once done with dilemmas, remove the faction from the list in reverse.
-            reverse = {}
-            for i = #self.settings.cathayan_factions_to_delete, 1, -1 do
-                reverse[#reverse+1] = self.settings.cathayan_factions_to_delete[i]
-            end
-            self.settings.cathayan_factions_to_delete = reverse
+                        local human_faction = cm:get_human_factions()[1];
+                        dynamic_disasters:trigger_dilemma(cm:get_faction(human_faction), self.confederation_dilemma_key, choices, faction, nil, nil, nil, nil, nil)
+                    end
 
-            for i = 1, #self.settings.cathayan_factions_to_delete do
-                local index = self.settings.cathayan_factions_to_delete[i]
-                table.remove(self.settings.cathayan_factions, index)
-            end
+                    -- Once done with dilemmas, remove the faction from the list in reverse.
+                    reverse = {}
+                    for i = #self.settings.cathayan_factions_to_delete, 1, -1 do
+                        reverse[#reverse+1] = self.settings.cathayan_factions_to_delete[i]
+                    end
+                    self.settings.cathayan_factions_to_delete = reverse
 
-            -- Cleanp the list of factions before continuing.
-            self.settings.cathayan_factions_to_delete = {};
+                    for i = 1, #self.settings.cathayan_factions_to_delete do
+                        local index = self.settings.cathayan_factions_to_delete[i]
+                        table.remove(self.settings.cathayan_factions, index)
+                    end
 
-            -- Remove the listener and end the disaster if we ran out of factions to confederate.
-            if #self.settings.cathayan_factions == 0 then
-                self:finish();
-                core:remove_listener("RealmDividedConfederationOnFactionDead")
-            end
-        end,
-        true
-    );
+                    -- Cleanp the list of factions before continuing.
+                    self.settings.cathayan_factions_to_delete = {};
 
+                    -- Remove the listener and end the disaster if we ran out of factions to confederate.
+                    if #self.settings.cathayan_factions == 0 then
+                        self:finish();
+                    end
+                end
+            end,
+            true
+        );
+    end
 end
 
 -- Function to trigger the disaster. From here until the end of the disaster, everything is managed by the disaster itself.
@@ -297,23 +307,18 @@ function disaster_realm_divided:start()
         local faction = faction_list:item_at(i)
 
         -- Spawn armies for fations that are still alive and are not a player.
-        if not faction == false and faction:is_null_interface() == false and faction:was_confederated() == false and faction:is_dead() == false and faction:subculture() == "wh3_main_sc_cth_cathay" and faction:name() ~= player_faction_key then
+        if not faction == false and
+            faction:is_null_interface() == false and
+            faction:was_confederated() == false and
+            faction:is_dead() == false and
+            faction:subculture() == "wh3_main_sc_cth_cathay" and
+            faction:name() ~= player_faction_key then
 
-           -- If we have a capital, spawn free armies for the AI there.
-            if faction:has_home_region() then
-                local capital = faction:home_region()
-                local army_count = math.ceil(1 * self.settings.difficulty_mod);
-                dynamic_disasters:create_scenario_force(faction:name(), capital:name(), self.army_template, self.settings.unit_count, false, army_count, self.name, nil);
-
-            -- If we don't have a home region, spawn wherever the faction leader is, if alive.
-            elseif not faction:faction_leader() == nil and faction:faction_leader():has_region() then
-                local region = faction:faction_leader():region();
-                local army_count = math.ceil(1 * self.settings.difficulty_mod);
-                dynamic_disasters:create_scenario_force(faction:name(), region:name(), self.army_template, self.settings.unit_count, false, army_count, self.name, nil);
-            end
+            local army_count = math.ceil(1 * self.settings.difficulty_mod);
+            dynamic_disasters:create_scenario_force_with_backup_plan(faction:name(), nil, self.army_template, self.unit_count, false, army_count, self.name, nil, nil);
 
             -- Regardless of armies spawned, declare war and buff the AI.
-            dynamic_disasters:no_peace_only_war(faction:name())
+            dynamic_disasters:no_peace_only_war(faction:name(), self.settings.enable_diplomacy);
 
             if faction:name() == "wh3_main_cth_the_northern_provinces" then
                 cm:force_change_cai_faction_personality(faction:name(), self.miao_yin_ai_personality)
@@ -328,7 +333,7 @@ function disaster_realm_divided:start()
         end
     end
 
-    -- Prepare the mission/disaster end data.
+    -- Prepare the mission/disaster data.
     table.insert(self.objectives[1].conditions, "total " .. #self.catay_regions)
     for i = 1, #self.catay_regions do
         table.insert(self.objectives[1].conditions, "region " .. self.catay_regions[i])
@@ -341,9 +346,68 @@ function disaster_realm_divided:start()
     -- Force an alliance between all cathayan factions against you.
     dynamic_disasters:force_peace_between_factions(factions, true);
     dynamic_disasters:add_mission(self.objectives, false, self.name, self.mission_name, self.realm_divided_incident_key, nil, factions[1], nil, true)
-    dynamic_disasters:trigger_incident(self.realm_divided_incident_key, nil, 10, nil);
+    dynamic_disasters:trigger_incident(self.realm_divided_incident_key, nil, nil, nil, nil, nil);
     self:set_status(STATUS_TRIGGERED);
 end
+
+-- Function to trigger cleanup stuff after the disaster is over.
+function disaster_realm_divided:finish()
+    if self.settings.started == true then
+        out("Frodo45127: Disaster: " .. self.name .. ". Triggering end disaster.");
+        core:remove_listener("RealmDividedConfederationOnFactionDead")
+        dynamic_disasters:finish_disaster(self);
+    end
+end
+
+-- Function to check if the disaster conditions are valid and can be trigger.
+-- Checks for min turn are already done in the manager, so they're not needed here.
+--
+---@return boolean If the disaster will be triggered or not.
+function disaster_realm_divided:check_start()
+
+    -- This one is locked only for single-player, due to issues regarding triggering it if there are two cathayan players.
+    if cm:is_multiplayer() then
+        return false;
+    end
+
+    -- Debug mode support.
+    if dynamic_disasters.settings.debug_2 == true then
+        return true;
+    end
+
+    local regions_owned = 0;
+    for _, region_key in pairs(self.catay_regions) do
+        local region = cm:get_region(region_key);
+        if not region == false and region:is_null_interface() == false and region:is_abandoned() == false then
+            local region_owner = region:owning_faction()
+            if not region_owner == false and region_owner:is_null_interface() == false and (region_owner:is_human() or (region_owner:is_vassal() and region_owner:master():is_human())) then
+                regions_owned = regions_owned + 1;
+            end
+        end
+    end
+
+    -- If we own more than 45% of Cathay before turn 35, trigger this.
+    if math.ceil(regions_owned * 100 / #self.catay_regions) >= 45 and cm:turn_number() <= 35 then
+        return true;
+    end
+
+    return false;
+end
+
+--- Function to check if the conditions to declare the disaster as "finished" are fulfilled.
+---@return boolean If the disaster will be finished or not.
+function disaster_grudge_too_far:check_finish()
+
+    -- Update the potential factions removing the confederated ones and check if we still have factions to use.
+    self.settings.cathayan_factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.cathayan_factions);
+    return #self.settings.cathayan_factions == 0 or not dynamic_disasters:is_any_faction_alive_from_list(self.settings.cathayan_factions);
+end
+
+--[[-------------------------------------------------------------------------------------------------------------
+
+    Disaster-specific functions.
+
+]]---------------------------------------------------------------------------------------------------------------
 
 -- Function to initialize the list of cathayan factions to confederate with dilemma.
 function disaster_realm_divided:generate_factions_list()
@@ -362,51 +426,6 @@ function disaster_realm_divided:generate_factions_list()
             table.insert(self.settings.cathayan_factions, faction:name());
         end
     end
-end
-
--- Function to trigger cleanup stuff after the disaster is over.
-function disaster_realm_divided:finish()
-    if self.settings.started == true then
-        out("Frodo45127: Disaster: " .. self.name .. ". Triggering end disaster.");
-        dynamic_disasters:finish_disaster(self);
-    end
-end
-
--- Function to check if the disaster conditions are valid and can be trigger.
--- Checks for min turn are already done in the manager, so they're not needed here.
---
--- @return boolean If the disaster will be triggered or not.
-function disaster_realm_divided:check_start()
-    self:generate_factions_list()
-
-    -- This one is locked only for single-player, due to issues regarding triggering it if there are two cathayan players.
-    local humans = cm:get_human_factions();
-    if #humans > 1 then
-        return false;
-    end
-
-    -- Debug mode support.
-    if dynamic_disasters.settings.debug_2 == true then
-        return true;
-    end
-
-    local regions_owned = 0;
-    for _, region_key in pairs(self.catay_regions) do
-        local region = cm:get_region(region_key);
-        if not region == false and region:is_null_interface() == false and region:is_abandoned() == false then
-            local region_owner = region:owning_faction()
-            if not region_owner == false and region_owner:is_null_interface() == false and (region_owner:name() == humans[1] or region_owner:is_vassal_of(humans[1])) then
-                regions_owned = regions_owned + 1;
-            end
-        end
-    end
-
-    -- If we own more than 45% of Cathay before turn 35, trigger this.
-    if math.ceil(regions_owned * 100 / #self.catay_regions) >= 45 and cm:turn_number() <= 35 then
-        return true;
-    end
-
-    return false;
 end
 
 -- Return the disaster so the manager can read it.
