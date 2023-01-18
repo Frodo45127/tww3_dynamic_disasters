@@ -44,6 +44,12 @@
 
 ]]
 
+--[[-------------------------------------------------------------------------------------------------------------
+
+    Mandatory functions.
+
+]]---------------------------------------------------------------------------------------------------------------
+
 -- Status list for this disaster.
 local STATUS_SETUP_AND_READY = 1;
 
@@ -292,7 +298,7 @@ function last_stand:set_status(status)
             function(context)
                 local faction = context:faction();
                 self:rohan_arrives(faction);
-                self.settings.factions_to_spawn[context:faction():name()] = nil;
+                self.settings.factions_to_spawn[faction:name()] = nil;
             end,
             true
         );
@@ -311,6 +317,13 @@ end
 function last_stand:finish()
     if self.settings.started == true then
         out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
+
+        -- While this disaster never really finish... we do this just in case in the future does it.
+        core:remove_listener("LastStandPreBattleWatcher");
+        core:remove_listener("LastStandPostBattleWatcher");
+        core:remove_listener("LastStandCleanupAfterRetreat");
+        core:remove_listener("LastStandSpawner");
+
         dynamic_disasters:finish_disaster(self);
     end
 end
@@ -322,6 +335,18 @@ end
 function last_stand:check_start()
     return true;
 end
+
+--- Function to check if the conditions to declare the disaster as "finished" are fulfilled.
+---@return boolean If the disaster will be finished or not.
+function last_stand:check_finish()
+    return true;
+end
+
+--[[-------------------------------------------------------------------------------------------------------------
+
+    Disaster-specific functions.
+
+]]---------------------------------------------------------------------------------------------------------------
 
 -- Function to check if a faction can receive reinforcements, and spawn the reinforcement armies.
 --
