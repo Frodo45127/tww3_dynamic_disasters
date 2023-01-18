@@ -303,7 +303,7 @@ function disaster_waaagh:set_status(status)
             function()
                 for _, faction_key in pairs(self.settings.factions) do
                     local faction = cm:get_faction(faction_key);
-                    if not faction == false and faction:is_null_interface() == false and faction:subculture() == self.subculture and faction:has_home_region() then
+                    if not faction == false and faction:is_null_interface() == false and faction:has_home_region() then
                         local region = faction:home_region();
                         dynamic_disasters:create_scenario_force(faction:name(), region:name(), self.army_template, self.unit_count, false, 1, self.name, nil)
                     end

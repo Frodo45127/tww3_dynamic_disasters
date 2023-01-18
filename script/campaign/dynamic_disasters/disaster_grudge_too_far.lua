@@ -16,6 +16,7 @@
             - All major and minor non-confederated dwarfen factions declare war on everyone not dwarf.
             - All major and minor non-confederated dwarfen factions gets disabled diplomacy and full-retard AI.
             - If no other disaster has triggered a Victory Condition yet, this will trigger one.
+            - Every ceil(10 / (difficulty_mod + 1)) turns spawn an extra army in each dwarf faction capital.
         - Finish:
             - A certain amount of dwarf regions controled, or all dwarf factions destroyed.
 
@@ -175,6 +176,30 @@ function disaster_grudge_too_far:set_status(status)
             end,
             true
         );
+    end
+
+    if self.settings.status == STATUS_STARTED then
+
+        -- Listener to keep spawning armies every (10 / (difficulty_mod + 1)) turns, one army on each faction's capital.
+        core:remove_listener("GrudgeTooFarRespawn")
+        core:add_listener(
+            "GrudgeTooFarRespawn",
+            "WorldStartRound",
+            function()
+                return cm:turn_number() % math.ceil(10 / (self.settings.difficulty_mod + 1)) == 0 and
+                    dynamic_disasters:is_any_faction_alive_from_list_with_home_region(self.settings.factions);
+            end,
+            function()
+                for _, faction_key in pairs(self.settings.factions) do
+                    local faction = cm:get_faction(faction_key);
+                    if not faction == false and faction:is_null_interface() == false and faction:has_home_region() then
+                        local region = faction:home_region();
+                        dynamic_disasters:create_scenario_force(faction:name(), region:name(), self.army_template, self.unit_count, false, 1, self.name, nil)
+                    end
+                end
+            end,
+            true
+        )
     end
 
     -- Once we triggered the disaster, ending it is controlled by two missions, so we don't need to listen for an ending.
