@@ -1,0 +1,12 @@
+TODO:
+- Review Aztec Invasion.
+- Review Vermintide.
+- Expand Last Stand with more faction-exclusive armies
+- Expand Last Stand with more situations.
+- Implement beastmen incursion? Not in a hurry, needs planning.
+- Implement a tale of two empires (massive war between cathay and the empire across the darklands).
+- Implement the hunger games (many factions attack lustria at the same time, and becomes a battle royale).
+- Implement Three Kingdoms 2: Electric Boogaloo (the 3 strongest factions get buffed and go against each other).
+- Implement Ordertide (all order factions ally against the chaos factions).
+- Implement The Last Crusade (bretonnia declares war on the entire world, maybe excluded wood elves).
+- Implement empire/bretonia/high elves/dark elves/cathay/kislev endgame disasters.
