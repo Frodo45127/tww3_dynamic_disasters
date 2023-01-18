@@ -31,7 +31,9 @@ disaster_example = {
         started = false,                    -- If the disaster has been started.
         finished = false,                   -- If the disaster has been finished.
         repeteable = false,                 -- If the disaster can be repeated.
-        is_endgame = false,                 -- If the disaster is an endgame.
+        is_endgame = true,                  -- If the disaster is an endgame.
+        revive_dead_factions = true,        -- If true, dead factions will be revived if needed.
+        enable_diplomacy = false,           -- If true, you will still be able to use diplomacy with disaster-related factions. Broken beyond believe, can make the game a cakewalk.
         min_turn = 60,                      -- Minimum turn required for the disaster to trigger.
         max_turn = 0,                       -- If the disaster hasn't trigger at this turn, we try to trigger it. Set to 0 to not check for max turn. Used only for some disasters.
         status = 0,                         -- Current status of the disaster. Used to re-initialize the disaster correctly on reload.
@@ -43,30 +45,41 @@ disaster_example = {
     }
 }
 
--- Function to set the status of the disaster, initializing the needed listeners in the process.
+--[[-------------------------------------------------------------------------------------------------------------
+
+    Mandatory functions.
+
+]]---------------------------------------------------------------------------------------------------------------
+
+--- Function to set the status of the disaster, initializing the needed listeners in the process.
 function disaster_example:set_status(status)
     self.settings.status = status;
 
     -- Listener that need to be initialized after the disaster is triggered.
     if self.settings.status == STATUS_TRIGGERED then
 
+        -- Put here the listeners for stuff that should trigger while the status is STATUS_TRIGGERED.
+
     end
 
     -- Listener that need to be initialized after the status changes.
     if self.settings.status == STATUS_FULL_INVASION then
+
+        -- Put here the listeners for stuff that should trigger while the status is STATUS_FULL_INVASION.
+
     end
 end
 
--- Function to trigger the disaster. From here until the end of the disaster, everything is managed by the disaster itself.
+--- Function to trigger the disaster. From here until the end of the disaster, everything is managed by the disaster itself.
 function disaster_example:start()
 
     -- Initialize listeners.
     self:set_status(STATUS_TRIGGERED);
 end
 
--- Function to trigger cleanup stuff after the disaster is over.
---
--- It has to call the dynamic_disasters:finish_disaster(self) at the end.
+--- Function to trigger cleanup stuff after the disaster is over.
+---
+--- It has to call the dynamic_disasters:finish_disaster(self) at the end.
 function disaster_example:finish()
     if self.settings.started == true then
         out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
@@ -74,13 +87,25 @@ function disaster_example:finish()
     end
 end
 
--- Function to check if the disaster conditions are valid and can be trigger.
--- Checks for min turn are already done in the manager, so they're not needed here.
+--- Function to check if the disaster conditions are valid and can be trigger.
+--- Checks for min turn are already done in the manager, so they're not needed here.
 --
--- @return boolean If the disaster will be triggered or not.
+---@return boolean If the disaster will be triggered or not.
 function disaster_example:check_start()
     return true;
 end
+
+--- Function to check if the conditions to declare the disaster as "finished" are fulfilled.
+---@return boolean If the disaster will be finished or not.
+function disaster_grudge_too_far:check_finish()
+    return true;
+end
+
+--[[-------------------------------------------------------------------------------------------------------------
+
+    Disaster-specific functions.
+
+]]---------------------------------------------------------------------------------------------------------------
 
 -- Return the disaster so the manager can read it.
 return disaster_example
