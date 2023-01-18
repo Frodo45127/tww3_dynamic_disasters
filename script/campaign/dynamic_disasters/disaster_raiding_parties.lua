@@ -395,33 +395,24 @@ function raiding_parties_spawn_armies_callback(cqi)
 
             if not region == false and region:is_null_interface() == false then
                 local faction = region:owning_faction();
-                if not faction == false and faction:is_null_interface() == false and faction:name() ~= "rebels" then
-                    local faction_key = faction:name();
+                if not faction == false and faction:is_null_interface() == false and faction:name() ~= "rebels" and faction:name() ~= disaster.settings.faction then
 
-                    -- If the target is destroyed, or owned by the same faction that's attacking or by rebels,
-                    -- release the army from the invasion. Otherwise we'll get stuck armies at sea.
-                    if faction:name() == disaster.settings.faction then
-                        invasion:release();
-                        return;
-                    end
-
-                    invasion:set_target("REGION", region_key, faction_key);
+                    invasion:set_target("REGION", region_key, faction:name());
                     invasion:add_aggro_radius(15);
                     invasion:abort_on_target_owner_change(true);
 
                     if invasion:has_target() then
                         out.design("\t\tFrodo45127: Setting invasion with general [" .. common.get_localised_string(general:get_forename()) .. "] to attack " .. region_key .. ".")
                         invasion:start_invasion(nil, false, false, false)
+                        return;
                     end
-
-                -- If there is no owner (abandoned?) release the army and return.
-                else
-                    invasion:release();
-                    return;
                 end
             end
         end
     end
+
+    -- If we didn't return before due to an early return on invasion movement or cancelation, release the army.
+    invasion:release();
 end
 
 -- Function to update the list of alive faction/subculture that we can use for the disaster.

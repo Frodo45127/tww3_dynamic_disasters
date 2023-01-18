@@ -166,7 +166,7 @@ function disaster_grudge_too_far:set_status(status)
 
             function()
                 if self:check_finish() then
-                    dynamic_disasters:trigger_incident(self.finish_early_incident_key, nil, 0, nil);
+                    dynamic_disasters:trigger_incident(self.finish_early_incident_key, nil, 0, nil, nil, nil);
                     self:finish()
                 else
                     self:trigger_second_great_beard_war();
@@ -190,7 +190,7 @@ function disaster_grudge_too_far:start()
         self.settings.early_warning_delay = cm:random_number(12, 8);
     end
 
-    dynamic_disasters:trigger_incident(self.early_warning_incident_key, self.early_warning_effects_key, self.settings.early_warning_delay, nil);
+    dynamic_disasters:trigger_incident(self.early_warning_incident_key, self.early_warning_effects_key, self.settings.early_warning_delay, nil, nil, nil);
     self:set_status(STATUS_TRIGGERED);
 end
 
