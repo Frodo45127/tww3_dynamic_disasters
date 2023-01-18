@@ -143,7 +143,6 @@ disaster_grudge_too_far = {
 	ai_personality = "wh3_combi_dwarf_endgame",
 }
 
-
 --[[-------------------------------------------------------------------------------------------------------------
 
     Mandatory functions.

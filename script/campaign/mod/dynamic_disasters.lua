@@ -1219,13 +1219,12 @@ function dynamic_disasters:declare_war(attacker_key, defender_key, invite_attack
 end
 
 -- Function to declare war on all region owners of provided regions, and optionally on all neigthbors of the provided faction.
---
--- TODO: Make this function allow to ignore allies when declaring war.
 ---@param faction FACTION_SCRIPT_INTERFACE #Faction object
 ---@param regions table #Region keys to declare war to.
 ---@param attack_faction_neightbors boolean #If we should declare war on all the current faction neighbours too.
 ---@param subcultures_to_ignore table #List of subcultures to ignore on war declarations.
-function dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions, attack_faction_neightbors, subcultures_to_ignore)
+---@param declare_war_on_allies boolean #If we should betray allies.
+function dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions, attack_faction_neightbors, subcultures_to_ignore, declare_war_on_allies)
     if not faction == false and faction:is_null_interface() == false then
 
         -- First, declare war on the explicitly provided region owners and its neightbor regions.
@@ -1234,7 +1233,7 @@ function dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regio
             if not region == false and region:is_null_interface() == false then
 
                 -- Try to declare war on its neighbors first, so we don't depend on the status of the current region.
-                self:declare_war_on_adjacent_region_owners(faction, region, subcultures_to_ignore)
+                self:declare_war_on_adjacent_region_owners(faction, region, subcultures_to_ignore, declare_war_on_allies)
 
                 -- Then get if the current region is occupied and try to declare war on the owner.
                 local region_owner = region:owning_faction()
@@ -1251,46 +1250,10 @@ function dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regio
                         end
                     end
 
-                    -- If the current region is not to be ignored, declate war on the owner.
-                    if ignore_region == false then
-                        dynamic_disasters:declare_war(faction:name(), region_owner:name(), true, true)
-                    end
-                end
-            end
-        end
-    end
-end
-
--- Function to declare war on all region owners of provided regions, and optionally on all neigthbors of the provided faction.
---
--- TODO: Make this function allow to ignore allies when declaring war.
----@param faction FACTION_SCRIPT_INTERFACE #Faction object
----@param regions table #Region keys to declare war to.
----@param attack_faction_neightbors boolean #If we should declare war on all the current faction neighbours too.
----@param subcultures_to_ignore table #List of subcultures to ignore on war declarations.
-function dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions, attack_faction_neightbors, subcultures_to_ignore)
-    if not faction == false and faction:is_null_interface() == false then
-
-        -- First, declare war on the explicitly provided region owners and its neightbor regions.
-        for _, region_key in pairs(regions) do
-            local region = cm:get_region(region_key);
-            if not region == false and region:is_null_interface() == false then
-
-                -- Try to declare war on its neighbors first, so we don't depend on the status of the current region.
-                self:declare_war_on_adjacent_region_owners(faction, region, subcultures_to_ignore)
-
-                -- Then get if the current region is occupied and try to declare war on the owner.
-                local region_owner = region:owning_faction()
-                if not region_owner == false and region_owner:is_null_interface() == false then
-
-                    -- Get if we should ignore the current region.
-                    local ignore_region = self:faction_subculture_in_list(region_owner, subcultures_to_ignore);
-
-                    -- Make sure we don't declare wars on vassals of ignored subcultures.
-                    if ignore_region == false then
-                        local master = region_owner:master();
-                        if not master == false and master:is_null_interface() == false then
-                            ignore_faction = self:faction_subculture_in_list(master, subcultures_to_ignore);
+                    -- Get if we should ignore the current faction due to being a direct ally of the warring faction.
+                    if ignore_region == false and declare_war_on_allies == false then
+                        if region_owner:is_ally_vassal_or_client_state_of(faction) == true then
+                            ignore_region = true;
                         end
                     end
 
@@ -1309,7 +1272,7 @@ function dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regio
                 local region = region_list:item_at(i);
 
                 -- Try to declare war on its neighbors first, so we don't depend on the status of the current region.
-                self:declare_war_on_adjacent_region_owners(faction, region, subcultures_to_ignore)
+                self:declare_war_on_adjacent_region_owners(faction, region, subcultures_to_ignore, declare_war_on_allies)
             end
         end
     end
@@ -1319,7 +1282,8 @@ end
 ---@param faction FACTION_SCRIPT_INTERFACE #Faction object
 ---@param base_region REGION_SCRIPT_INTERFACE #Region object
 ---@param subcultures_to_ignore table #List of subcultures to ignore on war declarations.
-function dynamic_disasters:declare_war_on_adjacent_region_owners(faction, base_region, subcultures_to_ignore)
+---@param declare_war_on_allies boolean #If we should betray allies.
+function dynamic_disasters:declare_war_on_adjacent_region_owners(faction, base_region, subcultures_to_ignore, declare_war_on_allies)
     if not base_region == false and base_region:is_null_interface() == false then
         local adjacent_regions = base_region:adjacent_region_list()
 
@@ -1341,6 +1305,13 @@ function dynamic_disasters:declare_war_on_adjacent_region_owners(faction, base_r
                         local master = region_owner:master();
                         if not master == false and master:is_null_interface() == false then
                             ignore_faction = self:faction_subculture_in_list(master, subcultures_to_ignore);
+                        end
+                    end
+
+                    -- Get if we should ignore the current faction due to being a direct ally of the warring faction.
+                    if ignore_region == false and declare_war_on_allies == false then
+                        if region_owner:is_ally_vassal_or_client_state_of(faction) == true then
+                            ignore_region = true;
                         end
                     end
 
@@ -1509,19 +1480,17 @@ function dynamic_disasters:release_armies(cqis, targets, max_turn)
 
     out("\tFrodo45127: Remaining armies: " .. #cqis .. ".")
 
-    -- If we don't have more factions or we reached the end of the grace period, release the armies.
-    if #cqis == 0 or cm:turn_number() == max_turn then
-        if #cqis > 0 then
+    -- If we reached the max turn and we still have armies, release them.
+    if cm:turn_number() == max_turn and #cqis > 0 then
 
-            out("\tFrodo45127: Releasing all " .. #cqis .. " remaining armies.")
-            for i = 1, #cqis do
-                local cqi = cqis[i];
+        out("\tFrodo45127: Releasing all " .. #cqis .. " remaining armies.")
+        for i = 1, #cqis do
+            local cqi = cqis[i];
 
-                ---@type invasion
-                local invasion = invasion_manager:get_invasion(tostring(cqi))
-                if not invasion == nil and not invasion == false then
-                    invasion:release();
-                end
+            ---@type invasion
+            local invasion = invasion_manager:get_invasion(tostring(cqi))
+            if not invasion == nil and not invasion == false then
+                invasion:release();
             end
         end
     end

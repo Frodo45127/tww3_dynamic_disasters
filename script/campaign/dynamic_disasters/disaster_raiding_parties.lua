@@ -5,7 +5,7 @@
 
     Supports debug mode.
 
-    NOTE: This disaster can use the three factions, except the ones sharing subculture with the player.
+    NOTE: This disaster can use three subcultures, except when one of them is shared with the player.
 
     Requirements:
         - Random chance: 2% (1/50 turns).
@@ -52,6 +52,8 @@ disaster_raiding_parties = {
         finished = false,                   -- If the disaster has been finished.
         repeteable = true,                  -- If the disaster can be repeated.
         is_endgame = false,                 -- If the disaster is an endgame.
+        revive_dead_factions = true,        -- If true, dead factions will be revived if needed.
+        enable_diplomacy = false,           -- If true, you will still be able to use diplomacy with disaster-related factions. Broken beyond believe, can make the game a cakewalk.
         min_turn = 30,                      -- Minimum turn required for the disaster to trigger.
         max_turn = 0,                       -- If the disaster hasn't trigger at this turn, we try to trigger it. Set to 0 to not check for max turn. Used only for some disasters.
         status = 0,                         -- Current status of the disaster. Used to re-initialize the disaster correctly on reload.
@@ -59,12 +61,12 @@ disaster_raiding_parties = {
         last_finished_turn = 0,             -- Turn when the disaster was last finished.
         wait_turns_between_repeats = 10,    -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
         difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
+        mct_settings = {},                  -- Extra settings this disaster may pull from MCT.
 
         -- Disaster-specific data.
         army_template = {},
-        unit_count = 19,
-        warning_delay = 1,
-        grace_period = 1,
+        warning_delay = 1,                  -- Turns between the warning and the assault.
+        grace_period = 1,                   -- Turns between the warning and the assault + 6. Once ended, we release the armies to the AI, no matter if they fulfilled their objectives or not.
 
         faction = "",
         subculture = "",
@@ -94,6 +96,9 @@ disaster_raiding_parties = {
         cqis = {},                                   -- List of invader's cqi, so we can track them and release them when needed.
         targets = {},                                -- List of regions/factions to invade.
     },
+
+    unit_count = 19,
+
     warning_event_key = "fro_dyn_dis_raiding_parties_warning",
     warning_effect_key = "dyn_dis_raiding_parties_early_warning",
     raiding_event_key = "fro_dyn_dis_raiding_parties_trigger",
@@ -101,34 +106,20 @@ disaster_raiding_parties = {
     finish_early_incident_key = "fro_dyn_dis_raiding_parties_early_end",
 }
 
+--[[-------------------------------------------------------------------------------------------------------------
+
+    Mandatory functions.
+
+]]---------------------------------------------------------------------------------------------------------------
+
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
 function disaster_raiding_parties:set_status(status)
     self.settings.status = status;
 
-    -- Listener to know when to free the AI armies.
-    core:remove_listener("RaidingPartiesFreeArmies")
-    core:add_listener(
-        "RaidingPartiesFreeArmies",
-        "WorldStartRound",
-        function()
-            return cm:turn_number() <= self.settings.last_triggered_turn + self.settings.grace_period
-        end,
-        function()
-            out("Frodo45127: RaidingPartiesFreeArmies")
-            local max_turn = self.settings.last_triggered_turn + self.settings.grace_period;
-            dynamic_disasters:release_armies(self.settings.cqis, self.settings.targets, max_turn);
-
-            -- Finish the disaster after all armies are freed.
-            if cm:turn_number() == max_turn then
-                self:finish();
-            end
-        end,
-        true
-    );
-
     if self.settings.status == STATUS_TRIGGERED then
 
         -- Listener for the warning.
+        core:remove_listener("RaidingPartiesWarning")
         core:add_listener(
             "RaidingPartiesWarning",
             "WorldStartRound",
@@ -137,12 +128,37 @@ function disaster_raiding_parties:set_status(status)
             end,
             function()
                 if self:update_alive() == false then
-                    dynamic_disasters:trigger_incident(self.finish_early_incident_key, nil, 0, nil);
+                    dynamic_disasters:trigger_incident(self.finish_early_incident_key, nil, 0, nil, nil, nil);
                     self:finish();
                 else
                     self:trigger_raiding_parties();
                 end
                 core:remove_listener("RaidingPartiesWarning")
+            end,
+            true
+        );
+    end
+
+    if self.settings.status == STATUS_STARTED then
+
+        -- Listener to know when to free the AI armies and finish the disaster.
+        core:remove_listener("RaidingPartiesFreeArmies")
+        core:add_listener(
+            "RaidingPartiesFreeArmies",
+            "WorldStartRound",
+            function()
+                return cm:turn_number() <= self.settings.last_triggered_turn + self.settings.grace_period
+            end,
+            function()
+                out("Frodo45127: RaidingPartiesFreeArmies")
+                local max_turn = self.settings.last_triggered_turn + self.settings.grace_period;
+                dynamic_disasters:release_armies(self.settings.cqis, self.settings.targets, max_turn);
+
+                -- Finish the disaster after all armies are freed.
+                if cm:turn_number() == max_turn then
+                    self:finish();
+                    core:remove_listener("RaidingPartiesFreeArmies")
+                end
             end,
             true
         );
@@ -164,26 +180,19 @@ function disaster_raiding_parties:start()
         self.settings.wait_turns_between_repeats = self.settings.grace_period + 4;
     end
 
-    dynamic_disasters:trigger_incident(self.warning_event_key, self.warning_effect_key, self.settings.warning_delay, nil);
-    self:set_status(STATUS_TRIGGERED);
-end
+     -- Reset the invasion data from the previous invasion, if any.
+    self.settings.cqis = {};
+    self.settings.targets = {};
 
--- Function to trigger the raid itself.
-function disaster_raiding_parties:trigger_raiding_parties()
-    out("Frodo45127: Disaster: " .. self.name .. ". Triggering invasion.");
-
-    -- Get the subculture/faction to use as raiders.
+    -- Get the subculture/faction to use as raiders. Here so we can check if this faction is invalid at the point of triggering the raid, to avoid "weird" stuff.
     self.settings.subculture = self.settings.subcultures_alive[cm:random_number(#self.settings.subcultures_alive)];
     self.settings.faction = self.settings.factions_alive[self.settings.subculture][cm:random_number(#self.settings.factions_alive[self.settings.subculture])];
 
-    -- Get the army template to use, based on the subculture and turn.
-    local current_turn = cm:turn_number();
+    local invasion_turn = cm:turn_number() + self.settings.warning_delay;
     local template = "earlygame";
-    if current_turn < 50 then
-        template = "earlygame";
-    elseif current_turn >= 50 and current_turn < 100 then
+    if invasion_turn >= 50 and invasion_turn < 100 then
         template = "midgame";
-    elseif current_turn >= 100 then
+    elseif invasion_turn >= 100 then
         template = "lategame";
     end
 
@@ -196,9 +205,76 @@ function disaster_raiding_parties:trigger_raiding_parties()
         self.settings.army_template.dark_elves = template;
     end
 
-    -- Reset the invasion data from the previous invasion, if any.
-    self.settings.cqis = {};
-    self.settings.targets = {};
+    out("Frodo45127: Disaster: " .. self.name .. ". Triggering invasion.");
+    dynamic_disasters:trigger_incident(self.warning_event_key, self.warning_effect_key, self.settings.warning_delay, nil, nil, nil);
+    self:set_status(STATUS_TRIGGERED);
+end
+
+-- Function to trigger cleanup stuff after the invasion is over.
+function disaster_raiding_parties:finish()
+    if self.settings.started == true then
+        out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
+        dynamic_disasters:finish_disaster(self);
+    end
+end
+
+--- Function to check if the disaster custom conditions are valid and can be trigger.
+---@return boolean If the disaster will be triggered or not.
+function disaster_raiding_parties:check_start()
+
+    -- If none of the available factions is alive, do not trigger the disaster.
+    if self:update_alive() == false then
+        return false;
+    end
+
+    -- Debug mode support.
+    if dynamic_disasters.settings.debug_2 == true then
+        return true;
+    end
+
+    -- Base chance: 1/50 turns (2%).
+    local base_chance = 0.02;
+
+    -- Increase the change of starting based on how many attackers are already dead.
+    -- In theory, no need to remove again confederated factions.
+    for _, factions in pairs(self.settings.factions) do
+        for _, faction_key in pairs(factions) do
+            local faction = cm:get_faction(faction_key);
+            if not faction == false and faction:is_null_interface() == false and faction:is_dead() then
+                base_chance = base_chance + 0.01;
+            end
+        end
+    end
+
+    if cm:random_number(100, 0) / 100 < base_chance then
+        return true;
+    end
+
+    return false;
+end
+
+--- Function to check if the conditions to declare the disaster as "finished" are fulfilled.
+---@return boolean If the disaster will be finished or not.
+function disaster_raiding_parties:check_finish()
+
+    -- If the faction we picked before is dead or a vassal, we cannot trigger the disaster.
+    local faction = cm:get_faction(self.settings.faction);
+    if faction == false or faction:is_null_interface() or faction:is_dead() or faction:is_vassal() then
+        return true;
+    end
+
+    return false;
+end
+
+--[[-------------------------------------------------------------------------------------------------------------
+
+    Disaster-specific functions.
+
+]]---------------------------------------------------------------------------------------------------------------
+
+-- Function to trigger the raid itself.
+function disaster_raiding_parties:trigger_raiding_parties()
+    out("Frodo45127: Disaster: " .. self.name .. ". Triggering invasion.");
 
     -- Get all the coastal regions (as in region with a port) to attack by weight.
     local attack_vectors = {};
@@ -214,12 +290,12 @@ function disaster_raiding_parties:trigger_raiding_parties()
 
             for _, land_region in pairs(sea_region_data.coastal_regions) do
                 local region = cm:get_region(land_region)
-                if not region == false and region:is_null_interface() == false then
+                if not region == false and region:is_null_interface() == false and not region:is_abandoned() then
                     local region_owner = region:owning_faction()
 
                     -- Do not attack your own subculture. Attack everyone else.
                     if not region_owner == false and region_owner:is_null_interface() == false and region_owner:subculture() ~= self.settings.subculture then
-                        attack_vectors[coast] = attack_vectors[coast] + 1;
+                        attack_vectors[coast] = attack_vectors[coast] + (1 / #sea_region_data.coastal_regions);
 
                         -- Give a bit more priority to player coastal settlements.
                         if region_owner:is_human() == true then
@@ -240,16 +316,17 @@ function disaster_raiding_parties:trigger_raiding_parties()
     table.sort(coasts_to_attack, function(a, b) return attack_vectors[a] > attack_vectors[b] end)
 
     -- If no coast to attack has been found, just cancel the attack.
-    local faction = cm:get_faction(self.settings.faction);
     if #coasts_to_attack < 1 then
-        dynamic_disasters:trigger_incident(self.finish_early_incident_key, nil, 0, nil);
-        cm:activate_music_trigger("ScriptedEvent_Negative", self.settings.subculture)
-        return
+        out("Frodo45127: We have no coasts to attack. Canceling disaster.");
+        dynamic_disasters:trigger_incident(self.finish_early_incident_key, nil, 0, nil, nil, nil);
+        self:finish()
+        return;
     end
 
-    -- Get the region at random from the top half of the coasts.
-    out("Frodo45127: We have " .. #coasts_to_attack .. " coasts to attack. Using only the upper half.");
-    local coast_to_attack = coasts_to_attack[cm:random_number(math.ceil(#coasts_to_attack / 2))];
+    -- Get the region at random from the top third of the coasts.
+    out("Frodo45127: We have " .. #coasts_to_attack .. " coasts to attack. Using only the upper third.");
+    local faction = cm:get_faction(self.settings.faction);
+    local coast_to_attack = coasts_to_attack[cm:random_number(math.ceil(#coasts_to_attack / 3))];
     local first_sea_region = nil;
     for _, sea_region in pairs(dyn_dis_coasts[coast_to_attack]) do
         first_sea_region = sea_region;
@@ -268,21 +345,20 @@ function disaster_raiding_parties:trigger_raiding_parties()
                 table.insert(self.settings.targets, region_key)
             end
 
-            dynamic_disasters:create_scenario_force_at_coords(self.settings.faction, region_key, spawn_pos, self.settings.army_template, self.settings.unit_count, false, army_count, self.name, raiding_parties_spawn_armies_callback);
+            dynamic_disasters:create_scenario_force_at_coords(self.settings.faction, region_key, spawn_pos, self.settings.army_template, self.unit_count, false, army_count, self.name, raiding_parties_spawn_armies_callback);
         end
     end
 
     -- Make every attacking faction go full retard against the owner of the coastal provinces.
-    -- TODO: Fix vassals attacking you properly.
     if not faction == false and faction:is_null_interface() == false and not faction:is_dead() then
         for _, sea_region in pairs(dyn_dis_coasts[coast_to_attack]) do
-            dynamic_disasters:declare_war_for_owners_and_neightbours(faction, dyn_dis_sea_regions[sea_region].coastal_regions, false, {self.settings.subculture});
+            dynamic_disasters:declare_war_for_owners_and_neightbours(faction, dyn_dis_sea_regions[sea_region].coastal_regions, false, {self.settings.subculture}, false);
         end
     end
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
     cm:apply_effect_bundle(self.invader_buffs_effects_key, self.settings.faction, 10)
-    dynamic_disasters:trigger_incident(self.raiding_event_key, nil, 0, dyn_dis_sea_regions[first_sea_region].coastal_regions[1]);
+    dynamic_disasters:trigger_incident(self.raiding_event_key, nil, 0, dyn_dis_sea_regions[first_sea_region].coastal_regions[1], nil, nil);
     cm:activate_music_trigger("ScriptedEvent_Negative", self.settings.subculture)
     self:set_status(STATUS_STARTED);
 end
@@ -293,7 +369,7 @@ function raiding_parties_spawn_armies_callback(cqi)
     out("Frodo45127: Callback for force " .. tostring(cqi) .. " triggered.")
 
     local character = cm:char_lookup_str(cqi)
-    cm:apply_effect_bundle_to_characters_force("wh_main_bundle_military_upkeep_free_force", cqi, 0)
+    cm:apply_effect_bundle_to_characters_force("wh_main_bundle_military_upkeep_free_force", cqi, 10)
     cm:add_agent_experience(character, cm:random_number(25, 10), true)
     cm:add_experience_to_units_commanded_by_character(character, cm:random_number(5, 2))
 
@@ -348,53 +424,7 @@ function raiding_parties_spawn_armies_callback(cqi)
     end
 end
 
--- Function to trigger cleanup stuff after the invasion is over.
-function disaster_raiding_parties:finish()
-    if self.settings.started == true then
-        out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
-
-        core:remove_listener("RaidingPartiesFreeArmies")
-
-        dynamic_disasters:finish_disaster(self);
-    end
-end
-
---- Function to check if the disaster custom conditions are valid and can be trigger.
----@return boolean If the disaster will be triggered or not.
-function disaster_raiding_parties:check_start()
-
-    -- If none of the available factions is alive, do not trigger the disaster.
-    if self:update_alive() == false then
-        return false;
-    end
-
-    -- Debug mode support.
-    if dynamic_disasters.settings.debug_2 == true then
-        return true;
-    end
-
-    -- Base chance: 1/50 turns (2%).
-    local base_chance = 0.02;
-
-    -- Increase the change of starting based on how many attackers are already dead.
-    -- In theory, no need to remove again confederated factions.
-    for _, factions in pairs(self.settings.factions) do
-        for _, faction_key in pairs(factions) do
-            local faction = cm:get_faction(faction_key);
-            if not faction == false and faction:is_null_interface() == false and faction:is_dead() then
-                base_chance = base_chance + 0.01;
-            end
-        end
-    end
-
-    if cm:random_number(100, 0) / 100 < base_chance then
-        return true;
-    end
-
-    return false;
-end
-
--- Function to update the list of alive faction/subculture. Moved here because the logic got complex and we need to reuse it.
+-- Function to update the list of alive faction/subculture that we can use for the disaster.
 ---@return boolean #If we got at least one faction/subculture alive.
 function disaster_raiding_parties:update_alive()
 
@@ -405,16 +435,14 @@ function disaster_raiding_parties:update_alive()
         table.insert(human_subcultures, cm:get_faction(human_factions[i]):subculture())
     end
 
-    -- Second, only trigger it if any of the factions is alive.
-    -- We not only use this to check if a faction is alive, but also to get what factions/subcultures are still alive.
-    -- That way we can only pickup factions that are actually alive, and end the raidings if you wipe them out.
+    -- Second, re-populate the alive lists so we can make sure that the faction we're going to use is actually alive.
     self.settings.factions_alive = {};
     self.settings.subcultures_alive = {};
     local count_alive = 0;
-    for subculture, factions in pairs(self.settings.factions) do
+    for subculture, _ in pairs(self.settings.factions) do
 
         -- Update the potential factions removing the confederated ones.
-        factions = dynamic_disasters:remove_confederated_factions_from_list(factions);
+        self.settings.factions[subculture] = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions[subculture]);
 
         local is_human = false;
         for _, human_subculture in pairs(human_subcultures) do
@@ -424,12 +452,17 @@ function disaster_raiding_parties:update_alive()
             end
         end
 
-        -- Only consider non-human factions for this.
-        if is_human == false then
+        -- If the subculture is shared with a human player, discard all factions from it.
+        -- That way we can directly avoid problematic situations.
+        if is_human then
+            self.settings.factions[subculture] = {};
+
+        -- If the subculture is not human, then proceed to get the factions alive.
+        else
             local factions_alive = {};
             local count = 0;
-            for _, faction_key in pairs(factions) do
-                local faction = cm:get_faction(faction_key, true);
+            for _, faction_key in pairs(self.settings.factions[subculture]) do
+                local faction = cm:get_faction(faction_key);
 
                 -- Do not use vassals for this, as we may ran into an issue with your own vassals declaring war on you.
                 if not faction == false and faction:is_null_interface() == false and not faction:is_dead() and not faction:is_vassal() then
@@ -446,8 +479,8 @@ function disaster_raiding_parties:update_alive()
         end
     end
 
-    -- If none of the available factions is alive, do not trigger the disaster.
-    return count_alive >= 0
+    -- Return if at least one of the subcultures has one or more factions alive.
+    return count_alive > 0
 end
 
 return disaster_raiding_parties
