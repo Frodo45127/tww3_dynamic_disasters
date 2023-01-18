@@ -56,6 +56,8 @@ disaster_skaven_incursions = {
         finished = false,                   -- If the disaster has been finished.
         repeteable = true,                  -- If the disaster can be repeated.
         is_endgame = false,                 -- If the disaster is an endgame.
+        revive_dead_factions = true,        -- If true, dead factions will be revived if needed.
+        enable_diplomacy = false,           -- If true, you will still be able to use diplomacy with disaster-related factions. Broken beyond believe, can make the game a cakewalk.
         min_turn = 30,                      -- Minimum turn required for the disaster to trigger.
         max_turn = 0,                       -- If the disaster hasn't trigger at this turn, we try to trigger it. Set to 0 to not check for max turn. Used only for some disasters.
         status = 0,                         -- Current status of the disaster. Used to re-initialize the disaster correctly on reload.
@@ -69,13 +71,12 @@ disaster_skaven_incursions = {
 
         -- Disaster-specific data.
         end_next_turn = false,
-        base_army_unit_count = 19,
         critical_mass = 15,                 -- Max amount of regions we'll expand the underempire before swapping to rat kings.
         max_turns = 4,                      -- Max turns we have to reach critical mass. If we don't reach it, trigger the invasion anyway.
         repeat_regions = {},
         faction = "",
 
-        -- List of skaven factions that will participate in the uprising.
+        -- List of skaven factions that will expand their underempire.
         factions = {
             "wh2_main_skv_clan_mors",           -- Clan Mors (Queek)
             "wh2_main_skv_clan_pestilens",      -- Clan Pestilens (Skrolk)
@@ -99,7 +100,7 @@ disaster_skaven_incursions = {
 
     inital_expansion_chance = 39,   -- Chance for each region to get an under empire expansion each turn
     repeat_expansion_chance = 13,   -- Chance for a region to get an under empire if it didn't get one on the first dice roll
-    unique_building_chance = 25,    -- Chance for a region to get one of the special faction-unique under empire templates
+    unique_building_chance = 50,    -- Chance for a region to get one of the special faction-unique under empire templates
     under_empire_buildings = {
         generic = {
             {
@@ -187,6 +188,12 @@ disaster_skaven_incursions = {
     }
 }
 
+--[[-------------------------------------------------------------------------------------------------------------
+
+    Mandatory functions.
+
+]]---------------------------------------------------------------------------------------------------------------
+
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
 function disaster_skaven_incursions:set_status(status)
     self.settings.status = status;
@@ -194,6 +201,7 @@ function disaster_skaven_incursions:set_status(status)
     if self.settings.status == STATUS_TRIGGERED then
 
         -- Listener to end the disaster 1 turn after all the invasions are triggered.
+        core:remove_listener("SkavenIncursionsEnd")
         core:add_listener(
             "SkavenIncursionsEnd",
             "WorldStartRound",
@@ -202,32 +210,26 @@ function disaster_skaven_incursions:set_status(status)
             end,
             function()
                 self:finish();
-                core:remove_listener("SkavenIncursionsEnd")
             end,
             true
         );
 
-        -- This triggers stage one of the disaster if the disaster hasn't been cancelled.
+        -- This triggers the "invasion" as in the skaven swap their undercity buildings to max level.
+        core:remove_listener("SkavenIncursionsInvasion")
         core:add_listener(
             "SkavenIncursionsInvasion",
             "WorldStartRound",
             function()
-                if self.settings.repeat_regions[self.settings.faction] == nil then
-                    self.settings.repeat_regions[self.settings.faction] = {}
-                end
-
                 local count = 0
-                for _ in pairs(self.settings.repeat_regions[self.settings.faction]) do count = count + 1 end
+                for _ in pairs(self.settings.repeat_regions) do count = count + 1 end
                 out("Frodo45127: Regions expanded: " .. count .. ".")
-                if (cm:turn_number() >= self.settings.last_triggered_turn and count >= self.settings.critical_mass) or cm:turn_number() >= self.settings.last_triggered_turn + self.settings.max_turns then
-                    return true
-                end
-                return false;
+
+                return (cm:turn_number() >= self.settings.last_triggered_turn and count >= self.settings.critical_mass) or cm:turn_number() >= self.settings.last_triggered_turn + self.settings.max_turns;
             end,
 
             -- If there are skaven alive, proceed with the invasion.
             function()
-                if self:check_finish() == true then
+                if self:check_finish() then
                     self:finish();
                 else
                     self:trigger_invasion();
@@ -237,27 +239,28 @@ function disaster_skaven_incursions:set_status(status)
             end,
             true
         );
+
+        -- Listener to keep retriggering the Under-Empire expansion each turn, as long as the disaster lasts.
+        core:remove_listener("SkavenIncursionsUnderEmpireExpansion");
+        core:add_listener(
+            "SkavenIncursionsUnderEmpireExpansion",
+            "WorldStartRound",
+            function()
+                local count = 0
+                for _ in pairs(self.settings.repeat_regions) do count = count + 1 end
+                return count < self.settings.critical_mass;
+            end,
+            function()
+                if self:check_finish() then
+                    self:finish();
+                else
+                    self:expand_under_empire();
+                end
+            end,
+            true
+        )
     end
 
-    -- Listener to keep retriggering the Under-Empire expansion each turn, as long as the disaster lasts.
-    core:remove_listener("SkavenIncursionsUnderEmpireExpansion");
-    core:add_listener(
-        "SkavenIncursionsUnderEmpireExpansion",
-        "WorldStartRound",
-        function()
-            if self.settings.repeat_regions[self.settings.faction] == nil then
-                self.settings.repeat_regions[self.settings.faction] = {}
-            end
-
-            local count = 0
-            for _ in pairs(self.settings.repeat_regions[self.settings.faction]) do count = count + 1 end
-            return self.settings.started == true and self.settings.status == STATUS_TRIGGERED and count < self.settings.critical_mass;
-        end,
-        function()
-            self:expand_under_empire()
-        end,
-        true
-    )
 end
 
 -- Function to trigger the disaster.
@@ -267,195 +270,23 @@ function disaster_skaven_incursions:start()
     -- Setup strategic under-cities for all factions available.
     out("Frodo45127: Setting up initial underempire base for faction " .. self.settings.faction .. ".");
     if self.initial_under_empire_placements[self.settings.faction] ~= nil then
-        if self.settings.repeat_regions[self.settings.faction] == nil then
-            self.settings.repeat_regions[self.settings.faction] = {}
-        end
-
         for _, region_key in pairs(self.initial_under_empire_placements[self.settings.faction]) do
 
             out("Frodo45127: Setting up initial underempire for faction " .. self.settings.faction .. ", region " .. region_key .. ".");
             local region = cm:get_region(region_key);
-            self:expand_under_empire_adjacent_region_check(self.settings.faction, region, {}, true, true, true)
+            self:expand_under_empire_adjacent_region(self.settings.faction, region, {}, true, true, true)
         end
     end
 
     -- Initialize listeners.
-    dynamic_disasters:trigger_incident(self.warning_event_key, nil, 0, nil);
+    dynamic_disasters:trigger_incident(self.warning_event_key, nil, 0, nil, nil, nil);
     self:set_status(STATUS_TRIGGERED);
 end
-
--- Function to trigger the invasion by swapping the main buildings of the undercities.
-function disaster_skaven_incursions:trigger_invasion()
-
-    -- For each region, replace the main building with the one of the anexation branch, so when the turn changes, nukes and armies are deployed.
-    local faction = cm:get_faction(self.settings.faction);
-    if not faction == false and faction:is_null_interface() == false then
-        if self.settings.repeat_regions[self.settings.faction] ~= nil then
-            local foreign_slots = faction:foreign_slot_managers();
-            for i = 0, foreign_slots:num_items() - 1 do
-                local foreign_slot = foreign_slots:item_at(i);
-                local region = foreign_slot:region();
-
-                -- If the slot is in a region we need to use for the invasion, check if it has one of the 3 buildings we want exploding and upgrade it.
-                if self.settings.repeat_regions[self.settings.faction][region:name()] then
-                    local slots = foreign_slot:slots();
-                    for i2 = 0, slots:num_items() - 1 do
-                        local slot = slots:item_at(i2)
-                        if not slot:is_null_interface() and slot:has_building() then
-                            local new_building = false;
-                            local building_key = slot:building();
-                            if building_key == "wh2_dlc12_under_empire_annexation_doomsday_1" then
-                                new_building = "wh2_dlc12_under_empire_annexation_doomsday_2";
-                            elseif building_key == "wh2_dlc12_under_empire_annexation_war_camp_1" then
-                                new_building = "wh2_dlc12_under_empire_annexation_war_camp_2";
-                            elseif building_key == "wh2_dlc14_under_empire_annexation_plague_cauldron_1" then
-                                new_building = "wh2_dlc14_under_empire_annexation_plague_cauldron_2";
-                            end
-
-                            if not new_building == false then
-                                cm:foreign_slot_instantly_upgrade_building(slot, new_building);
-                                out("Frodo45127: Invasion triggered, added " .. new_building .. " to " .. region:name() .. " for " .. faction:name());
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end
-
-    -- Trigger all the stuff related to the invasion (missions, effects,...).
-    self:set_status(STATUS_FULL_INVASION);
-end
-
--------------------------------------------
--- Underempire expansion logic
--------------------------------------------
-
--- This function expands the underempire when called, if expansion is still possible.
-function disaster_skaven_incursions:expand_under_empire()
-    local potential_skaven = {}
-    for _, faction_key in pairs(self.settings.factions) do
-        local faction = cm:get_faction(faction_key)
-        if dynamic_disasters:check_faction_is_valid(faction, false) then
-            table.insert(potential_skaven, faction_key)
-        end
-    end
-
-    -- Update the potential factions removing the confederated ones.
-    self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
-    for i = 1, #self.settings.factions do
-
-        -- We're only interested in expanding the underempire for factions that are actually alive.
-        -- NOTE: Make sure the ones we want each stage to expand are alive.
-        local faction_key = self.settings.factions[i];
-        local faction = cm:get_faction(faction_key);
-        if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false then
-
-            local checked_regions = {}
-
-            if self.settings.repeat_regions[faction_key] == nil then
-                self.settings.repeat_regions[faction_key] = {}
-            end
-
-            -- Try to expand to regions bordering the current underempire.
-            local foreign_region_list = faction:foreign_slot_managers()
-            for i2 = 0, foreign_region_list:num_items() -1 do
-                local region = foreign_region_list:item_at(i2):region()
-                self:expand_under_empire_adjacent_region_check(faction_key, region, checked_regions, false)
-            end
-
-            -- Try to expand to regions bordering the current surface empire.
-            local region_list = faction:region_list()
-            for i2 = 0, region_list:num_items() -1 do
-                local region = region_list:item_at(i2)
-                self:expand_under_empire_adjacent_region_check(faction_key, region, checked_regions, false)
-            end
-        end
-    end
-end
-
--- This function expands the underempire for the provided faction, using the provided region as source region to expand from.
-function disaster_skaven_incursions:expand_under_empire_adjacent_region_check(sneaky_skaven, region, checked_regions, force_unique_setup, ignore_rolls, apply_to_current_region)
-    local adjacent_region_list = region:adjacent_region_list()
-    for i = 0, adjacent_region_list:num_items() -1 do
-        local adjacent_region = adjacent_region_list:item_at(i)
-        local adjacent_region_key = adjacent_region:name()
-
-        if apply_to_current_region == true then
-            adjacent_region = region;
-            adjacent_region_key = region:name();
-        end
-
-        -- To reduce iterations, we only process regions that have not be processed yet this turn.
-        if checked_regions[adjacent_region_key] == nil then
-            checked_regions[adjacent_region_key] = true
-
-            -- Expand with higher chance on the first expansion, the reduce the expansion chance.
-            if not adjacent_region == false and adjacent_region:is_null_interface() == false then
-                local chance = self.repeat_expansion_chance
-                if self.settings.repeat_regions[sneaky_skaven][adjacent_region_key] == nil then
-                    chance = self.inital_expansion_chance
-                end
-
-                local dice_roll = cm:random_number(100, 1)
-                if (dice_roll <= chance or ignore_rolls == true) then
-                    out("Frodo45127: Spreading under-empire to " .. adjacent_region_key .. " for " .. sneaky_skaven)
-                    self.settings.repeat_regions[sneaky_skaven][adjacent_region_key] = true;
-
-                    -- If the region is abandoned, do not use underempire. Take the region directly.
-                    if adjacent_region:is_abandoned() then
-                        cm:transfer_region_to_faction(adjacent_region_key, sneaky_skaven)
-
-                    -- Only expand to regions not owned by the same faction and with not an undercity already there.
-                    elseif adjacent_region:owning_faction():name() ~= sneaky_skaven then
-                        local is_sneaky_skaven_present = false
-                        local foreign_slot_managers = adjacent_region:foreign_slot_managers()
-                        for i2 = 0, foreign_slot_managers:num_items() -1 do
-                            local foreign_slot_manager = foreign_slot_managers:item_at(i2)
-                            if foreign_slot_manager:faction():name() == sneaky_skaven then
-                                is_sneaky_skaven_present = true
-                                break
-                            end
-                        end
-
-                        if is_sneaky_skaven_present == false then
-
-                            -- Pick the underempire setup at random.
-                            local under_empire_buildings
-                            if self.under_empire_buildings[sneaky_skaven] ~= nil and (cm:random_number(100, 1) <= self.unique_building_chance or force_unique_setup == true) then
-                                under_empire_buildings = self.under_empire_buildings[sneaky_skaven]
-                            else
-                                local random_index = cm:random_number(#self.under_empire_buildings.generic)
-                                under_empire_buildings = self.under_empire_buildings.generic[random_index]
-                            end
-
-                            local region_cqi = adjacent_region:cqi()
-                            local faction_cqi = cm:get_faction(sneaky_skaven):command_queue_index()
-                            local foreign_slot = cm:add_foreign_slot_set_to_region_for_faction(faction_cqi, region_cqi, "wh2_dlc12_slot_set_underempire")
-
-                            -- Add the buildings to the underempire.
-                            for i3 = 1, #under_empire_buildings do
-                                local building_key = under_empire_buildings[i3]
-                                local slot = foreign_slot:slots():item_at(i3-1)
-                                cm:foreign_slot_instantly_upgrade_building(slot, building_key)
-                                out("Frodo45127: Added " .. building_key .. " to " .. adjacent_region:name() .. " for " .. sneaky_skaven)
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end
-end
-
--------------------------------------------
--- Underempire expansion logic end
--------------------------------------------
 
 -- Function to trigger cleanup stuff after the invasion is over.
 function disaster_skaven_incursions:finish()
     if self.settings.started == true then
-        out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
+        out("Frodo45127: Disaster: " .. self.name .. ". Triggering end of disaster.");
 
         self.settings.repeat_regions = {};
         self.settings.faction = "";
@@ -478,27 +309,18 @@ function disaster_skaven_incursions:check_start()
     self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
     out("Frodo45127: Disaster: " .. self.name .. ". Factions available: " .. #self.settings.factions .. ".");
 
-    -- Do not start if we don't have attackers for stage 1.
+    -- Do not start if we don't have attackers.
     if #self.settings.factions == 0 then
         return false;
     end
 
-    -- Check that Clan Skryre is alive or dead and non-confederated. It's needed to kickstart the disaster.
-    self.settings.factions = cm:random_sort_copy(self.settings.factions);
-    for _, faction_key in pairs(self.settings.factions) do
-        local faction = cm:get_faction(faction_key);
-        if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false then
-            self.settings.faction = faction:name();
-            break
-        end
+    -- Check that at least one of the factions is alive and has a capital.
+    self.settings.faction = dynamic_disasters:random_faction_alive_from_list_with_home_region(self.settings.factions);
+    if self.settings.faction == false then
+        return false;
     end
 
     out("Frodo45127: Disaster: " .. self.name .. ". Faction key: " .. self.settings.faction .. ".");
-
-    -- Do not start if we don't have a faction.
-    if self.settings.faction == "" then
-        return false;
-    end
 
     -- Debug mode support.
     if dynamic_disasters.settings.debug_2 == true then
@@ -531,12 +353,168 @@ end
 --- Function to check if the conditions to declare the disaster as "finished" are fulfilled.
 ---@return boolean If the disaster will be finished or not.
 function disaster_skaven_incursions:check_finish()
+
+    -- If the faction that's supposed to blowup in size is dead, end the disaster.
     local faction = cm:get_faction(self.settings.faction);
-    if not faction == false and faction:is_null_interface() == false and faction:is_dead() then
+    if faction == false or faction:is_null_interface() or faction:is_dead() then
         return true;
     end
 
     return false;
 end
+
+--[[-------------------------------------------------------------------------------------------------------------
+
+    Disaster-specific functions.
+
+]]---------------------------------------------------------------------------------------------------------------
+
+-- Function to trigger the invasion by swapping the main buildings of the undercities.
+function disaster_skaven_incursions:trigger_invasion()
+
+    -- For each region, replace the main building with the one of the anexation branch, so when the turn changes, nukes and armies are deployed.
+    local faction = cm:get_faction(self.settings.faction);
+    if not faction == false and faction:is_null_interface() == false then
+        local foreign_slots = faction:foreign_slot_managers();
+        for i = 0, foreign_slots:num_items() - 1 do
+            local foreign_slot = foreign_slots:item_at(i);
+            local region = foreign_slot:region();
+
+            -- If the slot is in a region we need to use for the invasion, check if it has one of the 3 buildings we want exploding and upgrade it.
+            if self.settings.repeat_regions[region:name()] then
+                local slots = foreign_slot:slots();
+                for i2 = 0, slots:num_items() - 1 do
+                    local slot = slots:item_at(i2)
+                    if not slot:is_null_interface() and slot:has_building() then
+                        local new_building = false;
+                        local building_key = slot:building();
+                        if building_key == "wh2_dlc12_under_empire_annexation_doomsday_1" then
+                            new_building = "wh2_dlc12_under_empire_annexation_doomsday_2";
+                        elseif building_key == "wh2_dlc12_under_empire_annexation_war_camp_1" then
+                            new_building = "wh2_dlc12_under_empire_annexation_war_camp_2";
+                        elseif building_key == "wh2_dlc14_under_empire_annexation_plague_cauldron_1" then
+                            new_building = "wh2_dlc14_under_empire_annexation_plague_cauldron_2";
+                        end
+
+                        if not new_building == false then
+                            cm:foreign_slot_instantly_upgrade_building(slot, new_building);
+                            out("Frodo45127: Invasion triggered, added " .. new_building .. " to " .. region:name() .. " for " .. faction:name());
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    -- Trigger all the stuff related to the invasion (missions, effects,...).
+    self:set_status(STATUS_FULL_INVASION);
+end
+
+-------------------------------------------
+-- Underempire expansion logic
+-------------------------------------------
+
+-- This function expands the underempire when called, if expansion is still possible.
+function disaster_skaven_incursions:expand_under_empire()
+
+    local faction = cm:get_faction(self.settings.faction);
+    local checked_regions = {}
+
+    -- Try to expand to regions bordering the current underempire.
+    local foreign_region_list = faction:foreign_slot_managers()
+    for i2 = 0, foreign_region_list:num_items() -1 do
+        local region = foreign_region_list:item_at(i2):region()
+        self:expand_under_empire_adjacent_region(self.settings.faction, region, checked_regions, false)
+    end
+
+    -- Try to expand to regions bordering the current surface empire.
+    local region_list = faction:region_list()
+    for i2 = 0, region_list:num_items() -1 do
+        local region = region_list:item_at(i2)
+        self:expand_under_empire_adjacent_region(self.settings.faction, region, checked_regions, false)
+    end
+end
+
+-- This function expands the underempire for the provided faction, using the provided region as source region to expand from.
+function disaster_skaven_incursions:expand_under_empire_adjacent_region(sneaky_skaven, region, checked_regions, force_unique_setup, ignore_rolls, apply_to_current_region)
+    local adjacent_region_list = region:adjacent_region_list()
+    for i = 0, adjacent_region_list:num_items() -1 do
+        local adjacent_region = adjacent_region_list:item_at(i);
+        self:expand_under_empire_to_region(sneaky_skaven, adjacent_region, checked_regions, force_unique_setup, ignore_rolls);
+    end
+
+    if apply_to_current_region == true then
+        self:expand_under_empire_to_region(sneaky_skaven, region, checked_regions, force_unique_setup, ignore_rolls);
+    end
+end
+
+-- This function expands the underempire for the provided faction, using the provided region as source region to expand from.
+function disaster_skaven_incursions:expand_under_empire_to_region(sneaky_skaven, adjacent_region, checked_regions, force_unique_setup, ignore_rolls)
+
+    -- To reduce iterations, we only process regions that have not be processed yet this turn.
+    local adjacent_region_key = adjacent_region:name();
+    if checked_regions[adjacent_region_key] == nil then
+        checked_regions[adjacent_region_key] = true
+
+        -- Expand with higher chance on the first expansion, the reduce the expansion chance.
+        if not adjacent_region == false and adjacent_region:is_null_interface() == false then
+            local chance = self.repeat_expansion_chance
+            if self.settings.repeat_regions[adjacent_region_key] == nil then
+                chance = self.inital_expansion_chance
+            end
+
+            local dice_roll = cm:random_number(100, 1)
+            if (dice_roll <= chance or ignore_rolls == true) then
+                out("Frodo45127: Spreading under-empire to " .. adjacent_region_key .. " for " .. sneaky_skaven)
+                self.settings.repeat_regions[adjacent_region_key] = true;
+
+                -- If the region is abandoned, do not use underempire. Take the region directly.
+                if adjacent_region:is_abandoned() then
+                    cm:transfer_region_to_faction(adjacent_region_key, sneaky_skaven)
+
+                -- Only expand to regions not owned by the same faction and with not an undercity already there.
+                elseif adjacent_region:owning_faction():name() ~= sneaky_skaven then
+                    local is_sneaky_skaven_present = false
+                    local foreign_slot_managers = adjacent_region:foreign_slot_managers()
+                    for i2 = 0, foreign_slot_managers:num_items() -1 do
+                        local foreign_slot_manager = foreign_slot_managers:item_at(i2)
+                        if foreign_slot_manager:faction():name() == sneaky_skaven then
+                            is_sneaky_skaven_present = true
+                            break
+                        end
+                    end
+
+                    if is_sneaky_skaven_present == false then
+
+                        -- Pick the underempire setup at random.
+                        local under_empire_buildings
+                        if self.under_empire_buildings[sneaky_skaven] ~= nil and (cm:random_number(100, 1) <= self.unique_building_chance or force_unique_setup == true) then
+                            under_empire_buildings = self.under_empire_buildings[sneaky_skaven]
+                        else
+                            local random_index = cm:random_number(#self.under_empire_buildings.generic)
+                            under_empire_buildings = self.under_empire_buildings.generic[random_index]
+                        end
+
+                        local region_cqi = adjacent_region:cqi()
+                        local faction_cqi = cm:get_faction(sneaky_skaven):command_queue_index()
+                        local foreign_slot = cm:add_foreign_slot_set_to_region_for_faction(faction_cqi, region_cqi, "wh2_dlc12_slot_set_underempire")
+
+                        -- Add the buildings to the underempire.
+                        for i3 = 1, #under_empire_buildings do
+                            local building_key = under_empire_buildings[i3]
+                            local slot = foreign_slot:slots():item_at(i3-1)
+                            cm:foreign_slot_instantly_upgrade_building(slot, building_key)
+                            out("Frodo45127: Added " .. building_key .. " to " .. adjacent_region:name() .. " for " .. sneaky_skaven)
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+-------------------------------------------
+-- Underempire expansion logic end
+-------------------------------------------
 
 return disaster_skaven_incursions
