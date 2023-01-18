@@ -70,8 +70,6 @@ disaster_waaagh = {
         difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
         mct_settings = {},                  -- Extra settings this disaster may pull from MCT.
 
-        army_count_per_province = 4,
-        unit_count = 19,
         early_warning_delay = 10,
 
         factions = {
@@ -113,6 +111,8 @@ disaster_waaagh = {
         regions = {},
 	},
 
+    unit_count = 19,
+    army_count_per_province = 4,
     army_templates = {
 
         -- Major

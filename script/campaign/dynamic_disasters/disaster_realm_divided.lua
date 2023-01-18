@@ -396,7 +396,7 @@ end
 
 --- Function to check if the conditions to declare the disaster as "finished" are fulfilled.
 ---@return boolean If the disaster will be finished or not.
-function disaster_grudge_too_far:check_finish()
+function disaster_realm_divided:check_finish()
 
     -- Update the potential factions removing the confederated ones and check if we still have factions to use.
     self.settings.cathayan_factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.cathayan_factions);

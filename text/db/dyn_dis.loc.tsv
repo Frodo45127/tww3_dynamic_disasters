@@ -246,3 +246,4 @@ mct_dyn_dis_pyramid_of_nagash_config	Pyramid of Nagash (Vanilla+)	true
 mct_dyn_dis_vampires_rise_config	Vampire's Rise (Vanilla+)	true
 mct_dyn_dis_waaagh_config	Da Biggest Waaagh (Vanilla+)	true
 mct_dyn_dis_wild_hunt_config	The Wild Hunt (Vanilla+)	true
+effects_description_dyn_dis_vampire_corruption_mapwide	Vampiric corruption: %+n	true

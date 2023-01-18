@@ -293,7 +293,7 @@ end
 
 --- Function to check if the conditions to declare the disaster as "finished" are fulfilled.
 ---@return boolean If the disaster will be finished or not.
-function disaster_grudge_too_far:check_finish()
+function disaster_chianchi_assault:check_finish()
 
     -- If the bastion meter went back to 0, end the disaster.
     if Bastion:get_saved_invasion_active_value() == false then

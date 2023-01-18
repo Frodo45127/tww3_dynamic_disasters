@@ -859,7 +859,7 @@ function dynamic_disasters:create_mission(faction_key, objectives, can_be_victor
         mm:set_victory_type("wh3_combi_victory_type_ultimate")
         mm:set_victory_mission(true)
         mm:set_show_mission(true)
-        mm:start()
+        mm:trigger()
         self.settings.victory_condition_triggered = true;
 
     else
@@ -870,7 +870,7 @@ function dynamic_disasters:create_mission(faction_key, objectives, can_be_victor
             local mm = mission_manager:new(faction_key, "dyn_dis_" .. disaster_name .. "_" .. mission_name .. "_" .. i, success_callback);
             self:add_objectives_to_mission(mm, { objectives[i] }, faction_key, true)
             mm:set_show_mission(true)
-            mm:start()
+            mm:trigger()
         end
     end
 end
@@ -1085,35 +1085,50 @@ end
 function dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, army_template, unit_count, declare_war, total_armies, disaster_name, success_callback, backup_faction_keys)
     local faction = cm:get_faction(faction_key);
     local region = cm:get_region(region_key);
-    local owner = region:owning_faction();
     local spawned = false;
 
     -- First try in the intended region, if it's either abandoned or not owned by the player.
-    if not region == false and region:is_abandoned() or (not owner == false and owner:is_null_interface() == false and not owner:is_human()) then
+    if not region == false and region:is_null_interface() == false and (region:is_abandoned() or (not region:owning_faction() == false and region:owning_faction():is_null_interface() == false and not region:owning_faction():is_human())) then
+        out("Frodo45127: Spawning armies in region " .. region_key .. " for faction " .. faction_key .. ".");
+
         spawned = dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, unit_count, declare_war, total_armies, disaster_name, success_callback)
-        dynamic_disasters:prepare_reveal_regions({ region:name() });
+        if spawned then
+            dynamic_disasters:prepare_reveal_regions({ region:name() });
+        end
 
     -- If that fails, try in their own home region, if they have one.
     elseif not faction == false and faction:is_null_interface() == false and faction:has_home_region() then
+        out("Frodo45127: Spawning armies in home region " .. faction:home_region():name() .. " for faction " .. faction_key .. ".");
+
         region = faction:home_region();
         spawned = dynamic_disasters:create_scenario_force(faction_key, region:name(), army_template, unit_count, false, total_armies, disaster_name, success_callback)
-        dynamic_disasters:prepare_reveal_regions({ region:name() });
+        if spawned then
+            dynamic_disasters:prepare_reveal_regions({ region:name() });
+        end
 
     -- If that fails, try to check if their faction leader is alive, and use the region he/she is in.
     elseif not faction == false and faction:is_null_interface() == false and faction:has_faction_leader() and faction:faction_leader():has_region() and faction:faction_leader():has_region() then
+        out("Frodo45127: Spawning armies in faction's leader region " .. faction:faction_leader():region():name() .. " for faction " .. faction_key .. ".");
+
         region = faction:faction_leader():region();
         spawned = dynamic_disasters:create_scenario_force(faction_key, region:name(), army_template, unit_count, false, total_armies, disaster_name, success_callback)
-        dynamic_disasters:prepare_reveal_regions({ region:name() });
+        if spawned then
+            dynamic_disasters:prepare_reveal_regions({ region:name() });
+        end
 
     -- If that fails, try with the backup factions. We need to find one alive and with a home region.
     else
         local faction_alive_key = self:random_faction_alive_from_list_with_home_region(backup_faction_keys)
+        out("Frodo45127: Spawning armies in faction's allied " .. faction_alive_key .. " for faction " .. faction_key .. ".");
+
         if not faction_alive_key == false then
             local faction_alive = cm:get_faction(faction_alive_key);
             if not faction_alive == false and faction_alive:is_null_interface() == false and faction_alive:has_home_region() then
                 region = faction_alive:home_region();
                 spawned = dynamic_disasters:create_scenario_force(faction_key, region:name(), army_template, unit_count, false, total_armies, disaster_name, success_callback)
-                dynamic_disasters:prepare_reveal_regions({ region:name() });
+                if spawned then
+                    dynamic_disasters:prepare_reveal_regions({ region:name() });
+                end
             else
                 out("Frodo45127: ERROR: We tried to spawn armies on " .. region_key .. " but the backup faction " .. faction_alive_key .. " was unusable.");
             end
@@ -1333,6 +1348,10 @@ function dynamic_disasters:declare_war_to_all(faction, subcultures_to_ignore, de
         declare_war_on_allies = false;
     end
 
+    -- Disable events because if this is used en-masse can cause lag. A ton of lag.
+    cm:disable_event_feed_events(true, "wh_event_category_conquest", "", "")
+    cm:disable_event_feed_events(true, "wh_event_category_diplomacy", "", "")
+
     if not faction == false and faction:is_null_interface() == false then
         local faction_list = cm:model():world():faction_list()
         for i = 0, faction_list:num_items() - 1 do
@@ -1376,6 +1395,14 @@ function dynamic_disasters:declare_war_to_all(faction, subcultures_to_ignore, de
             end
         end
     end
+
+    cm:callback(
+        function()
+            cm:disable_event_feed_events(false, "wh_event_category_conquest", "", "");
+            cm:disable_event_feed_events(false, "wh_event_category_diplomacy", "", "");
+        end,
+        0.5
+    );
 end
 
 --[[-------------------------------------------------------------------------------------------------------------
