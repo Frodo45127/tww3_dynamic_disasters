@@ -222,6 +222,46 @@ chaos_invasion_max_turn_value:slider_set_min_max(0, 600)
 chaos_invasion_max_turn_value:set_default_value(0)
 chaos_invasion_max_turn_value:slider_set_step_size(10)
 
+--[[
+    Dragon Emperor's Wrath Config
+]]
+local disasters_individual_config_section_dragon_emperors_wrath = mod:add_new_section("dragon_emperors_wrath", loc_prefix.."dragon_emperors_wrath_config", true)
+local dragon_emperors_wrath_enable = mod:add_new_option("dragon_emperors_wrath_enable", "checkbox")
+dragon_emperors_wrath_enable:set_default_value(true)
+dragon_emperors_wrath_enable:set_text(loc_prefix.."dragon_emperors_wrath_enable", true)
+dragon_emperors_wrath_enable:set_tooltip_text(loc_prefix.."dragon_emperors_wrath_enable_tooltip", true)
+
+local dragon_emperors_wrath_revive_dead_factions = mod:add_new_option("dragon_emperors_wrath_revive_dead_factions", "checkbox")
+dragon_emperors_wrath_revive_dead_factions:set_default_value(true)
+dragon_emperors_wrath_revive_dead_factions:set_text(loc_prefix.."revive_dead_factions", true)
+dragon_emperors_wrath_revive_dead_factions:set_tooltip_text(loc_prefix.."revive_dead_factions_tooltip", true)
+
+local dragon_emperors_wrath_enable_diplomacy = mod:add_new_option("dragon_emperors_wrath_enable_diplomacy", "checkbox")
+dragon_emperors_wrath_enable_diplomacy:set_default_value(false)
+dragon_emperors_wrath_enable_diplomacy:set_text(loc_prefix.."enable_diplomacy", true)
+dragon_emperors_wrath_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy_tooltip", true)
+
+local dragon_emperors_wrath_difficulty_mod = mod:add_new_option("dragon_emperors_wrath_difficulty_mod", "slider")
+dragon_emperors_wrath_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)
+dragon_emperors_wrath_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_tooltip", true)
+dragon_emperors_wrath_difficulty_mod:slider_set_min_max(10, 500)
+dragon_emperors_wrath_difficulty_mod:set_default_value(150)
+dragon_emperors_wrath_difficulty_mod:slider_set_step_size(10)
+
+local dragon_emperors_wrath_min_turn_value = mod:add_new_option("dragon_emperors_wrath_min_turn_value", "slider")
+dragon_emperors_wrath_min_turn_value:set_text(loc_prefix.."min_turn_value", true)
+dragon_emperors_wrath_min_turn_value:set_tooltip_text(loc_prefix.."min_turn_value_tooltip", true)
+dragon_emperors_wrath_min_turn_value:slider_set_min_max(10, 400)
+dragon_emperors_wrath_min_turn_value:set_default_value(100)
+dragon_emperors_wrath_min_turn_value:slider_set_step_size(10)
+
+local dragon_emperors_wrath_max_turn_value = mod:add_new_option("dragon_emperors_wrath_max_turn_value", "slider")
+dragon_emperors_wrath_max_turn_value:set_text(loc_prefix.."max_turn_value", true)
+dragon_emperors_wrath_max_turn_value:set_tooltip_text(loc_prefix.."max_turn_value_tooltip", true)
+dragon_emperors_wrath_max_turn_value:slider_set_min_max(0, 600)
+dragon_emperors_wrath_max_turn_value:set_default_value(0)
+dragon_emperors_wrath_max_turn_value:slider_set_step_size(10)
+
 
 --[[
     Last Stand Config

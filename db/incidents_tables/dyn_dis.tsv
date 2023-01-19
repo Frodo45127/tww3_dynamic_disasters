@@ -41,3 +41,6 @@ dyn_dis_last_stand_chaos_gods	false	faction	true	Disaster		false
 dyn_dis_last_stand_mercs	false	faction	true	Disaster		false	
 dyn_dis_last_stand_skaven_betrayed	false	faction	true	Disaster		false	
 dyn_dis_last_stand_skaven_normal	false	faction	true	Disaster		false	
+dyn_dis_dragon_emperors_wrath_warning	false	cth/messenger	true	Disaster		false	
+dyn_dis_dragon_emperors_wrath_trigger	false	cth/victory	true	Disaster		true	
+dyn_dis_dragon_emperors_wrath_early_end	false	cth/defeat	true	Disaster		false	

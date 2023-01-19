@@ -247,3 +247,16 @@ mct_dyn_dis_vampires_rise_config	Vampire's Rise (Vanilla+)	true
 mct_dyn_dis_waaagh_config	Da Biggest Waaagh (Vanilla+)	true
 mct_dyn_dis_wild_hunt_config	The Wild Hunt (Vanilla+)	true
 effects_description_dyn_dis_vampire_corruption_mapwide	Vampiric corruption: %+n	true
+mct_dyn_dis_dragon_emperors_wrath_enable	Enable "The Dragon Emperor's Wrath" disaster	true
+missions_localised_title_dyn_dis_dragon_emperors_wrath_unleashed_1	Even The Mightiest Can Fall	true
+missions_localised_description_dyn_dis_dragon_emperors_wrath_unleashed_1	For untold milennia the Dragon Emperor of Cathay has ruled over the eastern empire of the world.... And it's time for that rule to end.	true
+incidents_localised_title_dyn_dis_dragon_emperors_wrath_early_end	Just rumours	true
+incidents_localised_description_dyn_dis_dragon_emperors_wrath_early_end	It seems the strange rumours of a war of dragons in the east were... just rumours.	true
+mct_dyn_dis_dragon_emperors_wrath_enable_tooltip	Enable/Disable the "The Dragon Emperor's Wrath" disaster. \\n\\nThe Great Dragon Emperor of Cathay has observed this world through milennia... and has decided it can only prosper under its rule.\\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
+effect_bundles_localised_title_dyn_dis_dragon_emperors_wrath_warning	Worrisome rumours from the east	true
+effect_bundles_localised_description_dyn_dis_dragon_emperors_wrath_warning	Strange rumours have starting circulating from the caravans coming from the far east about dragons preparing for war.... Prepare for the worst.	true
+mct_dyn_dis_dragon_emperors_wrath_config	The Dragon Emperor's Wrath	true
+incidents_localised_title_dyn_dis_dragon_emperors_wrath_trigger	The Dragon Emperor's Wrath Unleashed!	true
+incidents_localised_description_dyn_dis_dragon_emperors_wrath_trigger	For untold milennia the Dragon Emperor of Cathay has ruled over the eastern empire of the world. For untold milennia it has seen the world descend into chaos again and again... \\n\\nAnd it has come to a conclusion. Only him can lead the world to balance against chaos. But for that to happen, the world needs to know its wrath first.\\n\\nThe Great Eastern War has begun. Will it become a global war?	true
+incidents_localised_title_dyn_dis_dragon_emperors_wrath_warning	Worrisome rumours from the east	true
+incidents_localised_description_dyn_dis_dragon_emperors_wrath_warning	Strange rumours have starting circulating from the caravans coming from the far east about dragons preparing for war.... Prepare for the worst.	true

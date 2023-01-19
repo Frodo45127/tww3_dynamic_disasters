@@ -2793,7 +2793,7 @@ dyn_dis_army_templates = {
             wh_main_chs_mon_giant = 1,
 
             --Artillery
-            wh_main_chs_art_hellcannon = 1,
+            wh_main_chs_art_hellcannon = 2,
 
             --Vehicles
             wh3_dlc20_chs_mon_warshrine = 1,
@@ -2820,7 +2820,7 @@ dyn_dis_army_templates = {
             wh_dlc01_chs_mon_dragon_ogre = 1,
 
             --Artillery
-            wh_main_chs_art_hellcannon = 1,
+            wh_main_chs_art_hellcannon = 2,
 
             --Vehicles
             wh3_dlc20_chs_mon_warshrine = 1,
@@ -2854,7 +2854,7 @@ dyn_dis_army_templates = {
             wh_dlc01_chs_mon_dragon_ogre_shaggoth = 2,
 
             --Artillery
-            wh_main_chs_art_hellcannon = 1,
+            wh_main_chs_art_hellcannon = 2,
 
             --Vehicles
             wh3_dlc20_chs_mon_warshrine = 1,

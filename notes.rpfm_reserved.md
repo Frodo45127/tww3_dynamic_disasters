@@ -3,6 +3,8 @@ TODO:
 - Review Vermintide.
 - Expand Last Stand with more faction-exclusive armies
 - Expand Last Stand with more situations.
+- Expand The Dragon Emperor's Wrath with effects from the compass.
+- Expand The Dragon Emperor's Wrath with caravans with escorts.
 - Implement beastmen incursion? Not in a hurry, needs planning.
 - Implement a tale of two empires (massive war between cathay and the empire across the darklands).
 - Implement the hunger games (many factions attack lustria at the same time, and becomes a battle royale).
