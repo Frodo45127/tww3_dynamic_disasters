@@ -484,7 +484,7 @@ function dynamic_disasters:initialize()
         function ()
             return self:process_disasters()
         end,
-        true
+        false
     );
 
     -- Listener to check if the Vortex VFX should be enabled or not this turn. This has to trigger after all listeners to work properly.
@@ -630,6 +630,20 @@ function dynamic_disasters:process_disasters()
 
     -- Trigger the region reveal of all disasters together. Otherwise it bugs out for all but the last one.
     self:reveal_regions(nil);
+
+    -- So, story time:
+    -- We need this listener to always trigger AFTER all currently running disasters. Why? Because of the reveal_regions logic.
+    -- And the only way to guarantee that seems to be to re-create it on EVERY turn so the next turn triggers after every listener setup by the disasters.
+    core:add_listener(
+        "DynamicDisastersMaybeDisasterTime",
+        "WorldStartRound",
+        true,
+        function ()
+            return self:process_disasters()
+        end,
+        false
+    );
+
 end
 
 -- Function to cleanup after a disaster has finished.
