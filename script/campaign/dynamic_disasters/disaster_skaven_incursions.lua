@@ -27,6 +27,8 @@
                 - If the major clan is killed.
             - Once everything is spawned and freed, finish the disaster.
 
+    No Attacker Buffs on this one, as they're already buffed enough through the underempire script.
+
 ]]
 
 
@@ -68,7 +70,9 @@ disaster_skaven_incursions = {
         mct_settings = {                    -- Extra settings this disaster may pull from MCT.
             "critical_mass",
         },
-        incompatible_disasters = {},        -- List of disasters this disaster cannot run along with. To not trigger 2 disasters affecting the same faction at the same time.
+        incompatible_disasters = {          -- List of disasters this disaster cannot run along with. To not trigger 2 disasters affecting the same faction at the same time.
+            "the_vermintide"
+        },
 
         -- Disaster-specific data.
         end_next_turn = false,
