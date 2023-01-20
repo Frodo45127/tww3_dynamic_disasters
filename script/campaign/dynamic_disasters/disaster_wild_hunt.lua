@@ -20,9 +20,17 @@
         - Finish:
             - A certain amount of Sacred Forest regions controled, or all Wood Elfs factions destroyed.
 
+    Attacker Buffs:
+        - For endgame:
+            - Recruitment Cost: -50%
+            - Replenishment Rate: +10%
+            - Unkeep: -50%
+            - Leadership: +20%
+        - For kite faction:
+            - Ammunation: +100%
+
     Ideas:
         - Add The enchanted forest, Gaen Vale and the Sacred Pools to make this disaster more world-wide.
-
 ]]
 
 -- Status list for this disaster.

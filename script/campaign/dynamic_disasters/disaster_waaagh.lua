@@ -19,7 +19,15 @@
             - Every ceil(10 / (difficulty_mod + 1)) turns spawn an extra army in each Greenskins capital.
         - Finish:
             - All Greenskin factions destroyed.
-
+    Attacker Buffs:
+        - For endgame:
+            - Recruitment Cost: -50%
+            - Replenishment Rate: +10%
+            - Unkeep: -50%
+            - Leadership: +20%
+        - For agressive faction:
+            - Charge bonus: +25
+            - Melee Attack: +10%
 ]]
 
 -- Status list for this disaster.
