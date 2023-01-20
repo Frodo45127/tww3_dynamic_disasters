@@ -20,6 +20,19 @@
         - Finish:
             - Capture the Black Pyramid or destroy its owner.
 
+    Attacker Buffs:
+        - For endgame (Vampires and Tomb Kings:
+            - Recruitment Cost: -50%
+            - Replenishment Rate: +10%
+        - Only for Vampires:
+            - Unkeep: -50%
+        - Only for the Black Pyramid region/province:
+            - Only for Vampires:
+                - Vampiric Corruption: +20%.
+            - For all:
+                - Leadership: +20%
+                - Melee Defense: +10%
+
     Ideas:
         - Resurrect Nagash faction and extend this with the Nagash mod.
 ]]

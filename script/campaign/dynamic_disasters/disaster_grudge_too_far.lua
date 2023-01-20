@@ -19,7 +19,14 @@
             - Every ceil(10 / (difficulty_mod + 1)) turns spawn an extra army in each dwarf faction capital.
         - Finish:
             - A certain amount of dwarf regions controled, or all dwarf factions destroyed.
-
+    Attacker Buffs:
+        - For endgame:
+            - Recruitment Cost: -50%
+            - Replenishment Rate: +10%
+        - For range-focused faction:
+            - Ammunition: +50%
+            - Armour: +10%
+            - Melee Defense: +10%
 ]]
 
 -- Status list for this disaster.
