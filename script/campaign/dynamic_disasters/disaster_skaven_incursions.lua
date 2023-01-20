@@ -68,6 +68,7 @@ disaster_skaven_incursions = {
         mct_settings = {                    -- Extra settings this disaster may pull from MCT.
             "critical_mass",
         },
+        incompatible_disasters = {},        -- List of disasters this disaster cannot run along with. To not trigger 2 disasters affecting the same faction at the same time.
 
         -- Disaster-specific data.
         end_next_turn = false,

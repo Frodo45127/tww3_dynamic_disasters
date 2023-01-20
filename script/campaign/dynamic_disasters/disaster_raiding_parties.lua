@@ -62,6 +62,7 @@ disaster_raiding_parties = {
         wait_turns_between_repeats = 10,    -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
         difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
         mct_settings = {},                  -- Extra settings this disaster may pull from MCT.
+        incompatible_disasters = {},        -- List of disasters this disaster cannot run along with. To not trigger 2 disasters affecting the same faction at the same time.
 
         -- Disaster-specific data.
         army_template = {},

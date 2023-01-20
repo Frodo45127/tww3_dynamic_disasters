@@ -46,7 +46,8 @@ local mandatory_settings = {
     last_finished_turn = 0,             -- Turn when the disaster was last finished.
     wait_turns_between_repeats = 0,     -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
     difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
-    mct_settings = {}                   -- Extra settings this disaster may pull from MCT.
+    mct_settings = {},                  -- Extra settings this disaster may pull from MCT.
+    incompatible_disasters = {},        -- List of disasters this disaster cannot run along with. To not trigger 2 disasters affecting the same faction at the same time.
 }
 
 -- Functions required for all disasters. If missing, this manager will error out in the disaster and not load it.
@@ -562,17 +563,57 @@ function dynamic_disasters:process_disasters()
             out("Frodo45127: Processing disaster ".. disaster.name);
             if disaster.settings.enabled == true then
 
-                -- If it's already done, check if it's repeteable.
-                if disaster.settings.finished == true then
+                -- Check if any incompatible disasters are running.
+                local incompatible_running = false;
+                for _, disaster in ipairs(self.disasters) do
+                    for _, disaster_key in ipairs(disaster.settings.incompatible_disasters) do
+                        if disaster.name == disaster_key and disaster.settings.started then
+                            incompatible_running = true;
+                        end
+                    end
+                end
 
-                    -- If it's repeteable, try to trigger it again.
-                    if disaster.settings.repeteable == true then
-                        if disaster.settings.last_finished_turn > 0 and cm:turn_number() - disaster.settings.last_finished_turn > disaster.settings.wait_turns_between_repeats then
+                if not incompatible_running then
+
+                    -- If it's already done, check if it's repeteable.
+                    if disaster.settings.finished == true then
+
+                        -- If it's repeteable, try to trigger it again.
+                        if disaster.settings.repeteable == true then
+                            if disaster.settings.last_finished_turn > 0 and cm:turn_number() - disaster.settings.last_finished_turn > disaster.settings.wait_turns_between_repeats then
+                                if disaster.settings.is_endgame == false or (disaster.settings.is_endgame == true and self.settings.currently_running_endgames < self.settings.max_endgames_at_the_same_time and self.settings.max_endgames_per_campaign > self.settings.endgames_triggered) then
+
+                                    if disaster:check_start() then
+                                        out("Frodo45127: Disaster " .. disaster.name .. " triggered (repeated trigger).");
+                                        disaster.settings.finished = false;
+                                        disaster.settings.started = true;
+                                        disaster.settings.last_triggered_turn = cm:turn_number();
+
+                                        if disaster.settings.is_endgame == true then
+                                            self.settings.currently_running_endgames = self.settings.currently_running_endgames + 1;
+                                            self.settings.endgames_triggered = self.settings.endgames_triggered + 1;
+                                        end
+
+                                        disaster:start();
+                                    else
+                                        out("Frodo45127: Disaster ".. disaster.name .. " ignored due to not fulfilling trigger conditions.");
+                                    end
+                                else
+                                    out("Frodo45127: Disaster ".. disaster.name .. " ignored due to either turn limits or endgame limits.");
+                                end
+                            else
+                                out("Frodo45127: Disaster ".. disaster.name .. " ignored due to being inside the wait period between triggers.");
+                            end
+                        else
+                            out("Frodo45127: Disaster ".. disaster.name .. " ignored due to being finished and non-repeteable.");
+                        end
+
+                    -- If it's not yet started, check if we have the minimum requirements to start it.
+                    elseif disaster.settings.started == false then
+                        if cm:turn_number() >= disaster.settings.min_turn then
                             if disaster.settings.is_endgame == false or (disaster.settings.is_endgame == true and self.settings.currently_running_endgames < self.settings.max_endgames_at_the_same_time and self.settings.max_endgames_per_campaign > self.settings.endgames_triggered) then
-
                                 if disaster:check_start() then
-                                    out("Frodo45127: Disaster " .. disaster.name .. " triggered (repeated trigger).");
-                                    disaster.settings.finished = false;
+                                    out("Frodo45127: Disaster " .. disaster.name .. " triggered (first trigger).");
                                     disaster.settings.started = true;
                                     disaster.settings.last_triggered_turn = cm:turn_number();
 
@@ -586,41 +627,16 @@ function dynamic_disasters:process_disasters()
                                     out("Frodo45127: Disaster ".. disaster.name .. " ignored due to not fulfilling trigger conditions.");
                                 end
                             else
-                                out("Frodo45127: Disaster ".. disaster.name .. " ignored due to either turn limits or endgame limits.");
+                                out("Frodo45127: Disaster ".. disaster.name .. " ignored due to endgame limits.");
                             end
                         else
-                            out("Frodo45127: Disaster ".. disaster.name .. " ignored due to being inside the wait period between triggers.");
+                            out("Frodo45127: Disaster ".. disaster.name .. " ignored due to turn limits.");
                         end
                     else
-                        out("Frodo45127: Disaster ".. disaster.name .. " ignored due to being finished and non-repeteable.");
-                    end
-
-                -- If it's not yet started, check if we have the minimum requirements to start it.
-                elseif disaster.settings.started == false then
-                    if cm:turn_number() >= disaster.settings.min_turn then
-                        if disaster.settings.is_endgame == false or (disaster.settings.is_endgame == true and self.settings.currently_running_endgames < self.settings.max_endgames_at_the_same_time and self.settings.max_endgames_per_campaign > self.settings.endgames_triggered) then
-                            if disaster:check_start() then
-                                out("Frodo45127: Disaster " .. disaster.name .. " triggered (first trigger).");
-                                disaster.settings.started = true;
-                                disaster.settings.last_triggered_turn = cm:turn_number();
-
-                                if disaster.settings.is_endgame == true then
-                                    self.settings.currently_running_endgames = self.settings.currently_running_endgames + 1;
-                                    self.settings.endgames_triggered = self.settings.endgames_triggered + 1;
-                                end
-
-                                disaster:start();
-                            else
-                                out("Frodo45127: Disaster ".. disaster.name .. " ignored due to not fulfilling trigger conditions.");
-                            end
-                        else
-                            out("Frodo45127: Disaster ".. disaster.name .. " ignored due to endgame limits.");
-                        end
-                    else
-                        out("Frodo45127: Disaster ".. disaster.name .. " ignored due to turn limits.");
+                        out("Frodo45127: Disaster ".. disaster.name .. " ignored due to being in progress.");
                     end
                 else
-                    out("Frodo45127: Disaster ".. disaster.name .. " ignored due to being in progress.");
+                    out("Frodo45127: Disaster ".. disaster.name .. " ignored due to an incompatible disaster already running.");
                 end
             else
                 out("Frodo45127: Disaster ".. disaster.name .. " ignored due to being disabled.");
