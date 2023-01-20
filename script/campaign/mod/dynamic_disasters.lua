@@ -61,13 +61,13 @@ local mandatory_functions = {
 
 -- Data fields required for all disasters. If missing, this manager will error out in the disaster and not load it.
 local mandatory_data = {
-    "name",
-    "is_global",
-    "allowed_for_sc",
-    "denied_for_sc",
-    "campaigns",
-    "settings",
-    "default_settings",
+    "name",                             -- Name/Key of the disaster. Must be unique.
+    "is_global",                        -- If the disaster should be allowed to happen for all factions.
+    "allowed_for_sc",                   -- Subcultures that will trigger the disaster. Unused if the disaster is global.
+    "denied_for_sc",                    -- Subcultures that will not trigger the disaster.
+    "campaigns",                        -- List of campaigns this disaster works on.
+    "settings",                         -- List of variables that affect this disaster. Populated on runtime, leave it as an empty table on code.
+    "default_settings",                 -- List of default values for variables that affect this disaster. Used to populated the settings list on runtime.
 }
 
 -- Function to setup the save/load from savegame logic for items.
