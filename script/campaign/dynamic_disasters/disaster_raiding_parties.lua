@@ -24,6 +24,10 @@
         - Finish:
             - Once everything is spawned, it's up to the AI to attack.
 
+    Attacker Buffs (they're raiders, quick to deploy, but slow on land and hard to recover):
+        - Ammunation: +50%
+        - Movement Range: -10%
+        - Replenishment Rate: -10%
 ]]
 
 -- Status list for this disaster.
