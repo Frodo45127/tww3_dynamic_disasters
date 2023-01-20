@@ -1,25 +1,25 @@
 --[[
-    For The Motherland, By Frodo45127.
+    The Greatest Crusade, By Frodo45127.
 
-    Kislev decides that everything is the motherland, if you think hard enough.
+    Bretonnia decides to launch one last crusade... against everyone.
 
     Classified as Endgame, can trigger final mission. Supports debug mode.
 
     Requirements:
         - Random chance: 0.5% (1/200 turns).
-        - +1% for each Kislevite faction that has been wiped out (not confederated).
+        - +1% for each Bretonnian faction that has been wiped out (not confederated).
         - At least turn 100 (so the player has already "prepared").
-        - At least one of the Kislevite factions must be alive.
+        - At least one of the Bretonnian factions must be alive.
     Effects:
         - Trigger/Early Warning:
             - "The end is nigh" message
         - Invasion:
-            - All major and minor non-confederated Kislevite factions declare war on every non Kislevite faction.
-            - All major and minor non-confederated Kislevite factions gets disabled diplomacy and full-retard AI.
+            - All major and minor non-confederated Bretonnian factions declare war on every non Bretonnian faction.
+            - All major and minor non-confederated Bretonnian factions gets disabled diplomacy and full-retard AI.
             - If no other disaster has triggered a Victory Condition yet, this will trigger one.
-            - Every ceil(10 / (difficulty_mod + 1)) turns spawn an extra army in each Kislevite capital.
+            - Every ceil(10 / (difficulty_mod + 1)) turns spawn an extra army in each Bretonnian capital.
         - Finish:
-            - Kislev is destroyed.
+            - All Bretonnian factions are dead.
 
 ]]
 
@@ -27,13 +27,13 @@
 local STATUS_TRIGGERED = 1;
 local STATUS_STARTED = 2;
 
-for_the_motherland = {
-    name = "for_the_motherland",
+the_greatest_crusade = {
+    name = "the_greatest_crusade",
 
     -- Values for categorizing the disaster.
     is_global = true;
     allowed_for_sc = {},
-    denied_for_sc = { "wh3_main_sc_ksl_kislev" },
+    denied_for_sc = { "wh_main_sc_brt_bretonnia" },
     campaigns = {                       -- Campaigns this disaster works on.
         "main_warhammer",
     },
@@ -77,45 +77,58 @@ for_the_motherland = {
         factions = {
 
             -- Major
-            "wh3_main_ksl_the_ice_court",
-            "wh3_main_ksl_the_great_orthodoxy",
-            "wh3_main_ksl_ursun_revivalists",
+            "wh_main_brt_bretonnia",
+            "wh_main_brt_bordeleaux",
+            "wh_main_brt_carcassonne",
+            "wh2_dlc14_brt_chevaliers_de_lyonesse",
 
             -- Minor
-            "wh3_main_ksl_brotherhood_of_the_bear",
-            "wh3_main_ksl_druzhina_enclave",
-            "wh3_main_ksl_ropsmenn_clan",
+            "wh2_main_brt_knights_of_origo",
+            "wh2_main_brt_knights_of_the_flame",
+            "wh2_main_brt_thegans_crusaders",
+            "wh3_main_brt_aquitaine",
+            "wh_main_brt_artois",
+            "wh_main_brt_bastonne",
+            "wh_main_brt_lyonesse",
+            "wh_main_brt_parravon",
         },
     },
 
     unit_count = 19,
     army_count_per_province = 4,
     army_template = {
-        kislev = "lategame"
+        bretonnia = "lategame"
     },
 
     factions_base_regions = {
-        wh3_main_ksl_the_ice_court = "wh3_main_combi_region_kislev",
-        wh3_main_ksl_the_great_orthodoxy = "wh3_main_combi_region_erengrad",
-        wh3_main_ksl_ursun_revivalists = "wh3_main_combi_region_karak_vlag",                    -- Not where it starts, but it's a safer position than a minor settlement in the middle of the chaos wastes.
-        wh3_main_ksl_brotherhood_of_the_bear = "wh3_main_combi_region_the_tower_of_khrakk",
-        wh3_main_ksl_druzhina_enclave = "wh3_main_combi_region_fort_ostrosk",
-        wh3_main_ksl_ropsmenn_clan = "wh3_main_combi_region_praag",
+        wh_main_brt_bretonnia = "wh3_main_combi_region_couronne",
+        wh_main_brt_bordeleaux = "wh3_main_combi_region_temple_of_tlencan",
+        wh_main_brt_carcassonne = "wh3_main_combi_region_castle_carcassonne",
+        wh2_dlc14_brt_chevaliers_de_lyonesse = "wh3_main_combi_region_copher",
+        wh2_main_brt_knights_of_origo = "wh3_main_combi_region_zandri",
+        wh2_main_brt_knights_of_the_flame = "wh3_main_combi_region_lashiek",
+        wh2_main_brt_thegans_crusaders = "wh3_main_combi_region_martek",
+        wh3_main_brt_aquitaine = "wh3_main_combi_region_aquitaine",
+        wh_main_brt_artois = "wh3_main_combi_region_castle_artois",
+        wh_main_brt_bastonne = "wh3_main_combi_region_castle_bastonne",
+        wh_main_brt_lyonesse = "wh3_main_combi_region_lyonesse",
+        wh_main_brt_parravon = "wh3_main_combi_region_parravon",
     },
 
-    subculture = "wh3_main_sc_ksl_kislev",
+    subculture = "wh_main_sc_brt_bretonnia",
 
-    early_warning_incident_key = "dyn_dis_for_the_motherland_warning",
-    early_warning_effects_key = "dyn_dis_for_the_motherland_warning",
-    invasion_incident_key = "dyn_dis_for_the_motherland_trigger",
-    endgame_mission_name = "for_our_lands",
-    invader_buffs_effects_key = "dyn_dis_for_the_motherland_attacker_buffs",
-    finish_early_incident_key = "dyn_dis_for_the_motherland_early_end",
+    early_warning_incident_key = "dyn_dis_the_greatest_crusade_warning",
+    early_warning_effects_key = "dyn_dis_the_greatest_crusade_warning",
+    invasion_incident_key = "dyn_dis_the_greatest_crusade_trigger",
+    endgame_mission_name = "the_greatest_counter_crusade",
+    invader_buffs_effects_key = "dyn_dis_the_greatest_crusade_attacker_buffs",
+    finish_early_incident_key = "dyn_dis_the_greatest_crusade_early_end",
 
-    ai_personality_katarin = "dyn_dis_wh3_combi_kislev_katarin_endgame",
-    ai_personality_kostaltyn = "dyn_dis_wh3_combi_kislev_kostaltyn_endgame",
-    ai_personality_boris = "dyn_dis_wh3_combi_kislev_boris_endgame",
-    ai_personality_generic = "dyn_dis_wh3_combi_kislev_minor_endgame",
+    ai_personality_alberic = "dyn_dis_wh3_combi_bretonnia_alberic_endgame",
+    ai_personality_fay = "dyn_dis_wh3_combi_bretonnia_fayenchantress_endgame",
+    ai_personality_louen = "dyn_dis_wh3_combi_bretonnia_louen_endgame",
+    ai_personality_repanse = "dyn_dis_wh3_combi_bretonnia_repanse_endgame",
+    ai_personality_generic = "dyn_dis_wh3_combi_bretonnia_minor_endgame",
 }
 
 --[[-------------------------------------------------------------------------------------------------------------
@@ -125,15 +138,15 @@ for_the_motherland = {
 ]]---------------------------------------------------------------------------------------------------------------
 
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
-function for_the_motherland:set_status(status)
+function the_greatest_crusade:set_status(status)
     self.settings.status = status;
 
     if self.settings.status == STATUS_TRIGGERED then
 
         -- Listener for the disaster.
-        core:remove_listener("ForTheMotherlandStart")
+        core:remove_listener("TheGreatestCrusadeStart")
         core:add_listener(
-            "ForTheMotherlandStart",
+            "TheGreatestCrusadeStart",
             "WorldStartRound",
             function()
                 return cm:turn_number() == self.settings.last_triggered_turn + self.settings.early_warning_delay
@@ -143,9 +156,9 @@ function for_the_motherland:set_status(status)
                     dynamic_disasters:trigger_incident(self.finish_early_incident_key, nil, 0, nil, nil, nil);
                     self:finish()
                 else
-                    self:trigger_for_the_motherland();
+                    self:trigger_the_greatest_crusade();
                 end
-                core:remove_listener("ForTheMotherlandStart")
+                core:remove_listener("TheGreatestCrusadeStart")
             end,
             true
         );
@@ -154,9 +167,9 @@ function for_the_motherland:set_status(status)
     if self.settings.status == STATUS_STARTED then
 
         -- Listener to keep spawning armies every (10 / (difficulty_mod + 1)) turns, one army on each capital.
-        core:remove_listener("ForTheMotherlandRespawn")
+        core:remove_listener("TheGreatestCrusadeRespawn")
         core:add_listener(
-            "ForTheMotherlandRespawn",
+            "TheGreatestCrusadeRespawn",
             "WorldStartRound",
             function()
                 return cm:turn_number() % math.ceil(10 / (self.settings.difficulty_mod + 1)) == 0 and
@@ -179,7 +192,7 @@ function for_the_motherland:set_status(status)
 end
 
 -- Function to trigger the early warning before the disaster.
-function for_the_motherland:start()
+function the_greatest_crusade:start()
 
     -- Debug mode support.
     if dynamic_disasters.settings.debug_2 == true then
@@ -193,17 +206,17 @@ function for_the_motherland:start()
 end
 
 -- Function to trigger cleanup stuff after the invasion is over.
-function for_the_motherland:finish()
+function the_greatest_crusade:finish()
     if self.settings.started == true then
         out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
-        core:remove_listener("ForTheMotherlandRespawn")
+        core:remove_listener("TheGreatestCrusadeRespawn")
         dynamic_disasters:finish_disaster(self);
     end
 end
 
 --- Function to check if the disaster custom conditions are valid and can be trigger.
 ---@return boolean If the disaster will be triggered or not.
-function for_the_motherland:check_start()
+function the_greatest_crusade:check_start()
 
     -- Update the potential factions removing the confederated ones.
     self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
@@ -245,7 +258,7 @@ end
 
 --- Function to check if the conditions to declare the disaster as "finished" are fulfilled.
 ---@return boolean If the disaster will be finished or not.
-function for_the_motherland:check_finish()
+function the_greatest_crusade:check_finish()
 
     -- Update the potential factions removing the confederated ones and check if we still have factions to use.
     self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
@@ -259,7 +272,7 @@ end
 ]]---------------------------------------------------------------------------------------------------------------
 
 -- Function to trigger the invasion itself.
-function for_the_motherland:trigger_for_the_motherland()
+function the_greatest_crusade:trigger_the_greatest_crusade()
 
     for _, faction_key in pairs(self.settings.factions) do
         local invasion_faction = cm:get_faction(faction_key)
@@ -282,12 +295,14 @@ function for_the_motherland:trigger_for_the_motherland()
                 end
 
                 -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
-                if invasion_faction:name() == "wh3_main_ksl_the_ice_court" then
-                    cm:force_change_cai_faction_personality(invasion_faction:name(), self.ai_personality_katarin)
-                elseif invasion_faction:name() == "wh3_main_ksl_the_great_orthodoxy" then
-                    cm:force_change_cai_faction_personality(invasion_faction:name(), self.ai_personality_kostaltyn)
-                elseif invasion_faction:name() == "wh3_main_ksl_ursun_revivalists" then
-                    cm:force_change_cai_faction_personality(invasion_faction:name(), self.ai_personality_boris)
+                if invasion_faction:name() == "wh_main_brt_bretonnia" then
+                    cm:force_change_cai_faction_personality(invasion_faction:name(), self.ai_personality_louen)
+                elseif invasion_faction:name() == "wh_main_brt_bordeleaux" then
+                    cm:force_change_cai_faction_personality(invasion_faction:name(), self.ai_personality_alberic)
+                elseif invasion_faction:name() == "wh_main_brt_carcassonne" then
+                    cm:force_change_cai_faction_personality(invasion_faction:name(), self.ai_personality_fay)
+                elseif invasion_faction:name() == "wh2_dlc14_brt_chevaliers_de_lyonesse" then
+                    cm:force_change_cai_faction_personality(invasion_faction:name(), self.ai_personality_repanse)
                 else
                     cm:force_change_cai_faction_personality(invasion_faction:name(), self.ai_personality_generic)
                 end
@@ -314,4 +329,4 @@ function for_the_motherland:trigger_for_the_motherland()
     self:set_status(STATUS_STARTED);
 end
 
-return for_the_motherland
+return the_greatest_crusade

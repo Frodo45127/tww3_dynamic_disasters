@@ -303,6 +303,47 @@ for_the_motherland_max_turn_value:set_default_value(0)
 for_the_motherland_max_turn_value:slider_set_step_size(10)
 
 --[[
+    The Greatest Crusade Config
+]]
+local disasters_individual_config_section_the_greatest_crusade = mod:add_new_section("the_greatest_crusade", loc_prefix.."the_greatest_crusade_config", true)
+local the_greatest_crusade_enable = mod:add_new_option("the_greatest_crusade_enable", "checkbox")
+the_greatest_crusade_enable:set_default_value(true)
+the_greatest_crusade_enable:set_text(loc_prefix.."the_greatest_crusade_enable", true)
+the_greatest_crusade_enable:set_tooltip_text(loc_prefix.."the_greatest_crusade_enable_tooltip", true)
+
+local the_greatest_crusade_revive_dead_factions = mod:add_new_option("the_greatest_crusade_revive_dead_factions", "checkbox")
+the_greatest_crusade_revive_dead_factions:set_default_value(true)
+the_greatest_crusade_revive_dead_factions:set_text(loc_prefix.."revive_dead_factions", true)
+the_greatest_crusade_revive_dead_factions:set_tooltip_text(loc_prefix.."revive_dead_factions_tooltip", true)
+
+local the_greatest_crusade_enable_diplomacy = mod:add_new_option("the_greatest_crusade_enable_diplomacy", "checkbox")
+the_greatest_crusade_enable_diplomacy:set_default_value(false)
+the_greatest_crusade_enable_diplomacy:set_text(loc_prefix.."enable_diplomacy", true)
+the_greatest_crusade_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy_tooltip", true)
+
+local the_greatest_crusade_difficulty_mod = mod:add_new_option("the_greatest_crusade_difficulty_mod", "slider")
+the_greatest_crusade_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)
+the_greatest_crusade_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_tooltip", true)
+the_greatest_crusade_difficulty_mod:slider_set_min_max(10, 500)
+the_greatest_crusade_difficulty_mod:set_default_value(150)
+the_greatest_crusade_difficulty_mod:slider_set_step_size(10)
+
+local the_greatest_crusade_min_turn_value = mod:add_new_option("the_greatest_crusade_min_turn_value", "slider")
+the_greatest_crusade_min_turn_value:set_text(loc_prefix.."min_turn_value", true)
+the_greatest_crusade_min_turn_value:set_tooltip_text(loc_prefix.."min_turn_value_tooltip", true)
+the_greatest_crusade_min_turn_value:slider_set_min_max(10, 400)
+the_greatest_crusade_min_turn_value:set_default_value(100)
+the_greatest_crusade_min_turn_value:slider_set_step_size(10)
+
+local the_greatest_crusade_max_turn_value = mod:add_new_option("the_greatest_crusade_max_turn_value", "slider")
+the_greatest_crusade_max_turn_value:set_text(loc_prefix.."max_turn_value", true)
+the_greatest_crusade_max_turn_value:set_tooltip_text(loc_prefix.."max_turn_value_tooltip", true)
+the_greatest_crusade_max_turn_value:slider_set_min_max(0, 600)
+the_greatest_crusade_max_turn_value:set_default_value(0)
+the_greatest_crusade_max_turn_value:slider_set_step_size(10)
+
+
+--[[
     Last Stand Config
 ]]
 local disasters_individual_config_section_last_stand = mod:add_new_section("last_stand", loc_prefix.."last_stand_config", true)

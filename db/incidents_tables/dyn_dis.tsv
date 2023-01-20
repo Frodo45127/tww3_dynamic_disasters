@@ -47,3 +47,6 @@ dyn_dis_dragon_emperors_wrath_early_end	false	cth/defeat	true	Disaster		false
 dyn_dis_for_the_motherland_warning	false	ksl/messenger	true	Disaster		false	
 dyn_dis_for_the_motherland_trigger	false	ksl/victory	true	Disaster		true	
 dyn_dis_for_the_motherland_early_end	false	ksl/defeat	true	Disaster		false	
+dyn_dis_the_greatest_crusade_warning	false	brt/messenger	true	Disaster		false	
+dyn_dis_the_greatest_crusade_trigger	false	brt/victory	true	Disaster		true	
+dyn_dis_the_greatest_crusade_early_end	false	brt/defeat	true	Disaster		false	

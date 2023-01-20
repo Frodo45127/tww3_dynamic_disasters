@@ -273,3 +273,16 @@ incidents_localised_title_dyn_dis_for_the_motherland_trigger	The Great Motherlan
 incidents_localised_description_dyn_dis_for_the_motherland_trigger	Since the times of the first Zarina, Kislev has been the bulwark of the civilized world against Chaos. But Chaos has planted its roots east, west and south of Kislev... And Kislev must not allow it anymore. \\n\\nEven if we need to burn and freeze the whole world doing it, we must get rid of Chaos corruption once and for all!	true
 incidents_localised_title_dyn_dis_for_the_motherland_warning	Something's Brewing in Kislev	true
 incidents_localised_description_dyn_dis_for_the_motherland_warning	Something's brewing in Kislev, and it doesn't seem to be ale.... Prepare for the worst.	true
+mct_dyn_dis_the_greatest_crusade_enable	Enable "The Greatest Crusade!" disaster	true
+missions_localised_title_dyn_dis_the_greatest_crusade_the_greatest_counter_crusade_1	The Greatest Counter-Crusade	true
+missions_localised_description_dyn_dis_the_greatest_crusade_the_greatest_counter_crusade_1	Are we going to fall under the might of the Bretonnian Knights? Or are we going to change the tide of this war and bring vengeance to bretonnian lands?	true
+incidents_localised_title_dyn_dis_the_greatest_crusade_early_end	Bretonnian Knights disperses once again	true
+incidents_localised_description_dyn_dis_the_greatest_crusade_early_end	Whatever they wanted to do returning to their Realm, it seems it couldn't be done.	true
+mct_dyn_dis_the_greatest_crusade_enable_tooltip	Enable/Disable the "The Greatest Crusade!" disaster. \\n\\nAfter so many years of small skirmishes and observing impotents how the world was swallowed by chaos, corruption, and worst, armed peasants wanting to revolt, all the knights on Fair Brettonia have answer the call of their king.\\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
+effect_bundles_localised_title_dyn_dis_the_greatest_crusade_warning	The Knights reunite in Bretonnia	true
+effect_bundles_localised_description_dyn_dis_the_greatest_crusade_warning	For reasons yet unknown, Bretonnian Knights of all over the world are coming back to their Realm.... Prepare for the worst.	true
+mct_dyn_dis_the_greatest_crusade_config	The Greatest Crusade!	true
+incidents_localised_title_dyn_dis_the_greatest_crusade_trigger	The Greatest Crusade of All Times have begun!	true
+incidents_localised_description_dyn_dis_the_greatest_crusade_trigger	Since the Lady of the Lake granted her blessing to the first of the Bretonnian Kings, Fair Bretonnia has stood as a bastion of Chivalry on the old world. The same world that now is tainted by the forces of chaos, corrupted lords, and worst of all, armed peasants.\\n\\nOn this day, the Greatest of all Crusades for Honor and Chivalry begin. Tremble, world, because the Knights of Fair Bretonnia are coming.	true
+incidents_localised_title_dyn_dis_the_greatest_crusade_warning	The Knights reunite in Bretonnia	true
+incidents_localised_description_dyn_dis_the_greatest_crusade_warning	For reasons yet unknown, Bretonnian Knights of all over the world are coming back to their Realm.... Prepare for the worst.	true
