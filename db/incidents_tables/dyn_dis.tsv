@@ -44,3 +44,6 @@ dyn_dis_last_stand_skaven_normal	false	faction	true	Disaster		false
 dyn_dis_dragon_emperors_wrath_warning	false	cth/messenger	true	Disaster		false	
 dyn_dis_dragon_emperors_wrath_trigger	false	cth/victory	true	Disaster		true	
 dyn_dis_dragon_emperors_wrath_early_end	false	cth/defeat	true	Disaster		false	
+dyn_dis_for_the_motherland_warning	false	ksl/messenger	true	Disaster		false	
+dyn_dis_for_the_motherland_trigger	false	ksl/victory	true	Disaster		true	
+dyn_dis_for_the_motherland_early_end	false	ksl/defeat	true	Disaster		false	

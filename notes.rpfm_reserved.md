@@ -11,4 +11,4 @@ TODO:
 - Implement Three Kingdoms 2: Electric Boogaloo (the 3 strongest factions get buffed and go against each other).
 - Implement Ordertide (all order factions ally against the chaos factions).
 - Implement The Last Crusade (bretonnia declares war on the entire world, maybe excluded wood elves).
-- Implement empire/bretonia/high elves/dark elves/cathay/kislev endgame disasters.
+- Implement empire/bretonia/high elves/dark elves endgame disasters.

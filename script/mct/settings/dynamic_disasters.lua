@@ -262,6 +262,45 @@ dragon_emperors_wrath_max_turn_value:slider_set_min_max(0, 600)
 dragon_emperors_wrath_max_turn_value:set_default_value(0)
 dragon_emperors_wrath_max_turn_value:slider_set_step_size(10)
 
+--[[
+    For The Motherland Config
+]]
+local disasters_individual_config_section_for_the_motherland = mod:add_new_section("for_the_motherland", loc_prefix.."for_the_motherland_config", true)
+local for_the_motherland_enable = mod:add_new_option("for_the_motherland_enable", "checkbox")
+for_the_motherland_enable:set_default_value(true)
+for_the_motherland_enable:set_text(loc_prefix.."for_the_motherland_enable", true)
+for_the_motherland_enable:set_tooltip_text(loc_prefix.."for_the_motherland_enable_tooltip", true)
+
+local for_the_motherland_revive_dead_factions = mod:add_new_option("for_the_motherland_revive_dead_factions", "checkbox")
+for_the_motherland_revive_dead_factions:set_default_value(true)
+for_the_motherland_revive_dead_factions:set_text(loc_prefix.."revive_dead_factions", true)
+for_the_motherland_revive_dead_factions:set_tooltip_text(loc_prefix.."revive_dead_factions_tooltip", true)
+
+local for_the_motherland_enable_diplomacy = mod:add_new_option("for_the_motherland_enable_diplomacy", "checkbox")
+for_the_motherland_enable_diplomacy:set_default_value(false)
+for_the_motherland_enable_diplomacy:set_text(loc_prefix.."enable_diplomacy", true)
+for_the_motherland_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy_tooltip", true)
+
+local for_the_motherland_difficulty_mod = mod:add_new_option("for_the_motherland_difficulty_mod", "slider")
+for_the_motherland_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)
+for_the_motherland_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_tooltip", true)
+for_the_motherland_difficulty_mod:slider_set_min_max(10, 500)
+for_the_motherland_difficulty_mod:set_default_value(150)
+for_the_motherland_difficulty_mod:slider_set_step_size(10)
+
+local for_the_motherland_min_turn_value = mod:add_new_option("for_the_motherland_min_turn_value", "slider")
+for_the_motherland_min_turn_value:set_text(loc_prefix.."min_turn_value", true)
+for_the_motherland_min_turn_value:set_tooltip_text(loc_prefix.."min_turn_value_tooltip", true)
+for_the_motherland_min_turn_value:slider_set_min_max(10, 400)
+for_the_motherland_min_turn_value:set_default_value(100)
+for_the_motherland_min_turn_value:slider_set_step_size(10)
+
+local for_the_motherland_max_turn_value = mod:add_new_option("for_the_motherland_max_turn_value", "slider")
+for_the_motherland_max_turn_value:set_text(loc_prefix.."max_turn_value", true)
+for_the_motherland_max_turn_value:set_tooltip_text(loc_prefix.."max_turn_value_tooltip", true)
+for_the_motherland_max_turn_value:slider_set_min_max(0, 600)
+for_the_motherland_max_turn_value:set_default_value(0)
+for_the_motherland_max_turn_value:slider_set_step_size(10)
 
 --[[
     Last Stand Config

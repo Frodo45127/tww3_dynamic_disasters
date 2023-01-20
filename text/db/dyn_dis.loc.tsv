@@ -260,3 +260,16 @@ incidents_localised_title_dyn_dis_dragon_emperors_wrath_trigger	The Dragon Emper
 incidents_localised_description_dyn_dis_dragon_emperors_wrath_trigger	For untold milennia the Dragon Emperor of Cathay has ruled over the eastern empire of the world. For untold milennia it has seen the world descend into chaos again and again... \\n\\nAnd it has come to a conclusion. Only him can lead the world to balance against chaos. But for that to happen, the world needs to know its wrath first.\\n\\nThe Great Eastern War has begun. Will it become a global war?	true
 incidents_localised_title_dyn_dis_dragon_emperors_wrath_warning	Worrisome rumours from the east	true
 incidents_localised_description_dyn_dis_dragon_emperors_wrath_warning	Strange rumours have starting circulating from the caravans coming from the far east about dragons preparing for war.... Prepare for the worst.	true
+mct_dyn_dis_for_the_motherland_enable	Enable "For The Motherland!" disaster	true
+missions_localised_title_dyn_dis_for_the_motherland_for_our_lands_1	For Our Lands	true
+missions_localised_description_dyn_dis_for_the_motherland_for_our_lands_1	The Great Zarina of Kislev and her Ice Court have gone mad with power... We have to resist their onslaught and show them that this is not their Motherland! This is Spar- I mean, OUR LANDS!	true
+incidents_localised_title_dyn_dis_for_the_motherland_early_end	Seems Kislev was Just Brewing Ale	true
+incidents_localised_description_dyn_dis_for_the_motherland_early_end	Seems Kislev was actually brewing ale... Stupid spies and their metaphors.	true
+mct_dyn_dis_for_the_motherland_enable_tooltip	Enable/Disable the "For The Motherland" disaster. \\n\\nAfter so many crisis caused by so many petty foreigners, the Zarina, together with its Ice Court, has decided to expand the definition of "Motherland" to all lands.\\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
+effect_bundles_localised_title_dyn_dis_for_the_motherland_warning	Something's Brewing in Kislev	true
+effect_bundles_localised_description_dyn_dis_for_the_motherland_warning	Something's brewing in Kislev, and it doesn't seem to be ale.... Prepare for the worst.	true
+mct_dyn_dis_for_the_motherland_config	For The Motherland!	true
+incidents_localised_title_dyn_dis_for_the_motherland_trigger	The Great Motherland War!	true
+incidents_localised_description_dyn_dis_for_the_motherland_trigger	Since the times of the first Zarina, Kislev has been the bulwark of the civilized world against Chaos. But Chaos has planted its roots east, west and south of Kislev... And Kislev must not allow it anymore. \\n\\nEven if we need to burn and freeze the whole world doing it, we must get rid of Chaos corruption once and for all!	true
+incidents_localised_title_dyn_dis_for_the_motherland_warning	Something's Brewing in Kislev	true
+incidents_localised_description_dyn_dis_for_the_motherland_warning	Something's brewing in Kislev, and it doesn't seem to be ale.... Prepare for the worst.	true
