@@ -21,6 +21,19 @@
         - Finish:
             - All Bretonnian factions are dead.
 
+    Attacker Buffs:
+        - For endgame:
+            - Recruitment Cost: -50%
+            - Replenishment Rate: +10%
+            - Unkeep: -50%
+            - Leadership: +20%
+        - For Cavalry-focused faction:
+            - Armour For Cavalry: +20%
+            - Melee Attack For Cavalry: +20%
+            - Charge Bonus For Cavalry: +20%
+
+    TODO:- Effective flankers to all Cavalry units.
+
 ]]
 
 -- Status list for this disaster.
