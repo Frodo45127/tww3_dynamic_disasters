@@ -21,9 +21,12 @@
             - Spawns at least 3 armies for Vilich, with more showing up every 7 turns.
             - Lasts until the invasion ends, either by taking back the wall or by losing half of Cathay.
         - Event waits 5 turns before being able to be repeated.
+
+    Attacker Buffs (only for full invasion after a gate breaks, for a limited time):
+        - Movement Range: -10% (to represent them passing through the gate, + to help to contain them a bit)
+
     TODO:
         - Allow armies of the other chaos gods.
-
 ]]
 
 -- Status list for this disaster.
