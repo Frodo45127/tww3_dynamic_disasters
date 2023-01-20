@@ -22,6 +22,16 @@
         - Finish:
             - Cathay is destroyed.
 
+    Attacker Buffs:
+        - For endgame:
+            - Recruitment Cost: -50%
+            - Replenishment Rate: +10%
+            - Unkeep: -50%
+            - Leadership: +20%
+        - For specialization in generic infantry formations.
+            - Melee Defence: 10%
+            - Reload Time: -10%
+
 ]]
 
 -- Status list for this disaster.
