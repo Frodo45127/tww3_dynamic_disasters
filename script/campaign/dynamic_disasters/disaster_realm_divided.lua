@@ -15,6 +15,12 @@
             - Spawn armies in their capitals, and buff them for 10 turns.
             - When a faction is killed, trigger a dilemma about their leaders coming to your service, which confederates them.
 
+    Attacker Buffs (this disaster is sudden, so we slow them down for the first few turns, then the AI runs normally):
+        - Recruitment Cost: -50%
+        - Replenishment Rate: +10%
+        - Movement Range: -10%
+        - Leadership: -10%
+
     IDEAS (Because thinking is free, but can get decided on how to do all this stuff):
         This disaster consists on a massive rebelion on Cathay. It can take multiple routes:
             - For northern provinces:
