@@ -286,3 +286,7 @@ incidents_localised_title_dyn_dis_the_greatest_crusade_trigger	The Greatest Crus
 incidents_localised_description_dyn_dis_the_greatest_crusade_trigger	Since the Lady of the Lake granted her blessing to the first of the Bretonnian Kings, Fair Bretonnia has stood as a bastion of Chivalry on the old world. The same world that now is tainted by the forces of chaos, corrupted lords, and worst of all, armed peasants.\\n\\nOn this day, the Greatest of all Crusades for Honor and Chivalry begin. Tremble, world, because the Knights of Fair Bretonnia are coming.	true
 incidents_localised_title_dyn_dis_the_greatest_crusade_warning	The Knights reunite in Bretonnia	true
 incidents_localised_description_dyn_dis_the_greatest_crusade_warning	For reasons yet unknown, Bretonnian Knights of all over the world are coming back to their Realm.... Prepare for the worst.	true
+mct_dyn_dis_long_victory_is_min_turn	Long Victory is Min Turn	true
+mct_dyn_dis_long_victory_is_min_turn_tooltip	If enabled, if we achieve Long Victory before the Min Turn, the Min Turn will dinamically change to the turn we achieve Long Victory.	true
+mct_dyn_dis_short_victory_is_min_turn	Short Victory is Min Turn	true
+mct_dyn_dis_short_victory_is_min_turn_tooltip	If enabled, if we achieve Short Victory before the Min Turn, the Min Turn will dinamically change to the turn we achieve Short Victory.	true

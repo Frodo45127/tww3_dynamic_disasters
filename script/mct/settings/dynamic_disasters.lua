@@ -87,6 +87,16 @@ aztec_invasion_max_turn_value:slider_set_min_max(0, 600)
 aztec_invasion_max_turn_value:set_default_value(0)
 aztec_invasion_max_turn_value:slider_set_step_size(10)
 
+local aztec_invasion_short_victory_is_min_turn = mod:add_new_option("aztec_invasion_short_victory_is_min_turn", "checkbox")
+aztec_invasion_short_victory_is_min_turn:set_default_value(false)
+aztec_invasion_short_victory_is_min_turn:set_text(loc_prefix.."short_victory_is_min_turn", true)
+aztec_invasion_short_victory_is_min_turn:set_tooltip_text(loc_prefix.."short_victory_is_min_turn_tooltip", true)
+
+local aztec_invasion_long_victory_is_min_turn = mod:add_new_option("aztec_invasion_long_victory_is_min_turn", "checkbox")
+aztec_invasion_long_victory_is_min_turn:set_default_value(true)
+aztec_invasion_long_victory_is_min_turn:set_text(loc_prefix.."long_victory_is_min_turn", true)
+aztec_invasion_long_victory_is_min_turn:set_tooltip_text(loc_prefix.."long_victory_is_min_turn_tooltip", true)
+
 --[[
     Raiding Parties Config
 ]]
@@ -222,6 +232,16 @@ chaos_invasion_max_turn_value:slider_set_min_max(0, 600)
 chaos_invasion_max_turn_value:set_default_value(0)
 chaos_invasion_max_turn_value:slider_set_step_size(10)
 
+local chaos_invasion_short_victory_is_min_turn = mod:add_new_option("chaos_invasion_short_victory_is_min_turn", "checkbox")
+chaos_invasion_short_victory_is_min_turn:set_default_value(false)
+chaos_invasion_short_victory_is_min_turn:set_text(loc_prefix.."short_victory_is_min_turn", true)
+chaos_invasion_short_victory_is_min_turn:set_tooltip_text(loc_prefix.."short_victory_is_min_turn_tooltip", true)
+
+local chaos_invasion_long_victory_is_min_turn = mod:add_new_option("chaos_invasion_long_victory_is_min_turn", "checkbox")
+chaos_invasion_long_victory_is_min_turn:set_default_value(true)
+chaos_invasion_long_victory_is_min_turn:set_text(loc_prefix.."long_victory_is_min_turn", true)
+chaos_invasion_long_victory_is_min_turn:set_tooltip_text(loc_prefix.."long_victory_is_min_turn_tooltip", true)
+
 --[[
     Dragon Emperor's Wrath Config
 ]]
@@ -261,6 +281,16 @@ dragon_emperors_wrath_max_turn_value:set_tooltip_text(loc_prefix.."max_turn_valu
 dragon_emperors_wrath_max_turn_value:slider_set_min_max(0, 600)
 dragon_emperors_wrath_max_turn_value:set_default_value(0)
 dragon_emperors_wrath_max_turn_value:slider_set_step_size(10)
+
+local dragon_emperors_wrath_short_victory_is_min_turn = mod:add_new_option("dragon_emperors_wrath_short_victory_is_min_turn", "checkbox")
+dragon_emperors_wrath_short_victory_is_min_turn:set_default_value(false)
+dragon_emperors_wrath_short_victory_is_min_turn:set_text(loc_prefix.."short_victory_is_min_turn", true)
+dragon_emperors_wrath_short_victory_is_min_turn:set_tooltip_text(loc_prefix.."short_victory_is_min_turn_tooltip", true)
+
+local dragon_emperors_wrath_long_victory_is_min_turn = mod:add_new_option("dragon_emperors_wrath_long_victory_is_min_turn", "checkbox")
+dragon_emperors_wrath_long_victory_is_min_turn:set_default_value(true)
+dragon_emperors_wrath_long_victory_is_min_turn:set_text(loc_prefix.."long_victory_is_min_turn", true)
+dragon_emperors_wrath_long_victory_is_min_turn:set_tooltip_text(loc_prefix.."long_victory_is_min_turn_tooltip", true)
 
 --[[
     For The Motherland Config
@@ -302,6 +332,15 @@ for_the_motherland_max_turn_value:slider_set_min_max(0, 600)
 for_the_motherland_max_turn_value:set_default_value(0)
 for_the_motherland_max_turn_value:slider_set_step_size(10)
 
+local for_the_motherland_short_victory_is_min_turn = mod:add_new_option("for_the_motherland_short_victory_is_min_turn", "checkbox")
+for_the_motherland_short_victory_is_min_turn:set_default_value(false)
+for_the_motherland_short_victory_is_min_turn:set_text(loc_prefix.."short_victory_is_min_turn", true)
+for_the_motherland_short_victory_is_min_turn:set_tooltip_text(loc_prefix.."short_victory_is_min_turn_tooltip", true)
+
+local for_the_motherland_long_victory_is_min_turn = mod:add_new_option("for_the_motherland_long_victory_is_min_turn", "checkbox")
+for_the_motherland_long_victory_is_min_turn:set_default_value(true)
+for_the_motherland_long_victory_is_min_turn:set_text(loc_prefix.."long_victory_is_min_turn", true)
+for_the_motherland_long_victory_is_min_turn:set_tooltip_text(loc_prefix.."long_victory_is_min_turn_tooltip", true)
 --[[
     The Greatest Crusade Config
 ]]
@@ -342,6 +381,15 @@ the_greatest_crusade_max_turn_value:slider_set_min_max(0, 600)
 the_greatest_crusade_max_turn_value:set_default_value(0)
 the_greatest_crusade_max_turn_value:slider_set_step_size(10)
 
+local the_greatest_crusade_short_victory_is_min_turn = mod:add_new_option("the_greatest_crusade_short_victory_is_min_turn", "checkbox")
+the_greatest_crusade_short_victory_is_min_turn:set_default_value(false)
+the_greatest_crusade_short_victory_is_min_turn:set_text(loc_prefix.."short_victory_is_min_turn", true)
+the_greatest_crusade_short_victory_is_min_turn:set_tooltip_text(loc_prefix.."short_victory_is_min_turn_tooltip", true)
+
+local the_greatest_crusade_long_victory_is_min_turn = mod:add_new_option("the_greatest_crusade_long_victory_is_min_turn", "checkbox")
+the_greatest_crusade_long_victory_is_min_turn:set_default_value(true)
+the_greatest_crusade_long_victory_is_min_turn:set_text(loc_prefix.."long_victory_is_min_turn", true)
+the_greatest_crusade_long_victory_is_min_turn:set_tooltip_text(loc_prefix.."long_victory_is_min_turn_tooltip", true)
 
 --[[
     Last Stand Config
@@ -433,6 +481,16 @@ the_vermintide_max_turn_value:slider_set_min_max(0, 600)
 the_vermintide_max_turn_value:set_default_value(0)
 the_vermintide_max_turn_value:slider_set_step_size(13)
 
+local the_vermintide_short_victory_is_min_turn = mod:add_new_option("the_vermintide_short_victory_is_min_turn", "checkbox")
+the_vermintide_short_victory_is_min_turn:set_default_value(false)
+the_vermintide_short_victory_is_min_turn:set_text(loc_prefix.."short_victory_is_min_turn", true)
+the_vermintide_short_victory_is_min_turn:set_tooltip_text(loc_prefix.."short_victory_is_min_turn_tooltip", true)
+
+local the_vermintide_long_victory_is_min_turn = mod:add_new_option("the_vermintide_long_victory_is_min_turn", "checkbox")
+the_vermintide_long_victory_is_min_turn:set_default_value(true)
+the_vermintide_long_victory_is_min_turn:set_text(loc_prefix.."long_victory_is_min_turn", true)
+the_vermintide_long_victory_is_min_turn:set_tooltip_text(loc_prefix.."long_victory_is_min_turn_tooltip", true)
+
 --[[
     Vanilla Grudge Too Far Config
 ]]
@@ -473,6 +531,16 @@ grudge_too_far_max_turn_value:slider_set_min_max(0, 600)
 grudge_too_far_max_turn_value:set_default_value(0)
 grudge_too_far_max_turn_value:slider_set_step_size(10)
 
+local grudge_too_far_short_victory_is_min_turn = mod:add_new_option("grudge_too_far_short_victory_is_min_turn", "checkbox")
+grudge_too_far_short_victory_is_min_turn:set_default_value(false)
+grudge_too_far_short_victory_is_min_turn:set_text(loc_prefix.."short_victory_is_min_turn", true)
+grudge_too_far_short_victory_is_min_turn:set_tooltip_text(loc_prefix.."short_victory_is_min_turn_tooltip", true)
+
+local grudge_too_far_long_victory_is_min_turn = mod:add_new_option("grudge_too_far_long_victory_is_min_turn", "checkbox")
+grudge_too_far_long_victory_is_min_turn:set_default_value(true)
+grudge_too_far_long_victory_is_min_turn:set_text(loc_prefix.."long_victory_is_min_turn", true)
+grudge_too_far_long_victory_is_min_turn:set_tooltip_text(loc_prefix.."long_victory_is_min_turn_tooltip", true)
+
 --[[
     Vanilla Pyramid of Nagash Config
 ]]
@@ -510,6 +578,16 @@ pyramid_of_nagash_max_turn_value:set_tooltip_text(loc_prefix.."max_turn_value_to
 pyramid_of_nagash_max_turn_value:slider_set_min_max(0, 600)
 pyramid_of_nagash_max_turn_value:set_default_value(0)
 pyramid_of_nagash_max_turn_value:slider_set_step_size(10)
+
+local pyramid_of_nagash_short_victory_is_min_turn = mod:add_new_option("pyramid_of_nagash_short_victory_is_min_turn", "checkbox")
+pyramid_of_nagash_short_victory_is_min_turn:set_default_value(false)
+pyramid_of_nagash_short_victory_is_min_turn:set_text(loc_prefix.."short_victory_is_min_turn", true)
+pyramid_of_nagash_short_victory_is_min_turn:set_tooltip_text(loc_prefix.."short_victory_is_min_turn_tooltip", true)
+
+local pyramid_of_nagash_long_victory_is_min_turn = mod:add_new_option("pyramid_of_nagash_long_victory_is_min_turn", "checkbox")
+pyramid_of_nagash_long_victory_is_min_turn:set_default_value(true)
+pyramid_of_nagash_long_victory_is_min_turn:set_text(loc_prefix.."long_victory_is_min_turn", true)
+pyramid_of_nagash_long_victory_is_min_turn:set_tooltip_text(loc_prefix.."long_victory_is_min_turn_tooltip", true)
 
 --[[
     Vanilla Vampires Rise Config
@@ -551,6 +629,16 @@ vampires_rise_max_turn_value:slider_set_min_max(0, 600)
 vampires_rise_max_turn_value:set_default_value(0)
 vampires_rise_max_turn_value:slider_set_step_size(10)
 
+local vampires_rise_short_victory_is_min_turn = mod:add_new_option("vampires_rise_short_victory_is_min_turn", "checkbox")
+vampires_rise_short_victory_is_min_turn:set_default_value(false)
+vampires_rise_short_victory_is_min_turn:set_text(loc_prefix.."short_victory_is_min_turn", true)
+vampires_rise_short_victory_is_min_turn:set_tooltip_text(loc_prefix.."short_victory_is_min_turn_tooltip", true)
+
+local vampires_rise_long_victory_is_min_turn = mod:add_new_option("vampires_rise_long_victory_is_min_turn", "checkbox")
+vampires_rise_long_victory_is_min_turn:set_default_value(true)
+vampires_rise_long_victory_is_min_turn:set_text(loc_prefix.."long_victory_is_min_turn", true)
+vampires_rise_long_victory_is_min_turn:set_tooltip_text(loc_prefix.."long_victory_is_min_turn_tooltip", true)
+
 --[[
     Vanilla Waaagh Config
 ]]
@@ -591,6 +679,15 @@ waaagh_max_turn_value:slider_set_min_max(0, 600)
 waaagh_max_turn_value:set_default_value(0)
 waaagh_max_turn_value:slider_set_step_size(10)
 
+local waaagh_short_victory_is_min_turn = mod:add_new_option("waaagh_short_victory_is_min_turn", "checkbox")
+waaagh_short_victory_is_min_turn:set_default_value(false)
+waaagh_short_victory_is_min_turn:set_text(loc_prefix.."short_victory_is_min_turn", true)
+waaagh_short_victory_is_min_turn:set_tooltip_text(loc_prefix.."short_victory_is_min_turn_tooltip", true)
+
+local waaagh_long_victory_is_min_turn = mod:add_new_option("waaagh_long_victory_is_min_turn", "checkbox")
+waaagh_long_victory_is_min_turn:set_default_value(true)
+waaagh_long_victory_is_min_turn:set_text(loc_prefix.."long_victory_is_min_turn", true)
+waaagh_long_victory_is_min_turn:set_tooltip_text(loc_prefix.."long_victory_is_min_turn_tooltip", true)
 
 --[[
     Vanilla Wild Hunt Config
@@ -631,3 +728,13 @@ wild_hunt_max_turn_value:set_tooltip_text(loc_prefix.."max_turn_value_tooltip", 
 wild_hunt_max_turn_value:slider_set_min_max(0, 600)
 wild_hunt_max_turn_value:set_default_value(0)
 wild_hunt_max_turn_value:slider_set_step_size(10)
+
+local wild_hunt_short_victory_is_min_turn = mod:add_new_option("wild_hunt_short_victory_is_min_turn", "checkbox")
+wild_hunt_short_victory_is_min_turn:set_default_value(false)
+wild_hunt_short_victory_is_min_turn:set_text(loc_prefix.."short_victory_is_min_turn", true)
+wild_hunt_short_victory_is_min_turn:set_tooltip_text(loc_prefix.."short_victory_is_min_turn_tooltip", true)
+
+local wild_hunt_long_victory_is_min_turn = mod:add_new_option("wild_hunt_long_victory_is_min_turn", "checkbox")
+wild_hunt_long_victory_is_min_turn:set_default_value(true)
+wild_hunt_long_victory_is_min_turn:set_text(loc_prefix.."long_victory_is_min_turn", true)
+wild_hunt_long_victory_is_min_turn:set_tooltip_text(loc_prefix.."long_victory_is_min_turn_tooltip", true)

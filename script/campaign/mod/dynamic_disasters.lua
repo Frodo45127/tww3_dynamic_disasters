@@ -39,6 +39,8 @@ local mandatory_settings = {
     is_endgame = true,                  -- If the disaster is an endgame.
     revive_dead_factions = true,        -- If true, dead factions will be revived if needed.
     enable_diplomacy = false,           -- If true, you will still be able to use diplomacy with disaster-related factions. Broken beyond believe, can make the game a cakewalk.
+    short_victory_is_min_turn = false,  -- If the short victory turn should be used as min turn.
+    long_victory_is_min_turn = false,   -- If the long victory turn should be used as min turn.
     min_turn = 60,                      -- Minimum turn required for the disaster to trigger.
     max_turn = 0,                       -- If the disaster hasn't trigger at this turn, we try to trigger it. Set to 0 to not check for max turn. Used only for some disasters.
     status = 0,                         -- Current status of the disaster. Used to re-initialize the disaster correctly on reload.
@@ -184,6 +186,18 @@ function dynamic_disasters:load_from_mct(mct)
         if not enable_diplomacy == false then
             local enable_diplomacy_setting = enable_diplomacy:get_finalized_setting();
             disaster.settings.enable_diplomacy = enable_diplomacy_setting;
+        end
+
+        local short_victory_is_min_turn = mod:get_option_by_key(disaster.name .. "_short_victory_is_min_turn");
+        if not short_victory_is_min_turn == false then
+            local short_victory_is_min_turn_setting = short_victory_is_min_turn:get_finalized_setting();
+            disaster.settings.short_victory_is_min_turn = short_victory_is_min_turn_setting;
+        end
+
+        local long_victory_is_min_turn = mod:get_option_by_key(disaster.name .. "_long_victory_is_min_turn");
+        if not long_victory_is_min_turn == false then
+            local long_victory_is_min_turn_setting = long_victory_is_min_turn:get_finalized_setting();
+            disaster.settings.long_victory_is_min_turn = long_victory_is_min_turn_setting;
         end
 
         for i = 1, #disaster.settings.mct_settings do
@@ -476,6 +490,22 @@ function dynamic_disasters:initialize()
         end,
         true
     );
+
+    -- Listener to change the min turn of each disaster accordingly if we have the "Short/Long Victory is Min Turn" settings enabled.
+    for _, disaster in pairs(self.disasters) do
+        core:add_listener(
+            disaster.name .. "VictoryIsMinTurnListener",
+            "MissionSucceeded",
+            function(context)
+                return (context:mission():mission_record_key() == "wh_main_long_victory" and disaster.settings.long_victory_is_min_turn == true) or
+                    (context:mission():mission_record_key() == "wh_main_short_victory" and disaster.settings.short_victory_is_min_turn == true);
+            end,
+            function(context)
+                disaster.settings.min_turn = cm:turn_number();
+            end,
+            true
+        );
+    end
 
     -- Listener for evaluating if a disaster can be started or not. Triggered at the begining of each turn.
     core:add_listener(
