@@ -7,6 +7,7 @@ TODO:
 - Expand The Dragon Emperor's Wrath with caravans with escorts.
 - Expand For The Motherland! with Kislev land effects affecting the entire world.
 - Expand Aztec Invasion with minor factions.
+- Add some items for nurgle and tzeench chaos realms rewards in Chaos Invasion.
 - Implement beastmen incursion? Not in a hurry, needs planning.
 - Implement a tale of two empires (massive war between cathay and the empire across the darklands).
 - Implement the hunger games (many factions attack lustria at the same time, and becomes a battle royale).

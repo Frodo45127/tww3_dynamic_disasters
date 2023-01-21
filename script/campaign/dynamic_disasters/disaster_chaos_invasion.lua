@@ -69,6 +69,11 @@
                     - Give mission to "restore" the Vortex by taking back Gaen Vale, Asurian's Temple, Tor Elyr and White Tower of Hoeth.
                     - While the mission lasts, chaos spawns are greatly reduced, to compensate for the absurd amount of rifts open.
                     - When the mission is completed, stop its effects and rift respawn outside the chaos wastes and norsca.
+    Attacker Buffs:
+        - Recruitment Cost: -50%
+        - Replenishment Rate: +10%
+        - Unkeep: -50%
+        - Leadership: +20%
 
     -- Reference for the timeline: https://warhammerfantasy.fandom.com/wiki/End_Times_Timeline#Appendix_1_-_Chronology_of_the_End_Times
     Not Yet Implemented:
@@ -153,7 +158,10 @@ disaster_chaos_invasion = {
         finished = false,                   -- If the disaster has been finished.
         repeteable = false,                 -- If the disaster can be repeated.
         is_endgame = true,                  -- If the disaster is an endgame.
+        revive_dead_factions = true,        -- If true, dead factions will be revived if needed.
+        enable_diplomacy = false,           -- If true, you will still be able to use diplomacy with disaster-related factions. Broken beyond believe, can make the game a cakewalk.
         min_turn = 100,                     -- Minimum turn required for the disaster to trigger.
+        max_turn = 0,                       -- If the disaster hasn't trigger at this turn, we try to trigger it. Set to 0 to not check for max turn. Used only for some disasters.
         status = 0,                         -- Current status of the disaster. Used to re-initialize the disaster correctly on reload.
         last_triggered_turn = 0,            -- Turn when the disaster was last triggerd.
         last_finished_turn = 0,             -- Turn when the disaster was last finished.
@@ -162,10 +170,11 @@ disaster_chaos_invasion = {
         mct_settings = {                    -- Extra settings this disaster may pull from MCT.
             "enable_rifts",
         },
+        incompatible_disasters = {},        -- List of disasters this disaster cannot run along with. To not trigger 2 disasters affecting the same faction at the same time.
 
         -- Disaster-specific data.
         enable_rifts = true,
-        base_army_unit_count = 19,
+
         stage_1_delay = 1,
         stage_2_delay = 1,
         grace_period = 1,
@@ -821,7 +830,7 @@ disaster_chaos_invasion = {
         "dyn_dis_wh3_main_combi_province_eastern_colonies",                 -- X:989, Y:141
         "dyn_dis_wh3_main_combi_province_great_desert_of_araby",            -- X:488, Y:256
         "dyn_dis_wh3_main_combi_province_great_mortis_delta",               -- X:583, Y:273
-        "dyn_dis_wh3_main_combi_province_heart_of_the_jungle",              -- X:653, Y:218
+        "dyn_dis_wh3_main_combi_province_heart_of_the_jungle",              -- X:653, Y:210 -- Moved from Y:218 because it's getting detected outside of this province.
         "dyn_dis_wh3_main_combi_province_kingdom_of_beasts",                -- X:774, Y:259
         "dyn_dis_wh3_main_combi_province_land_of_assassins",                -- X:425, Y:269
         "dyn_dis_wh3_main_combi_province_land_of_the_dead",                 -- X:609, Y:299
@@ -911,6 +920,8 @@ disaster_chaos_invasion = {
         ["wh3_main_teleportation_node_template_tze"] = {"wh3_main_tze_tzeentch_qb1", "rift_army_tzeentch"}
     },
 
+    base_army_unit_count = 19,
+
     stage_early_warning_incident_key = "dyn_dis_chaos_invasion_stage_early_warning",
     stage_1_incident_key = "dyn_dis_chaos_invasion_stage_1_trigger",
     stage_2_incident_key = "dyn_dis_chaos_invasion_stage_2_trigger",
@@ -940,9 +951,21 @@ disaster_chaos_invasion = {
     teleportation_network = "dyn_dis_chaos_invasion_network",
 }
 
+--[[-------------------------------------------------------------------------------------------------------------
+
+    Mandatory functions.
+
+]]---------------------------------------------------------------------------------------------------------------
+
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
 function disaster_chaos_invasion:set_status(status)
     self.settings.status = status;
+
+    --[[-------------------------------------------------------------------------------------------------------------
+        Listeners related to rifts.
+
+        These run always, as they're shared between stages.
+    ]]---------------------------------------------------------------------------------------------------------------
 
     -- Listener to spawn armies from open rifts. This one needs to trigger as long as the disaster is running.
     core:remove_listener("ChaosInvasionRiftArmies");
@@ -952,7 +975,7 @@ function disaster_chaos_invasion:set_status(status)
         function()
             return self.settings.started;
         end,
-        function(context)
+        function()
             local world = cm:model():world();
             local open_nodes = world:teleportation_network_system():lookup_network(self.teleportation_network):open_nodes();
             local default_owner = "wh_main_chs_chaos";
@@ -1061,7 +1084,7 @@ function disaster_chaos_invasion:set_status(status)
     core:add_listener(
         "ChaosInvasionRiftSwitchingTemplates",
         "CharacterPerformsSettlementOccupationDecision",
-        function(context)
+        function()
             return self.settings.started;
         end,
         function(context)
@@ -1198,10 +1221,10 @@ function disaster_chaos_invasion:set_status(status)
     core:add_listener(
         "ChaosInvasionRiftClosingBattleCleanupAfterRetreat",
         "CharacterWithdrewFromBattle",
-        function(context)
+        function()
             return cm:get_saved_value("ChaosInvasionRiftClosureBattleActive");
         end,
-        function(context)
+        function()
             out("Frodo45127: Listener ChaosInvasionRiftClosingBattleCleanupAfterRetreat triggered.")
             invasion_manager:kill_invasion_by_key("ChaosInvasionRiftClosureArmy");
 
@@ -1299,10 +1322,10 @@ function disaster_chaos_invasion:set_status(status)
     core:add_listener(
         "ChaosInvasionRiftEventBattleCleanupAfterRetreat",
         "CharacterWithdrewFromBattle",
-        function(context)
+        function()
             return cm:get_saved_value("ChaosInvasionRiftEventBattleActive");
         end,
-        function(context)
+        function()
             local node_details = cm:get_saved_value("ChaosInvasionRiftEventBattleActive");
             local char_cqi = node_details[3];
             local char = cm:get_character_by_cqi(char_cqi);
@@ -1399,11 +1422,11 @@ function disaster_chaos_invasion:set_status(status)
                     core:add_listener(
                         "ChaosInvasionRiftDilemma" .. faction:name(),
                         "DilemmaChoiceMadeEvent",
-                        function (context)
-                            return context:faction():is_human() and context:dilemma() == dilemma_key
+                        function (context2)
+                            return context2:faction():is_human() and context2:dilemma() == dilemma_key
                         end,
-                        function (context)
-                            local choice = context:choice();
+                        function (context2)
+                            local choice = context2:choice();
 
                             -- If we want to fight, then we do the same as with normal closure battles, but we also need to change the battlefield to a RoC one.
                             if choice == 0 then
@@ -1411,7 +1434,7 @@ function disaster_chaos_invasion:set_status(status)
                                 -- Store the fact that we're fighting an special battle, so we can clean up after it later.
                                 local from_data = {from_node_key, from_template_key}
                                 local to_data = {to_node_key, to_template_key}
-                                local faction_key = context:faction():name();
+                                local faction_key = context2:faction():name();
 
                                 cm:set_saved_value("ChaosInvasionRiftEventBattleActive", {from_data, to_data, character:command_queue_index(), template, trait_received, faction_key});
 
@@ -1529,37 +1552,11 @@ function disaster_chaos_invasion:set_status(status)
         true
     );
 
-    -- Listener to know when to free the AI armies.
-    core:remove_listener("ChaosInvasionFreeArmiesStage1");
-    core:add_listener(
-        "ChaosInvasionFreeArmiesStage1",
-        "WorldStartRound",
-        function()
-            return self.settings.started and cm:turn_number() <= self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.grace_period
-        end,
-        function()
-            out("Frodo45127: ChaosInvasionFreeArmiesStage1")
-            local max_turn = self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.grace_period;
-            dynamic_disasters:release_armies(self.settings.stage_1_data.cqis, self.settings.stage_1_data.targets, max_turn)
-        end,
-        true
-    );
+    --[[-------------------------------------------------------------------------------------------------------------
+        Listeners related to the great vortex mission.
 
-    -- Listener to know when to free the AI armies.
-    core:remove_listener("ChaosInvasionFreeArmiesStage2");
-    core:add_listener(
-        "ChaosInvasionFreeArmiesStage2",
-        "WorldStartRound",
-        function()
-            return self.settings.started and cm:turn_number() <= self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.grace_period
-        end,
-        function()
-            out("Frodo45127: ChaosInvasionFreeArmiesStage2")
-            local max_turn = self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.grace_period;
-            dynamic_disasters:release_armies(self.settings.stage_2_data.cqis, self.settings.stage_2_data.targets, max_turn)
-        end,
-        true
-    );
+        These run always, as they're shared between stages.
+    ]]---------------------------------------------------------------------------------------------------------------
 
     -- Listener to cancel the vortex mission if an order AI manages to recover the 4 target cities.
     core:remove_listener("ChaosInvasionGreatVortexUndoneAIEnd");
@@ -1589,7 +1586,7 @@ function disaster_chaos_invasion:set_status(status)
                 cm:cancel_custom_mission(humans[i], "dyn_dis_" .. self.name .. "_" .. self.great_vortex_undone_mission_name .. "_1");
             end
 
-            dynamic_disasters:trigger_incident(self.great_vortex_undone_cancel_incident_key, nil, 0, nil);
+            dynamic_disasters:trigger_incident(self.great_vortex_undone_cancel_incident_key, nil, 0, nil, nil, nil);
             self:restore_vortex()
         end,
         true
@@ -1633,14 +1630,13 @@ function disaster_chaos_invasion:set_status(status)
             local faction_list = cm:model():world():faction_list()
             for i = 0, faction_list:num_items() - 1 do
                 local faction = faction_list:item_at(i)
-
-                if not faction:is_dead() and faction:is_human() == false then
+                if not faction:is_dead() and not faction:is_human() then
                     cm:apply_effect_bundle(self.great_vortex_undone_effect_key, faction:name(), 0)
                 end
             end
 
             dynamic_disasters:add_mission(objectives, false, self.name, self.great_vortex_undone_mission_name, self.great_vortex_undone_incident_key, self.great_vortex_undone.regions[i], nil, function () self:restore_vortex() end, true)
-            dynamic_disasters:trigger_incident(self.great_vortex_undone_incident_key, self.great_vortex_undone_effect_key, 0, nil);
+            dynamic_disasters:trigger_incident(self.great_vortex_undone_incident_key, self.great_vortex_undone_effect_key, 0, nil, nil, nil);
             cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_chs_chaos")
             --cm:remove_vfx(dynamic_disasters.vortex_vfx);
         end,
@@ -1655,14 +1651,11 @@ function disaster_chaos_invasion:set_status(status)
             "ChaosInvasionStage1",
             "WorldStartRound",
             function()
-                if cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay then
-                    return true
-                end
-                return false;
+                return cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay;
             end,
             function()
-                if self:check_finish() == true then
-                    dynamic_disasters:trigger_incident(self.finish_before_stage_1_event_key, nil, 0, nil);
+                if self:check_finish() then
+                    dynamic_disasters:trigger_incident(self.finish_before_stage_1_event_key, nil, 0, nil, nil, nil);
                     self:finish();
                 else
                     self:trigger_stage_1();
@@ -1680,19 +1673,51 @@ function disaster_chaos_invasion:set_status(status)
             "ChaosInvasionStage2",
             "WorldStartRound",
             function()
-                if cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay then
-                    return true
-                end
-                return false;
+                return cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay;
             end,
             function()
-                if self:check_finish() == true then
-                    dynamic_disasters:trigger_incident(self.finish_event_key, nil, 0, nil);
+                if self:check_finish() then
+                    dynamic_disasters:trigger_incident(self.finish_event_key, nil, 0, nil, nil, nil);
                     self:finish();
                 else
                     self:trigger_stage_2();
                 end
                 core:remove_listener("ChaosInvasionStage2")
+            end,
+            true
+        );
+
+        -- Listener to know when to free the AI armies.
+        core:remove_listener("ChaosInvasionFreeArmiesStage1");
+        core:add_listener(
+            "ChaosInvasionFreeArmiesStage1",
+            "WorldStartRound",
+            function()
+                return self.settings.started and cm:turn_number() <= self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.grace_period
+            end,
+            function()
+                out("Frodo45127: ChaosInvasionFreeArmiesStage1")
+                local max_turn = self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.grace_period;
+                dynamic_disasters:release_armies(self.settings.stage_1_data.cqis, self.settings.stage_1_data.targets, max_turn)
+            end,
+            true
+        );
+    end
+
+    if self.settings.status == STATUS_STAGE_2 then
+
+        -- Listener to know when to free the AI armies.
+        core:remove_listener("ChaosInvasionFreeArmiesStage2");
+        core:add_listener(
+            "ChaosInvasionFreeArmiesStage2",
+            "WorldStartRound",
+            function()
+                return self.settings.started and cm:turn_number() <= self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.grace_period
+            end,
+            function()
+                out("Frodo45127: ChaosInvasionFreeArmiesStage2")
+                local max_turn = self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.grace_period;
+                dynamic_disasters:release_armies(self.settings.stage_2_data.cqis, self.settings.stage_2_data.targets, max_turn)
             end,
             true
         );
@@ -1710,13 +1735,139 @@ function disaster_chaos_invasion:start()
         self.settings.grace_period = 5;
     else
         self.settings.stage_1_delay = cm:random_number(12, 8);
-        self.settings.grace_period = 15;
+        self.settings.grace_period = 8;
     end
 
     -- Initialize listeners.
-    dynamic_disasters:trigger_incident(self.stage_early_warning_incident_key, self.stage_early_warning_incident_key, self.settings.stage_1_delay, nil);
+    dynamic_disasters:trigger_incident(self.stage_early_warning_incident_key, self.stage_early_warning_incident_key, self.settings.stage_1_delay, nil, nil, nil);
     self:set_status(STATUS_TRIGGERED);
 end
+
+-- Function to trigger cleanup stuff after the disaster is over.
+--
+-- It has to call the dynamic_disasters:finish_disaster(self) at the end.
+function disaster_chaos_invasion:finish()
+    if self.settings.started == true then
+        out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
+
+        -- Remove all effects related to this disaster and its missions.
+        local faction_list = cm:model():world():faction_list()
+        for i = 0, faction_list:num_items() - 1 do
+            local faction = faction_list:item_at(i)
+            cm:remove_effect_bundle(self.great_vortex_undone_effect_key, faction:name());
+            cm:remove_effect_bundle(self.effects_global_key, faction:name());
+        end
+
+        -- Remove all the related listeners.
+        core:remove_listener("ChaosInvasionRiftArmies");
+        core:remove_listener("ChaosInvasionRespawnRiftsChaosWastes");
+        core:remove_listener("ChaosInvasionRiftSwitchingTemplates");
+        core:remove_listener("ChaosInvasionRiftClosingBattleQuery");
+        core:remove_listener("ChaosInvasionRiftClosingBattle");
+        core:remove_listener("ChaosInvasionRiftClosingBattleCleanup");
+        core:remove_listener("ChaosInvasionRiftClosingBattleCleanupAfterRetreat");
+        core:remove_listener("ChaosInvasionRiftEventBattleCleanup");
+        core:remove_listener("ChaosInvasionRiftEventBattleCleanupAfterRetreat");
+        core:remove_listener("ChaosInvasionRiftArmyTravelCompleted");
+        core:remove_listener("ChaosInvasionRiftEventPendingBattle");
+        core:remove_listener("ChaosInvasionRiftTraitRemover");
+        core:remove_listener("ChaosInvasionFreeArmiesStage1");
+        core:remove_listener("ChaosInvasionFreeArmiesStage2");
+        core:remove_listener("ChaosInvasionGreatVortexUndoneAIEnd");
+        core:remove_listener("ChaosInvasionGreatVortexUndoneTrigger");
+
+        -- Close all the open rifts.
+        cm:teleportation_network_close_all_nodes(self.teleportation_network);
+
+        dynamic_disasters:finish_disaster(self);
+    end
+end
+
+-- Function to check if the disaster conditions are valid and can be trigger.
+-- Checks for min turn are already done in the manager, so they're not needed here.
+--
+-- @return boolean If the disaster will be triggered or not.
+function disaster_chaos_invasion:check_start()
+
+    -- Update the potential factions for stage 1, removing the confederated ones.
+    self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
+
+    -- Do not start if we don't have attackers for stage 1.
+    if #self.settings.factions == 0 then
+        return false;
+    end
+
+    -- Check that Archaon is non-confederated. We don't care if it's alive or dead, just if we can use him. It's needed to kickstart the disaster and to act as fallback faction.
+    local faction = cm:get_faction("wh_main_chs_chaos");
+    if faction == false or faction:is_null_interface() or faction:was_confederated() then
+        return false;
+    end
+
+    -- Debug mode support.
+    if dynamic_disasters.settings.debug_2 == true then
+        return true;
+    end
+
+    -- If we're at max turn, trigger it without checking chances.
+    if self.settings.max_turn > 0 and cm:turn_number() == self.settings.max_turn then
+        return true;
+    end
+
+    -- Base chance: 1/100 turns (1%).
+    local base_chance = 0.01;
+    if cm:random_number(100, 0) / 100 < base_chance then
+        return true;
+    end
+
+    return false;
+end
+
+--- Function to check if the conditions to declare the disaster as "finished" are fulfilled.
+---@return boolean If the disaster will be finished or not.
+function disaster_chaos_invasion:check_finish()
+
+    -- Update the list of available factions and check if are all dead.
+    self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
+
+    -- Stop if we have no more attackers.
+    if #self.settings.factions == 0 then
+        return false;
+    end
+
+    -- If all chaos factions are dead, end the disaster. If not, check depending on the state we're about to trigger.
+    if not dynamic_disasters:is_any_faction_alive_from_list(self.settings.factions) then
+        return true;
+    end
+
+    -- If we haven't triggered the first stage, just check if Archaon is confederated. If so, we end the disaster here.
+    if self.settings.status == STATUS_TRIGGERED then
+        self.settings.stage_1_data.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.stage_1_data.factions);
+
+        -- If all chaos factions are dead, end the disaster. If not, check depending on the state we're about to trigger.
+        if not dynamic_disasters:is_any_faction_alive_from_list(self.settings.stage_1_data.factions) then
+            return true;
+        end
+
+        local faction = cm:get_faction("wh_main_chs_chaos");
+        return faction == false or faction:is_null_interface() or faction:was_confederated();
+    end
+
+    -- If we're on Stage 1, check if any of the factions we use is still available to use. We don't check for dead factions here.
+    if self.settings.status == STATUS_STAGE_1 then
+
+        -- Update the list of available factions.
+        self.settings.stage_2_data.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.stage_2_data.factions);
+        return #self.settings.stage_2_data.factions == 0 or not dynamic_disasters:is_any_faction_alive_from_list(self.settings.stage_2_data.factions)
+    end
+
+    return false;
+end
+
+--[[-------------------------------------------------------------------------------------------------------------
+
+    Disaster-specific functions.
+
+]]---------------------------------------------------------------------------------------------------------------
 
 -- Function to trigger the first stage of the Chaos Invasion.
 function disaster_chaos_invasion:trigger_stage_1()
@@ -1735,8 +1886,9 @@ function disaster_chaos_invasion:trigger_stage_1()
         if not faction:is_dead() or (faction:is_dead() and self.settings.revive_dead_factions == true) then
             local army_template = self.stage_1_data.army_templates[faction_key];
             for _, region_key in pairs(self.stage_1_data.regions[faction_key]) do
-                dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil, self.settings.stage_1_data.factions)
+                dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, army_template, self.base_army_unit_count, false, army_count, self.name, nil, self.settings.stage_1_data.factions)
             end
+
             cm:instantly_research_all_technologies(faction_key);
             dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy);
             dynamic_disasters:declare_war_to_all(faction, self.denied_for_sc, true);
@@ -1752,7 +1904,7 @@ function disaster_chaos_invasion:trigger_stage_1()
     self:trigger_chaos_effects(self.settings.stage_2_delay, nil);
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
-    dynamic_disasters:trigger_incident(self.stage_1_incident_key, self.effects_global_key, self.settings.stage_2_delay, nil);
+    dynamic_disasters:trigger_incident(self.stage_1_incident_key, self.effects_global_key, self.settings.stage_2_delay, nil, nil, nil);
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_chs_chaos")
     cm:register_instant_movie("Warhammer/chs_rises");
 
@@ -1764,46 +1916,42 @@ end
 function disaster_chaos_invasion:trigger_stage_2()
 
     -- Spawn all the stage 2 chaos armies. This is where hell breaks loose... literally.
+    local army_count = math.ceil(2 * self.settings.difficulty_mod);
     for _, faction_key in pairs(self.settings.stage_2_data.factions) do
         local faction = cm:get_faction(faction_key);
         if not faction:is_dead() or (faction:is_dead() and self.settings.revive_dead_factions == true) then
 
+
             -- Land spawns are region-based, so we spawn them using their region key.
-            local army_count = math.ceil(2 * self.settings.difficulty_mod);
             local army_template = self.stage_2_data.army_templates[faction_key];
             if self.stage_2_data.regions[faction_key]["land"] ~= nil and self.stage_2_data.regions[faction_key]["land"]["regions"] ~= nil then
                 for j, region_key in pairs(self.stage_2_data.regions[faction_key].land.regions) do
                     if self.stage_2_data.regions[faction_key]["land"]["targets"] ~= nil then
                         local target_region_key = self.stage_2_data.regions[faction_key].land.targets[j];
                         if target_region_key ~= nil then
-                            for i = 1, army_count do
-                                table.insert(self.settings.stage_2_data.targets, target_region_key)
-                            end
+                            local target_region = cm:get_region(target_region_key);
+                            if not target_region == false and not target_region:is_null_interface() then
+                                local target_owner = target_region:owning_faction();
+                                if target_region:is_abandoned() or (not target_owner == false and not target_owner:is_null_interface() and not target_owner:is_human()) then
+                                    for i = 1, army_count do
+                                        table.insert(self.settings.stage_2_data.targets, target_region_key)
+                                    end
 
-                            dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, self.settings.base_army_unit_count, false, army_count, self.name, chaos_invasion_spawn_armies_callback_sea)
+                                    dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, self.base_army_unit_count, false, army_count, self.name, chaos_invasion_spawn_armies_callback_sea)
+                                end
+                            end
                         else
                             script_error("ERROR: Missing target region for spawn at land.")
                         end
                     else
-                        dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil, self.settings.stage_2_data.factions)
+                        dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, army_template, self.base_army_unit_count, false, army_count, self.name, nil, self.settings.stage_2_data.factions)
                     end
                 end
 
-                -- Skarbrand has to spawn troops on its capital too.
+                -- Skarbrand has to spawn troops on its capital too. We try to do it, but if it fails, we just give him a few random armies somewhere else. Viva le random.
                 if faction_key == "wh3_main_kho_exiles_of_khorne" then
-                    local region = faction:home_region();
-                    if not region == false and region:is_null_interface() == false then
-                        dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region:name(), army_template, self.settings.base_army_unit_count, false, army_count, self.name, nil, self.settings.stage_2_data.factions)
-                    end
+                    dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, nil, army_template, self.base_army_unit_count, false, army_count, self.name, nil, self.settings.stage_2_data.factions)
                 end
-
-                -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
-                cm:instantly_research_all_technologies(faction_key);
-                dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
-
-                -- War declarations against AI.
-                dynamic_disasters:declare_war_to_all(faction, self.denied_for_sc, true);
-                self:declare_war_on_unvasalized_norscans(faction)
             end
 
             -- Sea spawns are coordinate based with a region key of a land region nearby. We need to pass them a callback so they're out of the AI control until their target falls.
@@ -1815,16 +1963,11 @@ function disaster_chaos_invasion:trigger_stage_2()
                             table.insert(self.settings.stage_2_data.targets, target_region_key)
                         end
 
-                        dynamic_disasters:create_scenario_force_at_coords(faction_key, target_region_key, coords, army_template, self.settings.base_army_unit_count, false, army_count, self.name, chaos_invasion_spawn_armies_callback_sea)
+                        dynamic_disasters:create_scenario_force_at_coords(faction_key, target_region_key, coords, army_template, self.base_army_unit_count, false, army_count, self.name, chaos_invasion_spawn_armies_callback_sea)
                     else
                         script_error("ERROR: Missing target region for spawn at sea.")
                     end
                 end
-
-                local faction = cm:get_faction(faction_key);
-                dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
-                dynamic_disasters:declare_war_to_all(faction, self.denied_for_sc, true)
-                self:declare_war_on_unvasalized_norscans(faction)
             end
 
             -- After spawning armies and declaring wars, try to give certain dark fortresses to specific factions. Only if norsca holds them.
@@ -1864,6 +2007,14 @@ function disaster_chaos_invasion:trigger_stage_2()
                 end
             end
         end
+
+        -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
+        dynamic_disasters:no_peace_only_war(faction_key, self.settings.enable_diplomacy)
+
+        -- War declarations against AI.
+        dynamic_disasters:declare_war_to_all(faction, self.denied_for_sc, true);
+        self:declare_war_on_unvasalized_norscans(faction)
+        cm:instantly_research_all_technologies(faction_key);
     end
 
     -- Make sure every attacker is allied with each other. This is to ensure all of them are on the same chaos-tide.
@@ -1885,11 +2036,11 @@ function disaster_chaos_invasion:trigger_stage_2()
     end
 
     -- Trigger the chaos-related effects
-    self:trigger_chaos_effects(0, 10);
+    self:trigger_chaos_effects(0, 0);
 
     -- Trigger the end game mission.
     dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.stage_2_incident_key, nil, self.settings.factions[1], function () self:finish() end, true)
-    dynamic_disasters:trigger_incident(self.stage_2_incident_key, self.effects_global_key, 0, nil);
+    dynamic_disasters:trigger_incident(self.stage_2_incident_key, self.effects_global_key, 0, nil, nil, nil);
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_chs_chaos")
     cm:register_instant_movie("Warhammer/chs_invasion");
 
@@ -2214,40 +2365,32 @@ function chaos_invasion_spawn_armies_callback_sea(cqi)
 
             if not region == false and region:is_null_interface() == false then
                 local faction = region:owning_faction();
-                if not faction == false and faction:is_null_interface() == false and faction:name() ~= "rebels" then
-                    local faction_key = faction:name();
+                if not faction == false and faction:is_null_interface() == false and faction:name() ~= "rebels" and
+                    faction:subculture() ~= "wh3_main_sc_dae_daemons" and
+                    faction:subculture() ~= "wh3_main_sc_kho_khorne" and
+                    faction:subculture() ~= "wh3_main_sc_nur_nurgle" and
+                    faction:subculture() ~= "wh3_main_sc_sla_slaanesh" and
+                    faction:subculture() ~= "wh3_main_sc_tze_tzeentch" and
+                    faction:subculture() ~= "wh_dlc03_sc_bst_beastmen" and
+                    faction:subculture() ~= "wh_dlc08_sc_nor_norsca" and
+                    faction:subculture() ~= "wh_main_sc_chs_chaos" then
 
-                    -- If the target is destroyed, or owned by one of the chaos factions or by rebels,
-                    -- release the army from the invasion. Otherwise we'll get stuck armies at sea.
-                    if faction:subculture() == "wh3_main_sc_dae_daemons" or
-                        faction:subculture() == "wh3_main_sc_kho_khorne" or
-                        faction:subculture() == "wh3_main_sc_nur_nurgle" or
-                        faction:subculture() == "wh3_main_sc_sla_slaanesh" or
-                        faction:subculture() == "wh3_main_sc_tze_tzeentch" or
-                        faction:subculture() == "wh_dlc03_sc_bst_beastmen" or
-                        faction:subculture() == "wh_dlc08_sc_nor_norsca" or
-                        faction:subculture() == "wh_main_sc_chs_chaos" then
-                        invasion:release();
-                        return;
-                    end
-
-                    invasion:set_target("REGION", region_key, faction_key);
+                    invasion:set_target("REGION", region_key, faction:name());
                     invasion:add_aggro_radius(15);
                     invasion:abort_on_target_owner_change(true);
 
                     if invasion:has_target() then
                         out.design("\t\tFrodo45127: Setting invasion with general [" .. common.get_localised_string(general:get_forename()) .. "] to attack " .. region_key .. ".")
                         invasion:start_invasion(nil, false, false, false)
+                        return;
                     end
-
-                -- If there is no owner (abandoned?) release the army and return.
-                else
-                    invasion:release();
-                    return;
                 end
             end
         end
     end
+
+    -- If we didn't return before due to an early return on invasion movement or cancelation, release the army.
+    invasion:release();
 end
 
 -- Function to restore the vortex after being removed.
@@ -2277,8 +2420,8 @@ function disaster_chaos_invasion:restore_vortex()
 end
 
 -- Function to trigger the effects related with each stage of the chaos invasion.
----@param duration_global_effects integer #Duration of the effects, in turns.
----@param duration_buffs integer #Optional. Duration of the buffs, in turns.
+---@param duration_global_effects integer #Duration of the effects, in turns. Pass 0 for permanent effects.
+---@param duration_buffs integer #Optional. Duration of the buffs, in turns. If not passed, we use the duration_global_effects instead.
 function disaster_chaos_invasion:trigger_chaos_effects(duration_global_effects, duration_buffs)
     if duration_buffs == nil then
         duration_buffs = duration_global_effects;
@@ -2291,7 +2434,7 @@ function disaster_chaos_invasion:trigger_chaos_effects(duration_global_effects, 
     for i = 0, faction_list:num_items() - 1 do
         local faction = faction_list:item_at(i)
 
-        if not faction:is_dead() and faction:is_human() == false then
+        if not faction:is_dead() and not faction:is_human() then
             cm:apply_effect_bundle(self.effects_global_key, faction:name(), duration_global_effects)
         end
     end
@@ -2300,137 +2443,6 @@ function disaster_chaos_invasion:trigger_chaos_effects(duration_global_effects, 
     for _, faction_key in pairs(self.settings.factions) do
         cm:apply_effect_bundle(self.attacker_buffs_key, faction_key, duration_buffs);
     end
-end
-
--- Function to trigger cleanup stuff after the disaster is over.
---
--- It has to call the dynamic_disasters:finish_disaster(self) at the end.
-function disaster_chaos_invasion:finish()
-    if self.settings.started == true then
-        out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
-
-        local faction_list = cm:model():world():faction_list()
-        for i = 0, faction_list:num_items() - 1 do
-            local faction = faction_list:item_at(i)
-            cm:remove_effect_bundle(self.great_vortex_undone_effect_key, faction:name());
-            cm:remove_effect_bundle(self.effects_global_key, faction:name());
-        end
-
-        -- Remove all the related listeners.
-        core:remove_listener("ChaosInvasionRiftArmies");
-        core:remove_listener("ChaosInvasionRespawnRiftsChaosWastes");
-        core:remove_listener("ChaosInvasionRiftSwitchingTemplates");
-        core:remove_listener("ChaosInvasionRiftClosingBattleQuery");
-        core:remove_listener("ChaosInvasionRiftClosingBattle");
-        core:remove_listener("ChaosInvasionRiftClosingBattleCleanup");
-        core:remove_listener("ChaosInvasionRiftClosingBattleCleanupAfterRetreat");
-        core:remove_listener("ChaosInvasionRiftEventBattleCleanup");
-        core:remove_listener("ChaosInvasionRiftEventBattleCleanupAfterRetreat");
-        core:remove_listener("ChaosInvasionRiftArmyTravelCompleted");
-        core:remove_listener("ChaosInvasionRiftEventPendingBattle");
-        core:remove_listener("ChaosInvasionRiftTraitRemover");
-        core:remove_listener("ChaosInvasionFreeArmiesStage1");
-        core:remove_listener("ChaosInvasionFreeArmiesStage2");
-        core:remove_listener("ChaosInvasionGreatVortexUndoneAIEnd");
-        core:remove_listener("ChaosInvasionGreatVortexUndoneTrigger");
-
-        -- Close all the open rifts.
-        cm:teleportation_network_close_all_nodes(self.teleportation_network);
-
-        dynamic_disasters:finish_disaster(self);
-    end
-end
-
--- Function to check if the disaster conditions are valid and can be trigger.
--- Checks for min turn are already done in the manager, so they're not needed here.
---
--- @return boolean If the disaster will be triggered or not.
-function disaster_chaos_invasion:check_start()
-
-    -- Update the potential factions for stage 1, removing the confederated ones.
-    self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
-
-    -- Do not start if we don't have attackers for stage 1.
-    if #self.settings.factions == 0 then
-        return false;
-    end
-
-    -- Check that Archaon is alive or dead and non-confederated. It's needed to kickstart the disaster.
-    local is_archaon_available = false;
-    for _, faction_key in pairs(self.settings.factions) do
-        local faction = cm:get_faction(faction_key);
-        if not faction == false and faction:is_null_interface() == false and faction_key == "wh_main_chs_chaos" and faction:was_confederated() == false then
-            is_archaon_available = true;
-            break
-        end
-    end
-
-    -- Do not start if Archaon is not available to use.
-    if is_archaon_available == false then
-        return false;
-    end
-
-    -- Debug mode support.
-    if dynamic_disasters.settings.debug_2 == true then
-        return true;
-    end
-
-    -- If we're at max turn, trigger it without checking chances.
-    if self.settings.max_turn > 0 and cm:turn_number() == self.settings.max_turn then
-        return true;
-    end
-
-    -- Base chance: 1/100 turns (1%).
-    local base_chance = 0.01;
-    if cm:random_number(100, 0) / 100 < base_chance then
-        return true;
-    end
-
-    return false;
-end
-
---- Function to check if the conditions to declare the disaster as "finished" are fulfilled.
----@return boolean If the disaster will be finished or not.
-function disaster_chaos_invasion:check_finish()
-
-    -- Update the list of available factions and check if are all dead.
-    self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.default_settings.factions);
-
-    -- Stop if we have no more attackers.
-    if #self.settings.factions == 0 then
-        return false;
-    end
-
-    -- If all chaos factions are dead, end the disaster. If not, check depending on the state we're about to trigger.
-    if not dynamic_disasters:is_any_faction_alive_from_list(self.settings.factions) then
-        return true;
-    end
-
-    -- If we haven't triggered the first stage, just check if Archaon is confederated. If so, we end the disaster here.
-    if self.settings.status == STATUS_TRIGGERED then
-        self.settings.stage_1_data.factions = dynamic_disasters:remove_confederated_factions_from_list(self.default_settings.stage_1_data.factions);
-
-        -- If all chaos factions are dead, end the disaster. If not, check depending on the state we're about to trigger.
-        if not dynamic_disasters:is_any_faction_alive_from_list(self.settings.stage_1_data.factions) then
-            return true;
-        end
-
-        local faction_key = "wh_main_chs_chaos";
-        local faction = cm:get_faction(faction_key);
-        return faction == false or faction:is_null_interface() == true or faction:was_confederated() == true;
-    end
-
-    -- If we're on Stage 1, check if any of the factions we use is still available to use. We don't check for dead factions here.
-    if self.settings.status == STATUS_STAGE_1 then
-
-        -- Update the list of available factions.
-        self.settings.stage_2_data.factions = dynamic_disasters:remove_confederated_factions_from_list(self.default_settings.stage_2_data.factions);
-
-        -- If all chaos factions are dead, end the disaster. If not, check depending on the state we're about to trigger.
-        return not dynamic_disasters:is_any_faction_alive_from_list(self.settings.stage_2_data.factions)
-    end
-
-    return false;
 end
 
 -- Return the disaster so the manager can read it.

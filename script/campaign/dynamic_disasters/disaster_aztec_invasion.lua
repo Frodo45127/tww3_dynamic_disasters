@@ -279,22 +279,6 @@ function disaster_aztec_invasion:set_status(status)
             end,
             true
         );
-
-        -- Listener to know when to free the AI armies.
-        core:remove_listener("AztecInvasionFreeArmiesStage1");
-        core:add_listener(
-            "AztecInvasionFreeArmiesStage1",
-            "WorldStartRound",
-            function()
-                return cm:turn_number() <= self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.grace_period
-            end,
-            function()
-                out("Frodo45127: AztecInvasionFreeArmiesStage1")
-                local max_turn = self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.grace_period;
-                dynamic_disasters:release_armies(self.settings.stage_1_data.cqis, self.settings.stage_1_data.targets, max_turn);
-            end,
-            true
-        );
     end
 
     if self.settings.status == STATUS_STAGE_1 then
@@ -318,6 +302,25 @@ function disaster_aztec_invasion:set_status(status)
             end,
             true
         );
+
+        -- Listener to know when to free the AI armies.
+        core:remove_listener("AztecInvasionFreeArmiesStage1");
+        core:add_listener(
+            "AztecInvasionFreeArmiesStage1",
+            "WorldStartRound",
+            function()
+                return cm:turn_number() <= self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.grace_period
+            end,
+            function()
+                out("Frodo45127: AztecInvasionFreeArmiesStage1")
+                local max_turn = self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.grace_period;
+                dynamic_disasters:release_armies(self.settings.stage_1_data.cqis, self.settings.stage_1_data.targets, max_turn);
+            end,
+            true
+        );
+    end
+
+    if self.settings.status == STATUS_STAGE_2 then
 
         -- Listener to know when to free the AI armies.
         core:remove_listener("AztecInvasionFreeArmiesStage2");
@@ -354,7 +357,7 @@ function disaster_aztec_invasion:set_status(status)
                 end
             end,
             true
-        )
+        );
     end
 
     -- Once we triggered the disaster, ending it is controlled by a mission, so we don't need to listen for an ending.
