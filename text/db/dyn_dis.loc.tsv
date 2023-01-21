@@ -36,7 +36,7 @@ mct_dyn_dis_vampires_rise_enable_tooltip	Enable/Disable the "Vampire's Rise" dis
 mct_dyn_dis_waaagh_enable	Enable "Da Biggest Waaagh" disaster (Vanilla)	true
 mct_dyn_dis_waaagh_enable_tooltip	Enable/Disable the "Da Biggest Waaagh" disaster (Vanilla). \\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
 mct_dyn_dis_wild_hunt_enable	Enable "The Wild Hunt" disaster (Vanilla)	true
-mct_dyn_dis_chaos_invasion_enable_tooltip	Enable/Disable the "Chaos Invasion" disaster. \\n\\nChaos rises on the north. Daemons roam the land, and corruptions spreads in the wind. Would you be able to turn the tide and save the world?\\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
+mct_dyn_dis_chaos_invasion_enable_tooltip	Enable/Disable the "The End Times" disaster. \\n\\nChaos rises on the north. Daemons roam the land, and corruptions spreads in the wind. Would you be able to turn the tide and save the world?\\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
 mct_dyn_dis_raiding_parties_enable	Enable "Raiding Parties" disaster	true
 mct_dyn_dis_raiding_parties_enable_tooltip	Enable/Disable the "Raiding Parties" disaster. \\n\\nThe seas around the world are plagued with Dark Elf Slavers, Norscan Raiders and Vampires from the Deep. Just... don't attract their attention.\\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
 incidents_localised_title_fro_dyn_dis_raiding_parties_warning	Black and Tattered Sails	true
@@ -114,7 +114,7 @@ incidents_localised_title_dyn_dis_chaos_invasion_finish_before_stage_1	Chaos Rec
 incidents_localised_description_dyn_dis_chaos_invasion_finish_before_stage_1	It seems whatever menace was uniting the northern tribes in the chaos wastes it's gone... for now.	true
 incidents_localised_title_dyn_dis_chaos_invasion_finish	An Age of Peace?	true
 incidents_localised_description_dyn_dis_chaos_invasion_finish	As the last of the Chaos hordes is scoured from the face of the world, an awful silence descends. More than a silence; an absence of sound which echoes the all-consuming void without. All creation is stilled, breath held in anticipation of the final cataclysm.\\n\\nThen, tentatively, gently, life reasserts itself. Not in a grand way to echo those who sought to end everything, but in the small ways which of themselves are life. Birdsong pierces the silence, hesitant at first, then swelling; a defiant hymn to creation, borne on a soft wind that sifts dust onto the scattered corpses littering the bloody plain of battle. And the spell is broken. Bloodied veterans, survivors, refugees - all draw breath into their aching lungs and weep at the taste and smell of victory, peace, and life.\\n\\nYet what is life if not the constant striving of one against the other? After all, every hedgerow is a bloody battleground, every plant a murderer, every creature red in tooth and claw. Even as the weak raise their eyes to a golden future, the wise are glancing about to see who will make the first move in seizing it for themselves. The shield of civilisation which turned aside the deadly thrust of Chaos is now a heavy and cumbersome thing. Those who are first to cast it aside will be quickest with their blades, and a knife in the back is surest of all. Comrades who stood shoulder-to-shoulder in the shield wall now step apart and take each other’s measure. Alliances begin to unravel and the storm clouds gather once more.	true
-mct_dyn_dis_chaos_invasion_enable	Enable "Chaos Invasion" disaster	true
+mct_dyn_dis_chaos_invasion_enable	Enable "The End Times" disaster	true
 mct_dyn_dis_wild_hunt_enable_tooltip	Enable/Disable the "The Wild Hunt" disaster (Vanilla). \\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
 effect_bundles_localised_description_fro_dyn_dis_chaos_invasion_global_effects	The Winds of Magic are flowing with an intensity not seen since the last of Ursun Roars.	true
 effect_bundles_localised_description_dyn_dis_chaos_invasion_stage_early_warning	Rumours say a new Champion of Chaos has appeared, deep in the Chaos Wastes.... Prepare for the worst.	true
@@ -237,7 +237,7 @@ mct_dyn_dis_aztec_invasion_config	Enactment of the Great Plan	true
 mct_dyn_dis_raiding_parties_config	Raiding Parties	true
 mct_dyn_dis_skaven_incursions_config	Skaven Incursions	true
 mct_dyn_dis_chianchi_assault_config	Chi'an Chi Assault	true
-mct_dyn_dis_chaos_invasion_config	Chaos Invasion	true
+mct_dyn_dis_chaos_invasion_config	The End Times	true
 mct_dyn_dis_last_stand_config	Last Stand	true
 mct_dyn_dis_realm_divided_config	Realm Divided	true
 mct_dyn_dis_the_vermintide_config	The Vermintide	true
