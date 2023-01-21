@@ -1,5 +1,4 @@
 TODO:
-- Review Aztec Invasion.
 - Review Vermintide.
 - Expand Last Stand with more faction-exclusive armies
 - Expand Last Stand with more situations.
@@ -14,4 +13,4 @@ TODO:
 - Implement Three Kingdoms 2: Electric Boogaloo (the 3 strongest factions get buffed and go against each other).
 - Implement Ordertide (all order factions ally against the chaos factions).
 - Implement The Last Crusade (bretonnia declares war on the entire world, maybe excluded wood elves).
-- Implement high elves/dark elves endgame disasters.
+- Implement high elves/dark elves/ogre/vampirate endgame disasters.
