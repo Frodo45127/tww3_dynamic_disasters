@@ -341,6 +341,7 @@ local for_the_motherland_long_victory_is_min_turn = mod:add_new_option("for_the_
 for_the_motherland_long_victory_is_min_turn:set_default_value(true)
 for_the_motherland_long_victory_is_min_turn:set_text(loc_prefix.."long_victory_is_min_turn", true)
 for_the_motherland_long_victory_is_min_turn:set_tooltip_text(loc_prefix.."long_victory_is_min_turn_tooltip", true)
+
 --[[
     The Greatest Crusade Config
 ]]
@@ -390,6 +391,56 @@ local the_greatest_crusade_long_victory_is_min_turn = mod:add_new_option("the_gr
 the_greatest_crusade_long_victory_is_min_turn:set_default_value(true)
 the_greatest_crusade_long_victory_is_min_turn:set_text(loc_prefix.."long_victory_is_min_turn", true)
 the_greatest_crusade_long_victory_is_min_turn:set_tooltip_text(loc_prefix.."long_victory_is_min_turn_tooltip", true)
+
+--[[
+    Empire of Steel and Faith Config
+]]
+local disasters_individual_config_section_the_greatest_crusade = mod:add_new_section("empire_of_steel_and_faith", loc_prefix.."empire_of_steel_and_faith_config", true)
+local empire_of_steel_and_faith_enable = mod:add_new_option("empire_of_steel_and_faith_enable", "checkbox")
+empire_of_steel_and_faith_enable:set_default_value(true)
+empire_of_steel_and_faith_enable:set_text(loc_prefix.."empire_of_steel_and_faith_enable", true)
+empire_of_steel_and_faith_enable:set_tooltip_text(loc_prefix.."empire_of_steel_and_faith_enable_tooltip", true)
+
+local empire_of_steel_and_faith_revive_dead_factions = mod:add_new_option("empire_of_steel_and_faith_revive_dead_factions", "checkbox")
+empire_of_steel_and_faith_revive_dead_factions:set_default_value(true)
+empire_of_steel_and_faith_revive_dead_factions:set_text(loc_prefix.."revive_dead_factions", true)
+empire_of_steel_and_faith_revive_dead_factions:set_tooltip_text(loc_prefix.."revive_dead_factions_tooltip", true)
+
+local empire_of_steel_and_faith_enable_diplomacy = mod:add_new_option("empire_of_steel_and_faith_enable_diplomacy", "checkbox")
+empire_of_steel_and_faith_enable_diplomacy:set_default_value(false)
+empire_of_steel_and_faith_enable_diplomacy:set_text(loc_prefix.."enable_diplomacy", true)
+empire_of_steel_and_faith_enable_diplomacy:set_tooltip_text(loc_prefix.."enable_diplomacy_tooltip", true)
+
+local empire_of_steel_and_faith_difficulty_mod = mod:add_new_option("empire_of_steel_and_faith_difficulty_mod", "slider")
+empire_of_steel_and_faith_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)
+empire_of_steel_and_faith_difficulty_mod:set_tooltip_text(loc_prefix.."difficulty_mod_tooltip", true)
+empire_of_steel_and_faith_difficulty_mod:slider_set_min_max(10, 500)
+empire_of_steel_and_faith_difficulty_mod:set_default_value(150)
+empire_of_steel_and_faith_difficulty_mod:slider_set_step_size(10)
+
+local empire_of_steel_and_faith_min_turn_value = mod:add_new_option("empire_of_steel_and_faith_min_turn_value", "slider")
+empire_of_steel_and_faith_min_turn_value:set_text(loc_prefix.."min_turn_value", true)
+empire_of_steel_and_faith_min_turn_value:set_tooltip_text(loc_prefix.."min_turn_value_tooltip", true)
+empire_of_steel_and_faith_min_turn_value:slider_set_min_max(10, 400)
+empire_of_steel_and_faith_min_turn_value:set_default_value(100)
+empire_of_steel_and_faith_min_turn_value:slider_set_step_size(10)
+
+local empire_of_steel_and_faith_max_turn_value = mod:add_new_option("empire_of_steel_and_faith_max_turn_value", "slider")
+empire_of_steel_and_faith_max_turn_value:set_text(loc_prefix.."max_turn_value", true)
+empire_of_steel_and_faith_max_turn_value:set_tooltip_text(loc_prefix.."max_turn_value_tooltip", true)
+empire_of_steel_and_faith_max_turn_value:slider_set_min_max(0, 600)
+empire_of_steel_and_faith_max_turn_value:set_default_value(0)
+empire_of_steel_and_faith_max_turn_value:slider_set_step_size(10)
+
+local empire_of_steel_and_faith_short_victory_is_min_turn = mod:add_new_option("empire_of_steel_and_faith_short_victory_is_min_turn", "checkbox")
+empire_of_steel_and_faith_short_victory_is_min_turn:set_default_value(false)
+empire_of_steel_and_faith_short_victory_is_min_turn:set_text(loc_prefix.."short_victory_is_min_turn", true)
+empire_of_steel_and_faith_short_victory_is_min_turn:set_tooltip_text(loc_prefix.."short_victory_is_min_turn_tooltip", true)
+
+local empire_of_steel_and_faith_long_victory_is_min_turn = mod:add_new_option("empire_of_steel_and_faith_long_victory_is_min_turn", "checkbox")
+empire_of_steel_and_faith_long_victory_is_min_turn:set_default_value(true)
+empire_of_steel_and_faith_long_victory_is_min_turn:set_text(loc_prefix.."long_victory_is_min_turn", true)
+empire_of_steel_and_faith_long_victory_is_min_turn:set_tooltip_text(loc_prefix.."long_victory_is_min_turn_tooltip", true)
 
 --[[
     Last Stand Config

@@ -50,3 +50,6 @@ dyn_dis_for_the_motherland_early_end	false	ksl/defeat	true	Disaster		false
 dyn_dis_the_greatest_crusade_warning	false	brt/messenger	true	Disaster		false	
 dyn_dis_the_greatest_crusade_trigger	false	brt/victory	true	Disaster		true	
 dyn_dis_the_greatest_crusade_early_end	false	brt/defeat	true	Disaster		false	
+dyn_dis_empire_of_steel_and_faith_warning	false	emp/messenger	true	Disaster		false	
+dyn_dis_empire_of_steel_and_faith_trigger	false	emp/victory	true	Disaster		true	
+dyn_dis_empire_of_steel_and_faith_early_end	false	emp/defeat	true	Disaster		false	

@@ -290,3 +290,16 @@ mct_dyn_dis_long_victory_is_min_turn	Long Victory is Min Turn	true
 mct_dyn_dis_long_victory_is_min_turn_tooltip	If enabled, if we achieve Long Victory before the Min Turn, the Min Turn will dinamically change to the turn we achieve Long Victory.	true
 mct_dyn_dis_short_victory_is_min_turn	Short Victory is Min Turn	true
 mct_dyn_dis_short_victory_is_min_turn_tooltip	If enabled, if we achieve Short Victory before the Min Turn, the Min Turn will dinamically change to the turn we achieve Short Victory.	true
+mct_dyn_dis_empire_of_steel_and_faith_enable	Enable "Empire of Faith, Steel and Gunpowder" disaster	true
+missions_localised_title_dyn_dis_empire_of_steel_and_faith_steel_faith_and_guns_1	Faith, Steel and Gunpowder	true
+missions_localised_description_dyn_dis_empire_of_steel_and_faith_steel_faith_and_guns_1	Faith, Steel and Gunpowder... with such an inferior power, how are they even going to resist us?	true
+incidents_localised_title_dyn_dis_empire_of_steel_and_faith_early_end	The Elector Counts return home	true
+incidents_localised_description_dyn_dis_empire_of_steel_and_faith_early_end	It seems the Elector Counts have gone back to their usual intrigues.	true
+mct_dyn_dis_empire_of_steel_and_faith_enable_tooltip	Enable/Disable the "Empire of Faith, Steel and Gunpowder" disaster. \\n\\nThe Elector Counts have been called. The armies of the Empire are preparing for the Greatest War they've ever seen.\\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
+effect_bundles_localised_title_dyn_dis_empire_of_steel_and_faith_warning	The Elector Counts have been called	true
+effect_bundles_localised_description_dyn_empire_of_steel_and_faith_warning	The Elector Counts of the Empire have been called, and are preparing their armies... Prepare for the worst.	true
+mct_dyn_dis_empire_of_steel_and_faith_config	Empire of Faith, Steel and Gunpowder	true
+incidents_localised_title_dyn_dis_empire_of_steel_and_faith_trigger	The Age of the New Empire of Man has begun!	true
+incidents_localised_description_dyn_dis_empire_of_steel_and_faith_trigger	Since the times of Sigmar Uberogen, the Empire of Man has remained relatively stable, with Ages of Glory and Fame, and Ages of Misfortune and Death. And now, under the Rule of the Emperor Karl Franz, a new Age of Greatness for the Empire begins!	true
+incidents_localised_title_dyn_dis_empire_of_steel_and_faith_warning	The Elector Counts have been called	true
+incidents_localised_description_dyn_dis_empire_of_steel_and_faith_warning	The Elector Counts of the Empire have been called, and are preparing their armies... Prepare for the worst.	true
