@@ -565,9 +565,9 @@ function dynamic_disasters:process_disasters()
 
                 -- Check if any incompatible disasters are running.
                 local incompatible_running = false;
-                for _, disaster in ipairs(self.disasters) do
-                    for _, disaster_key in ipairs(disaster.settings.incompatible_disasters) do
-                        if disaster.name == disaster_key and disaster.settings.started then
+                for _, disaster_running in ipairs(self.disasters) do
+                    for _, disaster_key in ipairs(disaster_running.settings.incompatible_disasters) do
+                        if disaster_running.name == disaster_key and disaster_running.settings.started then
                             incompatible_running = true;
                         end
                     end
