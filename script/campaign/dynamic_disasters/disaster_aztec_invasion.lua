@@ -334,6 +334,27 @@ function disaster_aztec_invasion:set_status(status)
             end,
             true
         );
+
+        -- Listener to keep spawning armies every (10 / (difficulty_mod + 1)) turns, one army on each capital.
+        core:remove_listener("AztecInvasionRespawn")
+        core:add_listener(
+            "AztecInvasionRespawn",
+            "WorldStartRound",
+            function()
+                return cm:turn_number() % math.ceil(10 / (self.settings.difficulty_mod + 1)) == 0 and
+                    dynamic_disasters:is_any_faction_alive_from_list_with_home_region(self.settings.factions);
+            end,
+            function()
+                for _, faction_key in pairs(self.settings.factions) do
+                    local faction = cm:get_faction(faction_key);
+                    if not faction == false and faction:is_null_interface() == false and faction:has_home_region() then
+                        local region = faction:home_region();
+                        dynamic_disasters:create_scenario_force(faction:name(), region:name(), self.army_template, self.unit_count, false, 1, self.name, nil)
+                    end
+                end
+            end,
+            true
+        )
     end
 
     -- Once we triggered the disaster, ending it is controlled by a mission, so we don't need to listen for an ending.
@@ -364,6 +385,7 @@ function disaster_aztec_invasion:finish()
 
         core:remove_listener("AztecInvasionFreeArmiesStage1");
         core:remove_listener("AztecInvasionFreeArmiesStage2");
+        core:remove_listener("AztecInvasionRespawn");
 
         dynamic_disasters:finish_disaster(self);
     end
