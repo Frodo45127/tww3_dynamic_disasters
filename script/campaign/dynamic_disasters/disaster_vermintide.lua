@@ -159,10 +159,6 @@ disaster_vermintide = {
 
     unit_count = 19,
     army_count_per_province = 4,
-    subcultures_banned_from_region_transfer = { -- If a player is playing as one of these, disable the region transfer of abandoned settlement.
-        "wh3_main_sc_kho_khorne",               -- That's because these are subcultures with no staying power that focus on full destruction, and
-                                                -- the region transfer causes the game to force them to play cat and mouse for a really long time.
-    },
 
     factions_base_regions = {
 
