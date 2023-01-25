@@ -1883,6 +1883,44 @@ function dynamic_disasters:faction_subculture_in_list(faction, subcultures)
     return is_subculture;
 end
 
+-- Function to check if a faction is considered as a faction that doesn't occupy, but rather just leaves ruins.
+---@param faction_key string #Faction key
+function dynamic_disasters:is_destructive_faction(faction_key)
+    local destructive = false;
+    local subcultures = {
+        "wh2_main_rogue_chaos",
+        "wh3_main_sc_dae_daemons",
+        "wh3_main_sc_kho_khorne",
+        "wh_main_sc_chs_chaos",
+    };
+
+    local faction = cm:get_faction(faction_key);
+    if not faction == false and faction:is_null_interface() == false then
+        for _, destructive_subculture in pairs(subcultures) do
+            if faction:subculture() == destructive_subculture then
+                destructive = true;
+                break;
+            end
+        end
+    end
+
+    return destructive;
+end
+
+-- Function to check if there is a player playing as a destructive faction.
+function dynamic_disasters:is_a_player_destructive_faction()
+    local destructive = false;
+    local player_keys = cm:get_human_factions();
+    for _, player_key in pairs(player_keys) do
+        if self:is_destructive_faction(player_key) then
+            destructive = true;
+            break;
+        end
+    end
+
+    return destructive;
+end
+
 --[[-------------------------------------------------------------------------------------------------------------
     Dynamic disasters integration helpers.
 

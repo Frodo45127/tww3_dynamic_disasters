@@ -14,18 +14,28 @@
         - Clan Skryre must be not confederated (it's the one it starts the invasion).
     Effects:
         - For the entire disaster since the stage 1:
-            - Skavens will keep expanding the underempire constantly.
             - Ikit will get cores and nukes each turn.
+            - Skavens will keep expanding the underempire constantly.
+            - Skaven underempire expansion is fast at the start, but slow once they start re-occupying previous undercities.
+            - Skaven underempire expansion will transfer to them abandoned settlements, except if one of the players is a destruction-focused faction.
+            - Each turn, a few of the undercities will max out, wrecking havoc around the world.
         - Trigger/Early Warning:
             - Message about Morrslieb increasing in size.
             - Wait 6-10 turns for more info.
-            - After 2-4 turns:
+            - After 2-4 turns (only for empire, dwarfs and wood elves):
                 - Marker for battle appears on ubersreik.
                 - When entering the marker, a battle is fought.
                 - Battle remains available until invasion ends or battle is fought.
                 - Winning the battle gives you an army with the Ubersreik heroes.
         - Stage 1:
             - If Clan Skryre has been confederated, end the disaster here.
+            - Spawn all major factions armies on their relevant capitals, or in any capital. If their capital is in ruins or not in player's control, transfer it to them.
+
+        - Stage 2.1:
+            - When a Vermintide Army or a nuke results from an undercity in Lustria:
+                - Trigger the Invasion of Lustria event.
+
+
             - If not:
                 - Targets: Estalia, Tilea and Sartosa.
                 - Spawn Clan Skyre armies on Estalia, Tilea and Sartosa.
@@ -130,6 +140,10 @@ disaster_vermintide = {
         finished = false,                   -- If the disaster has been finished.
         repeteable = false,                 -- If the disaster can be repeated.
         is_endgame = true,                  -- If the disaster is an endgame.
+        revive_dead_factions = true,        -- If true, dead factions will be revived if needed.
+        enable_diplomacy = false,           -- If true, you will still be able to use diplomacy with disaster-related factions. Broken beyond believe, can make the game a cakewalk.
+        short_victory_is_min_turn = false,  -- If the short victory turn should be used as min turn.
+        long_victory_is_min_turn = false,   -- If the long victory turn should be used as min turn.
         min_turn = 130,                     -- Minimum turn required for the disaster to trigger.
         max_turn = 0,                       -- If the disaster hasn't trigger at this turn, we try to trigger it. Set to 0 to not check for max turn. Used only for some disasters.
         status = 0,                         -- Current status of the disaster. Used to re-initialize the disaster correctly on reload.
@@ -137,9 +151,10 @@ disaster_vermintide = {
         last_finished_turn = 0,             -- Turn when the disaster was last finished.
         wait_turns_between_repeats = 0,     -- If repeteable, how many turns will need to pass after finished for the disaster to be available again.
         difficulty_mod = 1.5,               -- Difficulty multiplier used by the disaster (effects depend on the disaster).
+        mct_settings = {},                  -- Extra settings this disaster may pull from MCT.
+        incompatible_disasters = {},        -- List of disasters this disaster cannot run along with. To not trigger 2 disasters affecting the same faction at the same time.
 
         -- Disaster-specific data.
-        base_army_unit_count = 19,
         stage_0_ubersreik_battle_delay = 1,
         stage_1_delay = 1,
         stage_2_delay = 1,
@@ -227,6 +242,12 @@ disaster_vermintide = {
         factions_stage_5_karaz_a_karak = {
             "wh2_main_skv_clan_mors",           -- Clan Mors (Queek)
         },
+    },
+
+    base_army_unit_count = 19,
+    subcultures_banned_from_region_transfer = { -- If a player is playing as one of these, disable the region transfer of abandoned settlement.
+        "wh3_main_sc_kho_khorne",               -- That's because these are subcultures with no staying power that focus on full destruction, and
+                                                -- the region transfer causes the game to force them to play cat and mouse for a really long time.
     },
 
     regions_stage_1 = {
@@ -437,170 +458,15 @@ disaster_vermintide = {
     }
 }
 
+--[[-------------------------------------------------------------------------------------------------------------
+
+    Mandatory functions.
+
+]]---------------------------------------------------------------------------------------------------------------
+
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
 function disaster_vermintide:set_status(status)
     self.settings.status = status;
-
-    -- Trigger can trigger twice here, so make sure we don't have duplicated listeners running.
-    if self.settings.status == STATUS_TRIGGERED then
-
-        -- This triggers stage one of the disaster if the disaster hasn't been cancelled.
-        core:remove_listener("VermintideStage1");
-        core:add_listener(
-            "VermintideStage1",
-            "WorldStartRound",
-            function()
-                if cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay then
-                    return true
-                end
-                return false;
-            end,
-
-            -- If there are skaven alive, proceed with stage 1.
-            function()
-                if self:check_finish() == true then
-                    dynamic_disasters:trigger_incident(self.finish_before_stage_1_event_key, nil, 0, nil);
-                    self:finish();
-                else
-                    self:trigger_stage_1();
-                end
-                core:remove_listener("VermintideStage1")
-            end,
-            true
-        );
-
-        -- This triggers the ubersreik battle incident. TODO: move this to a fucking quest battle.
-        -- NOTE: This always happens before stage 1, so no need to delete this listener on stage 1 trigger.
-        core:remove_listener("VermintideUbersreikSetup");
-        core:add_listener(
-            "VermintideUbersreikSetup",
-            "WorldStartRound",
-            function()
-                if cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_0_ubersreik_battle_delay then
-                    return true
-                end
-                return false;
-            end,
-
-            -- If there are skaven alive, proceed with stage 1.
-            function()
-                if self:check_finish() == true then
-                    dynamic_disasters:trigger_incident(self.finish_before_stage_1_event_key, nil, 0, nil);
-                    core:remove_listener("VermintideStage1")
-                    self:finish();
-                else
-                    self:setup_ubersreik_battle();
-                end
-                core:remove_listener("VermintideUbersreikAttack")
-            end,
-            true
-        );
-    end
-
-    if self.settings.status == STATUS_STAGE_1 then
-
-        -- This triggers stage two of the disaster if the disaster hasn't been cancelled.
-        core:add_listener(
-            "VermintideStage2",
-            "WorldStartRound",
-            function()
-                if cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay then
-                    return true
-                end
-                return false;
-            end,
-
-            -- If there are skaven alive, proceed with stage 2.
-            function()
-                if self:check_finish() == true then
-                    dynamic_disasters:trigger_incident(self.finish_event_key, nil, 0, nil);
-                    self:finish();
-                else
-                    self:trigger_stage_2();
-                end
-                core:remove_listener("VermintideStage2")
-            end,
-            true
-        );
-    end
-
-    if self.settings.status == STATUS_STAGE_2 then
-
-        -- This triggers stage three of the disaster if the disaster hasn't been cancelled.
-        core:add_listener(
-            "VermintideStage3",
-            "WorldStartRound",
-            function()
-                if cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.stage_3_delay then
-                    return true
-                end
-                return false;
-            end,
-
-            -- If there are skaven alive, proceed with stage 3.
-            function()
-                if self:check_finish() == true then
-                    dynamic_disasters:trigger_incident(self.finish_event_key, nil, 0, nil);
-                else
-                    self:trigger_stage_3();
-                end
-                core:remove_listener("VermintideStage3")
-            end,
-            true
-        );
-    end
-
-    if self.settings.status == STATUS_STAGE_3 then
-
-        -- This triggers stage four of the disaster if the disaster hasn't been cancelled.
-        core:add_listener(
-            "VermintideStage4",
-            "WorldStartRound",
-            function()
-                if cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.stage_3_delay + self.settings.stage_4_delay then
-                    return true
-                end
-                return false;
-            end,
-
-            -- If there are skaven alive, proceed with stage 4.
-            function()
-                if self:check_finish() == true then
-                    dynamic_disasters:trigger_incident(self.finish_event_key, nil, 0, nil);
-                else
-                    self:trigger_stage_4();
-                end
-                core:remove_listener("VermintideStage4")
-            end,
-            true
-        );
-    end
-
-    if self.settings.status == STATUS_STAGE_4 then
-
-        -- This triggers stage five of the disaster if the disaster hasn't been cancelled.
-        core:add_listener(
-            "VermintideStage5",
-            "WorldStartRound",
-            function()
-                if cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.stage_3_delay + self.settings.stage_4_delay + self.settings.stage_5_delay then
-                    return true
-                end
-                return false;
-            end,
-
-            -- If there are skaven alive, proceed with stage 5.
-            function()
-                if self:check_finish() == true then
-                    dynamic_disasters:trigger_incident(self.finish_event_key, nil, 0, nil);
-                else
-                    self:trigger_stage_5();
-                end
-                core:remove_listener("VermintideStage5")
-            end,
-            true
-        );
-    end
 
     --------------------------------------------
     -- Code for the Ubersreik battle
@@ -683,6 +549,10 @@ function disaster_vermintide:set_status(status)
         true
     );
 
+    --------------------------------------------
+    -- End of code for the Ubersreik battle
+    --------------------------------------------
+
     -- Listener to provide ikit with nukes and stuff while he's alive.
     core:remove_listener("VermintideIkitWarpfuel");
     core:add_listener(
@@ -706,6 +576,10 @@ function disaster_vermintide:set_status(status)
         end,
         true
     )
+
+    --------------------------------------------
+    -- Code for Underempire Management.
+    --------------------------------------------
 
     -- Listener to keep retriggering the Under-Empire expansion each turn, as long as the disaster lasts.
     core:remove_listener("VermintideUnderEmpireExpansion");
@@ -735,6 +609,150 @@ function disaster_vermintide:set_status(status)
         true
     )
 
+
+    -- Trigger can trigger twice here, so make sure we don't have duplicated listeners running.
+    if self.settings.status == STATUS_TRIGGERED then
+
+        -- This triggers stage one of the disaster if the disaster hasn't been cancelled.
+        core:remove_listener("VermintideStage1");
+        core:add_listener(
+            "VermintideStage1",
+            "WorldStartRound",
+            function()
+                return cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay;
+            end,
+
+            -- If there are skaven alive, proceed with stage 1.
+            function()
+                if self:check_finish() then
+                    dynamic_disasters:trigger_incident(self.finish_before_stage_1_event_key, nil, 0, nil, nil, nil);
+                    self:finish();
+                else
+                    self:trigger_stage_1();
+                end
+                core:remove_listener("VermintideStage1")
+            end,
+            true
+        );
+
+        -- This triggers the ubersreik battle incident.
+        -- TODO: move this to a fucking quest battle.
+        core:remove_listener("VermintideUbersreikSetup");
+        core:add_listener(
+            "VermintideUbersreikSetup",
+            "WorldStartRound",
+            function()
+                return cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_0_ubersreik_battle_delay;
+            end,
+
+            -- If there are skaven alive, proceed with stage 1.
+            function()
+                if self:check_finish() then
+                    dynamic_disasters:trigger_incident(self.finish_before_stage_1_event_key, nil, 0, nil, nil, nil);
+                    core:remove_listener("VermintideStage1")
+                    self:finish();
+                else
+                    self:setup_ubersreik_battle();
+                end
+                core:remove_listener("VermintideUbersreikAttack")
+            end,
+            true
+        );
+    end
+
+    if self.settings.status == STATUS_STAGE_1 then
+
+        -- This triggers stage two of the disaster if the disaster hasn't been cancelled.
+        core:add_listener(
+            "VermintideStage2",
+            "WorldStartRound",
+            function()
+                return cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay;
+            end,
+
+            -- If there are skaven alive, proceed with stage 2.
+            function()
+                if self:check_finish() then
+                    dynamic_disasters:trigger_incident(self.finish_event_key, nil, 0, nil, nil, nil);
+                    self:finish();
+                else
+                    self:trigger_stage_2();
+                end
+                core:remove_listener("VermintideStage2")
+            end,
+            true
+        );
+    end
+
+    if self.settings.status == STATUS_STAGE_2 then
+
+        -- This triggers stage three of the disaster if the disaster hasn't been cancelled.
+        core:add_listener(
+            "VermintideStage3",
+            "WorldStartRound",
+            function()
+                return cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.stage_3_delay;
+            end,
+
+            -- If there are skaven alive, proceed with stage 3.
+            function()
+                if self:check_finish() then
+                    dynamic_disasters:trigger_incident(self.finish_event_key, nil, 0, nil, nil, nil);
+                else
+                    self:trigger_stage_3();
+                end
+                core:remove_listener("VermintideStage3")
+            end,
+            true
+        );
+    end
+
+    if self.settings.status == STATUS_STAGE_3 then
+
+        -- This triggers stage four of the disaster if the disaster hasn't been cancelled.
+        core:add_listener(
+            "VermintideStage4",
+            "WorldStartRound",
+            function()
+                return cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.stage_3_delay + self.settings.stage_4_delay;
+            end,
+
+            -- If there are skaven alive, proceed with stage 4.
+            function()
+                if self:check_finish() then
+                    dynamic_disasters:trigger_incident(self.finish_event_key, nil, 0, nil, nil, nil);
+                else
+                    self:trigger_stage_4();
+                end
+                core:remove_listener("VermintideStage4")
+            end,
+            true
+        );
+    end
+
+    if self.settings.status == STATUS_STAGE_4 then
+
+        -- This triggers stage five of the disaster if the disaster hasn't been cancelled.
+        core:add_listener(
+            "VermintideStage5",
+            "WorldStartRound",
+            function()
+                return cm:turn_number() == self.settings.last_triggered_turn + self.settings.stage_1_delay + self.settings.stage_2_delay + self.settings.stage_3_delay + self.settings.stage_4_delay + self.settings.stage_5_delay;
+            end,
+
+            -- If there are skaven alive, proceed with stage 5.
+            function()
+                if self:check_finish() then
+                    dynamic_disasters:trigger_incident(self.finish_event_key, nil, 0, nil, nil, nil);
+                else
+                    self:trigger_stage_5();
+                end
+                core:remove_listener("VermintideStage5")
+            end,
+            true
+        );
+    end
+
     -- No need to have a specific listener to end the disaster after no more stages can be triggered, as that's controlled by a mission.
 end
 
@@ -748,585 +766,41 @@ function disaster_vermintide:start()
         self.settings.stage_0_ubersreik_battle_delay = 1;
     else
         self.settings.stage_1_delay = cm:random_number(10, 6);
-        self.settings.stage_0_ubersreik_battle_delay = cm:random_number(4, 2);
+        self.settings.stage_0_ubersreik_battle_delay = cm:random_number(4, 2); -- Make sure we trigger this one BEFORE the stage 1 triggers.
     end
 
     -- Initialize listeners.
-    dynamic_disasters:trigger_incident(self.stage_1_warning_event_key, self.stage_1_warning_effect_key, self.settings.stage_1_delay, nil);
+    dynamic_disasters:trigger_incident(self.stage_1_warning_event_key, self.stage_1_warning_effect_key, self.settings.stage_1_delay, nil, nil, nil);
     self:set_status(STATUS_TRIGGERED);
 end
 
--- Function to trigger the first stage of the Vermintide.
-function disaster_vermintide:trigger_stage_1()
-    if dynamic_disasters.settings.debug_2 == true then
-        self.settings.stage_2_delay = 1;
-    else
-        self.settings.stage_2_delay = cm:random_number(10, 6);
-    end
-
-    -- Spawn a few Skryre armies in Estalia, Tilea and Sartosa. Enough so they're able to expand next.
-    -- If they're owned by the player, spawn the armies in the home region of Skryre instead.
-    -- If Clan Skryre has no home region, spawn
-    local army_count = math.floor(1.5 * self.settings.difficulty_mod)
-    for _, faction_key in pairs(self.settings.factions_stage_1) do
-        local faction = cm:get_faction(faction_key);
-        if not faction == false and faction:is_null_interface() == false then
-            for _, region_key in pairs(self.regions_stage_1) do
-                dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil, { "wh2_main_skv_clan_skryre" })
-            end
-
-            -- Apply the relevant CAI changes only to Clan Skryre and declare the appropiate wars.
-            cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
-            dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
-            dynamic_disasters:declare_war_to_all(faction, {"wh2_main_sc_skv_skaven"}, true)
-        end
-    end
-
-    -- Setup strategic under-cities for all factions available, including the recently resurrected ones.
-    for _, faction_key in pairs(self.settings.factions) do
-        if self.settings.repeat_regions[faction_key] == nil then
-            self.settings.repeat_regions[faction_key] = {}
-        end
-
-        out("Frodo45127: Setting up initial underempire for faction " .. faction_key .. ".");
-        if self.initial_under_empire_placements[faction_key] ~= nil then
-
-            -- Only spawn new armies here for dead main factions.
-            if cm:get_faction(faction_key):is_dead() == true then
-                dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, "wh3_main_combi_region_skavenblight", self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil, { "wh2_main_skv_clan_skryre" })
-            end
-
-            for _, region_key in pairs(self.initial_under_empire_placements[faction_key]) do
-
-                out("Frodo45127: Setting up initial underempire for faction " .. faction_key .. ", region " .. region_key .. ".");
-                local region = cm:get_region(region_key);
-                self:expand_under_empire_adjacent_region_check(faction_key, region, {}, true, true, true)
-            end
-        end
-    end
-
-    -- Prepare the regions to reveal.
-    dynamic_disasters:prepare_reveal_regions(self.regions_stage_1);
-
-    -- Make sure every attacker is at peace with each other.
-    dynamic_disasters:force_peace_between_factions(self.settings.factions, false);
-
-    -- Trigger the effect about Morrslieb.
-    self:morrslieb_gaze_is_upon_us(self.settings.stage_2_delay);
-
-    -- Trigger all the stuff related to the invasion (missions, effects,...).
-    dynamic_disasters:trigger_incident(self.stage_1_event_key, self.effects_global_key, self.settings.stage_2_delay, nil);
-    cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_skv_skaven")
-    self:set_status(STATUS_STAGE_1);
-end
-
--- Function to trigger the second stage of the Vermintide.
-function disaster_vermintide:trigger_stage_2()
-
-    if dynamic_disasters.settings.debug_2 == true then
-        self.settings.stage_3_delay = 1;
-    else
-        self.settings.stage_3_delay = cm:random_number(7, 4);
-    end
-
-    -- Spawn a few armies in the Empire, the northern coast of Araby and Cathay.
-    local army_count_empire = math.ceil(1.5 * self.settings.difficulty_mod)
-    for _, region_key in pairs(self.regions_stage_2_empire) do
-        local faction_key = self.settings.factions_stage_2_empire_and_araby[cm:random_number(#self.settings.factions_stage_2_empire_and_araby)];
-        dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count_empire, self.name, nil, { "wh2_main_skv_clan_skryre" })
-    end
-
-    local army_count_araby = math.ceil(1.5 * self.settings.difficulty_mod)
-    for _, region_key in pairs(self.regions_stage_2_araby) do
-        local faction_key = self.settings.factions_stage_2_empire_and_araby[cm:random_number(#self.settings.factions_stage_2_empire_and_araby)];
-        dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count_araby, self.name, nil, { "wh2_main_skv_clan_skryre" })
-    end
-
-    -- The Attack on Cathay depends on Eshin being available to spawn.
-    if #self.settings.factions_stage_2_cathay > 0 then
-        local army_count_cathay = math.ceil(1.5 * self.settings.difficulty_mod)
-        for _, region_key in pairs(self.regions_stage_2_cathay) do
-            local faction_key = self.settings.factions_stage_2_cathay[cm:random_number(#self.settings.factions_stage_2_cathay)];
-            dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count_cathay, self.name, nil, { "wh2_main_skv_clan_skryre" })
-        end
-    end
-
-    -- From this stage, we force all skaven on the map to declare war on everyone a single faction faces.
-    -- This includes owners of the attacked region, and owners of nearby regions. Even if its Skaven.
-    for _, faction_key in pairs(self.settings.factions) do
-        local faction = cm:get_faction(faction_key);
-        cm:instantly_research_all_technologies(faction_key);
-        cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
-        dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
-        dynamic_disasters:declare_war_to_all(faction, {"wh2_main_sc_skv_skaven"}, true)
-    end
-
-    -- Trigger the effect about Morrslieb.
-    self:morrslieb_gaze_is_upon_us(self.settings.stage_3_delay);
-
-    -- Also, make sure they're added to the victory conditions.
-    for _, faction_key in pairs(self.settings.factions) do
-        table.insert(self.objectives[1].conditions, "faction " .. faction_key)
-    end
-
-    -- Trigger all the stuff related to the invasion (missions, effects,...).
-    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.stage_2_event_key, nil, self.settings.factions[1], function () self:finish() end, true)
-    dynamic_disasters:trigger_incident(self.stage_2_event_key, self.effects_global_key, self.settings.stage_3_delay, nil);
-    cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_skv_skaven")
-    self:set_status(STATUS_STAGE_2);
-end
-
--- Function to trigger the third stage of the Vermintide.
-function disaster_vermintide:trigger_stage_3()
-
-    if dynamic_disasters.settings.debug_2 == true then
-        self.settings.stage_4_delay = 1;
-    else
-        self.settings.stage_4_delay = cm:random_number(6, 4);
-    end
-
-    -- Spawn a few armies in Lustria.
-    local army_count = math.ceil(2 * self.settings.difficulty_mod)
-    for _, region_key in pairs(self.regions_stage_3) do
-        local faction_key = self.settings.factions_stage_3_lustria[cm:random_number(#self.settings.factions_stage_3_lustria, 1)];
-        dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil, { "wh2_main_skv_clan_skryre" })
-    end
-
-    -- Force war against every skaven faction for each faction the skaven attack.
-    for _, faction_key in pairs(self.settings.factions) do
-        local faction = cm:get_faction(faction_key);
-        dynamic_disasters:declare_war_to_all(faction, {"wh2_main_sc_skv_skaven"}, true)
-    end
-
-    -- Prepare the regions to reveal.
-    dynamic_disasters:prepare_reveal_regions(self.regions_stage_3);
-
-    -- Trigger the effect about Morrslieb.
-    self:morrslieb_gaze_is_upon_us(self.settings.stage_4_delay);
-
-    -- Trigger all the stuff related to the invasion (missions, effects,...).
-    dynamic_disasters:trigger_incident(self.stage_3_event_key, self.effects_global_key, self.settings.stage_4_delay, nil);
-    cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_skv_skaven")
-    self:set_status(STATUS_STAGE_3);
-end
-
--- Function to trigger the fourth stage of the Vermintide.
-function disaster_vermintide:trigger_stage_4()
-
-    if dynamic_disasters.settings.debug_2 == true then
-        self.settings.stage_5_delay = 1;
-    else
-        self.settings.stage_5_delay = cm:random_number(10, 6);
-    end
-
-    -- Spawn a few armies along the Karak Ankor.
-    local army_count = math.ceil(1.5 * self.settings.difficulty_mod)
-    for _, region_key in pairs(self.regions_stage_4) do
-        local faction_key = self.settings.factions_stage_4_karaz_ankor[cm:random_number(#self.settings.factions_stage_4_karaz_ankor)];
-        dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil, { "wh2_main_skv_clan_skryre" })
-    end
-
-    -- Force war against every skaven faction for each faction the skaven attack.
-    for _, faction_key in pairs(self.settings.factions) do
-        local faction = cm:get_faction(faction_key);
-        dynamic_disasters:declare_war_to_all(faction, {"wh2_main_sc_skv_skaven"}, true)
-    end
-
-    -- Prepare the regions to reveal.
-    dynamic_disasters:prepare_reveal_regions(self.regions_stage_4);
-
-    -- Trigger the effect about Morrslieb.
-    self:morrslieb_gaze_is_upon_us(self.settings.stage_5_delay);
-
-    -- Trigger all the stuff related to the invasion (missions, effects,...).
-    dynamic_disasters:trigger_incident(self.stage_4_event_key, self.effects_global_key, self.settings.stage_5_delay, nil);
-    cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_skv_skaven")
-    self:set_status(STATUS_STAGE_4);
-end
-
--- Function to trigger the fifth stage of the Vermintide.
-function disaster_vermintide:trigger_stage_5()
-
-    -- Spawn a few armies in Karaz-a-Karak.
-    local army_count = math.ceil(2 * self.settings.difficulty_mod)
-    for _, region_key in pairs(self.regions_stage_5) do
-        local faction_key = self.settings.factions_stage_5_karaz_a_karak[cm:random_number(#self.settings.factions_stage_5_karaz_a_karak)];
-        dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_templates[faction_key], self.settings.base_army_unit_count, false, army_count, self.name, nil, { "wh2_main_skv_clan_skryre" })
-    end
-
-    -- Force war against every skaven faction for each faction the skaven attack.
-    for _, faction_key in pairs(self.settings.factions) do
-        local faction = cm:get_faction(faction_key);
-        dynamic_disasters:declare_war_to_all(faction, {"wh2_main_sc_skv_skaven"}, true)
-    end
-
-    -- Prepare the regions to reveal.
-    dynamic_disasters:prepare_reveal_regions(self.regions_stage_5);
-
-    -- Trigger the effect about Morrslieb.
-    self:morrslieb_gaze_is_upon_us(self.settings.invasion_over_delay);
-
-    -- Trigger all the stuff related to the invasion (missions, effects,...).
-    dynamic_disasters:trigger_incident(self.stage_5_event_key, self.effects_global_key, self.settings.invasion_over_delay, nil);
-    cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_skv_skaven")
-    self:set_status(STATUS_STAGE_5);
-end
-
--- Function to apply the Morrslieb effects to all factions.
----@param duration integer #Duration of the effects, in turns.
-function disaster_vermintide:morrslieb_gaze_is_upon_us(duration)
-    local faction_list = cm:model():world():faction_list()
-    local province_list = cm:model():world():province_list();
-
-    -- Apply the corruption effects to all alive factions, except humans.
-    -- Humans get this effect via payload with effect.
-    for i = 0, faction_list:num_items() - 1 do
-        local faction = faction_list:item_at(i)
-        if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false and faction:is_human() == false then
-            cm:apply_effect_bundle(self.effects_global_key, faction:name(), duration)
-        end
-    end
-
-    -- Apply the Storms of Magic to all provinces at random, based on our current stage.
-    local base_chance = self.settings.status / 10;
-    for i = 0, province_list:num_items() - 1 do
-        local province = province_list:item_at(i);
-        local chance = cm:random_number(100, 0) / 100;
-        if chance > base_chance then
-            cm:force_winds_of_magic_change(province:key(), "wom_strength_5");
-        end
-    end;
-
-    -- Apply attackers buffs to all alive skaven factions.
-    for _, faction_key in pairs(self.settings.factions) do
-        local faction = cm:get_faction(faction_key);
-        if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false then
-            cm:apply_effect_bundle(self.attacker_buffs_key, faction_key, duration);
-        end
-    end
-end
-
---- Function to check if Clan Skryre still has a home region.
-function disaster_vermintide:is_skryre_available()
-    local faction = cm:get_faction("wh2_main_skv_clan_skryre");
-    if not faction == false and faction:is_null_interface() == false then
-        return faction:has_home_region();
-    end
-
-    return false;
-end
-
--------------------------------------------
--- Ubersreik battle stuff
--------------------------------------------
-
--- Function to setup the stuff for the ubersreik battle.
-function disaster_vermintide:setup_ubersreik_battle()
-
-    -- Only do this if we have a valid position for the marker.
-    local pos_x, pos_y = cm:find_valid_spawn_location_for_character_from_settlement("wh_main_emp_empire", self.ubersreik_region_key, false, true, 9)
-    if pos_x > -1 then
-
-        -- Enable the battle only for empire, wood elves and dwarfs.
-        local human_factions = cm:get_human_factions()
-        for i = 1, #human_factions do
-            local faction = cm:get_faction(human_factions[i])
-            if faction:subculture() == "wh_main_sc_emp_empire" or faction:subculture() == "wh_dlc05_sc_wef_wood_elves" or faction:subculture() == "wh_main_sc_dwf_dwarfs" then
-
-                -- Only setup this if we find a valid position for the marker.
-                self.settings.ubersreik_battle_setup = true;
-
-                local region_cqi = cm:get_region(self.ubersreik_region_key):cqi();
-                local faction_cqi = faction:command_queue_index();
-                cm:trigger_incident_with_targets(faction_cqi, self.ubersreik_incident_key, 0, 0, 0, 0, region_cqi, 0)
-            end
-        end
-    end
-
-    -- If we found at least one human player with a valid position, setup the marker.
-    if self.settings.ubersreik_battle_setup == true then
-        cm:add_interactable_campaign_marker("endgame_vermintide_marker", "endgame_vermintide_marker", pos_x, pos_y, 2)
-    end
-end
-
--- Function to generate the army for the ubersreik battle, and trigger them to attack.
----@param character CHARACTER_SCRIPT_INTERFACE #Character that's triggering the battle.
-function disaster_vermintide:generate_ubersreik_battle_force(character)
-    local mf = character:military_force();
-    local faction = character:faction()
-    local faction_name = faction:name()
-
-    -- guard against invasion already existing
-    invasion_manager:kill_invasion_by_key("VermintideUbersreikInvasion");
-
-    -- Spawn the invasion, declare war on them and force them to do an attack of oportunity.
-    ---@type invasion
-    local invasion = invasion_manager:new_invasion("VermintideUbersreikInvasion", self.ubersreik_faction_key, self.ubersreik_battle_units, {character:logical_position_x(), character:logical_position_y()})
-    invasion:set_target("CHARACTER", character:command_queue_index(), faction_name)
-    invasion:start_invasion(
-        function(context2)
-            core:add_listener(
-                "endgame_vermintide_ubersreik_invasion_war_declared",
-                "FactionLeaderDeclaresWar",
-                function(context)
-                    return context:character():faction():name() == self.ubersreik_faction_key
-                end,
-                function()
-                    local attacker_mf = context2:get_general():military_force()
-                    local attacker_cqi = attacker_mf:command_queue_index();     -- Invader.
-                    local defender_cqi = mf:command_queue_index();              -- Player.
-
-                    -- Lock the AI army so it doesn't run away.
-                    cm:set_force_has_retreated_this_turn(attacker_mf);
-                    cm:force_attack_of_opportunity(attacker_cqi, defender_cqi, false);
-                end,
-                false
-            );
-
-            cm:force_declare_war(self.ubersreik_faction_key, faction_name, false, false)
-        end,
-        false,
-        false,
-        false
-    )
-end
-
--- This function generates the "Reward" army for completing the Ubersreik battle.
-function disaster_vermintide:generate_ubersreik_army(faction_key)
-
-    -- In case no more valid positions are found, retry with a bigger radious.
-    local pos_x, pos_y = cm:find_valid_spawn_location_for_character_from_settlement(faction_key, self.ubersreik_region_key, false, true, 10)
-    if pos_x == -1 or pos_y == -1 then
-        out("Frodo45127: Armies failed to spawn at region " .. self.ubersreik_region_key .. ". Retrying with bigger radious.");
-        pos_x, pos_y = cm:find_valid_spawn_location_for_character_from_settlement(faction_key, self.ubersreik_region_key, false, true, 10)
-    end
-
-    -- In case no more valid positions are found, retry with a much bigger radious.
-    if pos_x == -1 or pos_y == -1 then
-        out("Frodo45127: Armies failed to spawn at region " .. self.ubersreik_region_key .. ". Retrying with much bigger radious.");
-        pos_x, pos_y = cm:find_valid_spawn_location_for_character_from_settlement(faction_key, self.ubersreik_region_key, false, true, 15)
-    end
-
-    -- If they're still invalid, we cannot spawn the army anymore.
-    if pos_x == -1 or pos_y == -1 then
-        out("Frodo45127: Armies failed to spawn again. Returning without trying again.");
-        return;
-    end
-
-    -- Make sure we don't get events for the army/character spawns.
-    cm:disable_event_feed_events(true, "wh_event_category_character", "", "")
-    cm:disable_event_feed_events(true, "wh_event_category_agent", "", "")
-    cm:disable_event_feed_events(true, "wh_event_category_traits_ancillaries", "", "")
-
-    -- Create the army, and attach the relevant heroes to it.
-    cm:create_force(
-        faction_key,
-        self.ubersreik_reward_units,
-        self.ubersreik_region_key,
-        pos_x,
-        pos_y,
-        false,
-        function(cqi)
-            local force = cm:get_character_by_cqi(cqi):military_force()
-            local force_cqi = force:command_queue_index()
-
-            cm:add_experience_to_units_commanded_by_character(cm:char_lookup_str(cqi), 7)
-
-            for i = 1, #self.ubersreik_reward_agents do
-                local agent_x, agent_y = cm:find_valid_spawn_location_for_character_from_settlement(faction_key, self.ubersreik_region_key, false, true, 10)
-                local agent = cm:create_agent(faction_key, self.ubersreik_reward_agents[i].type, self.ubersreik_reward_agents[i].subtype, agent_x, agent_y, nil)
-                local forename = common:get_localised_string(self.ubersreik_reward_agents[i].forename)
-                local family_name = common:get_localised_string(self.ubersreik_reward_agents[i].family_name)
-                cm:change_character_custom_name(agent, forename, family_name, "", "")
-                cm:add_agent_experience(cm:char_lookup_str(agent:command_queue_index()), 25, true)
-                cm:embed_agent_in_force(agent, force);
-            end
-
-            -- Reenable the events for army/character spawns.
-            cm:disable_event_feed_events(false, "wh_event_category_character", "", "")
-            cm:disable_event_feed_events(false, "wh_event_category_agent", "", "")
-            cm:disable_event_feed_events(false, "wh_event_category_traits_ancillaries", "", "")
-
-            -- Trigger an incident informing about the new army.
-            local faction_cqi = cm:get_faction(faction_key):command_queue_index();
-            cm:trigger_incident_with_targets(faction_cqi, self.ubersreik_battle_success_incident_key, 0, 0, 0, force_cqi, 0, 0)
-        end
-    )
-end
-
--------------------------------------------
--- Underempire expansion logic
--------------------------------------------
-
--- This function expands the underempire when called, if expansion is still possible.
-function disaster_vermintide:expand_under_empire()
-    local potential_skaven = {}
-    for _, faction_key in pairs(self.settings.factions) do
-        local faction = cm:get_faction(faction_key)
-        if dynamic_disasters:check_faction_is_valid(faction, false) then
-            table.insert(potential_skaven, faction_key)
-        end
-    end
-
-    -- Update the potential factions removing the confederated ones.
-    self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
-    for i = 1, #self.settings.factions do
-
-        -- We're only interested in expanding the underempire for factions that are actually alive.
-        -- NOTE: Make sure the ones we want each stage to expand are alive.
-        local faction_key = self.settings.factions[i];
-        local faction = cm:get_faction(faction_key);
-        if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false then
-
-            local checked_regions = {}
-
-            if self.settings.repeat_regions[faction_key] == nil then
-                self.settings.repeat_regions[faction_key] = {}
-            end
-
-            -- Try to expand to regions bordering the current underempire.
-            local foreign_region_list = faction:foreign_slot_managers()
-            for i2 = 0, foreign_region_list:num_items() -1 do
-                local region = foreign_region_list:item_at(i2):region()
-                self:expand_under_empire_adjacent_region_check(faction_key, region, checked_regions, false)
-            end
-
-            -- Try to expand to regions bordering the current surface empire.
-            local region_list = faction:region_list()
-            for i2 = 0, region_list:num_items() -1 do
-                local region = region_list:item_at(i2)
-                self:expand_under_empire_adjacent_region_check(faction_key, region, checked_regions, false)
-            end
-        end
-    end
-end
-
--- This function expands the underempire for the provided faction, using the provided region as source region to expand from.
-function disaster_vermintide:expand_under_empire_adjacent_region_check(sneaky_skaven, region, checked_regions, force_unique_setup, ignore_rolls, apply_to_current_region)
-    local adjacent_region_list = region:adjacent_region_list()
-    for i = 0, adjacent_region_list:num_items() -1 do
-        local adjacent_region = adjacent_region_list:item_at(i)
-        local adjacent_region_key = adjacent_region:name()
-
-        if apply_to_current_region == true then
-            adjacent_region = region;
-            adjacent_region_key = region:name();
-        end
-
-        -- To reduce iterations, we only process regions that have not be processed yet this turn.
-        if checked_regions[adjacent_region_key] == nil then
-            checked_regions[adjacent_region_key] = true
-
-            -- Expand with higher chance on the first expansion, the reduce the expansion chance.
-            if not adjacent_region == false and adjacent_region:is_null_interface() == false then
-                local chance = self.repeat_expansion_chance
-                if self.settings.repeat_regions[sneaky_skaven][adjacent_region_key] == nil then
-                    self.settings.repeat_regions[sneaky_skaven][adjacent_region_key] = true
-                    chance = self.inital_expansion_chance
-                end
-                local dice_roll = cm:random_number(100, 1)
-                if (dice_roll <= chance or ignore_rolls == true) then
-                    out("Frodo45127: Spreading under-empire to " .. adjacent_region_key .. " for " .. sneaky_skaven)
-
-                    -- If the region is abandoned, do not use underempire. Take the region directly.
-                    if adjacent_region:is_abandoned() then
-                        cm:transfer_region_to_faction(adjacent_region_key, sneaky_skaven)
-
-                    -- Only expand to regions not owned by the same faction and with not an undercity already there.
-                    elseif adjacent_region:owning_faction():name() ~= sneaky_skaven then
-                        local is_sneaky_skaven_present = false
-                        local foreign_slot_managers = adjacent_region:foreign_slot_managers()
-                        for i2 = 0, foreign_slot_managers:num_items() -1 do
-                            local foreign_slot_manager = foreign_slot_managers:item_at(i2)
-                            if foreign_slot_manager:faction():name() == sneaky_skaven then
-                                is_sneaky_skaven_present = true
-                                break
-                            end
-                        end
-
-                        if is_sneaky_skaven_present == false then
-
-                            -- Pick the underempire setup at random.
-                            local under_empire_buildings
-                            if self.under_empire_buildings[sneaky_skaven] ~= nil and (cm:random_number(100) <= self.unique_building_chance or force_unique_setup == true) then
-                                under_empire_buildings = self.under_empire_buildings[sneaky_skaven]
-                            else
-                                local random_index = cm:random_number(#self.under_empire_buildings.generic)
-                                under_empire_buildings = self.under_empire_buildings.generic[random_index]
-                            end
-
-                            local region_cqi = adjacent_region:cqi()
-                            local faction_cqi = cm:get_faction(sneaky_skaven):command_queue_index()
-                            local foreign_slot = cm:add_foreign_slot_set_to_region_for_faction(faction_cqi, region_cqi, "wh2_dlc12_slot_set_underempire")
-
-                            -- Add the buildings to the underempire.
-                            for i3 = 1, #under_empire_buildings do
-                                local building_key = under_empire_buildings[i3]
-                                local slot = foreign_slot:slots():item_at(i3-1)
-                                cm:foreign_slot_instantly_upgrade_building(slot, building_key)
-                                out("Frodo45127: Added " .. building_key .. " to " .. adjacent_region:name() .. " for " .. sneaky_skaven)
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end
-end
-
--- This function replaces the main building of an undercity with its max-level equivalent, triggering nukes/rat kings/plagues in the process.
-function disaster_vermintide:implode_under_empire()
-
-    for _, faction_key in pairs(self.settings.factions) do
-        local imploded_undercities = 0;
-        local faction = cm:get_faction(faction_key);
-        if not faction == false and faction:is_null_interface() == false then
-            local foreign_slots = faction:foreign_slot_managers();
-            for i = 0, foreign_slots:num_items() -1 do
-
-                -- Check if we already imploded enough undercities for this faction this turn.
-                if imploded_undercities >= self.settings.under_cities_imploding_per_turn then
-                    break;
-                end
-
-                local foreign_slot = foreign_slots:item_at(i);
-                local slots = foreign_slot:slots();
-                for i2 = 0, slots:num_items() - 1 do
-                    local slot = slots:item_at(i2)
-                    if not slot:is_null_interface() and slot:has_building() then
-                        local new_building = false;
-                        local building_key = slot:building();
-                        if building_key == "wh2_dlc12_under_empire_annexation_doomsday_1" then
-                            new_building = "wh2_dlc12_under_empire_annexation_doomsday_2";
-                        elseif building_key == "wh2_dlc12_under_empire_annexation_war_camp_1" then
-                            new_building = "wh2_dlc12_under_empire_annexation_war_camp_2";
-                        elseif building_key == "wh2_dlc14_under_empire_annexation_plague_cauldron_1" then
-                            new_building = "wh2_dlc14_under_empire_annexation_plague_cauldron_2";
-                        end
-
-                        if not new_building == false then
-                            local region = foreign_slot:region();
-
-                            cm:foreign_slot_instantly_upgrade_building(slot, new_building);
-                            out("Frodo45127: Imploding undercity, added " .. new_building .. " to " .. region:name() .. " for " .. faction:name());
-
-                            imploded_undercities = imploded_undercities + 1;
-                        end
-                    end
-                end
-            end
-        end
-    end
-end
-
--------------------------------------------
--- Underempire expansion logic end
--------------------------------------------
 
 -- Function to trigger cleanup stuff after the invasion is over.
 function disaster_vermintide:finish()
     if self.settings.started == true then
         out("Frodo45127: Disaster: " .. self.name .. ". Triggering end invasion.");
+
+        -- Remove all effects related to this disaster and its missions.
+        local faction_list = cm:model():world():faction_list()
+        for i = 0, faction_list:num_items() - 1 do
+            local faction = faction_list:item_at(i)
+            cm:remove_effect_bundle(self.effects_global_key, faction:name());
+        end
+
+        -- Remove all the related listeners.
+        core:remove_listener("VermintideUbersreikBattle");
+        core:remove_listener("VermintideUbersreikBattleCleanup");
+        core:remove_listener("VermintideUbersreikBattleCleanupAfterRetreat");
+        core:remove_listener("VermintideIkitWarpfuel");
+        core:remove_listener("VermintideUnderEmpireExpansion");
+        core:remove_listener("VermintideUnderEmpireImplosion");
+        core:remove_listener("VermintideUbersreikSetup");
+        core:remove_listener("VermintideStage1");
+        core:remove_listener("VermintideStage2");
+        core:remove_listener("VermintideStage3");
+        core:remove_listener("VermintideStage4");
+        core:remove_listener("VermintideStage5");
+
         dynamic_disasters:finish_disaster(self);
     end
 end
@@ -1445,5 +919,574 @@ function disaster_vermintide:check_finish()
 
     return false;
 end
+
+--[[-------------------------------------------------------------------------------------------------------------
+
+    Disaster-specific functions.
+
+]]---------------------------------------------------------------------------------------------------------------
+
+-- Function to trigger the first stage of the Vermintide.
+function disaster_vermintide:trigger_stage_1()
+    if dynamic_disasters.settings.debug_2 == true then
+        self.settings.stage_2_delay = 1;
+    else
+        self.settings.stage_2_delay = cm:random_number(10, 6);
+    end
+
+    -- Spawn a few Skryre armies in Estalia, Tilea and Sartosa. Enough so they're able to expand next.
+    -- If they're owned by the player, spawn the armies in the home region of Skryre instead.
+    -- If Clan Skryre has no home region, spawn
+    local army_count = math.floor(1.5 * self.settings.difficulty_mod)
+    for _, faction_key in pairs(self.settings.factions_stage_1) do
+        local faction = cm:get_faction(faction_key);
+        if not faction == false and faction:is_null_interface() == false then
+            for _, region_key in pairs(self.regions_stage_1) do
+                dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_templates[faction_key], self.base_army_unit_count, false, army_count, self.name, nil, { "wh2_main_skv_clan_skryre" })
+            end
+
+            -- Apply the relevant CAI changes only to Clan Skryre and declare the appropiate wars.
+            cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
+            dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
+            dynamic_disasters:declare_war_to_all(faction, {"wh2_main_sc_skv_skaven"}, true)
+        end
+    end
+
+    -- Setup strategic under-cities for all factions available, including the recently resurrected ones.
+    for _, faction_key in pairs(self.settings.factions) do
+
+        out("Frodo45127: Setting up initial underempire for faction " .. faction_key .. ".");
+        if self.initial_under_empire_placements[faction_key] ~= nil then
+
+            -- Only spawn new armies here for dead main factions.
+            if cm:get_faction(faction_key):is_dead() == true then
+                dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, "wh3_main_combi_region_skavenblight", self.army_templates[faction_key], self.base_army_unit_count, false, army_count, self.name, nil, { "wh2_main_skv_clan_skryre" })
+            end
+
+            for _, region_key in pairs(self.initial_under_empire_placements[faction_key]) do
+
+                out("Frodo45127: Setting up initial underempire for faction " .. faction_key .. ", region " .. region_key .. ".");
+                local region = cm:get_region(region_key);
+                self:expand_under_empire_adjacent_region_check(faction_key, region, {}, true, true, true)
+            end
+        end
+    end
+
+    -- Prepare the regions to reveal.
+    dynamic_disasters:prepare_reveal_regions(self.regions_stage_1);
+
+    -- Make sure every attacker is at peace with each other.
+    dynamic_disasters:force_peace_between_factions(self.settings.factions, false);
+
+    -- Trigger the effect about Morrslieb.
+    self:morrslieb_gaze_is_upon_us(self.settings.stage_2_delay);
+
+    -- Trigger all the stuff related to the invasion (missions, effects,...).
+    dynamic_disasters:trigger_incident(self.stage_1_event_key, self.effects_global_key, self.settings.stage_2_delay, nil, nil, nil);
+    cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_skv_skaven")
+    self:set_status(STATUS_STAGE_1);
+end
+
+-- Function to trigger the second stage of the Vermintide.
+function disaster_vermintide:trigger_stage_2()
+
+    if dynamic_disasters.settings.debug_2 == true then
+        self.settings.stage_3_delay = 1;
+    else
+        self.settings.stage_3_delay = cm:random_number(7, 4);
+    end
+
+    -- Spawn a few armies in the Empire, the northern coast of Araby and Cathay.
+    local army_count_empire = math.ceil(1.5 * self.settings.difficulty_mod)
+    for _, region_key in pairs(self.regions_stage_2_empire) do
+        local faction_key = self.settings.factions_stage_2_empire_and_araby[cm:random_number(#self.settings.factions_stage_2_empire_and_araby)];
+        dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_templates[faction_key], self.base_army_unit_count, false, army_count_empire, self.name, nil, { "wh2_main_skv_clan_skryre" })
+    end
+
+    local army_count_araby = math.ceil(1.5 * self.settings.difficulty_mod)
+    for _, region_key in pairs(self.regions_stage_2_araby) do
+        local faction_key = self.settings.factions_stage_2_empire_and_araby[cm:random_number(#self.settings.factions_stage_2_empire_and_araby)];
+        dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_templates[faction_key], self.base_army_unit_count, false, army_count_araby, self.name, nil, { "wh2_main_skv_clan_skryre" })
+    end
+
+    -- The Attack on Cathay depends on Eshin being available to spawn.
+    if #self.settings.factions_stage_2_cathay > 0 then
+        local army_count_cathay = math.ceil(1.5 * self.settings.difficulty_mod)
+        for _, region_key in pairs(self.regions_stage_2_cathay) do
+            local faction_key = self.settings.factions_stage_2_cathay[cm:random_number(#self.settings.factions_stage_2_cathay)];
+            dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_templates[faction_key], self.base_army_unit_count, false, army_count_cathay, self.name, nil, { "wh2_main_skv_clan_skryre" })
+        end
+    end
+
+    -- From this stage, we force all skaven on the map to declare war on everyone a single faction faces.
+    -- This includes owners of the attacked region, and owners of nearby regions. Even if its Skaven.
+    for _, faction_key in pairs(self.settings.factions) do
+        local faction = cm:get_faction(faction_key);
+        cm:instantly_research_all_technologies(faction_key);
+        cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
+        dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
+        dynamic_disasters:declare_war_to_all(faction, {"wh2_main_sc_skv_skaven"}, true)
+    end
+
+    -- Trigger the effect about Morrslieb.
+    self:morrslieb_gaze_is_upon_us(self.settings.stage_3_delay);
+
+    -- Also, make sure they're added to the victory conditions.
+    for _, faction_key in pairs(self.settings.factions) do
+        table.insert(self.objectives[1].conditions, "faction " .. faction_key)
+    end
+
+    -- Trigger all the stuff related to the invasion (missions, effects,...).
+    dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.stage_2_event_key, nil, self.settings.factions[1], function () self:finish() end, true)
+    dynamic_disasters:trigger_incident(self.stage_2_event_key, self.effects_global_key, self.settings.stage_3_delay, nil, nil, nil);
+    cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_skv_skaven")
+    self:set_status(STATUS_STAGE_2);
+end
+
+-- Function to trigger the third stage of the Vermintide.
+function disaster_vermintide:trigger_stage_3()
+
+    if dynamic_disasters.settings.debug_2 == true then
+        self.settings.stage_4_delay = 1;
+    else
+        self.settings.stage_4_delay = cm:random_number(6, 4);
+    end
+
+    -- Spawn a few armies in Lustria.
+    local army_count = math.ceil(2 * self.settings.difficulty_mod)
+    for _, region_key in pairs(self.regions_stage_3) do
+        local faction_key = self.settings.factions_stage_3_lustria[cm:random_number(#self.settings.factions_stage_3_lustria, 1)];
+        dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_templates[faction_key], self.base_army_unit_count, false, army_count, self.name, nil, { "wh2_main_skv_clan_skryre" })
+    end
+
+    -- Force war against every skaven faction for each faction the skaven attack.
+    for _, faction_key in pairs(self.settings.factions) do
+        local faction = cm:get_faction(faction_key);
+        dynamic_disasters:declare_war_to_all(faction, {"wh2_main_sc_skv_skaven"}, true)
+    end
+
+    -- Prepare the regions to reveal.
+    dynamic_disasters:prepare_reveal_regions(self.regions_stage_3);
+
+    -- Trigger the effect about Morrslieb.
+    self:morrslieb_gaze_is_upon_us(self.settings.stage_4_delay);
+
+    -- Trigger all the stuff related to the invasion (missions, effects,...).
+    dynamic_disasters:trigger_incident(self.stage_3_event_key, self.effects_global_key, self.settings.stage_4_delay, nil, nil, nil);
+    cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_skv_skaven")
+    self:set_status(STATUS_STAGE_3);
+end
+
+-- Function to trigger the fourth stage of the Vermintide.
+function disaster_vermintide:trigger_stage_4()
+
+    if dynamic_disasters.settings.debug_2 == true then
+        self.settings.stage_5_delay = 1;
+    else
+        self.settings.stage_5_delay = cm:random_number(10, 6);
+    end
+
+    -- Spawn a few armies along the Karak Ankor.
+    local army_count = math.ceil(1.5 * self.settings.difficulty_mod)
+    for _, region_key in pairs(self.regions_stage_4) do
+        local faction_key = self.settings.factions_stage_4_karaz_ankor[cm:random_number(#self.settings.factions_stage_4_karaz_ankor)];
+        dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_templates[faction_key], self.base_army_unit_count, false, army_count, self.name, nil, { "wh2_main_skv_clan_skryre" })
+    end
+
+    -- Force war against every skaven faction for each faction the skaven attack.
+    for _, faction_key in pairs(self.settings.factions) do
+        local faction = cm:get_faction(faction_key);
+        dynamic_disasters:declare_war_to_all(faction, {"wh2_main_sc_skv_skaven"}, true)
+    end
+
+    -- Prepare the regions to reveal.
+    dynamic_disasters:prepare_reveal_regions(self.regions_stage_4);
+
+    -- Trigger the effect about Morrslieb.
+    self:morrslieb_gaze_is_upon_us(self.settings.stage_5_delay);
+
+    -- Trigger all the stuff related to the invasion (missions, effects,...).
+    dynamic_disasters:trigger_incident(self.stage_4_event_key, self.effects_global_key, self.settings.stage_5_delay, nil, nil, nil);
+    cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_skv_skaven")
+    self:set_status(STATUS_STAGE_4);
+end
+
+-- Function to trigger the fifth stage of the Vermintide.
+function disaster_vermintide:trigger_stage_5()
+
+    -- Spawn a few armies in Karaz-a-Karak.
+    local army_count = math.ceil(2 * self.settings.difficulty_mod)
+    for _, region_key in pairs(self.regions_stage_5) do
+        local faction_key = self.settings.factions_stage_5_karaz_a_karak[cm:random_number(#self.settings.factions_stage_5_karaz_a_karak)];
+        dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_templates[faction_key], self.base_army_unit_count, false, army_count, self.name, nil, { "wh2_main_skv_clan_skryre" })
+    end
+
+    -- Force war against every skaven faction for each faction the skaven attack.
+    for _, faction_key in pairs(self.settings.factions) do
+        local faction = cm:get_faction(faction_key);
+        dynamic_disasters:declare_war_to_all(faction, {"wh2_main_sc_skv_skaven"}, true)
+    end
+
+    -- Prepare the regions to reveal.
+    dynamic_disasters:prepare_reveal_regions(self.regions_stage_5);
+
+    -- Trigger the effect about Morrslieb.
+    self:morrslieb_gaze_is_upon_us(self.settings.invasion_over_delay);
+
+    -- Trigger all the stuff related to the invasion (missions, effects,...).
+    dynamic_disasters:trigger_incident(self.stage_5_event_key, self.effects_global_key, self.settings.invasion_over_delay, nil, nil, nil);
+    cm:activate_music_trigger("ScriptedEvent_Negative", "wh2_main_sc_skv_skaven")
+    self:set_status(STATUS_STAGE_5);
+end
+
+-- Function to apply the Morrslieb effects to all factions.
+---@param duration integer #Duration of the effects, in turns.
+function disaster_vermintide:morrslieb_gaze_is_upon_us(duration)
+    local faction_list = cm:model():world():faction_list()
+    local province_list = cm:model():world():province_list();
+
+    -- Apply the corruption effects to all alive factions, except humans.
+    -- Humans get this effect via payload with effect.
+    for i = 0, faction_list:num_items() - 1 do
+        local faction = faction_list:item_at(i)
+        if not faction == false and faction:is_null_interface() == false and faction:is_dead() == false and faction:is_human() == false then
+            cm:apply_effect_bundle(self.effects_global_key, faction:name(), duration)
+        end
+    end
+
+    -- Apply the Storms of Magic to all provinces at random, based on our current stage.
+    local base_chance = self.settings.status * 10;
+    for i = 0, province_list:num_items() - 1 do
+        local province = province_list:item_at(i);
+        local chance = cm:random_number(100, 0);
+        if chance > base_chance then
+            cm:force_winds_of_magic_change(province:key(), "wom_strength_5");
+        end
+    end;
+
+    -- Apply attackers buffs to all alive skaven factions.
+    for _, faction_key in pairs(self.settings.factions) do
+        local faction = cm:get_faction(faction_key);
+        if not faction == false and faction:is_null_interface() == false and not faction:is_dead() then
+            cm:apply_effect_bundle(self.attacker_buffs_key, faction_key, duration);
+        end
+    end
+end
+
+--- Function to check if Clan Skryre still has a home region.
+function disaster_vermintide:is_skryre_available()
+    local faction = cm:get_faction("wh2_main_skv_clan_skryre");
+    if not faction == false and faction:is_null_interface() == false then
+        return faction:has_home_region();
+    end
+
+    return false;
+end
+
+-------------------------------------------
+-- Ubersreik battle stuff
+-------------------------------------------
+
+-- Function to setup the stuff for the ubersreik battle.
+function disaster_vermintide:setup_ubersreik_battle()
+
+    -- Only do this if we have a valid position for the marker.
+    local pos_x, pos_y = cm:find_valid_spawn_location_for_character_from_settlement("wh_main_emp_empire", self.ubersreik_region_key, false, true, 9)
+    if pos_x > -1 then
+
+        -- Enable the battle only for empire, wood elves and dwarfs.
+        local human_factions = cm:get_human_factions()
+        for i = 1, #human_factions do
+            local faction = cm:get_faction(human_factions[i])
+            if faction:subculture() == "wh_main_sc_emp_empire" or faction:subculture() == "wh_dlc05_sc_wef_wood_elves" or faction:subculture() == "wh_main_sc_dwf_dwarfs" then
+
+                -- Only setup this if we find a valid position for the marker.
+                self.settings.ubersreik_battle_setup = true;
+
+                local region_cqi = cm:get_region(self.ubersreik_region_key):cqi();
+                local faction_cqi = faction:command_queue_index();
+                cm:trigger_incident_with_targets(faction_cqi, self.ubersreik_incident_key, 0, 0, 0, 0, region_cqi, 0)
+            end
+        end
+    end
+
+    -- If we found at least one human player with a valid position, setup the marker.
+    if self.settings.ubersreik_battle_setup == true then
+        cm:add_interactable_campaign_marker("endgame_vermintide_marker", "endgame_vermintide_marker", pos_x, pos_y, 2)
+    end
+end
+
+-- Function to generate the army for the ubersreik battle, and trigger them to attack.
+---@param character CHARACTER_SCRIPT_INTERFACE #Character that's triggering the battle.
+function disaster_vermintide:generate_ubersreik_battle_force(character)
+    local mf = character:military_force();
+    local faction = character:faction()
+    local faction_name = faction:name()
+
+    -- guard against invasion already existing
+    invasion_manager:kill_invasion_by_key("VermintideUbersreikInvasion");
+
+    -- Spawn the invasion, declare war on them and force them to do an attack of oportunity.
+    ---@type invasion
+    local invasion = invasion_manager:new_invasion("VermintideUbersreikInvasion", self.ubersreik_faction_key, self.ubersreik_battle_units, {character:logical_position_x(), character:logical_position_y()})
+    invasion:set_target("CHARACTER", character:command_queue_index(), faction_name)
+    invasion:start_invasion(
+        function(context2)
+            core:add_listener(
+                "endgame_vermintide_ubersreik_invasion_war_declared",
+                "FactionLeaderDeclaresWar",
+                function(context)
+                    return context:character():faction():name() == self.ubersreik_faction_key
+                end,
+                function()
+                    local attacker_mf = context2:get_general():military_force()
+                    local attacker_cqi = attacker_mf:command_queue_index();     -- Invader.
+                    local defender_cqi = mf:command_queue_index();              -- Player.
+
+                    -- Lock the AI army so it doesn't run away.
+                    cm:set_force_has_retreated_this_turn(attacker_mf);
+                    cm:force_attack_of_opportunity(attacker_cqi, defender_cqi, false);
+                end,
+                false
+            );
+
+            cm:force_declare_war(self.ubersreik_faction_key, faction_name, false, false)
+        end,
+        false,
+        false,
+        false
+    )
+end
+
+-- This function generates the "Reward" army for completing the Ubersreik battle.
+---@param faction_key integer #Faction that will receive the army.
+function disaster_vermintide:generate_ubersreik_army(faction_key)
+
+    -- In case no more valid positions are found, retry with a bigger radious.
+    local pos_x, pos_y = cm:find_valid_spawn_location_for_character_from_settlement(faction_key, self.ubersreik_region_key, false, true, 10)
+    if pos_x == -1 or pos_y == -1 then
+        out("Frodo45127: Armies failed to spawn at region " .. self.ubersreik_region_key .. ". Retrying with bigger radious.");
+        pos_x, pos_y = cm:find_valid_spawn_location_for_character_from_settlement(faction_key, self.ubersreik_region_key, false, true, 10)
+    end
+
+    -- In case no more valid positions are found, retry with a much bigger radious.
+    if pos_x == -1 or pos_y == -1 then
+        out("Frodo45127: Armies failed to spawn at region " .. self.ubersreik_region_key .. ". Retrying with much bigger radious.");
+        pos_x, pos_y = cm:find_valid_spawn_location_for_character_from_settlement(faction_key, self.ubersreik_region_key, false, true, 15)
+    end
+
+    -- If they're still invalid, fallback to the faction's capital.
+    if pos_x == -1 or pos_y == -1 then
+        out("Frodo45127: Armies failed to spawn again. Falling back to factions capital.");
+
+        local faction = cm:get_faction(faction_key);
+        if not faction == false and faction:is_null_interface() == false and faction:has_home_region() then
+            pos_x, pos_y = cm:find_valid_spawn_location_for_character_from_settlement(faction_key, faction:home_region(), false, true, 5)
+        else
+            out("Frodo45127: Armies failed to spawn again in the faction's capital. Sorry, no reward for you.");
+            return;
+        end
+    end
+
+    -- Make sure we don't get events for the army/character spawns.
+    cm:disable_event_feed_events(true, "wh_event_category_character", "", "")
+    cm:disable_event_feed_events(true, "wh_event_category_agent", "", "")
+    cm:disable_event_feed_events(true, "wh_event_category_traits_ancillaries", "", "")
+
+    -- Create the army, and attach the relevant heroes to it.
+    cm:create_force(
+        faction_key,
+        self.ubersreik_reward_units,
+        self.ubersreik_region_key,
+        pos_x,
+        pos_y,
+        false,
+        function(cqi)
+            local force = cm:get_character_by_cqi(cqi):military_force()
+            local force_cqi = force:command_queue_index()
+
+            cm:add_experience_to_units_commanded_by_character(cm:char_lookup_str(cqi), 7)
+
+            for i = 1, #self.ubersreik_reward_agents do
+                local agent_x, agent_y = cm:find_valid_spawn_location_for_character_from_settlement(faction_key, self.ubersreik_region_key, false, true, 10)
+                local agent = cm:create_agent(faction_key, self.ubersreik_reward_agents[i].type, self.ubersreik_reward_agents[i].subtype, agent_x, agent_y, nil)
+                local forename = common:get_localised_string(self.ubersreik_reward_agents[i].forename)
+                local family_name = common:get_localised_string(self.ubersreik_reward_agents[i].family_name)
+                cm:change_character_custom_name(agent, forename, family_name, "", "")
+                cm:add_agent_experience(cm:char_lookup_str(agent:command_queue_index()), 25, true)
+                cm:embed_agent_in_force(agent, force);
+            end
+
+            -- Reenable the events for army/character spawns.
+            cm:disable_event_feed_events(false, "wh_event_category_character", "", "")
+            cm:disable_event_feed_events(false, "wh_event_category_agent", "", "")
+            cm:disable_event_feed_events(false, "wh_event_category_traits_ancillaries", "", "")
+
+            -- Trigger an incident informing about the new army.
+            local faction_cqi = cm:get_faction(faction_key):command_queue_index();
+            cm:trigger_incident_with_targets(faction_cqi, self.ubersreik_battle_success_incident_key, 0, 0, 0, force_cqi, 0, 0)
+        end
+    )
+end
+
+-------------------------------------------
+-- Underempire expansion logic
+-------------------------------------------
+
+-- This function expands the underempire when called, if expansion is still possible.
+function disaster_vermintide:expand_under_empire()
+
+    -- Update the potential factions removing the confederated ones.
+    self.settings.factions = dynamic_disasters:remove_confederated_factions_from_list(self.settings.factions);
+    for i = 1, #self.settings.factions do
+
+        -- We're only interested in expanding the underempire for factions that are actually alive.
+        local faction_key = self.settings.factions[i];
+        local faction = cm:get_faction(faction_key);
+        if not faction == false and faction:is_null_interface() == false and not faction:is_dead() then
+
+            -- Keep track of all the regions a faction has expanded to, so we can slow them down when they re-expand on these regions.
+            local checked_regions = {}
+
+            -- Try to expand to regions bordering the current underempire.
+            local foreign_region_list = faction:foreign_slot_managers()
+            for i2 = 0, foreign_region_list:num_items() -1 do
+                local region = foreign_region_list:item_at(i2):region()
+                self:expand_under_empire_adjacent_region_check(faction_key, region, checked_regions, false)
+            end
+
+            -- Try to expand to regions bordering the current surface empire.
+            local region_list = faction:region_list()
+            for i2 = 0, region_list:num_items() -1 do
+                local region = region_list:item_at(i2)
+                self:expand_under_empire_adjacent_region_check(faction_key, region, checked_regions, false)
+            end
+        end
+    end
+end
+
+-- This function expands the underempire for the provided faction, using the provided region as source region to expand from.
+function disaster_vermintide:expand_under_empire_adjacent_region_check(sneaky_skaven, region, checked_regions, force_unique_setup, ignore_rolls, apply_to_current_region)
+    local adjacent_region_list = region:adjacent_region_list()
+    for i = 0, adjacent_region_list:num_items() -1 do
+        local adjacent_region = adjacent_region_list:item_at(i)
+        local adjacent_region_key = adjacent_region:name()
+
+        if apply_to_current_region == true then
+            adjacent_region = region;
+            adjacent_region_key = region:name();
+        end
+
+        -- To reduce iterations, we only process regions that have not be processed yet this turn.
+        if checked_regions[adjacent_region_key] == nil then
+            checked_regions[adjacent_region_key] = true
+
+            -- Expand with higher chance on the first expansion, the reduce the expansion chance.
+            if not adjacent_region == false and adjacent_region:is_null_interface() == false then
+                local chance = self.repeat_expansion_chance
+                if self.settings.repeat_regions[adjacent_region_key] == nil then
+                    self.settings.repeat_regions[adjacent_region_key] = true
+                    chance = self.inital_expansion_chance
+                end
+
+                local dice_roll = cm:random_number(100, 1)
+                if (dice_roll <= chance or ignore_rolls == true) then
+                    out("Frodo45127: Spreading under-empire to " .. adjacent_region_key .. " for " .. sneaky_skaven)
+
+                    -- If the region is abandoned and no player is one of the excluded factions, do not use underempire. Take the region directly.
+                    if adjacent_region:is_abandoned() and not dynamic_disasters:is_a_player_destructive_faction() then
+                        cm:transfer_region_to_faction(adjacent_region_key, sneaky_skaven)
+
+                    -- Only expand to regions not owned by the same faction.
+                    -- Note that this can result in undercities changing hands frequently, which I find kinda in lore.
+                    elseif adjacent_region:owning_faction():name() ~= sneaky_skaven then
+                        local is_sneaky_skaven_present = false
+                        local foreign_slot_managers = adjacent_region:foreign_slot_managers()
+                        for i2 = 0, foreign_slot_managers:num_items() -1 do
+                            local foreign_slot_manager = foreign_slot_managers:item_at(i2)
+                            if foreign_slot_manager:faction():name() == sneaky_skaven then
+                                is_sneaky_skaven_present = true
+                                break
+                            end
+                        end
+
+                        if is_sneaky_skaven_present == false then
+
+                            -- Pick the underempire setup at random. 25% chance of faction specific layouts.
+                            local under_empire_buildings
+                            if self.under_empire_buildings[sneaky_skaven] ~= nil and (cm:random_number(100) <= self.unique_building_chance or force_unique_setup == true) then
+                                under_empire_buildings = self.under_empire_buildings[sneaky_skaven]
+                            else
+                                local random_index = cm:random_number(#self.under_empire_buildings.generic)
+                                under_empire_buildings = self.under_empire_buildings.generic[random_index]
+                            end
+
+                            local region_cqi = adjacent_region:cqi()
+                            local faction_cqi = cm:get_faction(sneaky_skaven):command_queue_index()
+                            local foreign_slot = cm:add_foreign_slot_set_to_region_for_faction(faction_cqi, region_cqi, "wh2_dlc12_slot_set_underempire")
+
+                            -- Add the buildings to the underempire.
+                            for i3 = 1, #under_empire_buildings do
+                                local building_key = under_empire_buildings[i3]
+                                local slot = foreign_slot:slots():item_at(i3-1)
+                                cm:foreign_slot_instantly_upgrade_building(slot, building_key)
+                                out("Frodo45127: Added " .. building_key .. " to " .. adjacent_region:name() .. " for " .. sneaky_skaven)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+-- This function replaces the main building of an undercity with its max-level equivalent, triggering nukes/rat kings/plagues in the process.
+function disaster_vermintide:implode_under_empire()
+
+    for _, faction_key in pairs(self.settings.factions) do
+        local imploded_undercities = 0;
+        local faction = cm:get_faction(faction_key);
+        if not faction == false and faction:is_null_interface() == false then
+            local foreign_slots = faction:foreign_slot_managers();
+            for i = 0, foreign_slots:num_items() -1 do
+
+                -- Check if we already imploded enough undercities for this faction this turn.
+                if imploded_undercities >= self.settings.under_cities_imploding_per_turn then
+                    break;
+                end
+
+                local foreign_slot = foreign_slots:item_at(i);
+                local slots = foreign_slot:slots();
+                for i2 = 0, slots:num_items() - 1 do
+                    local slot = slots:item_at(i2)
+                    if not slot:is_null_interface() and slot:has_building() then
+                        local new_building = false;
+                        local building_key = slot:building();
+                        if building_key == "wh2_dlc12_under_empire_annexation_doomsday_1" then
+                            new_building = "wh2_dlc12_under_empire_annexation_doomsday_2";
+                        elseif building_key == "wh2_dlc12_under_empire_annexation_war_camp_1" then
+                            new_building = "wh2_dlc12_under_empire_annexation_war_camp_2";
+                        elseif building_key == "wh2_dlc14_under_empire_annexation_plague_cauldron_1" then
+                            new_building = "wh2_dlc14_under_empire_annexation_plague_cauldron_2";
+                        end
+
+                        if not new_building == false then
+                            local region = foreign_slot:region();
+
+                            cm:foreign_slot_instantly_upgrade_building(slot, new_building);
+                            out("Frodo45127: Imploding undercity, added " .. new_building .. " to " .. region:name() .. " for " .. faction:name());
+
+                            imploded_undercities = imploded_undercities + 1;
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+-------------------------------------------
+-- Underempire expansion logic end
+-------------------------------------------
 
 return disaster_vermintide
