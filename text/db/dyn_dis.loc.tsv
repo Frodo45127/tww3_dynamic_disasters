@@ -185,22 +185,21 @@ mct_dyn_dis_automatic_difficulty_enable	Enable Automatic Difficulty	true
 mct_dyn_dis_automatic_difficulty_enable_tooltip	Enabling this will change the disaster difficulty based on campaign difficulty. This disables the difficulty multipiers of each disaster and the max concurrent disasters selector.	true
 mct_dyn_dis_the_vermintide_enable	Enable "The Vermintide" disaster	true
 mct_dyn_dis_the_vermintide_enable_tooltip	Enable/Disable the "The Vermintide" disaster.\\n\\nThirteen times thirteen passes of the Chaos moon I will give you. Thirteen times thirteen moons I will wait. Go to your legions and your workshops! Bring me victory. Bring me dominance over this mortal realm! You must be as one, work as one, as single-minded as a swarm pouring from a sewer-pipe -- all rats scurry-flood in same direction. Only then will you inherit the ruins of this world, only then will you rule. Thirteen times thirteen moons! Fail, and all will suffer the fate of the seer.\\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
-incidents_localised_title_dyn_dis_vermintide_stage_1_trigger	The Under-Empire strikes back!	true
-incidents_localised_title_dyn_dis_vermintide_stage_2_trigger	The Empires under attack!	true
-incidents_localised_title_dyn_dis_vermintide_stage_3_trigger	The Great Lustrian War has begun!	true
-incidents_localised_title_dyn_dis_vermintide_stage_4_trigger	The Karaz Ankor besieged!	true
-incidents_localised_title_dyn_dis_vermintide_stage_5_trigger	Karaz-a-Karak besieged!	true
-incidents_localised_description_dyn_dis_vermintide_stage_1_trigger	As news of hordes of Skaven (they do exists!) running wild over Estalia and Tilea reached us, we found new information: Morrslieb is not bigger, is closer! And it's already affecting the winds of magic all around the world!	true
-incidents_localised_description_dyn_dis_vermintide_stage_2_trigger	The Skaven are a secret no more! Hordes are pouring into the Empire, the northern coast of Arabia, and even the hearthlands of Grand Cathay!	true
-incidents_localised_description_dyn_dis_vermintide_stage_3_trigger	The Great Trans-oceanic Intercontinental Tunnels have been repaired. The Skaven hordes have arrived to Lustria. The Great Lustrian War has begun!	true
-incidents_localised_description_dyn_dis_vermintide_stage_4_trigger	The Karaz Ankor, the great network of dwarven Karaks spanning across the whole old World, is under siege by all sides by hordes of Skaven!	true
-incidents_localised_description_dyn_dis_vermintide_stage_5_trigger	Karaz-a-Karak, the ancestral home of the Dawi, is under siege by hordes and hordes of Skaven! May this be the end of the Dawi?	true
+incidents_localised_title_dyn_dis_vermintide_vermintide_trigger	The Under-Empire strikes back!	true
+incidents_localised_title_dyn_dis_vermintide_empire_trigger	The Empire under attack!	true
+incidents_localised_title_dyn_dis_vermintide_lustria_trigger	The Great Lustrian War has begun!	true
+incidents_localised_title_dyn_dis_vermintide_karaz_ankor_trigger	The Karaz Ankor under attack!	true
+incidents_localised_description_dyn_dis_vermintide_vermintide_trigger	As news of hordes of Skaven (they do exists!) running wild over Estalia and Tilea reached us, we found new information: Morrslieb is not bigger, is closer! And it's already affecting the winds of magic all around the world! May the gods help us!	true
+incidents_localised_description_dyn_dis_vermintide_araby_trigger	News arrive from the desert lands of Araby! The Skaven have invaded the region!	true
+incidents_localised_description_dyn_dis_vermintide_lustria_trigger	The Great Trans-oceanic Intercontinental Tunnels have been repaired. The Skaven hordes have arrived to Lustria. The Great Lustrian War has begun!	true
+incidents_localised_description_dyn_dis_vermintide_karaz_ankor_trigger	The Karaz Ankor, the great network of dwarven Karaks spanning across the whole old World, is under attack by all sides by hordes of Skaven!	true
+incidents_localised_description_dyn_dis_vermintide_karaz_a_karak_trigger	Karaz-a-Karak, the ancestral home of the Dawi, is under attack by hordes and hordes of Skaven! May this be the end of the Dawi?	true
 effect_bundles_localised_description_dyn_dis_vermintide_global_effects	Morrslieb, The Green Moon, is closer than ever, nobody knows why. But the effects of being so close to that accursed moon are already showing around the world.	true
 effect_bundles_localised_title_dyn_dis_vermintide_global_effects	The Green Shine of Morrslieb	true
 incidents_localised_title_dyn_dis_vermintide_finish_before_stage_1	The Skaven menace is no more!	true
-incidents_localised_title_dyn_dis_vermintide_finish	Morrslieb recedes!	true
+incidents_localised_title_dyn_dis_vermintide_finish	Morrslieb recedes! The Vermintide is finished!	true
 incidents_localised_description_dyn_dis_vermintide_finish_before_stage_1	Morrslieb seems to have gone back to its normal size. It seems we will never know what caused such phenomenom.	true
-incidents_localised_description_dyn_dis_vermintide_finish	After all that destruction, Morrslieb has returned to its natural orbit.	true
+incidents_localised_description_dyn_dis_vermintide_finish	After all that destruction, Morrslieb has returned to its natural orbit and the Skaven that almost destroyed the world are all dead on the fields of battle.	true
 missions_localised_title_dyn_dis_the_vermintide_the_vermintide_1	The Vermintide	true
 missions_localised_description_dyn_dis_the_vermintide_the_vermintide_1	The Plan of the Skaven has been revealed. For their Great Ascendancy, the world will be turn to ruins! Would you be able to resist the onslaugh?	true
 effect_bundles_localised_title_dyn_dis_vermintide_early_warning	Secret Schemes	true
@@ -303,3 +302,8 @@ incidents_localised_title_dyn_dis_empire_of_steel_and_faith_trigger	The Age of t
 incidents_localised_description_dyn_dis_empire_of_steel_and_faith_trigger	Since the times of Sigmar Uberogen, the Empire of Man has remained relatively stable, with Ages of Glory and Fame, and Ages of Misfortune and Death. And now, under the Rule of the Emperor Karl Franz, a new Age of Greatness for the Empire begins!	true
 incidents_localised_title_dyn_dis_empire_of_steel_and_faith_warning	The Elector Counts have been called	true
 incidents_localised_description_dyn_dis_empire_of_steel_and_faith_warning	The Elector Counts of the Empire have been called, and are preparing their armies... Prepare for the worst.	true
+incidents_localised_title_dyn_dis_vermintide_karaz_a_karak_trigger	Karaz-a-Karak under attack!	true
+incidents_localised_title_dyn_dis_vermintide_cathay_trigger	The Celestial Empire under attack!	true
+incidents_localised_title_dyn_dis_vermintide_araby_trigger	Araby under attack!	true
+incidents_localised_description_dyn_dis_vermintide_cathay_trigger	The Skaven are a secret no more! Hordes are pouring into the hearthlands of Grand Cathay!	true
+incidents_localised_description_dyn_dis_vermintide_empire_trigger	The Skaven are a secret no more! Hordes are pouring into the Empire lands!	true

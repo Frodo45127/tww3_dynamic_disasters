@@ -985,12 +985,12 @@ function disaster_chaos_invasion:set_status(status)
             for i = 0, open_nodes:num_items() - 1 do
 
                 -- If ulthuan has fallen, greatly reduce the amount of armies spawned to compensate for the new rifts.
-                local min_spawn_possibility = 0.05;
+                local min_spawn_possibility = 10;
                 if self.settings.great_vortex_undone then
-                    min_spawn_possibility = 0.005;
+                    min_spawn_possibility = 1;
                 end
 
-                if (cm:random_number(100, 0) / 100 <= (min_spawn_possibility + (self.settings.difficulty_mod / 40)) or dynamic_disasters.settings.debug_2) then
+                if (cm:random_number(100, 0) <= (min_spawn_possibility + (self.settings.difficulty_mod * 100 / 40)) or dynamic_disasters.settings.debug_2) then
                     local current_node = open_nodes:item_at(i);
                     local x, y = current_node:position();
                     local region_data = world:region_data_at_position(x, y);

@@ -500,7 +500,7 @@ function dynamic_disasters:initialize()
                 return (context:mission():mission_record_key() == "wh_main_long_victory" and disaster.settings.long_victory_is_min_turn == true) or
                     (context:mission():mission_record_key() == "wh_main_short_victory" and disaster.settings.short_victory_is_min_turn == true);
             end,
-            function(context)
+            function()
                 disaster.settings.min_turn = cm:turn_number();
             end,
             true

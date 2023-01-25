@@ -124,7 +124,7 @@ if man_sized_rats then
             -- Frodo45127: Additionally, we spawn slave armies depending on if we're running a disaster that uses this or not.
             local part_of_disaster = false;
             for _, disaster in pairs(dynamic_disasters.disasters) do
-                if disaster.name == "skaven_incursions" and disaster.settings.started == true and disaster.settings.finished == false then
+                if (disaster.name == "skaven_incursions" or disaster.name == "the_vermintide") and disaster.settings.started == true and disaster.settings.finished == false then
                     part_of_disaster = disaster;
                     break;
                 end
@@ -132,17 +132,16 @@ if man_sized_rats then
 
             if not part_of_disaster == false then
                 local current_turn = cm:turn_number();
-                local army_count_base = 1
-                if current_turn < 50 then
-                    army_count_base = 1;
-                elseif current_turn >= 50 and current_turn < 100 then
-                    army_count_base = 1.5;
+                local army_count_base = 0.25
+                if current_turn >= 50 and current_turn < 100 then
+                    army_count_base = 0.5;
                 elseif current_turn >= 100 then
-                    army_count_base = 2;
+                    army_count_base = 0.75;
                 end
 
-                local army_count = math.floor(army_count_base * part_of_disaster.settings.difficulty_mod)
-                dynamic_disasters:create_scenario_force(faction:name(), region_key, { skaven = "lategame_trash" }, part_of_disaster.settings.base_army_unit_count, false, army_count, part_of_disaster.name, nil)
+                local army_count = math.ceil(army_count_base + part_of_disaster.settings.difficulty_mod)
+                out("Frodo45127: Spawning trash army for skaven attack on region " .. region_key .. " for " .. faction:name() .. ".")
+                dynamic_disasters:create_scenario_force(faction:name(), region_key, { skaven = "lategame_trash" }, part_of_disaster.unit_count, false, army_count, part_of_disaster.name, nil)
             end
             -- End of custom changes.
         end

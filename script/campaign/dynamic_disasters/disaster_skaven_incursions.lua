@@ -94,6 +94,7 @@ disaster_skaven_incursions = {
         },
     },
 
+    unit_count = 19,
     army_templates = {
         wh2_main_skv_clan_mors = { skaven = "lategame_mors" },
         wh2_main_skv_clan_pestilens = { skaven = "lategame_pestilens" },
@@ -339,13 +340,6 @@ function disaster_skaven_incursions:check_start()
         local faction = cm:get_faction(faction_key);
         if not faction == false and faction:is_null_interface() == false and faction:is_dead() then
             base_chance = base_chance + 0.01;
-        end
-    end
-
-    -- If the vermintide has been triggered, do not start this.
-    for _, disaster in pairs(dynamic_disasters.disasters) do
-        if disaster.name == "the_vermintide" and disaster.settings.started == true and disaster.settings.finished == false then
-            return false;
         end
     end
 

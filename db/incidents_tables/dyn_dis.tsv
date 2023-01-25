@@ -26,13 +26,13 @@ dyn_dis_aztec_invasion_early_end	false	lzd/defeat	true	Disaster		false
 dyn_dis_chaos_invasion_great_vortex_undone	false	all/rift_entered	true	Disaster		true	
 dyn_dis_realm_divided_trigger	false	cth/diplomacy	true	Disaster		true	
 dyn_dis_chaos_invasion_great_vortex_undone_cancel	false	hef/ritual_complete	true	Disaster		true	
-dyn_dis_vermintide_stage_1_trigger	false	skv/global_action_fire	true	Disaster		true	
-dyn_dis_vermintide_stage_2_trigger	false	skv/ritual_complete	true	Disaster		true	
-dyn_dis_vermintide_stage_3_trigger	false	skv/under_empire_army	true	Disaster		true	
-dyn_dis_vermintide_stage_4_trigger	false	skv/celebration	true	Disaster		true	
-dyn_dis_vermintide_stage_5_trigger	false	skv/victory	true	Disaster		true	
+dyn_dis_vermintide_vermintide_trigger	false	skv/victory	true	Disaster		true	
+dyn_dis_vermintide_empire_trigger	false	skv/global_action_fire	true	Disaster		true	
+dyn_dis_vermintide_lustria_trigger	false	skv/under_empire_army	true	Disaster		true	
+dyn_dis_vermintide_karaz_ankor_trigger	false	dwf/besieged	true	Disaster		true	
+dyn_dis_vermintide_karaz_a_karak_trigger	false	skv/celebration	true	Disaster		true	
 dyn_dis_vermintide_finish_before_stage_1	false	skv/settlement_lost	true	Disaster		false	
-dyn_dis_vermintide_finish	false	skv/settlement_lost	true	Disaster		false	
+dyn_dis_vermintide_finish	false	skv/civilisation_down	true	Disaster		false	
 dyn_dis_last_stand_allies	false	faction	true	Disaster		false	
 dyn_dis_last_stand_master	false	faction	true	Disaster		false	
 dyn_dis_last_stand_vassal_normal	false	faction	true	Disaster		false	
@@ -53,3 +53,5 @@ dyn_dis_the_greatest_crusade_early_end	false	brt/defeat	true	Disaster		false
 dyn_dis_empire_of_steel_and_faith_warning	false	emp/messenger	true	Disaster		false	
 dyn_dis_empire_of_steel_and_faith_trigger	false	emp/victory	true	Disaster		true	
 dyn_dis_empire_of_steel_and_faith_early_end	false	emp/defeat	true	Disaster		false	
+dyn_dis_vermintide_araby_trigger	false	skv/global_action_fleet	true	Disaster		true	
+dyn_dis_vermintide_cathay_trigger	false	skv/global_action_plague	true	Disaster		true	
