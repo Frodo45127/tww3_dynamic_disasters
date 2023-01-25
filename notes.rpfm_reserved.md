@@ -14,3 +14,4 @@ TODO:
 - Implement Ordertide (all order factions ally against the chaos factions).
 - Implement The Last Crusade (bretonnia declares war on the entire world, maybe excluded wood elves).
 - Implement high elves/dark elves/ogre/vampirate endgame disasters.
+- Delay skaven nukes detonation until worldTurnStart, so the explosion can be seen.

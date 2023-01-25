@@ -891,7 +891,7 @@ function disaster_vermintide:trigger_vermintide()
 
     -- In debug mode, expand the underempire to the trigger regions too.
     if dynamic_disasters.settings.debug_2 == true then
-        local faction_key = self.settings.factions[1];
+        local faction_key = "wh2_main_skv_clan_skryre";
         for _, region_key in pairs(self.regions_empire) do
             out("Frodo45127: Setting up initial underempire for faction " .. faction_key .. ", region " .. region_key .. ".");
             local region = cm:get_region(region_key);
