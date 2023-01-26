@@ -1,7 +1,7 @@
 --[[
     Dead's Cathay Unit Pack: https://steamcommunity.com/sharedfiles/filedetails/?id=2790154343
 
-    Last Updated: 13/01/2023
+    Last Updated: 26/01/2023
 ]]
 
 -- We initialize the integration on first tick, just after the main dynamic_disasters object has been initialized
@@ -34,6 +34,9 @@ if dynamic_disasters then
     -- Cavalry
     error_message = dynamic_disasters:add_unit_to_army_template("cathay", "midgame", "cth_tiger", 2); if is_string(error_message) then out("\t\t" .. error_message); end
 
+    -- Monster
+    error_message = dynamic_disasters:add_unit_to_army_template("cathay", "midgame", "cth_war_elephant", 1); if is_string(error_message) then out("\t\t" .. error_message); end
+
     ----------------------------------------
     ---- Late Game
     ----------------------------------------
@@ -47,4 +50,7 @@ if dynamic_disasters then
 
     -- Artillery
     error_message = dynamic_disasters:add_unit_to_army_template("cathay", "lategame", "battle_turtle", 1); if is_string(error_message) then out("\t\t" .. error_message); end
+
+    -- Monster
+    error_message = dynamic_disasters:add_unit_to_army_template("cathay", "lategame", "cth_war_elephant", 2); if is_string(error_message) then out("\t\t" .. error_message); end
 end

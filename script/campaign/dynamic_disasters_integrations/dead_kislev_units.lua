@@ -1,7 +1,7 @@
 --[[
     Dead's Kislev Units: https://steamcommunity.com/sharedfiles/filedetails/?id=2789944159
 
-    Last Updated: 13/01/2023
+    Last Updated: 26/01/2023
 ]]
 
 -- We initialize the integration on first tick, just after the main dynamic_disasters object has been initialized
@@ -32,6 +32,9 @@ if dynamic_disasters then
     -- Ranged Infantry
     error_message = dynamic_disasters:add_unit_to_army_template("kislev", "midgame", "kvassnic", 2); if is_string(error_message) then out("\t\t" .. error_message); end
 
+    -- Cavalry
+    error_message = dynamic_disasters:add_unit_to_army_template("kislev", "lategame", "reindeer_cav", 1); if is_string(error_message) then out("\t\t" .. error_message); end
+
     -- Artillery
     error_message = dynamic_disasters:add_unit_to_army_template("kislev", "midgame", "uwu_cannon_crew", 1); if is_string(error_message) then out("\t\t" .. error_message); end
 
@@ -45,6 +48,9 @@ if dynamic_disasters then
     ----------------------------------------
     ---- Late Game
     ----------------------------------------
+
+    -- Cavalry
+    error_message = dynamic_disasters:add_unit_to_army_template("kislev", "lategame", "reindeer_cav", 2); if is_string(error_message) then out("\t\t" .. error_message); end
 
     -- Artillery
     error_message = dynamic_disasters:add_unit_to_army_template("kislev", "lategame", "uwu_cannon_crew", 1); if is_string(error_message) then out("\t\t" .. error_message); end
