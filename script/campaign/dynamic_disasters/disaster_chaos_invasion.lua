@@ -1606,7 +1606,7 @@ function disaster_chaos_invasion:set_status(status)
                 local region = cm:get_region(regions[i]);
                 if not region == false and region:is_null_interface() == false and region:is_abandoned() == false then
                     local owner = region:owning_faction();
-                    if not dynamic_disasters:is_chaos_faction(owner:name()) then
+                    if not dynamic_disasters:is_chaos_faction(owner:name()) or owner:is_human() then
                         order_stands = true;
                         break;
                     end
