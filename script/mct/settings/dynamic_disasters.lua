@@ -503,8 +503,10 @@ the_vermintide_enable:set_default_value(true)
 the_vermintide_enable:set_text(loc_prefix.."the_vermintide_enable", true)
 the_vermintide_enable:set_tooltip_text(loc_prefix.."the_vermintide_enable_tooltip", true)
 
-local d = mod:add_new_option("d112", "dummy")
-d:set_text(" ");
+local the_vermintide_revive_dead_factions = mod:add_new_option("the_vermintide_revive_dead_factions", "checkbox")
+the_vermintide_revive_dead_factions:set_default_value(false)
+the_vermintide_revive_dead_factions:set_text(loc_prefix.."revive_dead_factions", true)
+the_vermintide_revive_dead_factions:set_tooltip_text(loc_prefix.."revive_dead_factions_tooltip", true)
 
 local the_vermintide_enable_diplomacy = mod:add_new_option("the_vermintide_enable_diplomacy", "checkbox")
 the_vermintide_enable_diplomacy:set_default_value(false)
