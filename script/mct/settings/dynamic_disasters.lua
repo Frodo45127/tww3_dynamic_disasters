@@ -6,11 +6,22 @@ mod:set_author("Frodo45127")
 mod:set_title(loc_prefix.."mod_title", true)
 mod:set_description(loc_prefix.."mod_desc", true)
 
+if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
+    mod:set_workshop_id("2856219244");
+    mod:set_version("1.0");
+    mod:set_main_image("ui/mct/dynamic_disasters.png", 300, 300)
+end
+
+
 --[[
     Global Config
 ]]
 
 local disasters_global_config_section = mod:add_new_section("a_mod_config", loc_prefix.."mod_config", true)
+if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
+    disasters_global_config_section:set_is_collapsible(true)
+    disasters_global_config_section:set_visibility(true)
+end
 
 local dynamic_disasters_enable = mod:add_new_option("dynamic_disasters_enable", "checkbox")
 dynamic_disasters_enable:set_default_value(true)
@@ -46,11 +57,38 @@ dynamic_disasters_debug:set_default_value(false)
 dynamic_disasters_debug:set_text(loc_prefix.."debug", true)
 dynamic_disasters_debug:set_tooltip_text(loc_prefix.."debug_tooltip", true)
 
+if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
+    local section_dummy = mod:add_new_section("dummy1", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy2", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy3", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy4", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy5", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy6", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy7", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy8", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy9", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy10", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy11", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy12", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy13", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy14", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy15", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy16", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy17", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy18", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy19", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy20", ""); section_dummy:set_hidden(true);
+end
 
 --[[
     Aztec Invasion Config
 ]]
 local disasters_individual_config_section_aztec_invasion = mod:add_new_section("aztec_invasion", loc_prefix.."aztec_invasion_config", true)
+if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
+    disasters_individual_config_section_aztec_invasion:set_is_collapsible(true)
+    disasters_individual_config_section_aztec_invasion:set_visibility(false)
+end
+
 local aztec_invasion_enable = mod:add_new_option("aztec_invasion_enable", "checkbox")
 aztec_invasion_enable:set_default_value(true)
 aztec_invasion_enable:set_text(loc_prefix.."aztec_invasion_enable", true)
@@ -101,16 +139,23 @@ aztec_invasion_long_victory_is_min_turn:set_tooltip_text(loc_prefix.."long_victo
     Raiding Parties Config
 ]]
 local disasters_individual_config_section_raiding_parties = mod:add_new_section("raiding_parties", loc_prefix.."raiding_parties_config", true)
+if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
+    disasters_individual_config_section_raiding_parties:set_is_collapsible(true)
+    disasters_individual_config_section_raiding_parties:set_visibility(false)
+end
+
 local raiding_parties_enable = mod:add_new_option("raiding_parties_enable", "checkbox")
 raiding_parties_enable:set_default_value(true)
 raiding_parties_enable:set_text(loc_prefix.."raiding_parties_enable", true)
 raiding_parties_enable:set_tooltip_text(loc_prefix.."raiding_parties_enable_tooltip", true)
 
-local d = mod:add_new_option("d43299", "dummy")
-d:set_text(" ");
+if not (mct:get_version() == "0.9-beta" or mct:get_version() == "0.9") then
+    local d = mod:add_new_option("d43299", "dummy")
+    d:set_text(" ");
 
-local d = mod:add_new_option("d43388", "dummy")
-d:set_text(" ");
+    local d = mod:add_new_option("d43388", "dummy")
+    d:set_text(" ");
+end
 
 local raiding_parties_difficulty_mod = mod:add_new_option("raiding_parties_difficulty_mod", "slider")
 raiding_parties_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)
@@ -130,16 +175,23 @@ raiding_parties_min_turn_value:slider_set_step_size(10)
     Skaven Incursions Config
 ]]
 local disasters_individual_config_section_skaven_incursions = mod:add_new_section("skaven_incursions", loc_prefix.."skaven_incursions_config", true)
+if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
+    disasters_individual_config_section_skaven_incursions:set_is_collapsible(true)
+    disasters_individual_config_section_skaven_incursions:set_visibility(false)
+end
+
 local skaven_incursions_enable = mod:add_new_option("skaven_incursions_enable", "checkbox")
 skaven_incursions_enable:set_default_value(true)
 skaven_incursions_enable:set_text(loc_prefix.."skaven_incursions_enable", true)
 skaven_incursions_enable:set_tooltip_text(loc_prefix.."skaven_incursions_enable_tooltip", true)
 
-local d = mod:add_new_option("d432", "dummy")
-d:set_text(" ");
+if not (mct:get_version() == "0.9-beta" or mct:get_version() == "0.9") then
+    local d = mod:add_new_option("d432", "dummy")
+    d:set_text(" ");
 
-local d = mod:add_new_option("d433", "dummy")
-d:set_text(" ");
+    local d = mod:add_new_option("d433", "dummy")
+    d:set_text(" ");
+end
 
 local skaven_incursions_difficulty_mod = mod:add_new_option("skaven_incursions_difficulty_mod", "slider")
 skaven_incursions_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)
@@ -166,16 +218,23 @@ skaven_incursions_critical_mass:slider_set_step_size(1)
     Chi'an Chi Assault Config
 ]]
 local disasters_individual_config_section_chianchi_assault = mod:add_new_section("chianchi_assault", loc_prefix.."chianchi_assault_config", true)
+if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
+    disasters_individual_config_section_chianchi_assault:set_is_collapsible(true)
+    disasters_individual_config_section_chianchi_assault:set_visibility(false)
+end
+
 local chianchi_assault_enable = mod:add_new_option("chianchi_assault_enable", "checkbox")
 chianchi_assault_enable:set_default_value(true)
 chianchi_assault_enable:set_text(loc_prefix.."chianchi_assault_enable", true)
 chianchi_assault_enable:set_tooltip_text(loc_prefix.."chianchi_assault_enable_tooltip", true)
 
-local d = mod:add_new_option("d4322", "dummy")
-d:set_text(" ");
+if not (mct:get_version() == "0.9-beta" or mct:get_version() == "0.9") then
+    local d = mod:add_new_option("d4322", "dummy")
+    d:set_text(" ");
 
-local d = mod:add_new_option("d4331", "dummy")
-d:set_text(" ");
+    local d = mod:add_new_option("d4331", "dummy")
+    d:set_text(" ");
+end
 
 local chianchi_assault_difficulty_mod = mod:add_new_option("chianchi_assault_difficulty_mod", "slider")
 chianchi_assault_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)
@@ -196,6 +255,11 @@ chianchi_assault_min_turn_value:slider_set_step_size(10)
     Chaos Invasion Config
 ]]
 local disasters_individual_config_section_chaos_invasion = mod:add_new_section("chaos_invasion", loc_prefix.."chaos_invasion_config", true)
+if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
+    disasters_individual_config_section_chaos_invasion:set_is_collapsible(true)
+    disasters_individual_config_section_chaos_invasion:set_visibility(false)
+end
+
 local chaos_invasion_enable = mod:add_new_option("chaos_invasion_enable", "checkbox")
 chaos_invasion_enable:set_default_value(true)
 chaos_invasion_enable:set_text(loc_prefix.."chaos_invasion_enable", true)
@@ -246,6 +310,11 @@ chaos_invasion_long_victory_is_min_turn:set_tooltip_text(loc_prefix.."long_victo
     Dragon Emperor's Wrath Config
 ]]
 local disasters_individual_config_section_dragon_emperors_wrath = mod:add_new_section("dragon_emperors_wrath", loc_prefix.."dragon_emperors_wrath_config", true)
+if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
+    disasters_individual_config_section_dragon_emperors_wrath:set_is_collapsible(true)
+    disasters_individual_config_section_dragon_emperors_wrath:set_visibility(false)
+end
+
 local dragon_emperors_wrath_enable = mod:add_new_option("dragon_emperors_wrath_enable", "checkbox")
 dragon_emperors_wrath_enable:set_default_value(true)
 dragon_emperors_wrath_enable:set_text(loc_prefix.."dragon_emperors_wrath_enable", true)
@@ -296,6 +365,11 @@ dragon_emperors_wrath_long_victory_is_min_turn:set_tooltip_text(loc_prefix.."lon
     For The Motherland Config
 ]]
 local disasters_individual_config_section_for_the_motherland = mod:add_new_section("for_the_motherland", loc_prefix.."for_the_motherland_config", true)
+if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
+    disasters_individual_config_section_for_the_motherland:set_is_collapsible(true)
+    disasters_individual_config_section_for_the_motherland:set_visibility(false)
+end
+
 local for_the_motherland_enable = mod:add_new_option("for_the_motherland_enable", "checkbox")
 for_the_motherland_enable:set_default_value(true)
 for_the_motherland_enable:set_text(loc_prefix.."for_the_motherland_enable", true)
@@ -346,6 +420,11 @@ for_the_motherland_long_victory_is_min_turn:set_tooltip_text(loc_prefix.."long_v
     The Greatest Crusade Config
 ]]
 local disasters_individual_config_section_the_greatest_crusade = mod:add_new_section("the_greatest_crusade", loc_prefix.."the_greatest_crusade_config", true)
+if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
+    disasters_individual_config_section_the_greatest_crusade:set_is_collapsible(true)
+    disasters_individual_config_section_the_greatest_crusade:set_visibility(false)
+end
+
 local the_greatest_crusade_enable = mod:add_new_option("the_greatest_crusade_enable", "checkbox")
 the_greatest_crusade_enable:set_default_value(true)
 the_greatest_crusade_enable:set_text(loc_prefix.."the_greatest_crusade_enable", true)
@@ -395,7 +474,12 @@ the_greatest_crusade_long_victory_is_min_turn:set_tooltip_text(loc_prefix.."long
 --[[
     Empire of Steel and Faith Config
 ]]
-local disasters_individual_config_section_the_greatest_crusade = mod:add_new_section("empire_of_steel_and_faith", loc_prefix.."empire_of_steel_and_faith_config", true)
+local disasters_individual_config_section_empire_of_steel_and_faith = mod:add_new_section("empire_of_steel_and_faith", loc_prefix.."empire_of_steel_and_faith_config", true)
+if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
+    disasters_individual_config_section_empire_of_steel_and_faith:set_is_collapsible(true)
+    disasters_individual_config_section_empire_of_steel_and_faith:set_visibility(false)
+end
+
 local empire_of_steel_and_faith_enable = mod:add_new_option("empire_of_steel_and_faith_enable", "checkbox")
 empire_of_steel_and_faith_enable:set_default_value(true)
 empire_of_steel_and_faith_enable:set_text(loc_prefix.."empire_of_steel_and_faith_enable", true)
@@ -446,16 +530,23 @@ empire_of_steel_and_faith_long_victory_is_min_turn:set_tooltip_text(loc_prefix..
     Last Stand Config
 ]]
 local disasters_individual_config_section_last_stand = mod:add_new_section("last_stand", loc_prefix.."last_stand_config", true)
+if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
+    disasters_individual_config_section_last_stand:set_is_collapsible(true)
+    disasters_individual_config_section_last_stand:set_visibility(false)
+end
+
 local last_stand_enable = mod:add_new_option("last_stand_enable", "checkbox")
 last_stand_enable:set_default_value(true)
 last_stand_enable:set_text(loc_prefix.."last_stand_enable", true)
 last_stand_enable:set_tooltip_text(loc_prefix.."last_stand_enable_tooltip", true)
 
-local d = mod:add_new_option("dddd972", "dummy")
-d:set_text(" ");
+if not (mct:get_version() == "0.9-beta" or mct:get_version() == "0.9") then
+    local d = mod:add_new_option("dddd972", "dummy")
+    d:set_text(" ");
 
-local d = mod:add_new_option("dddd9771", "dummy")
-d:set_text(" ");
+    local d = mod:add_new_option("dddd9771", "dummy")
+    d:set_text(" ");
+end
 
 local last_stand_difficulty_mod = mod:add_new_option("last_stand_difficulty_mod", "slider")
 last_stand_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)
@@ -476,16 +567,23 @@ last_stand_min_turn_value:slider_set_step_size(5)
     Realm Divided Config
 ]]
 local disasters_individual_config_section_realm_divided = mod:add_new_section("realm_divided", loc_prefix.."realm_divided_config", true)
+if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
+    disasters_individual_config_section_realm_divided:set_is_collapsible(true)
+    disasters_individual_config_section_realm_divided:set_visibility(false)
+end
+
 local realm_divided_enable = mod:add_new_option("realm_divided_enable", "checkbox")
 realm_divided_enable:set_default_value(true)
 realm_divided_enable:set_text(loc_prefix.."realm_divided_enable", true)
 realm_divided_enable:set_tooltip_text(loc_prefix.."realm_divided_enable_tooltip", true)
 
-local d = mod:add_new_option("dddd97", "dummy")
-d:set_text(" ");
+if not (mct:get_version() == "0.9-beta" or mct:get_version() == "0.9") then
+    local d = mod:add_new_option("dddd97", "dummy")
+    d:set_text(" ");
 
-local d = mod:add_new_option("dddd977", "dummy")
-d:set_text(" ");
+    local d = mod:add_new_option("dddd977", "dummy")
+    d:set_text(" ");
+end
 
 local realm_divided_difficulty_mod = mod:add_new_option("realm_divided_difficulty_mod", "slider")
 realm_divided_difficulty_mod:set_text(loc_prefix.."difficulty_mod", true)
@@ -498,6 +596,11 @@ realm_divided_difficulty_mod:slider_set_step_size(10)
     The Vermintide Config
 ]]
 local disasters_individual_config_section_the_vermintide = mod:add_new_section("the_vermintide", loc_prefix.."the_vermintide_config", true)
+if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
+    disasters_individual_config_section_the_vermintide:set_is_collapsible(true)
+    disasters_individual_config_section_the_vermintide:set_visibility(false)
+end
+
 local the_vermintide_enable = mod:add_new_option("the_vermintide_enable", "checkbox")
 the_vermintide_enable:set_default_value(true)
 the_vermintide_enable:set_text(loc_prefix.."the_vermintide_enable", true)
@@ -548,6 +651,11 @@ the_vermintide_long_victory_is_min_turn:set_tooltip_text(loc_prefix.."long_victo
     Vanilla Grudge Too Far Config
 ]]
 local disasters_individual_config_section_grudge_too_far = mod:add_new_section("grudge_too_far", loc_prefix.."grudge_too_far_config", true)
+if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
+    disasters_individual_config_section_grudge_too_far:set_is_collapsible(true)
+    disasters_individual_config_section_grudge_too_far:set_visibility(false)
+end
+
 local grudge_too_far_enable = mod:add_new_option("grudge_too_far_enable", "checkbox")
 grudge_too_far_enable:set_default_value(true)
 grudge_too_far_enable:set_text(loc_prefix.."grudge_too_far_enable", true)
@@ -598,13 +706,20 @@ grudge_too_far_long_victory_is_min_turn:set_tooltip_text(loc_prefix.."long_victo
     Vanilla Pyramid of Nagash Config
 ]]
 local disasters_individual_config_section_pyramid_of_nagash = mod:add_new_section("pyramid_of_nagash", loc_prefix.."pyramid_of_nagash_config", true)
+if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
+    disasters_individual_config_section_pyramid_of_nagash:set_is_collapsible(true)
+    disasters_individual_config_section_pyramid_of_nagash:set_visibility(false)
+end
+
 local pyramid_of_nagash_enable = mod:add_new_option("pyramid_of_nagash_enable", "checkbox")
 pyramid_of_nagash_enable:set_default_value(true)
 pyramid_of_nagash_enable:set_text(loc_prefix.."pyramid_of_nagash_enable", true)
 pyramid_of_nagash_enable:set_tooltip_text(loc_prefix.."pyramid_of_nagash_enable_tooltip", true)
 
-local d = mod:add_new_option("d8", "dummy")
-d:set_text(" ");
+if not (mct:get_version() == "0.9-beta" or mct:get_version() == "0.9") then
+    local d = mod:add_new_option("d8", "dummy")
+    d:set_text(" ");
+end
 
 local pyramid_of_nagash_enable_diplomacy = mod:add_new_option("pyramid_of_nagash_enable_diplomacy", "checkbox")
 pyramid_of_nagash_enable_diplomacy:set_default_value(false)
@@ -646,6 +761,11 @@ pyramid_of_nagash_long_victory_is_min_turn:set_tooltip_text(loc_prefix.."long_vi
     Vanilla Vampires Rise Config
 ]]
 local disasters_individual_config_section_vampires_rise = mod:add_new_section("vampires_rise", loc_prefix.."vampires_rise_config", true)
+if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
+    disasters_individual_config_section_vampires_rise:set_is_collapsible(true)
+    disasters_individual_config_section_vampires_rise:set_visibility(false)
+end
+
 local vampires_rise_enable = mod:add_new_option("vampires_rise_enable", "checkbox")
 vampires_rise_enable:set_default_value(true)
 vampires_rise_enable:set_text(loc_prefix.."vampires_rise_enable", true)
@@ -696,6 +816,11 @@ vampires_rise_long_victory_is_min_turn:set_tooltip_text(loc_prefix.."long_victor
     Vanilla Waaagh Config
 ]]
 local disasters_individual_config_section_waaagh = mod:add_new_section("waaagh", loc_prefix.."waaagh_config", true)
+if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
+    disasters_individual_config_section_waaagh:set_is_collapsible(true)
+    disasters_individual_config_section_waaagh:set_visibility(false)
+end
+
 local waaagh_enable = mod:add_new_option("waaagh_enable", "checkbox")
 waaagh_enable:set_default_value(true)
 waaagh_enable:set_text(loc_prefix.."waaagh_enable", true)
@@ -746,6 +871,11 @@ waaagh_long_victory_is_min_turn:set_tooltip_text(loc_prefix.."long_victory_is_mi
     Vanilla Wild Hunt Config
 ]]
 local disasters_individual_config_section_wild_hunt = mod:add_new_section("wild_hunt", loc_prefix.."wild_hunt_config", true)
+if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
+    disasters_individual_config_section_wild_hunt:set_is_collapsible(true)
+    disasters_individual_config_section_wild_hunt:set_visibility(false)
+end
+
 local wild_hunt_enable = mod:add_new_option("wild_hunt_enable", "checkbox")
 wild_hunt_enable:set_default_value(true)
 wild_hunt_enable:set_text(loc_prefix.."wild_hunt_enable", true)
