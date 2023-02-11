@@ -1816,8 +1816,8 @@ function disaster_chaos_invasion:check_start()
     end
 
     -- Base chance: 1/100 turns (1%).
-    local base_chance = 0.01;
-    if cm:random_number(100, 0) / 100 < base_chance then
+    local base_chance = 10;
+    if cm:random_number(1000, 0) < base_chance then
         return true;
     end
 

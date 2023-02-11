@@ -801,23 +801,23 @@ function disaster_vermintide:check_start()
         return true;
     end
 
-    local base_chance = 0.25;
+    local base_chance = 2.5;
     for _, faction_key in pairs(self.settings.factions) do
         local faction = cm:get_faction(faction_key);
         if not faction == false and faction:is_null_interface() == false and faction:is_dead() then
-            base_chance = base_chance + 0.25;
+            base_chance = base_chance + 2.5;
         end
     end
 
     -- If the chaos invasion has been triggered, get this up a 10%.
     for _, disaster in pairs(dynamic_disasters.disasters) do
         if disaster.name == "chaos_invasion" and disaster.settings.started == true and disaster.settings.finished == false then
-            base_chance = base_chance + 10;
+            base_chance = base_chance + 100;
             break;
         end
     end
 
-    if cm:random_number(100, 0) < base_chance then
+    if cm:random_number(1000, 0) < base_chance then
         return true;
     end
 

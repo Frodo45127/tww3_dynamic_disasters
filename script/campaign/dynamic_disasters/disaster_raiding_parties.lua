@@ -240,7 +240,7 @@ function disaster_raiding_parties:check_start()
     end
 
     -- Base chance: 1/50 turns (2%).
-    local base_chance = 0.02;
+    local base_chance = 20;
 
     -- Increase the change of starting based on how many attackers are already dead.
     -- In theory, no need to remove again confederated factions.
@@ -248,12 +248,12 @@ function disaster_raiding_parties:check_start()
         for _, faction_key in pairs(factions) do
             local faction = cm:get_faction(faction_key);
             if not faction == false and faction:is_null_interface() == false and faction:is_dead() then
-                base_chance = base_chance + 0.01;
+                base_chance = base_chance + 10;
             end
         end
     end
 
-    if cm:random_number(100, 0) / 100 < base_chance then
+    if cm:random_number(1000, 0) < base_chance then
         return true;
     end
 

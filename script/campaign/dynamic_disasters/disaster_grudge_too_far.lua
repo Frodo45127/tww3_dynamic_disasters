@@ -264,15 +264,15 @@ function disaster_grudge_too_far:check_start()
         return true;
     end
 
-    local base_chance = 0.005;
+    local base_chance = 5;
     for _, faction_key in pairs(self.settings.factions) do
         local faction = cm:get_faction(faction_key);
         if not faction == false and faction:is_null_interface() == false and faction:is_dead() then
-            base_chance = base_chance + 0.005;
+            base_chance = base_chance + 5;
         end
     end
 
-    if cm:random_number(100, 0) / 100 < base_chance then
+    if cm:random_number(1000, 0) < base_chance then
         return true;
     end
 
