@@ -655,7 +655,7 @@ function rohan_army_callback(cqi)
     out("Frodo45127: Callback for force " .. tostring(cqi) .. " triggered.")
 
     local character = cm:char_lookup_str(cqi)
-    cm:apply_effect_bundle_to_characters_force("wh_main_bundle_military_upkeep_free_force", cqi, 5)
+    cm:apply_effect_bundle_to_characters_force("wh_main_bundle_military_upkeep_free_force_endgame", cqi, 5)
     cm:apply_effect_bundle_to_characters_force("wh3_main_ie_scripted_endgame_force_immune_to_regionless_attrition", cqi, 5)
     cm:add_agent_experience(character, cm:random_number(25, 15), true)
     cm:add_experience_to_units_commanded_by_character(character, cm:random_number(7, 3))
