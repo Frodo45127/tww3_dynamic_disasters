@@ -1,17 +1,4 @@
-TODO:
-- Review Vermintide.
-- Expand Last Stand with more faction-exclusive armies
-- Expand Last Stand with more situations.
-- Expand The Dragon Emperor's Wrath with effects from the compass.
-- Expand The Dragon Emperor's Wrath with caravans with escorts.
-- Expand For The Motherland! with Kislev land effects affecting the entire world.
-- Expand Aztec Invasion with minor factions.
-- Add some items for nurgle and tzeench chaos realms rewards in Chaos Invasion.
-- Implement beastmen incursion? Not in a hurry, needs planning.
-- Implement a tale of two empires (massive war between cathay and the empire across the darklands).
-- Implement the hunger games (many factions attack lustria at the same time, and becomes a battle royale).
-- Implement Three Kingdoms 2: Electric Boogaloo (the 3 strongest factions get buffed and go against each other).
-- Implement Ordertide (all order factions ally against the chaos factions).
-- Implement The Last Crusade (bretonnia declares war on the entire world, maybe excluded wood elves).
-- Implement high elves/dark elves/ogre/vampirate endgame disasters.
-- Delay skaven nukes detonation until worldTurnStart, so the explosion can be seen.
+{
+  "pack_notes": "TODO:\r\n- Review Vermintide.\r\n- Expand Last Stand with more faction-exclusive armies\r\n- Expand Last Stand with more situations.\r\n- Expand The Dragon Emperor's Wrath with effects from the compass.\r\n- Expand The Dragon Emperor's Wrath with caravans with escorts.\r\n- Expand For The Motherland! with Kislev land effects affecting the entire world.\r\n- Expand Aztec Invasion with minor factions.\r\n- Add some items for nurgle and tzeench chaos realms rewards in Chaos Invasion.\r\n- Implement beastmen incursion? Not in a hurry, needs planning.\r\n- Implement a tale of two empires (massive war between cathay and the empire across the darklands).\r\n- Implement the hunger games (many factions attack lustria at the same time, and becomes a battle royale).\r\n- Implement Three Kingdoms 2: Electric Boogaloo (the 3 strongest factions get buffed and go against each other).\r\n- Implement Ordertide (all order factions ally against the chaos factions).\r\n- Implement The Last Crusade (bretonnia declares war on the entire world, maybe excluded wood elves).\r\n- Implement high elves/dark elves/ogre/vampirate endgame disasters.\r\n- Delay skaven nukes detonation until worldTurnStart, so the explosion can be seen.\r\n",
+  "file_notes": {}
+}

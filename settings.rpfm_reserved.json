@@ -1,7 +1,7 @@
 {
   "settings_text": {
     "diagnostics_files_to_ignore": "",
-    "import_files_to_ignore": ".git/\n.gitignore\ndynamic_disasters.sublime-project\ndynamic_disasters.sublime-workspace\ndb/\ntext/\nvfx/\nREADME.md\n.vscode/\nscript/campaign/dynamic_disasters/disaster_a_tale_of_two_empires.lua\nscript/campaign/dynamic_disasters/disaster_the_hunger_games.lua\nscript/campaign/dynamic_disasters/disaster_three_kingdoms_2.lua\ndocumentation/"
+    "import_files_to_ignore": ".git/\n.gitignore\ndynamic_disasters.sublime-project\ndynamic_disasters.sublime-workspace\ndb/\ntext/\nvfx/\nREADME.md\n.vscode/\nscript/campaign/dynamic_disasters/disaster_bretonian_crusades.lua\nscript/campaign/dynamic_disasters/disaster_a_tale_of_two_empires.lua\nscript/campaign/dynamic_disasters/disaster_the_hunger_games.lua\nscript/campaign/dynamic_disasters/disaster_three_kingdoms_2.lua\ndocumentation/"
   },
   "settings_string": {},
   "settings_bool": {

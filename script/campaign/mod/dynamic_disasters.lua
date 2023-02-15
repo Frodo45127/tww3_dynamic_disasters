@@ -119,13 +119,10 @@ function dynamic_disasters:load_from_mct(mct)
     out("Frodo45127: Saving settings from MCT.")
 
     local mod = mct:get_mod_by_key("dynamic_disasters")
-    local dynamic_disasters_enable = mod:get_option_by_key("dynamic_disasters_enable")
-    local dynamic_disasters_enable_setting = dynamic_disasters_enable:get_finalized_setting()
-    self.settings.enabled = dynamic_disasters_enable_setting
 
-    local dynamic_disasters_disable_vanilla_endgames = mod:get_option_by_key("dynamic_disasters_disable_vanilla_endgames")
-    local dynamic_disasters_disable_vanilla_endgames_setting = dynamic_disasters_disable_vanilla_endgames:get_finalized_setting()
-    self.settings.disable_vanilla_endgames = dynamic_disasters_disable_vanilla_endgames_setting
+    self.settings.enabled = mod:get_option_by_key("dynamic_disasters_enable"):get_finalized_setting()
+    self.settings.disable_vanilla_endgames = mod:get_option_by_key("dynamic_disasters_disable_vanilla_endgames"):get_finalized_setting()
+
     if endgame ~= nil then
         endgame.settings.endgame_enabled = not self.settings.disable_vanilla_endgames;
 
@@ -135,69 +132,50 @@ function dynamic_disasters:load_from_mct(mct)
         end
     end
 
-    local dynamic_disasters_automatic_difficulty_enable = mod:get_option_by_key("dynamic_disasters_automatic_difficulty_enable")
-    local dynamic_disasters_automatic_difficulty_enable_setting = dynamic_disasters_automatic_difficulty_enable:get_finalized_setting()
-    self.settings.automatic_difficulty = dynamic_disasters_automatic_difficulty_enable_setting
-
-    local dynamic_disasters_debug = mod:get_option_by_key("dynamic_disasters_debug")
-    local dynamic_disasters_debug_setting = dynamic_disasters_debug:get_finalized_setting()
-    self.settings.debug_2 = dynamic_disasters_debug_setting
-
-    local dynamic_disasters_max_simul = mod:get_option_by_key("dynamic_disasters_max_simul")
-    local dynamic_disasters_max_simul_setting = dynamic_disasters_max_simul:get_finalized_setting()
-    self.settings.max_endgames_at_the_same_time = dynamic_disasters_max_simul_setting
-
-    local dynamic_disasters_max_total_endgames = mod:get_option_by_key("dynamic_disasters_max_total_endgames")
-    local dynamic_disasters_max_total_endgames_setting = dynamic_disasters_max_total_endgames:get_finalized_setting()
-    self.settings.max_endgames_per_campaign = dynamic_disasters_max_total_endgames_setting
+    self.settings.automatic_difficulty = mod:get_option_by_key("dynamic_disasters_automatic_difficulty_enable"):get_finalized_setting()
+    self.settings.debug_2 = mod:get_option_by_key("dynamic_disasters_debug"):get_finalized_setting()
+    self.settings.max_endgames_at_the_same_time = mod:get_option_by_key("dynamic_disasters_max_simul"):get_finalized_setting()
+    self.settings.max_endgames_per_campaign = mod:get_option_by_key("dynamic_disasters_max_total_endgames"):get_finalized_setting()
 
     for _, disaster in pairs(self.disasters) do
         local disaster_enable = mod:get_option_by_key(disaster.name .. "_enable");
         if not disaster_enable == false then
-            local disaster_enable_setting = disaster_enable:get_finalized_setting();
-            disaster.settings.enabled = disaster_enable_setting;
+            disaster.settings.enabled = disaster_enable:get_finalized_setting();
         end
 
         local min_turn = mod:get_option_by_key(disaster.name .. "_min_turn_value");
         if not min_turn == false then
-            local min_turn_setting = min_turn:get_finalized_setting();
-            disaster.settings.min_turn = min_turn_setting;
+            disaster.settings.min_turn = min_turn:get_finalized_setting();
         end
 
         local max_turn = mod:get_option_by_key(disaster.name .. "_max_turn_value");
         if not max_turn == false then
-            local max_turn_setting = max_turn:get_finalized_setting();
-            disaster.settings.max_turn = max_turn_setting;
+            disaster.settings.max_turn = max_turn:get_finalized_setting();
         end
 
         local difficulty_mod = mod:get_option_by_key(disaster.name .. "_difficulty_mod");
         if not difficulty_mod == false then
-            local difficulty_mod_setting = difficulty_mod:get_finalized_setting();
-            disaster.settings.difficulty_mod = difficulty_mod_setting / 100;
+            disaster.settings.difficulty_mod = difficulty_mod:get_finalized_setting() / 100;
         end
 
         local revive_dead_factions = mod:get_option_by_key(disaster.name .. "_revive_dead_factions");
         if not revive_dead_factions == false then
-            local revive_dead_factions_setting = revive_dead_factions:get_finalized_setting();
-            disaster.settings.revive_dead_factions = revive_dead_factions_setting;
+            disaster.settings.revive_dead_factions = revive_dead_factions:get_finalized_setting();
         end
 
         local enable_diplomacy = mod:get_option_by_key(disaster.name .. "_enable_diplomacy");
         if not enable_diplomacy == false then
-            local enable_diplomacy_setting = enable_diplomacy:get_finalized_setting();
-            disaster.settings.enable_diplomacy = enable_diplomacy_setting;
+            disaster.settings.enable_diplomacy = enable_diplomacy:get_finalized_setting();
         end
 
         local short_victory_is_min_turn = mod:get_option_by_key(disaster.name .. "_short_victory_is_min_turn");
         if not short_victory_is_min_turn == false then
-            local short_victory_is_min_turn_setting = short_victory_is_min_turn:get_finalized_setting();
-            disaster.settings.short_victory_is_min_turn = short_victory_is_min_turn_setting;
+            disaster.settings.short_victory_is_min_turn = short_victory_is_min_turn:get_finalized_setting();
         end
 
         local long_victory_is_min_turn = mod:get_option_by_key(disaster.name .. "_long_victory_is_min_turn");
         if not long_victory_is_min_turn == false then
-            local long_victory_is_min_turn_setting = long_victory_is_min_turn:get_finalized_setting();
-            disaster.settings.long_victory_is_min_turn = long_victory_is_min_turn_setting;
+            disaster.settings.long_victory_is_min_turn = long_victory_is_min_turn:get_finalized_setting();
         end
 
         for i = 1, #disaster.settings.mct_settings do
