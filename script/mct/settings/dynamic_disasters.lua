@@ -254,8 +254,8 @@ function load_slider(disaster_name, setting_key, slider_data, use_disaster_name_
     end
 
     local setting = mod:add_new_option(disaster_name .. "_" .. setting_key, "slider")
-    setting:set_default_value(slider_data[1])
     setting:slider_set_min_max(slider_data[2], slider_data[3])
+    setting:set_default_value(slider_data[1])
     setting:slider_set_step_size(slider_data[4])
 
     if use_disaster_name_in_loc_key == true then
