@@ -243,15 +243,15 @@ end
 ---@param slider_data table #Indexed table with the data for the slider in this order: "default value, min, max, step side.
 ---@param use_disaster_name_in_loc_key boolean #If the loc key contains the disaster name.
 function load_slider(disaster_name, setting_key, slider_data, use_disaster_name_in_loc_key)
-    if slider_data[0] ~= nil and slider_data[1] ~= nil and slider_data[2] ~= nil and slider_data[3] ~= nil then
+    if slider_data[1] == nil or slider_data[2] == nil or slider_data[3] == nil or slider_data[4] == nil then
         out(setting_key .. " setting for disaster " .. disaster_name .. " failed to load due to missing slider data");
         return;
     end
 
     local setting = mod:add_new_option(disaster_name .. "_" .. setting_key, "slider")
-    setting:set_default_value(slider_data[0])
-    setting:slider_set_min_max(slider_data[1], slider_data[2])
-    setting:slider_set_step_size(slider_data[3])
+    setting:set_default_value(slider_data[1])
+    setting:slider_set_min_max(slider_data[2], slider_data[3])
+    setting:slider_set_step_size(slider_data[4])
 
     if use_disaster_name_in_loc_key == true then
         setting:set_text(loc_prefix .. disaster_name .. "_" .. setting_key, true)
