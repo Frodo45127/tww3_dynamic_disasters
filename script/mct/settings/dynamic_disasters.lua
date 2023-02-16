@@ -39,6 +39,11 @@ disaster_configs = {
         difficulty_mod = {150, 10, 500, 10},
         min_turn_value = {30, 10, 400, 10},
     },
+    bretonian_crusades = {
+        enable = true,
+        difficulty_mod = {150, 10, 500, 10},
+        min_turn_value = {30, 10, 400, 10},
+    },
     chaos_invasion = {
         enable = true,
         revive_dead_factions = false,
@@ -377,6 +382,7 @@ load_disaster("aztec_invasion", disaster_configs["aztec_invasion"]);
 load_disaster("raiding_parties", disaster_configs["raiding_parties"]);
 load_disaster("skaven_incursions", disaster_configs["skaven_incursions"]);
 load_disaster("chianchi_assault", disaster_configs["chianchi_assault"]);
+load_disaster("bretonian_crusades", disaster_configs["bretonian_crusades"]);
 load_disaster("chaos_invasion", disaster_configs["chaos_invasion"]);
 load_disaster("dragon_emperors_wrath", disaster_configs["dragon_emperors_wrath"]);
 load_disaster("for_the_motherland", disaster_configs["for_the_motherland"]);

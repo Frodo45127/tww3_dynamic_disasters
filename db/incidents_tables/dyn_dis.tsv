@@ -55,3 +55,9 @@ dyn_dis_empire_of_steel_and_faith_trigger	false	emp/victory	true	Disaster		true
 dyn_dis_empire_of_steel_and_faith_early_end	false	emp/defeat	true	Disaster		false	
 dyn_dis_vermintide_araby_trigger	false	skv/global_action_fleet	true	Disaster		true	
 dyn_dis_vermintide_cathay_trigger	false	skv/global_action_plague	true	Disaster		true	
+dyn_dis_bretonian_crusades_warning	false	brt/diplomacy	true	Disaster		false	
+dyn_dis_bretonian_crusades_early_end	false	brt/politics	true	Disaster		false	
+dyn_dis_bretonian_crusades_trigger	false	brt/errant_war	true	Disaster		true	
+dyn_dis_bretonian_crusades_bad_end	false	brt/land_defeat	true	Disaster		false	
+dyn_dis_bretonian_crusades_good_end	false	brt/faction	true	Disaster		false	
+dyn_dis_bretonian_crusades_very_good_end	false	brt/errant_war	true	Disaster		true	
