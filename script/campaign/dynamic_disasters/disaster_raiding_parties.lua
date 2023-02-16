@@ -253,7 +253,7 @@ function disaster_raiding_parties:check_start()
         end
     end
 
-    if cm:random_number(1000, 0) < base_chance then
+    if cm:random_number(1000, 0) <= base_chance then
         return true;
     end
 

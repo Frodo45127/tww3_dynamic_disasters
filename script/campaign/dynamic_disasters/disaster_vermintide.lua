@@ -799,26 +799,35 @@ function disaster_vermintide:check_start()
     -- If we're at max turn, trigger it without checking chances.
     if self.settings.max_turn > 0 and cm:turn_number() == self.settings.max_turn then
         return true;
-    end
 
-    local base_chance = 2.5;
-    for _, faction_key in pairs(self.settings.factions) do
-        local faction = cm:get_faction(faction_key);
-        if not faction == false and faction:is_null_interface() == false and faction:is_dead() then
-            base_chance = base_chance + 2.5;
+    -- If we have max turn set, we need to use a 1 in turn range chance.
+    -- This makes it so we don't give extreme chance of triggering at the max turn.
+    elseif self.settings.max_turn > self.settings.min_turn then
+        local range = self.settings.max_turn - self.settings.min_turn;
+        if cm:random_number(range, 0) <= 1 then
+            return true;
         end
-    end
+    else
 
-    -- If the chaos invasion has been triggered, get this up a 10%.
-    for _, disaster in pairs(dynamic_disasters.disasters) do
-        if disaster.name == "chaos_invasion" and disaster.settings.started == true and disaster.settings.finished == false then
-            base_chance = base_chance + 100;
-            break;
+        local base_chance = 2.5;
+        for _, faction_key in pairs(self.settings.factions) do
+            local faction = cm:get_faction(faction_key);
+            if not faction == false and faction:is_null_interface() == false and faction:is_dead() then
+                base_chance = base_chance + 2.5;
+            end
         end
-    end
 
-    if cm:random_number(1000, 0) < base_chance then
-        return true;
+        -- If the chaos invasion has been triggered, get this up a 10%.
+        for _, disaster in pairs(dynamic_disasters.disasters) do
+            if disaster.name == "chaos_invasion" and disaster.settings.started == true and disaster.settings.finished == false then
+                base_chance = base_chance + 100;
+                break;
+            end
+        end
+
+        if cm:random_number(1000, 0) <= base_chance then
+            return true;
+        end
     end
 
     return false;

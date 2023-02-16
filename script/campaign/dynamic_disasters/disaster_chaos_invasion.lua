@@ -1813,12 +1813,21 @@ function disaster_chaos_invasion:check_start()
     -- If we're at max turn, trigger it without checking chances.
     if self.settings.max_turn > 0 and cm:turn_number() == self.settings.max_turn then
         return true;
-    end
 
-    -- Base chance: 1/100 turns (1%).
-    local base_chance = 10;
-    if cm:random_number(1000, 0) < base_chance then
-        return true;
+    -- If we have max turn set, we need to use a 1 in turn range chance.
+    -- This makes it so we don't give extreme chance of triggering at the max turn.
+    elseif self.settings.max_turn > self.settings.min_turn then
+        local range = self.settings.max_turn - self.settings.min_turn;
+        if cm:random_number(range, 0) <= 1 then
+            return true;
+        end
+    else
+
+        -- Base chance: 1/100 turns (1%).
+        local base_chance = 10;
+        if cm:random_number(1000, 0) <= base_chance then
+            return true;
+        end
     end
 
     return false;
