@@ -405,27 +405,34 @@ function disaster_bretonian_crusades:trigger_crusade()
     -- Get the region at random from the top third of the coasts.
     out("Frodo45127: We have " .. #coasts_to_attack .. " coasts to attack. Using only the upper third.");
     local coast_to_attack = coasts_to_attack[cm:random_number(math.ceil(#coasts_to_attack / 3))];
+    out("Frodo45127: Coast chosen to attack: " .. coast_to_attack .. ".");
 
     -- Find a neutral/chaotic faction in the coastal regions we selected to use as target. Use random order to give more variety on targets.
     self.settings.target_faction = "";
-    local random_sea_regions = cm:random_sort(dyn_dis_coasts[coast_to_attack]);
+    local random_sea_regions = cm:random_sort_copy(dyn_dis_coasts[coast_to_attack]);
     for _, sea_region in pairs(random_sea_regions) do
-        local random_coasts = cm:random_sort(dyn_dis_sea_regions[sea_region].coastal_regions);
+        local random_coasts = cm:random_sort_copy(dyn_dis_sea_regions[sea_region].coastal_regions);
 
         for i = 1, #random_coasts do
             local region = cm:get_region(random_coasts[i]);
-            if not region == nil and region:is_null_interface() == false and not region:is_abandoned() then
+            if not region == false and region:is_null_interface() == false and not region:is_abandoned() then
                 local region_owner = region:owning_faction();
-                if not region_owner == nil and region_owner:is_null_interface() == false and (dynamic_disasters:is_chaos_faction(region_owner:name()) or dynamic_disasters:is_neutral_faction(region_owner:name())) then
+                if not region_owner == false and region_owner:is_null_interface() == false and (dynamic_disasters:is_chaos_faction(region_owner:name()) or dynamic_disasters:is_neutral_faction(region_owner:name())) then
                     self.settings.target_faction = region_owner:name();
                     break;
                 end
             end
         end
 
-        if self.settings.target_faction ~= "" then
+        if not self.settings.target_faction == "" then
             break;
         end
+    end
+
+    -- Cancel the disaster if we have no target faction.
+    if self.settings.target_faction == "" then
+        dynamic_disasters:trigger_incident(self.finish_early_incident_key, nil, 0, nil, nil, nil);
+        self:finish();
     end
 
     local first_coast = nil;
@@ -437,7 +444,7 @@ function disaster_bretonian_crusades:trigger_crusade()
             -- Only spawn the armies needed to invade one of the coast owners, chosen at random.
             local region_key = dyn_dis_sea_regions[sea_region].coastal_regions[i];
             local region = cm:get_region(region_key);
-            if not region == nil and region:is_null_interface() == false and not region:is_abandoned() and region:owning_faction():name() == self.settings.target_faction then
+            if not region == false and region:is_null_interface() == false and not region:is_abandoned() and region:owning_faction():name() == self.settings.target_faction then
                 if first_coast == nil then
                     first_coast = region_key;
                 end
@@ -457,6 +464,8 @@ function disaster_bretonian_crusades:trigger_crusade()
         end
     end
 
+    out("Frodo45127: Declaring war between crusaders of " .. self.settings.faction .. " and " .. self.settings.target_faction .. ".");
+
     -- Declare war against the coast owners. Due to how coasts are selected, we have guaranteed that at least one of the land provinces
     -- belongs to a neutral/chaos faction, so only declare war against the first neutral owner we find here.
     dynamic_disasters:declare_war(self.settings.faction, self.settings.target_faction, true, true);
@@ -472,7 +481,7 @@ end
 function disaster_bretonian_crusades:trigger_extended_crusade()
     out("Frodo45127: Disaster: " .. self.name .. ". Triggering second invasion.");
 
-    local base_regions = cm:random_sort(self.settings.targets);
+    local base_regions = cm:random_sort_copy(self.settings.targets);
     local new_target = nil;
     for _, region_key in pairs(base_regions) do
         local region = cm:get_region(region_key);

@@ -312,15 +312,15 @@ mct_dyn_dis_bretonian_crusades_enable_tooltip	Enable/Disable the "Bretonian Crus
 mct_dyn_dis_bretonian_crusades_config	Bretonian Crusades	true
 effect_bundles_localised_title_dyn_dis_bretonian_crusades_warning	Bretonnia prepares for a Crusade	true
 effect_bundles_localised_description_dyn_dis_bretonian_crusades_warning	There are rumours circulating about Bretonnia preparing for a crusade against a yet-to-be-known enemy.... Let's hope it's not us or our allies.	true
-incidents_localised_title_dyn_dis_bretonian_crusade_warning	Bretonnia prepares for a Crusade	true
-incidents_localised_description_dyn_dis_bretonian_crusade_warning	There are rumours circulating about Bretonnia preparing for a crusade against a yet-to-be-known enemy.... Let's hope it's not us or our allies.	true
-incidents_localised_title_dyn_dis_bretonian_crusade_trigger	A Crusade has begun!	true
-incidents_localised_description_dyn_dis_bretonian_crusade_trigger	Bretonnia has launched a Crusade against {{CcoCampaignEventDilemma:FirstTargetFactionNameWithIcon}} for {{CcoCampaignEventDilemma:FirstTargetRegionName}}!	true
-incidents_localised_title_dyn_dis_bretonian_crusade_early_end	The Crusade has been cancelled!	true
-incidents_localised_title_dyn_dis_bretonian_crusade_bad_end	The Crusade has failed!	true
-incidents_localised_title_dyn_dis_bretonian_crusade_good_end	The Crusaders have won!	true
-incidents_localised_title_dyn_dis_bretonian_crusade_very_good_end	The Crusaders have won! And want more!	true
-incidents_localised_description_dyn_dis_bretonian_crusade_bad_end	It seems the Crusaders have failed to achieve their goals and have begun to retreat!	true
-incidents_localised_description_dyn_dis_bretonian_crusade_early_end	It seems for some reason the Bretonnian Crusade that was in preparation has been cancelled.	true
-incidents_localised_description_dyn_dis_bretonian_crusade_good_end	The Crusaders have achieve their goals and now control their newly adquired land.	true
-incidents_localised_description_dyn_dis_bretonian_crusade_very_good_end	The Crusaders have achieve their goals and now control their newly adquired land, but seems like they have received some reinforcementes that also want their share of glory, and are planning to attack a nearby settlement!	true
+incidents_localised_title_dyn_dis_bretonian_crusades_warning	Bretonnia prepares for a Crusade	true
+incidents_localised_description_dyn_dis_bretonian_crusades_warning	There are rumours circulating about Bretonnia preparing for a crusade against a yet-to-be-known enemy.... Let's hope it's not us or our allies.	true
+incidents_localised_title_dyn_dis_bretonian_crusades_trigger	A Crusade has begun!	true
+incidents_localised_description_dyn_dis_bretonian_crusades_trigger	Bretonnia has launched a Crusade against {{CcoCampaignEventIncident:FirstTargetFactionName}}!	true
+incidents_localised_title_dyn_dis_bretonian_crusades_early_end	The Crusade has been cancelled!	true
+incidents_localised_title_dyn_dis_bretonian_crusades_bad_end	The Crusade has failed!	true
+incidents_localised_title_dyn_dis_bretonian_crusades_good_end	The Crusaders have won!	true
+incidents_localised_title_dyn_dis_bretonian_crusades_very_good_end	The Crusaders have won! And want more!	true
+incidents_localised_description_dyn_dis_bretonian_crusades_bad_end	It seems the Crusaders have failed to achieve their goals and have begun to retreat!	true
+incidents_localised_description_dyn_dis_bretonian_crusades_early_end	It seems for some reason the Bretonnian Crusade that was in preparation has been cancelled.	true
+incidents_localised_description_dyn_dis_bretonian_crusades_good_end	The Crusaders have achieve their goals and now control their newly adquired land.	true
+incidents_localised_description_dyn_dis_bretonian_crusades_very_good_end	The Crusaders have achieve their goals and now control their newly adquired land, but seems like they have received some reinforcementes that also want their share of glory, and are planning to attack a nearby settlement!	true

@@ -1227,7 +1227,7 @@ function dynamic_disasters:declare_war(attacker_key, defender_key, invite_attack
         return
     end
     local defender_faction = cm:get_faction(defender_key)
-    if defender_faction:is_null_interface() == false then
+    if not defender_faction == false and defender_faction:is_null_interface() == false then
         if defender_faction:is_vassal() then
             defender_faction = defender_faction:master()
             defender_key = defender_faction:name()
