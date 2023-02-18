@@ -316,12 +316,10 @@ function disaster_bretonian_crusades:check_start()
 
     -- Increase the change of starting based on how many attackers are already dead.
     -- In theory, no need to remove again confederated factions.
-    for _, factions in pairs(self.settings.factions) do
-        for _, faction_key in pairs(factions) do
-            local faction = cm:get_faction(faction_key);
-            if not faction == false and faction:is_null_interface() == false and not faction:is_human() and faction:is_dead() then
-                base_chance = base_chance + 10;
-            end
+    for _, faction_key in pairs(self.settings.factions) do
+        local faction = cm:get_faction(faction_key);
+        if not faction == false and faction:is_null_interface() == false and not faction:is_human() and faction:is_dead() then
+            base_chance = base_chance + 10;
         end
     end
 
