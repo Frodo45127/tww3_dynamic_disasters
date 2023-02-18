@@ -371,7 +371,7 @@ function disaster_bretonian_crusades:trigger_crusade()
                     local region_owner = region:owning_faction()
 
                     -- Do not attack order factions. Attack everyone else.
-                    if not region_owner == false and region_owner:is_null_interface() == false and not dynamic_disasters:is_order_faction(region_owner:name()) then
+                    if not region_owner == false and region_owner:is_null_interface() == false and (dynamic_disasters:is_chaos_faction(region_owner:name()) or dynamic_disasters:is_neutral_faction(region_owner:name())) then
                         attack_vectors[coast] = attack_vectors[coast] + (1 / #sea_region_data.coastal_regions);
 
                         -- Give a bit more priority to player coastal settlements, if it's not an order faction.
@@ -431,6 +431,7 @@ function disaster_bretonian_crusades:trigger_crusade()
     if self.settings.target_faction == "" then
         dynamic_disasters:trigger_incident(self.finish_early_incident_key, nil, 0, nil, nil, nil);
         self:finish();
+        return;
     end
 
     local first_coast = nil;
