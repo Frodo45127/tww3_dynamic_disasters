@@ -432,39 +432,12 @@ function dynamic_disasters:initialize()
 
     -- Listener to make sure the automatic difficulty works and it's kept updated.
     -- We CANNOT do this on initialization if we use the MCT, so we need to fallback to good ol listener on turn start.
-    -- NOTE: leave the aaa in the name, so it triggers before anything else.
     core:add_listener(
         "DynamicDisastersAutoDifficultyCheck",
         "WorldStartRound",
         true,
         function ()
-
-            -- If we have auto difficulty enabled, set the difficulty based on campaign difficulty.
-            if self.settings.automatic_difficulty == true then
-                local difficulty = cm:get_difficulty();
-                if not self.settings.debug_2 == true then
-                    self.settings.max_endgames_at_the_same_time = difficulty;
-                    out("\tFrodo45127: Automatic difficulty detected. Setting max concurrent endgame disasters to " .. self.settings.max_endgames_at_the_same_time ..", based on campaign difficulty.")
-                else
-                    out("\tFrodo45127: Skipping automatic difficulty changing max endgames due to debug mode.")
-                end
-
-                for _, disaster in ipairs(self.disasters) do
-                    disaster.settings.difficulty_mod = difficulty / 2.5;
-                    out("\tFrodo45127: Automatic difficulty detected. Setting difficulty of disaster "..disaster.name.." to ".. disaster.settings.difficulty_mod .. ", based on campaign difficulty.")
-                end
-
-            -- If we have auto difficulty disabled but have MCT, load it from there.
-            elseif get_mct then
-                self:load_from_mct(get_mct());
-
-            -- If not, load it from the default values.
-            else
-                self.settings.max_endgames_at_the_same_time = self.default_settings.max_endgames_at_the_same_time;
-                for _, disaster in ipairs(self.disasters) do
-                    disaster.settings.difficulty_mod = disaster.default_settings.difficulty_mod;
-                end
-            end
+            return self:recalculate_difficulty()
         end,
         true
     );
@@ -681,6 +654,51 @@ function dynamic_disasters:finish_disaster(disaster)
     if disaster.settings.is_endgame == true then
         self.settings.currently_running_endgames = self.settings.currently_running_endgames - 1;
     end
+end
+
+--- Function to recalculate the difficulty of all the disasters, depending on if we have automatic difficulty or not.
+--- BIG NOTE: This needs the campaign already initialize it. DO NOT CALL THIS WHILE THE CAMPAIGN MODEL HASN'T YET BEEN INITIALIZED.
+function dynamic_disasters:recalculate_difficulty()
+
+    -- If we have auto difficulty enabled, set the difficulty based on campaign difficulty.
+    if self.settings.automatic_difficulty == true then
+        local difficulty = cm:get_difficulty();
+        if not self.settings.debug_2 == true then
+            self.settings.max_endgames_at_the_same_time = difficulty;
+            out("\tFrodo45127: Automatic difficulty detected. Setting max concurrent endgame disasters to " .. self.settings.max_endgames_at_the_same_time ..", based on campaign difficulty.")
+        else
+            out("\tFrodo45127: Skipping automatic difficulty changing max endgames due to debug mode.")
+        end
+
+        for _, disaster in ipairs(self.disasters) do
+            disaster.settings.difficulty_mod = difficulty / 2.5;
+            out("\tFrodo45127: Automatic difficulty detected. Setting difficulty of disaster "..disaster.name.." to ".. disaster.settings.difficulty_mod .. ", based on campaign difficulty.")
+        end
+
+    -- If we have auto difficulty disabled but have MCT, load it from there.
+    elseif get_mct then
+        self:load_from_mct(get_mct());
+
+    -- If not, load it from the default values.
+    else
+        self.settings.max_endgames_at_the_same_time = self.default_settings.max_endgames_at_the_same_time;
+        for _, disaster in ipairs(self.disasters) do
+            disaster.settings.difficulty_mod = disaster.default_settings.difficulty_mod;
+        end
+    end
+end
+
+--- Function to get a specific disaster from the list of disasters loaded into the framework.
+---@param key string #Name/Key of the disaster to get.
+---@return table|false #Disaster object/false if no disaster with said key is found.
+function dynamic_disasters:disaster(key)
+    for _, disaster in ipairs(self.disasters) do
+        if disaster["name"] ~= nil and disaster.name == key then
+            return disaster;
+        end
+    end
+
+    return false;
 end
 
 --[[-------------------------------------------------------------------------------------------------------------

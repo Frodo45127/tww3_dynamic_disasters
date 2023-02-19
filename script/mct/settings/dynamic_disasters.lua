@@ -4,12 +4,17 @@
     MCT Module, with support for both, MCT Legacy (for now) and MCT 0.9.
 ]]---------------------------------------------------------------------------------------------------------------
 
+local loc_prefix = "mct_dyn_dis_";
+local mct = get_mct()
+local mod = mct:register_mod("dynamic_disasters");
+
 --- This table holds all the information to build all the options on the MCT for both, the mod and all the official disasters.
 --- What data is stored depends on the editor type:
 --- - Checkbox: a boolean.
 --- - Slider: A table with (in this order) default value, minimum value, maximum value and step size.
 disaster_configs = {
     aztec_invasion = {
+        description = loc_prefix .. "aztec_invasion" .. "_description",
         enable = true,
         revive_dead_factions = false,
         enable_diplomacy = false,
@@ -20,11 +25,13 @@ disaster_configs = {
         long_victory_is_min_turn = true,
     },
     raiding_parties = {
+        description = loc_prefix .. "raiding_parties" .. "_description",
         enable = true,
         difficulty_mod = {150, 10, 500, 10},
         min_turn_value = {30, 10, 400, 10},
     },
     skaven_incursions = {
+        description = loc_prefix .. "skaven_incursions" .. "_description",
         enable = true,
         difficulty_mod = {150, 10, 500, 10},
         min_turn_value = {30, 10, 400, 10},
@@ -35,16 +42,19 @@ disaster_configs = {
         },
     },
     chianchi_assault = {
+        description = loc_prefix .. "chianchi_assault" .. "_description",
         enable = true,
         difficulty_mod = {150, 10, 500, 10},
         min_turn_value = {30, 10, 400, 10},
     },
     bretonian_crusades = {
+        description = loc_prefix .. "bretonian_crusades" .. "_description",
         enable = true,
         difficulty_mod = {150, 10, 500, 10},
         min_turn_value = {30, 10, 400, 10},
     },
     chaos_invasion = {
+        description = loc_prefix .. "chaos_invasion" .. "_description",
         enable = true,
         revive_dead_factions = false,
         difficulty_mod = {150, 10, 500, 10},
@@ -59,6 +69,7 @@ disaster_configs = {
         },
     },
     dragon_emperors_wrath = {
+        description = loc_prefix .. "dragon_emperors_wrath" .. "_description",
         enable = true,
         revive_dead_factions = false,
         enable_diplomacy = false,
@@ -69,6 +80,7 @@ disaster_configs = {
         long_victory_is_min_turn = true,
     },
     for_the_motherland = {
+        description = loc_prefix .. "for_the_motherland" .. "_description",
         enable = true,
         revive_dead_factions = false,
         enable_diplomacy = false,
@@ -79,6 +91,7 @@ disaster_configs = {
         long_victory_is_min_turn = true,
     },
     the_greatest_crusade = {
+        description = loc_prefix .. "the_greatest_crusade" .. "_description",
         enable = true,
         revive_dead_factions = false,
         enable_diplomacy = false,
@@ -89,6 +102,7 @@ disaster_configs = {
         long_victory_is_min_turn = true,
     },
     empire_of_steel_and_faith = {
+        description = loc_prefix .. "empire_of_steel_and_faith" .. "_description",
         enable = true,
         revive_dead_factions = false,
         enable_diplomacy = false,
@@ -99,15 +113,18 @@ disaster_configs = {
         long_victory_is_min_turn = true,
     },
     last_stand = {
+        description = loc_prefix .. "last_stand" .. "_description",
         enable = true,
         difficulty_mod = {150, 10, 500, 10},
         min_turn_value = {30, 1, 400, 5},
     },
     realm_divided = {
+        description = loc_prefix .. "realm_divided" .. "_description",
         enable = true,
         difficulty_mod = {150, 10, 500, 10},
     },
     the_vermintide = {
+        description = loc_prefix .. "the_vermintide" .. "_description",
         enable = true,
         revive_dead_factions = false,
         enable_diplomacy = false,
@@ -118,6 +135,7 @@ disaster_configs = {
         long_victory_is_min_turn = true,
     },
     grudge_too_far = {
+        description = loc_prefix .. "grudge_too_far" .. "_description",
         enable = true,
         revive_dead_factions = false,
         enable_diplomacy = false,
@@ -128,6 +146,7 @@ disaster_configs = {
         long_victory_is_min_turn = true,
     },
     pyramid_of_nagash = {
+        description = loc_prefix .. "pyramid_of_nagash" .. "_description",
         enable = true,
         enable_diplomacy = false,
         difficulty_mod = {150, 10, 500, 10},
@@ -137,6 +156,7 @@ disaster_configs = {
         long_victory_is_min_turn = true,
     },
     vampires_rise = {
+        description = loc_prefix .. "vampires_rise" .. "_description",
         enable = true,
         revive_dead_factions = false,
         enable_diplomacy = false,
@@ -147,6 +167,7 @@ disaster_configs = {
         long_victory_is_min_turn = true,
     },
     waaagh = {
+        description = loc_prefix .. "waaagh" .. "_description",
         enable = true,
         revive_dead_factions = false,
         enable_diplomacy = false,
@@ -157,6 +178,7 @@ disaster_configs = {
         long_victory_is_min_turn = true,
     },
     wild_hunt = {
+        description = loc_prefix .. "wild_hunt" .. "_description",
         enable = true,
         revive_dead_factions = false,
         enable_diplomacy = false,
@@ -167,10 +189,6 @@ disaster_configs = {
         long_victory_is_min_turn = true,
     },
 };
-
-local loc_prefix = "mct_dyn_dis_";
-local mct = get_mct()
-local mod = mct:register_mod("dynamic_disasters");
 
 --[[-------------------------------------------------------------------------------------------------------------
     MCT setting generator helpers.
@@ -184,51 +202,63 @@ local generic_settings = {
     {
         key = "enable",
         value = "checkbox",
-        use_disaster_name_in_loc_key = true
+        use_disaster_name_in_loc_key = true,
+        disabled_by_autodifficulty = false
     },
     {
         key = "revive_dead_factions",
         value = "checkbox",
-        use_disaster_name_in_loc_key = false
+        use_disaster_name_in_loc_key = false,
+        disabled_by_autodifficulty = false
     },
     {
         key = "enable_diplomacy",
         value = "checkbox",
-        use_disaster_name_in_loc_key = false
+        use_disaster_name_in_loc_key = false,
+        disabled_by_autodifficulty = false
     },
     {
         key = "difficulty_mod",
         value = "slider",
-        use_disaster_name_in_loc_key = false
+        use_disaster_name_in_loc_key = false,
+        disabled_by_autodifficulty = true
     },
     {
         key = "min_turn_value",
         value = "slider",
-        use_disaster_name_in_loc_key = false
+        use_disaster_name_in_loc_key = false,
+        disabled_by_autodifficulty = false
     },
     {
         key = "max_turn_value",
         value = "slider",
-        use_disaster_name_in_loc_key = false
+        use_disaster_name_in_loc_key = false,
+        disabled_by_autodifficulty = false
     },
     {
         key = "short_victory_is_min_turn",
         value = "checkbox",
-        use_disaster_name_in_loc_key = false
+        use_disaster_name_in_loc_key = false,
+        disabled_by_autodifficulty = false
     },
     {
         key = "long_victory_is_min_turn",
         value = "checkbox",
-        use_disaster_name_in_loc_key = false
+        use_disaster_name_in_loc_key = false,
+        disabled_by_autodifficulty = false
     },
 }
+
+local option_keys_disabled_by_autodifficulty = {};      -- List of options disabled by autodifficulty.
+local disaster_sections = {};                           -- List of disaster sections.
 
 --- Function to load checkbox settings.
 ---@param disaster_name string #Key of the disaster.
 ---@param setting_key string #Key of the setting we're loading.
 ---@param default_value boolean #Default value of the setting we're loading.
 ---@param use_disaster_name_in_loc_key boolean #If the loc key contains the disaster name.
-function load_checkbox(disaster_name, setting_key, default_value, use_disaster_name_in_loc_key)
+---@param disabled_by_autodifficulty boolean #If the option should be disabled if autodifficulty is enabled.
+function load_checkbox(disaster_name, setting_key, default_value, use_disaster_name_in_loc_key, disabled_by_autodifficulty)
     out("loading setting_key");
     local setting = mod:add_new_option(disaster_name .. "_" .. setting_key, "checkbox")
     setting:set_default_value(default_value)
@@ -240,6 +270,10 @@ function load_checkbox(disaster_name, setting_key, default_value, use_disaster_n
         setting:set_text(loc_prefix .. setting_key, true)
         setting:set_tooltip_text(loc_prefix .. setting_key .. "_tooltip", true)
     end
+
+    if disabled_by_autodifficulty == true then
+        option_keys_disabled_by_autodifficulty[disaster_name] = disaster_name .. "_" .. setting_key;
+    end
 end
 
 --- Function to load checkbox settings.
@@ -247,7 +281,8 @@ end
 ---@param setting_key string #Key of the setting we're loading.
 ---@param slider_data table #Indexed table with the data for the slider in this order: "default value, min, max, step side.
 ---@param use_disaster_name_in_loc_key boolean #If the loc key contains the disaster name.
-function load_slider(disaster_name, setting_key, slider_data, use_disaster_name_in_loc_key)
+---@param disabled_by_autodifficulty boolean #If the option should be disabled if autodifficulty is enabled.
+function load_slider(disaster_name, setting_key, slider_data, use_disaster_name_in_loc_key, disabled_by_autodifficulty)
     if slider_data[1] == nil or slider_data[2] == nil or slider_data[3] == nil or slider_data[4] == nil then
         out(setting_key .. " setting for disaster " .. disaster_name .. " failed to load due to missing slider data");
         return;
@@ -265,6 +300,10 @@ function load_slider(disaster_name, setting_key, slider_data, use_disaster_name_
         setting:set_text(loc_prefix .. setting_key, true)
         setting:set_tooltip_text(loc_prefix .. setting_key .. "_tooltip", true)
     end
+
+    if disabled_by_autodifficulty == true then
+        option_keys_disabled_by_autodifficulty[disaster_name] = disaster_name .. "_" .. setting_key;
+    end
 end
 
 --- Function to load all disaster settings into a disaster-specific section.
@@ -278,6 +317,12 @@ function load_disaster(disaster_name, disaster_data)
     if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
         disaster_section:set_is_collapsible(true)
         disaster_section:set_visibility(false)
+
+        if disaster_data["description"] then
+            disaster_section:set_description(disaster_data["description"]);
+        end
+
+        disaster_sections[disaster_name] = disaster_section;
     end
 
     -- Load generic settings.
@@ -286,12 +331,13 @@ function load_disaster(disaster_name, disaster_data)
         local setting_key = setting["key"];
         local setting_type = setting["value"];
         local use_disaster_name_in_loc_key = setting["use_disaster_name_in_loc_key"];
+        local disabled_by_autodifficulty = setting["disabled_by_autodifficulty"];
 
         if disaster_data[setting_key] ~= nil then
             if setting_type == "checkbox" then
-                load_checkbox(disaster_name, setting_key, disaster_data[setting_key], use_disaster_name_in_loc_key);
+                load_checkbox(disaster_name, setting_key, disaster_data[setting_key], use_disaster_name_in_loc_key, disabled_by_autodifficulty);
             elseif setting_type == "slider" then
-                load_slider(disaster_name, setting_key, disaster_data[setting_key], use_disaster_name_in_loc_key);
+                load_slider(disaster_name, setting_key, disaster_data[setting_key], use_disaster_name_in_loc_key, disabled_by_autodifficulty);
             end
 
         elseif not (mct:get_version() == "0.9-beta" or mct:get_version() == "0.9") then
@@ -313,10 +359,49 @@ function load_disaster(disaster_name, disaster_data)
 
         if not is_generic then
             if setting_data["setting_type"] == "checkbox" then
-                load_checkbox(disaster_name, setting_key, setting_data["setting_data"], true);
+                load_checkbox(disaster_name, setting_key, setting_data["setting_data"], true, false);
             elseif setting_data["setting_type"] == "slider" then
-                load_slider(disaster_name, setting_key, setting_data["setting_data"], true);
+                load_slider(disaster_name, setting_key, setting_data["setting_data"], true, false);
             end
+        end
+    end
+end
+
+--- This function sets up automatic difficulty-related settings correctly.
+---@param state boolean #Current state of the Automatic Difficulty feature.
+local function setup_automatic_difficulty(state)
+    local mct_mod = mct:get_mod_by_key("dynamic_disasters");
+
+    -- If we're in a campaign, and we're locking it, instantly recalculate the difficulty values.
+    if state == true then
+        if dynamic_disasters then
+
+            -- Manually set the state in the backend, so the recalculation can be done.
+            dynamic_disasters.settings.automatic_difficulty = state;
+            dynamic_disasters:recalculate_difficulty();
+        end
+    end
+    for disaster_name, setting in pairs(option_keys_disabled_by_autodifficulty) do
+        local other_option = mct_mod:get_option_by_key(setting)
+        if state == true then
+
+            -- Set the recalculated value in the UI if we're in a campaign.
+            if dynamic_disasters then
+                if disaster_name == "dynamic_disasters" then
+                    other_option:set_selected_setting(dynamic_disasters.settings.max_endgames_at_the_same_time);
+                else
+                    for _, disaster in ipairs(dynamic_disasters.disasters) do
+                        if disaster["name"] == disaster_name then
+                            other_option:set_selected_setting(disaster.settings.difficulty_mod * 100);
+                            break;
+                        end
+                    end
+                end
+            end
+
+            other_option:set_locked(true, "Frodo45127: setting " .. setting .. " locked by automatic difficulty.");
+        else
+            other_option:set_locked(false, "Frodo45127: setting " .. setting .. " unlocked by disabled automatic difficulty.");
         end
     end
 end
@@ -334,7 +419,7 @@ mod:set_description(loc_prefix.."mod_desc", true)
 
 if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
     mod:set_workshop_id("2856219244");
-    mod:set_version("1.0");
+    mod:set_version("1.1");
     mod:set_main_image("ui/mct/dynamic_disasters.png", 300, 300)
 end
 
@@ -346,12 +431,12 @@ if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
     disasters_global_config_section:set_visibility(true)
 end
 
-load_checkbox("dynamic_disasters", "enable", true, false);
-load_checkbox("dynamic_disasters", "disable_vanilla_endgames", true, false);
-load_checkbox("dynamic_disasters", "automatic_difficulty_enable", true, false);
-load_slider("dynamic_disasters", "max_simul", {3, 1, 50, 1}, false);
-load_slider("dynamic_disasters", "max_total_endgames", {3, 1, 50, 1}, false);
-load_checkbox("dynamic_disasters", "debug", false, false);
+load_checkbox("dynamic_disasters", "enable", true, false, false);
+load_checkbox("dynamic_disasters", "disable_vanilla_endgames", true, false, false);
+load_checkbox("dynamic_disasters", "automatic_difficulty_enable", true, false, false);
+load_slider("dynamic_disasters", "max_simul", {3, 1, 50, 1}, false, true);
+load_slider("dynamic_disasters", "max_total_endgames", {3, 1, 50, 1}, false, false);
+load_checkbox("dynamic_disasters", "debug", false, false, false);
 
 -- MCT doesn't support yet specifying in which side of the panel each section goes. So we do this to force all disasters to the right side.
 if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
@@ -406,3 +491,47 @@ load_disaster("pyramid_of_nagash", disaster_configs["pyramid_of_nagash"]);
 load_disaster("vampires_rise", disaster_configs["vampires_rise"]);
 load_disaster("waaagh", disaster_configs["waaagh"]);
 load_disaster("wild_hunt", disaster_configs["wild_hunt"]);
+
+-- Listener to lock/unlock relevant settings if autodifficulty is enabled/disabled.
+core:add_listener(
+    "automatic_difficulty_locking",
+    "MctOptionSelectedSettingSet",
+    function(context)
+        return context:option():get_key() == "dynamic_disasters_automatic_difficulty_enable"
+    end,
+    function(context)
+        setup_automatic_difficulty(context:option():get_selected_setting());
+    end,
+    true
+);
+
+-- Listener to initialize the MCT menu properly.
+-- This includes:
+-- - Setting up the initial locked/unlocked state of some options.
+-- - In campaign, hiding unavailable disasters.
+core:add_listener(
+    "automatic_difficulty_locking",
+    "MctPanelOpened",
+    true,
+    function(context)
+
+        -- Setup the automatic difficulty updated values.
+        setup_automatic_difficulty(context:mct():get_mod_by_key("dynamic_disasters"):get_option_by_key("dynamic_disasters_automatic_difficulty_enable"):get_selected_setting());
+
+        -- Hide unavailable disasters if we're in a campaign.
+        if dynamic_disasters then
+            for disaster_name, disaster_section in pairs(disaster_sections) do
+                local available = false;
+                for _, disaster in ipairs(dynamic_disasters.disasters) do
+                    if disaster.name == disaster_name then
+                        available = true;
+                        break;
+                    end
+                end
+
+                disaster_section:set_hidden(not available);
+            end
+        end
+    end,
+    true
+);
