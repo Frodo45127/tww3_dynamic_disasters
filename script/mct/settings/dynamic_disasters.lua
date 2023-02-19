@@ -375,6 +375,16 @@ if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
     local section_dummy = mod:add_new_section("dummy18", ""); section_dummy:set_hidden(true);
     local section_dummy = mod:add_new_section("dummy19", ""); section_dummy:set_hidden(true);
     local section_dummy = mod:add_new_section("dummy20", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy21", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy22", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy23", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy24", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy25", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy26", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy27", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy28", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy29", ""); section_dummy:set_hidden(true);
+    local section_dummy = mod:add_new_section("dummy30", ""); section_dummy:set_hidden(true);
 end
 
 -- Disaster loading logic. Add new lines for each new disaster you make.
