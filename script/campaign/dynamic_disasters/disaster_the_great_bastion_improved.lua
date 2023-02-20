@@ -588,7 +588,7 @@ end
 function the_great_bastion_improved:disable_vanilla_great_bastion()
     out("Frodo45127: Disabling vanilla Great Bastion logic.");
 
-    Bastion = nil;
+    -- These should be all the listeners the Bastion mechanic uses to update its status.
     core:remove_listener("check_bastion_threat_battle");
     core:remove_listener("respawn_bastion_besiegers");
     core:remove_listener("emperors_wrath_activated");
