@@ -2682,6 +2682,56 @@ dyn_dis_army_templates = {
             wh_dlc08_nor_mon_fimir_0 = 3,
             wh_dlc08_nor_mon_fimir_1 = 2,
         },
+
+        -- NOTE: These 4 are not used. The bastion spawns now use the custom ones instead.
+        --[[
+        earlygame_bastion_vanilla = {
+            wh_main_nor_inf_chaos_marauders_0 =  4,
+            wh_main_nor_inf_chaos_marauders_1 =  2,
+            wh_dlc08_nor_inf_marauder_berserkers_0 =  1,
+            wh_dlc08_nor_inf_marauder_hunters_0 =  1,
+            wh_dlc08_nor_inf_marauder_hunters_1 =  2,
+            wh_main_chs_cav_marauder_horsemen_0 =  3,
+            wh_main_nor_mon_chaos_warhounds_0 =  2,
+        },
+        midgame_bastion_vanilla = {
+            wh_main_nor_inf_chaos_marauders_0 = 6,
+            wh_main_nor_inf_chaos_marauders_1 = 2,
+            wh_dlc08_nor_inf_marauder_berserkers_0 = 2,
+            wh_dlc08_nor_inf_marauder_hunters_0 = 2,
+            wh_dlc08_nor_inf_marauder_hunters_1 = 2,
+            wh_main_nor_mon_chaos_warhounds_0 = 2,
+            wh_main_chs_cav_marauder_horsemen_0 = 3,
+            wh_main_nor_mon_chaos_trolls = 1,
+        },
+
+        lategame_bastion_vanilla = {
+            wh_dlc08_nor_inf_marauder_berserkers_0 = 2,
+            wh_main_nor_inf_chaos_marauders_0 = 4,
+            wh_main_nor_inf_chaos_marauders_1 = 2,
+            wh_dlc08_nor_inf_marauder_hunters_0 = 6,
+            wh_dlc08_nor_inf_marauder_champions_1 = 2,
+            wh_main_nor_mon_chaos_warhounds_0 = 2,
+            wh_main_nor_mon_chaos_trolls = 2,
+            wh_main_chs_cav_marauder_horsemen_0 = 3,
+            wh_dlc08_nor_mon_war_mammoth_0 = 1,
+            wh_dlc08_nor_feral_manticore = 1,
+        },
+        endgame_bastion_vanilla = {
+            wh_main_nor_inf_chaos_marauders_0 = 4,
+            wh_main_nor_inf_chaos_marauders_1 = 2,
+            wh_dlc08_nor_inf_marauder_berserkers_0 = 4,
+            wh_dlc08_nor_inf_marauder_champions_0 = 2,
+            wh_dlc08_nor_inf_marauder_hunters_1 = 2,
+            wh_dlc08_nor_inf_marauder_hunters_0 = 2,
+            wh_main_chs_cav_marauder_horsemen_0 = 3,
+            wh_main_nor_mon_chaos_trolls = 2,
+            wh_dlc08_nor_mon_war_mammoth_0 = 1,
+            wh_dlc08_nor_mon_war_mammoth_1 = 1,
+            wh_dlc08_nor_mon_war_mammoth_2 = 1,
+            wh_dlc08_nor_feral_manticore = 1,
+        },
+        ]]
     },
     bretonnia = {
         earlygame = {

@@ -342,3 +342,13 @@ mct_dyn_dis_chianchi_assault_description	Chi'an Chi is always plotting and schem
 mct_dyn_dis_chaos_invasion_description	Chaos rises on the north. Daemons roam the land, and corruptions spreads in the wind. Would you be able to turn the tide and save the world?\\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
 mct_dyn_dis_bretonian_crusades_description	Bretonians sometimes may declare small crusades against neutral/chaos aligned factions.\\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.\\n\\nWill not trigger if "The Greatest Crusade" disaster is in progress.	true
 mct_dyn_dis_aztec_invasion_description	The Slann of Lustria have finally understood the Great Plan. And they plan to Enact it.\\n\\nSafe to disable mid-campaign, but if you received at least the first warning, the disaster will not stop.	true
+campaign_localised_strings_string_bastion_tooltip_gatehouse_commandment_negative	(decree) [[col:red]]+%d%[[/col:red]]	false
+campaign_localised_strings_string_bastion_tooltip_gatehouse_commandment	(decree) [[col:green]]%d%[[/col:green]]	false
+mct_dyn_dis_the_great_bastion_improved_config	The Great Bastion, Improved	true
+mct_dyn_dis_the_great_bastion_improved_description	Moves the "Great Bastion" Cathayan mechanic into a disaster, with the following improvements:\\n
+- It uses a dynamic disaster army template, instead of a hardcoded one.\\n
+- It makes the Great Bastion meter UI work properly with modded threat buffs/debuffs.\\n
+- It enables other disasters to properly affect the Great Bastion mechanic.\\n
+- General bugfixes.	true
+mct_dyn_dis_the_great_bastion_improved_enable	Enable "The Great Bastion, Improved" disaster	true
+mct_dyn_dis_the_great_bastion_improved_enable_tooltip	Enable/Disable the "The Great Bastion, Improved" disaster.\\n\\nThis effectively replaces the vanilla Great Bastion mechanic to make it more extensible and less buggy.\\n\\nUnsafe to disable mid-campaign.	true

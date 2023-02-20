@@ -1579,6 +1579,22 @@ function dynamic_disasters:release_armies(cqis, targets, max_turn)
     end
 end
 
+--- Function to release a specific military force from an invasion for the AI to control it.
+---@param force MILITARY_FORCE_SCRIPT_INTERFACE #Force to be released.
+function dynamic_disasters:release_military_force(force)
+    local general = force:general_character()
+    local invasion = invasion_manager:get_invasion(tostring(general:cqi()))
+
+    if invasion then
+        out("\t\tFrodo45127: Releasing invasion with general [" .. common.get_localised_string(general:get_forename()) .. "] to the AI.")
+        invasion:release()
+    else
+        out("\t\tFrodo45127: Invasion force with general [" .. common.get_localised_string(general:get_forename()) .. "] not under script control. Ignoring.")
+    end
+
+    cm:cai_enable_movement_for_character(cm:char_lookup_str(general))
+end
+
 --[[-------------------------------------------------------------------------------------------------------------
     Dynamic disasters shroud helpers.
 

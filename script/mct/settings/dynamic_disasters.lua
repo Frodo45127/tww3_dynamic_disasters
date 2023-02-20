@@ -41,6 +41,11 @@ disaster_configs = {
             setting_data = {15, 5, 50, 1},
         },
     },
+    the_great_bastion_improved = {
+        description = loc_prefix .. "the_great_bastion_improved" .. "_description",
+        enable = true,
+        difficulty_mod = {150, 10, 500, 10},
+    },
     chianchi_assault = {
         description = loc_prefix .. "chianchi_assault" .. "_description",
         enable = true,
@@ -476,6 +481,7 @@ end
 load_disaster("aztec_invasion", disaster_configs["aztec_invasion"]);
 load_disaster("raiding_parties", disaster_configs["raiding_parties"]);
 load_disaster("skaven_incursions", disaster_configs["skaven_incursions"]);
+load_disaster("the_great_bastion_improved", disaster_configs["the_great_bastion_improved"]);
 load_disaster("chianchi_assault", disaster_configs["chianchi_assault"]);
 load_disaster("bretonian_crusades", disaster_configs["bretonian_crusades"]);
 load_disaster("chaos_invasion", disaster_configs["chaos_invasion"]);
