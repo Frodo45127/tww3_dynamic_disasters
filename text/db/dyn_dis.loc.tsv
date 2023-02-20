@@ -345,10 +345,6 @@ mct_dyn_dis_aztec_invasion_description	The Slann of Lustria have finally underst
 campaign_localised_strings_string_bastion_tooltip_gatehouse_commandment_negative	(decree) [[col:red]]+%d%[[/col:red]]	false
 campaign_localised_strings_string_bastion_tooltip_gatehouse_commandment	(decree) [[col:green]]%d%[[/col:green]]	false
 mct_dyn_dis_the_great_bastion_improved_config	The Great Bastion, Improved	true
-mct_dyn_dis_the_great_bastion_improved_description	Moves the "Great Bastion" Cathayan mechanic into a disaster, with the following improvements:\\n
-- It uses a dynamic disaster army template, instead of a hardcoded one.\\n
-- It makes the Great Bastion meter UI work properly with modded threat buffs/debuffs.\\n
-- It enables other disasters to properly affect the Great Bastion mechanic.\\n
-- General bugfixes.	true
+mct_dyn_dis_the_great_bastion_improved_description	Moves the "Great Bastion" Cathayan mechanic into a disaster, with the following improvements:\\n\\n- It uses a dynamic disaster army template, instead of a hardcoded one.\\n\\n- It makes the Great Bastion meter UI work properly with modded threat buffs/debuffs.\\n\\n- It enables other disasters to properly affect the Great Bastion mechanic.\\n\\n- General bugfixes.	true
 mct_dyn_dis_the_great_bastion_improved_enable	Enable "The Great Bastion, Improved" disaster	true
 mct_dyn_dis_the_great_bastion_improved_enable_tooltip	Enable/Disable the "The Great Bastion, Improved" disaster.\\n\\nThis effectively replaces the vanilla Great Bastion mechanic to make it more extensible and less buggy.\\n\\nUnsafe to disable mid-campaign.	true

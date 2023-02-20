@@ -1,0 +1,4 @@
+strength	type	attrition	key	tiling_composite_scene	composite_scene	priority	battle_tag	battle_lighting_environment
+#campaign_storms_tables;0;db/campaign_storms_tables/dyn_dis								
+5	cathay_wrath_of_the_emperor	compass	cathay_wrath_of_the_emperor	storm_base	cst_fog	9		weather\battle\wh_spell_kislev_snow_01.environment_group
+5	empire_aurian_bastion	compass	empire_aurian_bastion	storm_base	cst_fog	9		weather\battle\wh_spell_kislev_snow_01.environment_group

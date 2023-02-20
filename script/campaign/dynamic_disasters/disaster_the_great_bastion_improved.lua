@@ -95,6 +95,7 @@ the_great_bastion_improved = {
 
     cathay_subculture = "wh3_main_sc_cth_cathay",
     invasion_faction = "wh3_main_rogue_kurgan_warband",
+    wrath_of_the_emperor = "wh3_region_payload_compass_wrath",
 
     message_keys = { -- incident mapping
         ["begin_attack"] = "wh3_main_incident_cth_bastion_threat_maximum",
@@ -147,7 +148,11 @@ the_great_bastion_improved = {
         "wh3_main_combi_region_fortress_of_eyes",
         "wh3_main_combi_region_iron_storm",
         "wh3_main_combi_region_dragons_crossroad",
-        "wh3_main_combi_region_red_fortress"
+        "wh3_main_combi_region_red_fortress",
+
+        -- Not in vanilla
+        "wh3_main_combi_region_bloodwind_keep",
+        "wh3_main_combi_region_foundry_of_bones",
     },
 
     spawn_locations_by_gate = { -- possible locations to spawn new kurgan warband armies
@@ -223,10 +228,25 @@ the_great_bastion_improved = {
 
 --- Callback applied to spawned armies. This one is here because it needs to be before the listeners.
 local function invaders_callback(cqi)
-    cm:apply_effect_bundle_to_characters_force("wh_main_bundle_military_upkeep_free_force", cqi, 0)
-    local general = cm:get_character_by_cqi(cqi)
-    local invasion = invasion_manager:get_invasion(cqi)
+    local turn_number = cm:turn_number();
 
+    -- Unit Level: between 3 and 9, +1 each ten turns. Leave a margin of 6 levels for random.
+    local max_unit_level = math.max(math.ceil(math.min(turn_number / 10, 9)), 3);
+    local min_unit_level = math.max(max_unit_level - 6, 2);
+    local unit_level = cm:random_number(max_unit_level, min_unit_level);
+
+    -- Agent Level: between 14 and 35, +1 each two turns. Leave a margin of 20 levels for random.
+    local max_agent_level = math.max(math.ceil(math.min(turn_number / 2, 35)), 15);
+    local min_agent_level = math.max(max_agent_level - 20, 14);
+    local agent_level = cm:random_number(max_agent_level, min_agent_level);
+
+    local character = cm:char_lookup_str(cqi)
+    cm:apply_effect_bundle_to_characters_force("wh_main_bundle_military_upkeep_free_force", cqi, 0)
+    cm:add_agent_experience(character, agent_level, true)
+    cm:add_experience_to_units_commanded_by_character(character, unit_level)
+
+    local general = cm:get_character_by_cqi(cqi)
+    local invasion = invasion_manager:get_invasion(tostring(cqi))
     if not invasion then
         invasion = invasion_manager:new_invasion_from_existing_force(tostring(cqi), general:military_force())
     end
@@ -234,13 +254,11 @@ local function invaders_callback(cqi)
     local m_x = general:logical_position_x()
     local m_y = general:logical_position_y()
 
-    invasion:apply_effect("wh_main_bundle_military_upkeep_free_force", -1)
-
     local coords = {{x = m_x, y = m_y},{x = m_x, y = m_y}}
     invasion:set_target("PATROL", coords, nil)
     invasion:add_aggro_radius(5)
     if invasion:has_target() then
-        out.design("\t\tFrodo45127: Setting invasion with general [" .. common.get_localised_string(general:get_forename()) .. "] to be stationary")
+        out("\t\tFrodo45127: Setting invasion with general [" .. common.get_localised_string(general:get_forename()) .. "] to be stationary")
         invasion:start_invasion(nil, true, false, false)
     end
 end
@@ -272,7 +290,7 @@ function the_great_bastion_improved:set_status(status)
             end,
             function()
                 if cm:pending_battle_cache_attacker_victory() and cm:pending_battle_cache_faction_is_defender(self.invasion_faction) and not self.settings.invasion_active then
-                    out.design("Frodo45127: Kurgan army destroyed in battle, modifying threat by -" .. self.settings.destroyed_army_threat_reduction)
+                    out("Frodo45127: Kurgan army destroyed in battle, modifying threat by -" .. self.settings.destroyed_army_threat_reduction)
 
                     self:trigger_incident_only_for_cathay(self.message_keys["invader_killed"], true)
 
@@ -320,9 +338,9 @@ function the_great_bastion_improved:set_status(status)
                     local armies_to_spawn = gates_lost - kurgan_warband:military_force_list():num_items()
                     if armies_to_spawn > 0 then
                         local template_key = "earlygame";
-                        if turn_number >= 30 and turn_number < 60 then
+                        if turn_number >= 35 and turn_number < 70 then
                             template_key = "midgame";
-                        elseif turn_number >= 60 then
+                        elseif turn_number >= 70 then
                             template_key = "lategame";
                         end
 
@@ -337,7 +355,7 @@ function the_great_bastion_improved:set_status(status)
 
                             dynamic_disasters:create_scenario_force_at_coords(self.invasion_faction, gate.gate_key, coordinates, template, 14, false, 1, self.name, invaders_callback);
                             self:spawn_army(7, "chaos_besiegers_1", coordinates)
-                            out.design("\tFrodo45127: Spawning small army for [" .. gate.gate_key .. "] at position [" .. coordinates[1] .. ", " .. coordinates[2] .. "]")
+                            out("\tFrodo45127: Spawning small army for [" .. gate.gate_key .. "] at position [" .. coordinates[1] .. ", " .. coordinates[2] .. "]")
                         end
 
                         local mf_list = kurgan_warband:military_force_list()
@@ -436,10 +454,11 @@ function the_great_bastion_improved:set_status(status)
             end,
             function()
                 for i = 1, #self.settings.dragon_emperors_wrath_region_list do
-                    cm:apply_effect_bundle_to_region("wh3_region_payload_compass_wrath", self.settings.dragon_emperors_wrath_region_list[i], 3)
+                    self:apply_wrath_of_the_emperor_effects(self.settings.dragon_emperors_wrath_region_list[i], 3)
                 end
 
-                if cm:get_local_faction_subculture(true) == self.cathay_subculture then
+                -- If there's only one player playing cathay, zoom in.
+                if #cm:get_human_factions_of_subculture(self.cathay_subculture) == 1 then
                     CampaignUI.ClosePanel("cathay_compass")
                     cuim:start_scripted_sequence()
 
@@ -635,14 +654,17 @@ function the_great_bastion_improved:trigger_pre_invasion_1(forced)
 
     -- get the army strength data based on turn number and difficulty, and spawn the armies
     local template_key = "earlygame";
-    if turn_number >= 30 and turn_number < 60 then
+    if turn_number >= 35 and turn_number < 70 then
         template_key = "midgame";
-    elseif turn_number >= 60 then
+    elseif turn_number >= 70 then
         template_key = "lategame";
     end
 
     local secondary_armies = math.ceil(self.settings.difficulty_mod * 2);
     local main_armies = math.ceil(secondary_armies * 2);
+
+    local secondary_armies = cm:random_number(secondary_armies + 1, secondary_armies - 1);
+    local main_armies = cm:random_number(main_armies + 1, main_armies - 2);
 
     for i = 1, #self.settings.spawn_locations_by_gate do
         local current_gate = self.settings.spawn_locations_by_gate[i].gate_key;
@@ -743,17 +765,19 @@ function the_great_bastion_improved:end_bastion_invasion(invasion_successful)
         return false
     end
 
-    out("Frodo45127: Bastion invasion has finished. Is success? " .. invasion_successful .. ". Resetting threat.");
+    out("Frodo45127: Bastion invasion has finished. Is success? " .. tostring(invasion_successful) .. ". Resetting threat.");
 
+    self.settings.threat_value = 0;
     self.settings.invasion_active = false;
     self.settings.invasion_duration = 0;
-    cm:set_script_state(self.ui_bastion_threat, 1.0)
 
     if invasion_successful then
         self:trigger_incident_only_for_cathay(self.message_keys["invasion_successful"], true)
     else
         self:trigger_incident_only_for_cathay(self.message_keys["threat_decreasing"], true)
     end
+
+    self:reload_ui();
 end
 
 --- Spawn a hero if the kurgan warband faction doesn't have any.
@@ -819,10 +843,9 @@ function the_great_bastion_improved:collect_threat_bonus_values()
     return bonus_value
 end
 
+--- Function to get the bonus value applied to a specific region.
+---@param region REGION_SCRIPT_INTERFACE #The region to get the values from.
 function the_great_bastion_improved:get_threat_bonus_values_from_region(region)
-    local regions_compass_bonus_value = cm:get_regions_bonus_value(region, self.bastion_threat_modifier_compass);
-
-    -- Bonus value per-region. This usually comes from edicts.
     if not region:is_abandoned() and region:owning_faction():subculture() == self.cathay_subculture then
         return cm:get_regions_bonus_value(region, self.bastion_threat_modifier) or 0;
     end
@@ -871,6 +894,32 @@ function the_great_bastion_improved:get_random_position_for_gate(gate_key)
     table.insert(self.settings.spawn_locations_used[gate_key], position);
 
     return position;
+end
+
+--[[-------------------------------------------------------------------------------------------------------------
+    Wrath of the Emperor functions
+]]---------------------------------------------------------------------------------------------------------------
+
+--- Function to apply Wrath of the Emperor effects (including visual ones) to a specific region.
+---@param region_key string #Key of the region that will receive the effects.
+---@param turns number #Amount of turns the effects will last.
+function the_great_bastion_improved:apply_wrath_of_the_emperor_effects(region_key, turns)
+    out("Frodo45127: aplying Wrath of the Emperor to " .. region_key);
+
+    cm:apply_effect_bundle_to_region(self.wrath_of_the_emperor, region_key, turns)
+
+    -- Do not apply the storm to the gates. The effect sometimes makes the gates hard to see.
+    local ignore = false;
+    for i = 1, #self.settings.spawn_locations_by_gate do
+        if region_key == self.settings.spawn_locations_by_gate[i].gate_key then
+            ignore = true;
+            break;
+        end
+    end
+
+    if not ignore then
+        cm:create_storm_for_region(region_key, 5, turns, "cathay_wrath_of_the_emperor")
+    end
 end
 
 return the_great_bastion_improved
