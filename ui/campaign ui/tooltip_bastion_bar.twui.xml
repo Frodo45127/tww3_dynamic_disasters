@@ -13,6 +13,7 @@
 					<threat_list this="C7834DBF-8E8A-4F7E-8CA3891EA39B7480">
 						<dy_threat_base this="4F72DC69-C9FF-43A0-997AF9B9DAD678B1"/>
 						<dy_threat_compass this="16F20B16-FD1C-40D5-961998401F561500"/>
+						<dy_threat_chaos_invasion this="16F20B16-FD1C-40D5-961998401F561501"/>
 					</threat_list>
 					<seperator this="B8726579-6161-4B64-A818DE0D726F48AA"/>
 					<tx_subtitle this="F75F5D1C-E4FE-4F93-9E7D5039ED365E8A"/>
@@ -636,5 +637,43 @@
 					uniqueguid="9E34F0E1-F361-4E3E-99E645FC4BDC8E4E"/>
 			</states>
 		</dy_threat_base>
+		<dy_threat_chaos_invasion
+			this="16F20B16-FD1C-40D5-961998401F561501"
+			id="dy_threat_base"
+			offset="5.00,0.00"
+			allowhorizontalresize="false"
+			priority="255"
+			tooltipslocalised="true"
+			uniqueguid="16F20B16-FD1C-40D5-961998401F561501"
+			updatewhennotvisible="true"
+			currentstate="9E34F0E1-F361-4E3E-99E645FC4BDC8E41"
+			defaultstate="9E34F0E1-F361-4E3E-99E645FC4BDC8E41">
+			<callbackwithcontextlist>
+				<callback_with_context
+					callback_id="ContextTextLabel"
+					context_function_id="Format(Loc(&quot;dyn_dis_bastion_tooltip_chaos_invasion_threat&quot;), RoundFloat(SharedStateReadFloat(&quot;dyn_dis_chaos_invasion_bastion_threat&quot;)))"/>
+				<callback_with_context
+					callback_id="ContextVisibilitySetter"
+					context_function_id="SharedStateReadFloat(&quot;dyn_dis_chaos_invasion_bastion_threat&quot;) &gt; 0"/>
+			</callbackwithcontextlist>
+			<states>
+				<newstate
+					this="9E34F0E1-F361-4E3E-99E645FC4BDC8E41"
+					name="NewState"
+					width="386"
+					height="21"
+					text="dy_threat"
+					textvalign="Center"
+					textxoffset="12.00,12.00"
+					textyoffset="4.00,0.00"
+					texthbehaviour="Resize"
+					textlabel="StateText_8ba123ce"
+					font_m_colour="#FFF8D7FF"
+					font_m_leading="1"
+					fontcat_name="fe_text_small"
+					interactive="true"
+					uniqueguid="9E34F0E1-F361-4E3E-99E645FC4BDC8E41"/>
+			</states>
+		</dy_threat_chaos_invasion>
 	</components>
 </layout>

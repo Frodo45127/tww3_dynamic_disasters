@@ -82,16 +82,19 @@ the_great_bastion_improved = {
         army_count_secondary_gates = 4,
     },
 
-    bastion_threat_modifier_compass = "bastion_threat_modifier_compass",    -- Modifier to the current thread by Compass position.
-    bastion_threat_modifier = "bastion_threat_modifier",                    -- Modifier to the current thread by Edicts.
+    bastion_threat_modifier_compass = "bastion_threat_modifier_compass",                        -- Modifier to the current thread by Compass position.
+    bastion_threat_modifier = "bastion_threat_modifier",                                        -- Modifier to the current thread by Edicts.
+    chaos_invasion_scripted_value = "dyn_dis_chaos_invasion_bastion_threat",                    -- Modifier to the current thread by Chaos Invasion.
+    chaos_invasion_bonus_effect_bundle = "dyn_dis_chaos_invasion_bastion_threat",               -- Bundle with the relevant Chaos Invasion effect.
 
     -- UI Variables. This is what we need to set to update the UI.
-    ui_bastion_threat = "bastion_threat",                               -- Current bastion thread. Note that for some bizarre reason the UI does a *100 on the thread, so we have to pass it as /100
-    ui_base_threat_per_turn = "base_threat_per_turn",                   -- Base thread per turn, before modifiers.
-    ui_base_gate_threat_increase = "base_gate_threat_increase",         -- Thread modifier per razed/lost gate.
-    ui_bastion_threat_change = "bastion_threat_change",                 -- Thread change expected for the next turn.
-    ui_base_compass_threat_decrease = "base_compass_threat_decrease",   -- UI value for the compass pointing to the bastion.
+    ui_bastion_threat = "bastion_threat",                                       -- Current bastion thread. Note that for some bizarre reason the UI does a *100 on the thread, so we have to pass it as /100
+    ui_base_threat_per_turn = "base_threat_per_turn",                           -- Base thread per turn, before modifiers.
+    ui_base_gate_threat_increase = "base_gate_threat_increase",                 -- Thread modifier per razed/lost gate.
+    ui_bastion_threat_change = "bastion_threat_change",                         -- Thread change expected for the next turn.
+    ui_base_compass_threat_decrease = "base_compass_threat_decrease",           -- UI value for the compass pointing to the bastion.
     ui_base_gate_threat_reduction_value = "base_gate_threat_reduction_value",
+    ui_base_compass_threat_increase_chaos_invasion = "dyn_dis_chaos_invasion_bastion_threat",
 
     cathay_subculture = "wh3_main_sc_cth_cathay",
     invasion_faction = "wh3_main_rogue_kurgan_warband",
@@ -820,10 +823,12 @@ end
 function the_great_bastion_improved:collect_threat_bonus_values()
     local bonus_value = 0
     local compass_bonus_value = 0
+    local chaos_invasion_bonus_value = 0
 
     for i = 1, #self.settings.spawn_locations_by_gate do
         local current_bastion_region = cm:get_region(self.settings.spawn_locations_by_gate[i].gate_key)
-        local regions_compass_bonus_value = cm:get_regions_bonus_value(current_bastion_region, self.bastion_threat_modifier_compass);
+        local regions_compass_bonus_value = cm:get_regions_bonus_value(current_bastion_region, self.bastion_threat_modifier_compass) or 0;
+        local regions_chaos_bonus_value = cm:get_regions_bonus_value(current_bastion_region, self.chaos_invasion_scripted_value) or 0;
 
         -- Bonus value per-region. This usually comes from edicts.
         if not current_bastion_region:is_abandoned() and current_bastion_region:owning_faction():subculture() == self.cathay_subculture then
@@ -836,9 +841,15 @@ function the_great_bastion_improved:collect_threat_bonus_values()
             compass_bonus_value = regions_compass_bonus_value
             cm:set_script_state(self.ui_base_compass_threat_decrease, compass_bonus_value)
         end
+
+        -- Same with the chaos invasion.
+        if chaos_invasion_bonus_value == 0 and regions_chaos_bonus_value ~= 0 then
+            chaos_invasion_bonus_value = regions_chaos_bonus_value
+            cm:set_script_state(self.ui_base_compass_threat_increase_chaos_invasion, chaos_invasion_bonus_value)
+        end
     end
 
-    bonus_value = bonus_value + compass_bonus_value
+    bonus_value = bonus_value + compass_bonus_value + chaos_invasion_bonus_value
 
     return bonus_value
 end

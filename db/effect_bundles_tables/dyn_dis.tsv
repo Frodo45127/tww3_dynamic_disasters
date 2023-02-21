@@ -37,3 +37,4 @@ dyn_dis_empire_of_steel_and_faith_warning			faction	1	disaster.png	true	false	tr
 dyn_dis_empire_of_steel_and_faith_attacker_buffs			faction	1	disaster.png	true	false	true
 dyn_dis_bretonian_crusades_warning			faction	1	disaster.png	true	false	true
 dyn_dis_bretonian_crusades_invader_buffs			faction	1	disaster.png	true	false	true
+dyn_dis_chaos_invasion_bastion_threat			faction	1	disaster.png	false	false	false

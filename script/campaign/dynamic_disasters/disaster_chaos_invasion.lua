@@ -1781,6 +1781,13 @@ function disaster_chaos_invasion:finish()
         -- Close all the open rifts.
         cm:teleportation_network_close_all_nodes(self.teleportation_network);
 
+        -- Remove the buff for the Great Bastion, if we're using the improved bastion disaster.
+        local bastion_disaster = dynamic_disasters:disaster("the_great_bastion_improved");
+        if bastion_disaster and bastion_disaster.settings.started then
+            cm:remove_effect_bundle_from_region(bastion_disaster.chaos_invasion_bonus_effect_bundle, bastion_disaster.settings.spawn_locations_by_gate[1].gate_key);
+            bastion_disaster:reload_ui()
+        end
+
         dynamic_disasters:finish_disaster(self);
     end
 end
@@ -1931,7 +1938,6 @@ function disaster_chaos_invasion:trigger_stage_2()
     for _, faction_key in pairs(self.settings.stage_2_data.factions) do
         local faction = cm:get_faction(faction_key);
         if not faction:is_dead() or (faction:is_dead() and self.settings.revive_dead_factions == true) then
-
 
             -- Land spawns are region-based, so we spawn them using their region key.
             local army_template = self.stage_2_data.army_templates[faction_key];
@@ -2453,6 +2459,15 @@ function disaster_chaos_invasion:trigger_chaos_effects(duration_global_effects, 
     -- Apply attackers buffs to all alive attackers.
     for _, faction_key in pairs(self.settings.factions) do
         cm:apply_effect_bundle(self.attacker_buffs_key, faction_key, duration_buffs);
+    end
+
+    -- If we have "The Great Bastion, Improved" running, increase the default threat level from 6% to 20%.
+    local bastion_disaster = dynamic_disasters:disaster("the_great_bastion_improved");
+    if bastion_disaster and bastion_disaster.settings.started then
+
+        out("Frodo45127: Applying Chaos Invasion effects to Great Bastion.");
+        cm:apply_effect_bundle_to_region(bastion_disaster.chaos_invasion_bonus_effect_bundle, bastion_disaster.settings.spawn_locations_by_gate[1].gate_key, duration_buffs);
+        bastion_disaster:reload_ui()
     end
 end
 
