@@ -31,6 +31,7 @@ Currently, the framework has mod integrations with the following mods:
 * Expanded Roster - Greenskins - Orc Pack
 * Expanded Roster - Norsca
 * Expanded Roster - Vampire Counts
+* Lost & Found: Dwarfs Collection
 * Skaven Doom Walker
 * Yin-Yin, the Sea Dragon & Warriors of the Jade Sea
 
