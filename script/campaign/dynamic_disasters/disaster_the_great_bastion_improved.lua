@@ -6,10 +6,14 @@
 
     Unlike other disasters, this triggers from the start, same trigger logic as the vanilla script.
 
+    Chi'an Chi's Assault doesn't trigger if this disaster is active.
+
     The main changes of this vs the vanilla one are:
+    - A bit more armies spawned (you actually need to keep stacks in the wall).
     - Status tracking moved from random saved values to disaster settings.
     - Dragon Emperor's Wrath compass effect now causes a storm to appear.
     - It uses Dynamic Disaster's army templates for invading armies instead of hardcoded army compositions.
+    - Armies attacking the focused gate now include daemon units.
 ]]
 
 -- Status list for this disaster.

@@ -6,6 +6,8 @@
 
     Supports debug mode, but still requires a max bastion thread to trigger.
 
+    Note: this doesn't work if you are using The Great Bastion, Improved disaster.
+
     Requirements:
         - Always triggers between 2 and 3 turns after the bastion reaches max thread, if no Kurgan armies have been defeated.
         - At least turn 30 (so the player has already "prepared").

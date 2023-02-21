@@ -15,16 +15,10 @@
         - Stage 1:
             - If Archaon has been confederated, end the disaster here.
             - If not:
-                - Targets (TODO: Force them to try to get to the targets):
-                    - Archaon: Kislev, Praag, Erenburg.
-                    - Sigvald: No particular target, just buildup of forces.
-                    - Kholek: Zharr Naggrund, Firemouth.
-                    - Valkia: Naggarond.
-                    - Vilich: Great Bastion.
-                - Spawn each faction's armies in provinces we expect they have by now.
-                - Each attacker faction declares war on all non-chaos/non vassal of chaos factions.
+                - Spawn armies for Archaon, Sigvald, Kholek, Valkia and Vilich, so they start pushing hard from the north.
+                - Each attacker faction declares war on all non-chaos/non vassal of chaos factions. TODO: Except skaven.
                 - (TODO: UI is broken)If player is Cathay, "Flow of the Polar Gates" increases bastion thread.
-                - Trigger "Flow of the Polar Gates" incident (global chaos corruption).
+                - Trigger "Flow of the Polar Gates" incident (global chaos corruption). TODO: Make Flow of the polar gates increase/decrease with won/lost battles of chaos.
                 - Trigger "Chaos Rises" video.
                 - Wait 6-10 turns for more info.
         - Stage 2:
@@ -162,7 +156,7 @@ disaster_chaos_invasion = {
         enable_diplomacy = false,           -- If true, you will still be able to use diplomacy with disaster-related factions. Broken beyond believe, can make the game a cakewalk.
         short_victory_is_min_turn = false,  -- If the short victory turn should be used as min turn.
         long_victory_is_min_turn = true,    -- If the long victory turn should be used as min turn.
-        min_turn = 100,                     -- Minimum turn required for the disaster to trigger.
+        min_turn = 110,                     -- Minimum turn required for the disaster to trigger.
         max_turn = 0,                       -- If the disaster hasn't trigger at this turn, we try to trigger it. Set to 0 to not check for max turn. Used only for some disasters.
         status = 0,                         -- Current status of the disaster. Used to re-initialize the disaster correctly on reload.
         last_triggered_turn = 0,            -- Turn when the disaster was last triggerd.
