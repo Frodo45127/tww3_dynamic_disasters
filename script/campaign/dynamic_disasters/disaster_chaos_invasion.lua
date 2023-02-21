@@ -922,6 +922,11 @@ disaster_chaos_invasion = {
         ["wh3_main_teleportation_node_template_tze"] = {"wh3_main_tze_tzeentch_qb1", "rift_army_tzeentch"}
     },
 
+    rebels_khorne = "wh3_main_kho_khorne_qb1",
+    rebels_nurgle = "wh3_main_nur_nurgle_qb1",
+    rebels_slaanesh = "wh3_main_sla_slaanesh_qb1",
+    rebels_tzeentch = "wh3_main_tze_tzeentch_qb1",
+
     base_army_unit_count = 19,
 
     stage_early_warning_incident_key = "dyn_dis_chaos_invasion_stage_early_warning",
@@ -1006,18 +1011,22 @@ function disaster_chaos_invasion:set_status(status)
 
                                 local template_key = current_node:template_key();
                                 if template_key == "wh3_main_teleportation_node_template_kho" then
+                                    default_owner = self.rebels_khorne;
                                     army_template = {
                                         khorne = "lategame_daemons_only",
                                     }
                                 elseif template_key == "wh3_main_teleportation_node_template_nur" then
+                                    default_owner = self.rebels_nurgle;
                                     army_template = {
                                         nurgle = "lategame_daemons_only",
                                     }
                                 elseif template_key == "wh3_main_teleportation_node_template_sla" then
+                                    default_owner = self.rebels_slaanesh;
                                     army_template = {
                                         slaanesh = "lategame_daemons_only",
                                     }
                                 else -- Tzeench as fallback.
+                                    default_owner = self.rebels_tzeentch;
                                     army_template = {
                                         tzeentch = "lategame_daemons_only",
                                     }
