@@ -17,8 +17,7 @@
         - Trigger/First Warning:
             - Message of warning about skaven marks on a city.
             - Create an undercity for a living major skaven faction and start expanding it like crazy (max 10 expansions).
-            - After 4-10 turns, popup the anexation building on all of them.
-            - If the skaven faction is Skryre, swap one of them with a nuke.
+            - After 4-8 turns, popup the anexation building on all of them.
         - Invasion:
             - Reinforce the vanilla armies with some of our own.
             - Force an attack on the city with invasion AI, and release it 5 turns later if it's still locked
@@ -80,6 +79,8 @@ disaster_skaven_incursions = {
         end_next_turn = false,
         critical_mass = 15,                 -- Max amount of regions we'll expand the underempire before swapping to rat kings.
         max_turns = 4,                      -- Max turns we have to reach critical mass. If we don't reach it, trigger the invasion anyway.
+        turn_from_end_until_implosion = 4,  -- Turns between the end of the expansion and the final implosion.
+        end_turn = 0,                       -- Turn when the implosion will happen.
         repeat_regions = {},
         faction = "",
 
@@ -108,7 +109,7 @@ disaster_skaven_incursions = {
 
     inital_expansion_chance = 39,   -- Chance for each region to get an under empire expansion each turn
     repeat_expansion_chance = 13,   -- Chance for a region to get an under empire if it didn't get one on the first dice roll
-    unique_building_chance = 50,    -- Chance for a region to get one of the special faction-unique under empire templates
+    unique_building_chance = 33,    -- Chance for a region to get one of the special faction-unique under empire templates
     under_empire_buildings = {
         generic = {
             {
@@ -228,11 +229,7 @@ function disaster_skaven_incursions:set_status(status)
             "SkavenIncursionsInvasion",
             "WorldStartRound",
             function()
-                local count = 0
-                for _ in pairs(self.settings.repeat_regions) do count = count + 1 end
-                out("Frodo45127: Regions expanded: " .. count .. ".")
-
-                return (cm:turn_number() >= self.settings.last_triggered_turn and count >= self.settings.critical_mass) or cm:turn_number() >= self.settings.last_triggered_turn + self.settings.max_turns;
+                return cm:turn_number() == self.settings.end_turn;
             end,
 
             -- If there are skaven alive, proceed with the invasion.
@@ -266,7 +263,27 @@ function disaster_skaven_incursions:set_status(status)
                 end
             end,
             true
-        )
+        );
+
+        -- Listener to finish expansion and prepare for the implosion.
+        core:remove_listener("SkavenIncursionsImplsionPreparation")
+        core:add_listener(
+            "SkavenIncursionsImplsionPreparation",
+            "WorldStartRound",
+            function()
+                local count = 0
+                for _ in pairs(self.settings.repeat_regions) do count = count + 1 end
+                out("Frodo45127: Regions expanded: " .. count .. ".")
+
+                return (cm:turn_number() >= self.settings.last_triggered_turn and count >= self.settings.critical_mass) or cm:turn_number() >= self.settings.last_triggered_turn + self.settings.max_turns;
+            end,
+            function()
+                self.settings.end_turn = cm:turn_number() + self.settings.turn_from_end_until_implosion;
+                core:remove_listener("SkavenIncursionsImplsionPreparation")
+            end,
+            true
+        );
+
     end
 
 end
@@ -304,6 +321,7 @@ function disaster_skaven_incursions:finish()
         core:remove_listener("SkavenIncursionsEnd");
         core:remove_listener("SkavenIncursionsInvasion");
         core:remove_listener("SkavenIncursionsUnderEmpireExpansion");
+        core:remove_listener("SkavenIncursionsImplsionPreparation");
 
         dynamic_disasters:finish_disaster(self);
     end
