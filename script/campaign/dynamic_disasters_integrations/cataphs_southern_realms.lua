@@ -144,5 +144,11 @@ if dynamic_disasters then
         last_stand.army_templates["wh_main_teb_tilea_CB"] = { teb = "" };
         last_stand.army_templates["wh2_main_emp_new_world_colonies_CB"] = { teb = "" };
         last_stand.army_templates["mixer_teb_southern_realms"] = { teb = "" };
+
+        last_stand.mercenary_subcultures["wh_main_teb_border_princes_CB"] = true
+        last_stand.mercenary_subcultures["wh_main_teb_estalia_CB"] = true
+        last_stand.mercenary_subcultures["wh_main_teb_tilea_CB"] = true
+        last_stand.mercenary_subcultures["wh2_main_emp_new_world_colonies_CB"] = true
+        last_stand.mercenary_subcultures["mixer_teb_southern_realms"] = true
     end
 end

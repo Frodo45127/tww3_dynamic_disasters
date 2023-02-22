@@ -178,6 +178,15 @@ last_stand = {
             vampire_counts = "",
         },
     },
+
+    mercenary_subcultures = {
+        wh3_main_sc_cth_cathay = true,
+        wh3_main_sc_ksl_kislev = true,
+        wh_main_sc_brt_bretonnia = true,
+        wh_main_sc_emp_empire = true,
+        wh_main_sc_teb_teb = true,
+    },
+
     incident_key_allies = "dyn_dis_last_stand_allies",
     incident_key_master = "dyn_dis_last_stand_master",
     incident_key_vassal_normal = "dyn_dis_last_stand_vassal_normal",
@@ -510,11 +519,7 @@ function last_stand:rohan_arrives(faction)
                 --
                 -- They may receive a random army from a passing mercenary group or a cathayan caravan (we use TEB subculture with mixed units for this).
                 local army_spawned = false;
-                if faction:subculture() == "wh3_main_sc_cth_cathay" or
-                    faction:subculture() == "wh3_main_sc_ksl_kislev" or
-                    faction:subculture() == "wh_main_sc_brt_bretonnia" or
-                    faction:subculture() == "wh_main_sc_emp_empire" or
-                    faction:subculture() == "wh_main_sc_teb_teb" then
+                if self.mercenary_subcultures[faction:subculture()] == true then
                     local chance = cm:random_number(100, 0);
                     if (chance < 10 + self.settings.difficulty_mod * 10) or dynamic_disasters.settings.debug_2 == true then
                         local army_size = cm:random_number(20, 14);
