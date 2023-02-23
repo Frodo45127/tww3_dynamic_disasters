@@ -299,7 +299,7 @@ function disaster_skaven_incursions:start()
 
             out("Frodo45127: Setting up initial underempire for faction " .. self.settings.faction .. ", region " .. region_key .. ".");
             local region = cm:get_region(region_key);
-            self:expand_under_empire_adjacent_region(self.settings.faction, region, {}, true, true, true)
+            self:expand_under_empire_adjacent_region(self.settings.faction, region, {}, false, true, true)
         end
     end
 
