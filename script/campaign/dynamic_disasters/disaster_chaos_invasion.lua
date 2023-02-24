@@ -1644,9 +1644,9 @@ function disaster_chaos_invasion:set_status(status)
             local previous_global_chaos = self.settings.global_chaos;
             local chaos_won = (cm:pending_battle_cache_attacker_victory() and attacker) or (cm:pending_battle_cache_defender_victory() and not attacker);
             if chaos_won then
-                self.settings.global_chaos = math.min(self.settings.global_chaos + 0.2, 60);
+                self.settings.global_chaos = math.min(self.settings.global_chaos + 0.5, 60);
             else
-                self.settings.global_chaos = math.max(self.settings.global_chaos - 0.2, 5);
+                self.settings.global_chaos = math.max(self.settings.global_chaos - 0.5, 5);
             end
 
             -- Calculate the effect change we must do, if any.
@@ -2136,7 +2136,7 @@ function disaster_chaos_invasion:trigger_stage_1()
     self.settings.corruption_level_change = 1;
     self.settings.new_corruption_level = self.global_corruption_1;
     self:trigger_chaos_effects(0, nil);
-    dynamic_disasters:trigger_incident(self.stage_1_incident_key, self.global_corruption_1, self.settings.stage_2_delay, nil, nil, nil);
+    dynamic_disasters:trigger_incident(self.stage_1_incident_key, self.global_corruption_1, 0, nil, nil, nil);
     self.settings.corruption_level_change = 0;
     self.settings.new_corruption_level = "";
 
@@ -2628,6 +2628,17 @@ end
 -- Function to restore the vortex after being removed.
 function disaster_chaos_invasion:restore_vortex()
     self.settings.great_vortex_undone = false;
+
+    -- Reduce flow to 3.
+    self.settings.global_chaos = 30;
+    self.settings.corruption_level_change = 2;
+    self.settings.new_corruption_level = self.global_corruption_3;
+
+    self:trigger_chaos_effects(0, nil);
+    dynamic_disasters:trigger_incident(self.global_corruption_increase, self.settings.new_corruption_level, 0, nil, nil, nil)
+
+    self.settings.corruption_level_change = 0;
+    self.settings.new_corruption_level = "";
 
     --cm:add_vfx(dynamic_disasters.vortex_key, dynamic_disasters.vortex_vfx, 171.925, 431.5, 0)
 end
