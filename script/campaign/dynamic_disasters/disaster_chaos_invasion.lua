@@ -17,8 +17,8 @@
             - If not:
                 - Spawn armies for Archaon, Sigvald, Kholek, Valkia and Vilich, so they start pushing hard from the north.
                 - Each attacker faction declares war on all non-chaos/non vassal of chaos factions. TODO: Except skaven.
-                - (TODO: UI is broken)If player is Cathay, "Flow of the Polar Gates" increases bastion thread.
-                - Trigger "Flow of the Polar Gates" incident (global chaos corruption). TODO: Make Flow of the polar gates increase/decrease with won/lost battles of chaos.
+                - Trigger "Flow of the Polar Gates" incident (global chaos corruption).
+                - If player is Cathay, increase bastion threat.
                 - Trigger "Chaos Rises" video.
                 - Wait 6-10 turns for more info.
         - Stage 2:
@@ -42,15 +42,15 @@
 
             - Spawn each faction's armies in provinces we expect they have by now, at sea, or near their objectives.
             - Each attacker faction declares war on all non-chaos/non vassal of chaos.
-            - Trigger "Flow of the Polar Gates" incident (global chaos corruption).
             - Trigger "Chaos Invasion" (Sarthorael's spawn) video.
             - Give all non player-controlled dark fortresses to chaos armies, if they're owned by norsca.
             - Rifts:
                 - Spawn respawnable rifts across the Northern and Southern chaos wastes.
                 - Spawn respawnable rifts on all provinces that reach at least 75 of any chaos corruption.
+                - Rifts can expand to other regions if Flow of the Polar Gates increases level.
                 - Rifts change chaos god depending on the region owner.
-                - Rifts have a (10% + (self.settings.difficulty_mod * 10)) chance to spawn an army each turns.
-                - Spawned armies belong either to the faction that owns the Rift (if demonic) or to Archaon.
+                - Rifts have a chance to spawn an army each turn.
+                - Spawned armies belong either to the faction that owns the Rift (if demonic) or to generic rebel factions.
                 - If a character travels through a rift, it has a chance of receiving the trait for being on the related realm too long.
                 - If a character travels through a rift, it has a chance of spotting a Daemon Prince. If the character accepts to fight it, it'll gain a trait for being in a realm of chaos too long. If the character wins the fight, it'll win a chaos realm ancillary.
                 - TODO: Make sure all chaos realm battles are fought in storms of magic.
