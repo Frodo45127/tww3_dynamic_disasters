@@ -351,3 +351,24 @@ mct_dyn_dis_the_great_bastion_improved_enable_tooltip	Enable/Disable the "The Gr
 campaign_localised_strings_string_dyn_dis_bastion_tooltip_chaos_invasion_threat	The End Times: [[col:red]]+%d%%[[/col:red]]	false
 incidents_localised_title_dyn_dis_last_stand_allies_skaven_betrayal	Their ally betrays them!	true
 incidents_localised_description_dyn_dis_last_stand_allies_skaven_betrayal	Our enemy, thinking of rats as allies, has requested their help, but they have come to cut its throat instead!	true
+incidents_localised_title_dyn_dis_chaos_invasion_flow_of_the_polar_gates_decrease	The Flow of the Polar Gates receeds!	true
+incidents_localised_title_dyn_dis_chaos_invasion_flow_of_the_polar_gates_increase	The Flow of the Polar Gates expands!	true
+incidents_localised_description_dyn_dis_chaos_invasion_flow_of_the_polar_gates_decrease	Thanks to our (and others) effort fending off the forces of chaos, it seems the flow of winds of magic coming from the polar gates has been reduced.... for now.	true
+incidents_localised_description_dyn_dis_chaos_invasion_flow_of_the_polar_gates_increase	Due to the Chaos armies recent victories, it seems the flow of winds of magic coming from the polar gates has been increased... for now.	true
+effects_description_dyn_dis_chaos_invasion_flow_of_the_polar_gates_undivided	Undivided corruption: %+n	true
+effects_description_dyn_dis_chaos_invasion_flow_of_the_polar_gates_nurgle	Nurgle corruption: %+n	true
+effects_description_dyn_dis_chaos_invasion_flow_of_the_polar_gates_slaanesh	Slaanesh corruption: %+n	true
+effects_description_dyn_dis_chaos_invasion_flow_of_the_polar_gates_tzeench	Tzeentch corruption: %+n	true
+effects_description_dyn_dis_chaos_invasion_flow_of_the_polar_gates_khorne	Khorne corruption: %+n	true
+effect_bundles_localised_title_dyn_dis_chaos_invasion_flow_of_the_polar_gates_1	Flow of the Polar Gates 1	true
+effect_bundles_localised_title_dyn_dis_chaos_invasion_flow_of_the_polar_gates_2	Flow of the Polar Gates 2	true
+effect_bundles_localised_title_dyn_dis_chaos_invasion_flow_of_the_polar_gates_3	Flow of the Polar Gates 3	true
+effect_bundles_localised_title_dyn_dis_chaos_invasion_flow_of_the_polar_gates_4	Flow of the Polar Gates 4	true
+effect_bundles_localised_title_dyn_dis_chaos_invasion_flow_of_the_polar_gates_5	Flow of the Polar Gates 5	true
+effect_bundles_localised_title_dyn_dis_chaos_invasion_flow_of_the_polar_gates_6	Flow of the Polar Gates 6	true
+effect_bundles_localised_description_dyn_dis_chaos_invasion_flow_of_the_polar_gates_1	The Winds of Magic are flowing with an intensity not seen since the last of Ursun Roars.\\n\\nRifts to the Chaos Realms may open in the Chaos Wastes and Norsca, if enough Chaos Corruption is present.	true
+effect_bundles_localised_description_dyn_dis_chaos_invasion_flow_of_the_polar_gates_2	The Winds of Magic are flowing with an intensity not seen since the last of Ursun Roars.\\n\\nRifts to the Chaos Realms may open in the Chaos Wastes, Norsca, the Dark Lands and Naggaroth, if enough Chaos Corruption is present.	true
+effect_bundles_localised_description_dyn_dis_chaos_invasion_flow_of_the_polar_gates_3	The Winds of Magic are flowing with an intensity not seen since the last of Ursun Roars.\\n\\nRifts to the Chaos Realms may open in the Chaos Wastes, Norsca, the Dark Lands, Naggaroth and the Mountains of Mourne, if enough Chaos Corruption is present.	true
+effect_bundles_localised_description_dyn_dis_chaos_invasion_flow_of_the_polar_gates_4	The Winds of Magic are flowing with an intensity not seen since the last of Ursun Roars.\\n\\nRifts to the Chaos Realms may open in the Chaos Wastes, Norsca, the Dark Lands, Naggaroth, the Mountains of Mourne, Lustria and the Southlands, if enough Chaos Corruption is present.	true
+effect_bundles_localised_description_dyn_dis_chaos_invasion_flow_of_the_polar_gates_5	The Winds of Magic are flowing with an intensity not seen since the last of Ursun Roars.\\n\\nRifts to the Chaos Realms may open in the Chaos Wastes, Norsca, the Dark Lands, Naggaroth, the Mountains of Mourne, Lustria, the Southlands, the Old World and Cathay, if enough Chaos Corruption is present.	true
+effect_bundles_localised_description_dyn_dis_chaos_invasion_flow_of_the_polar_gates_6	The Winds of Magic are flowing with an intensity not seen since the last of Ursun Roars.\\n\\nRifts to the Chaos Realms may open in any province around the world, if enough Chaos Corruption is present.	true

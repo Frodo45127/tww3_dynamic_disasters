@@ -169,12 +169,16 @@ disaster_chaos_invasion = {
         incompatible_disasters = {},        -- List of disasters this disaster cannot run along with. To not trigger 2 disasters affecting the same faction at the same time.
 
         -- Disaster-specific data.
-        enable_rifts = true,
-
         stage_1_delay = 1,
         stage_2_delay = 1,
         grace_period = 1,
-        great_vortex_undone = false,
+
+        -- Rift-related settings.
+        enable_rifts = true,                -- If the rifts are enabled or not.
+        global_chaos = 10,                  -- Tracker for chaos global corruption.
+        corruption_level_change = 0,        -- If we have to change the corruption level next turn (0 no, 1 increase, 2 decrease).
+        new_corruption_level = "",          -- The new corruption level, if any.
+        great_vortex_undone = false,        -- If the Great Vortex Undone mission has been triggered. While it's triggered, corruption level is forced to max.
 
         -- Rewards for the different chaos realms battles.
         khorne_realm_rewards = {
@@ -949,6 +953,16 @@ disaster_chaos_invasion = {
     attacker_buffs_key = "fro_dyn_dis_chaos_invasion_attacker_buffs",
     effects_global_key = "fro_dyn_dis_chaos_invasion_global_effects",
 
+    global_corruption_increase = "dyn_dis_chaos_invasion_flow_of_the_polar_gates_increase",
+    global_corruption_decrease = "dyn_dis_chaos_invasion_flow_of_the_polar_gates_decrease",
+
+    global_corruption_1 = "dyn_dis_chaos_invasion_flow_of_the_polar_gates_1",
+    global_corruption_2 = "dyn_dis_chaos_invasion_flow_of_the_polar_gates_2",
+    global_corruption_3 = "dyn_dis_chaos_invasion_flow_of_the_polar_gates_3",
+    global_corruption_4 = "dyn_dis_chaos_invasion_flow_of_the_polar_gates_4",
+    global_corruption_5 = "dyn_dis_chaos_invasion_flow_of_the_polar_gates_5",
+    global_corruption_6 = "dyn_dis_chaos_invasion_flow_of_the_polar_gates_6",
+
     teleportation_network = "dyn_dis_chaos_invasion_network",
 }
 
@@ -1054,30 +1068,50 @@ function disaster_chaos_invasion:set_status(status)
     );
 
     -- Listener to respawn rifts.
-    core:remove_listener("ChaosInvasionRespawnRiftsChaosWastes");
+    core:remove_listener("ChaosInvasionRespawnRifts");
     core:add_listener(
-        "ChaosInvasionRespawnRiftsChaosWastes",
+        "ChaosInvasionRespawnRifts",
         "WorldStartRound",
         function()
             return self.settings.started and self.settings.status >= STATUS_STAGE_2 and self.settings.enable_rifts and (cm:random_number(5) == 1 or dynamic_disasters.settings.debug_2);
         end,
         function()
             out("Frodo45127: Respawning rifts at random on provinces with at least 75% chaos corruption.");
-            local percentage = 0.5 + (self.settings.difficulty_mod / 10);
+            local percentage = self.settings.difficulty_mod / 10;
             local min_chaos = 75;
-            self:open_teleportation_nodes(self.teleportation_nodes_chaos_wastes, percentage, min_chaos)
-            self:open_teleportation_nodes(self.teleportation_nodes_norsca, percentage, min_chaos);
 
-            -- If Ulthuan has fallen, respawn everywhere.
-            if self.settings.great_vortex_undone then
-                percentage = 0.25 + (self.settings.difficulty_mod / 10);
-                self:open_teleportation_nodes(self.teleportation_nodes_cathay, percentage, min_chaos);
-                self:open_teleportation_nodes(self.teleportation_nodes_old_world, percentage, min_chaos);
-                self:open_teleportation_nodes(self.teleportation_nodes_mountains_of_mourne, percentage, min_chaos);
+            -- Flow level 1
+            if self.settings.global_chaos < 15 then
+                percentage = 0.5 + percentage;
+                self:open_teleportation_nodes(self.teleportation_nodes_chaos_wastes, percentage, min_chaos)
+                self:open_teleportation_nodes(self.teleportation_nodes_norsca, percentage, min_chaos);
+
+            -- Flow level 2
+            elseif self.settings.global_chaos < 25 then
+                percentage = 0.45 + percentage;
                 self:open_teleportation_nodes(self.teleportation_nodes_dark_lands, percentage, min_chaos);
-                self:open_teleportation_nodes(self.teleportation_nodes_southlands, percentage, min_chaos);
-                self:open_teleportation_nodes(self.teleportation_nodes_lustria, percentage, min_chaos);
                 self:open_teleportation_nodes(self.teleportation_nodes_naggaroth, percentage, min_chaos);
+
+            -- Flow level 3
+            elseif self.settings.global_chaos < 35 then
+                percentage = 0.40 + percentage;
+                self:open_teleportation_nodes(self.teleportation_nodes_mountains_of_mourne, percentage, min_chaos);
+
+            -- Flow level 4
+            elseif self.settings.global_chaos < 45 then
+                percentage = 0.35 + percentage;
+                self:open_teleportation_nodes(self.teleportation_nodes_lustria, percentage, min_chaos);
+                self:open_teleportation_nodes(self.teleportation_nodes_southlands, percentage, min_chaos);
+
+            -- Flow level 5
+            elseif self.settings.global_chaos < 55 then
+                percentage = 0.30 + percentage;
+                self:open_teleportation_nodes(self.teleportation_nodes_old_world, percentage, min_chaos);
+                self:open_teleportation_nodes(self.teleportation_nodes_cathay, percentage, min_chaos);
+
+            -- Flow level 6
+            else
+                percentage = 0.25 + percentage;
                 self:open_teleportation_nodes(self.teleportation_nodes_ulthuan, percentage, min_chaos);
             end
         end,
@@ -1558,6 +1592,173 @@ function disaster_chaos_invasion:set_status(status)
     );
 
     --[[-------------------------------------------------------------------------------------------------------------
+        Listeners related to the global corruption status.
+
+        These run from stage one onwards.
+    ]]---------------------------------------------------------------------------------------------------------------
+
+    -- Listener to increase/decrease global corruption tracker after every battle.
+    core:remove_listener("ChaosInvasionGlobalCorruptionUpdater");
+    core:add_listener(
+        "ChaosInvasionGlobalCorruptionUpdater",
+        "BattleCompleted",
+        function()
+            return self.settings.started and self.settings.status >= STATUS_STAGE_1 and self.settings.great_vortex_undone == false and (
+                cm:pending_battle_cache_subculture_is_involved("wh3_main_sc_dae_daemons") or
+                cm:pending_battle_cache_subculture_is_involved("wh3_main_sc_kho_khorne") or
+                cm:pending_battle_cache_subculture_is_involved("wh3_main_sc_nur_nurgle") or
+                cm:pending_battle_cache_subculture_is_involved("wh3_main_sc_sla_slaanesh") or
+                cm:pending_battle_cache_subculture_is_involved("wh3_main_sc_tze_tzeentch") or
+                cm:pending_battle_cache_subculture_is_involved("wh_dlc03_sc_bst_beastmen") or
+                cm:pending_battle_cache_subculture_is_involved("wh_dlc08_sc_nor_norsca") or
+                cm:pending_battle_cache_subculture_is_involved("wh_main_sc_chs_chaos")
+            );
+        end,
+        function()
+            out("Frodo45127: Battle against chaos ended. Updating global corruption.");
+
+            -- Identify if chaos is attacker or defender.
+            local attacker = false;
+            if cm:pending_battle_cache_subculture_is_attacker("wh3_main_sc_dae_daemons") or
+                cm:pending_battle_cache_subculture_is_attacker("wh3_main_sc_kho_khorne") or
+                cm:pending_battle_cache_subculture_is_attacker("wh3_main_sc_nur_nurgle") or
+                cm:pending_battle_cache_subculture_is_attacker("wh3_main_sc_sla_slaanesh") or
+                cm:pending_battle_cache_subculture_is_attacker("wh3_main_sc_tze_tzeentch") or
+                cm:pending_battle_cache_subculture_is_attacker("wh_dlc03_sc_bst_beastmen") or
+                cm:pending_battle_cache_subculture_is_attacker("wh_dlc08_sc_nor_norsca") or
+                cm:pending_battle_cache_subculture_is_attacker("wh_main_sc_chs_chaos") then
+                attacker = true;
+
+            elseif cm:pending_battle_cache_subculture_is_defender("wh3_main_sc_dae_daemons") or
+                cm:pending_battle_cache_subculture_is_defender("wh3_main_sc_kho_khorne") or
+                cm:pending_battle_cache_subculture_is_defender("wh3_main_sc_nur_nurgle") or
+                cm:pending_battle_cache_subculture_is_defender("wh3_main_sc_sla_slaanesh") or
+                cm:pending_battle_cache_subculture_is_defender("wh3_main_sc_tze_tzeentch") or
+                cm:pending_battle_cache_subculture_is_defender("wh_dlc03_sc_bst_beastmen") or
+                cm:pending_battle_cache_subculture_is_defender("wh_dlc08_sc_nor_norsca") or
+                cm:pending_battle_cache_subculture_is_defender("wh_main_sc_chs_chaos") then
+                attacker = false;
+            end
+
+            -- Update the global chaos state. Our margin is between 5 and 60, in steps of 10, with the last step being 5.
+            local previous_global_chaos = self.settings.global_chaos;
+            local chaos_won = (cm:pending_battle_cache_attacker_victory() and attacker) or (cm:pending_battle_cache_defender_victory() and not attacker);
+            if chaos_won then
+                self.settings.global_chaos = math.min(self.settings.global_chaos + 0.2, 60);
+            else
+                self.settings.global_chaos = math.max(self.settings.global_chaos - 0.2, 5);
+            end
+
+            -- Calculate the effect change we must do, if any.
+            local new_status = "";
+            local increase = false;
+            if previous_global_chaos >= 15 and self.settings.global_chaos < 15 then
+                new_status = self.global_corruption_1;
+            elseif previous_global_chaos >= 25 and self.settings.global_chaos < 25 then
+                new_status = self.global_corruption_2;
+            elseif previous_global_chaos >= 35 and self.settings.global_chaos < 35 then
+                new_status = self.global_corruption_3;
+            elseif previous_global_chaos >= 45 and self.settings.global_chaos < 45 then
+                new_status = self.global_corruption_4;
+            elseif previous_global_chaos >= 55 and self.settings.global_chaos < 55 then
+                new_status = self.global_corruption_5;
+            elseif previous_global_chaos < 15 and self.settings.global_chaos >= 15 then
+                increase = true;
+                new_status = self.global_corruption_2;
+            elseif previous_global_chaos < 25 and self.settings.global_chaos >= 25 then
+                increase = true;
+                new_status = self.global_corruption_3;
+            elseif previous_global_chaos < 35 and self.settings.global_chaos >= 35 then
+                increase = true;
+                new_status = self.global_corruption_4;
+            elseif previous_global_chaos < 45 and self.settings.global_chaos >= 45 then
+                increase = true;
+                new_status = self.global_corruption_5;
+            elseif previous_global_chaos < 55 and self.settings.global_chaos >= 55 then
+                increase = true;
+                new_status = self.global_corruption_6;
+            end
+
+            if new_status ~= "" then
+                if increase then
+                    self.settings.corruption_level_change = 1;
+                else
+                    self.settings.corruption_level_change = 2;
+                end
+                self.settings.new_corruption_level = new_status;
+
+                -- If we're in a player's turn, trigger the relevant incident and effect changes.
+                if cm:pending_battle_cache_human_is_involved() then
+                    local incident = self.global_corruption_increase;
+                    if not increase then
+                        incident = self.global_corruption_decrease;
+                    end
+
+                    -- Close the non-active rifts if needed.
+                    self:close_rifts_by_level();
+                    self:trigger_chaos_effects(0, nil);
+                    dynamic_disasters:trigger_incident(incident, new_status, 0, nil, nil, nil)
+
+                    self.settings.corruption_level_change = 0;
+                    self.settings.new_corruption_level = "";
+
+
+                -- If we're in AI's turn, prepare the incidents as needed. This is done to avoid weird double triggers.
+                -- We also need to check if a previous untrigger change has happen and compensate for it.
+                else
+
+                    -- If we are increasing and we don't have a decrease incident programmed.
+                    if increase then
+                        if self.settings.corruption_level_change == 2 then
+                            self.settings.corruption_level_change = 0;
+                        else
+                            self.settings.corruption_level_change = 1;
+                        end
+
+                    -- If we're decreasing and we don't have an increase incident programmed.
+                    elseif self.settings.corruption_level_change == 1 then
+                        self.settings.corruption_level_change = 0;
+                    else
+                        self.settings.corruption_level_change = 2;
+                    end
+
+                    if self.settings.corruption_level_change ~= 0 then
+                        self.settings.new_corruption_level = new_status;
+                    end
+                end
+            end
+        end,
+        true
+    );
+
+    -- Listener to trigger delayed corruption status change.
+    core:remove_listener("ChaosInvasionGlobalCorruptionUpdaterDelayed");
+    core:add_listener(
+        "ChaosInvasionGlobalCorruptionUpdaterDelayed",
+        "WorldStartRound",
+        function()
+            return self.settings.started and self.settings.status >= STATUS_STAGE_1 and self.settings.great_vortex_undone == false and self.settings.new_corruption_level ~= "" and self.settings.corruption_level_change == 0;
+        end,
+        function()
+            out("Frodo45127: Delayed corruption change detected. Updating corruption level.");
+
+            local new_status = self.settings.new_corruption_level;
+            local incident = self.global_corruption_increase;
+            if self.settings.corruption_level_change == 2 then
+                incident = self.global_corruption_decrease;
+            end
+
+            self:close_rifts_by_level();
+            self:trigger_chaos_effects(0, nil);
+            dynamic_disasters:trigger_incident(incident, new_status, 0, nil, nil, nil)
+
+            self.settings.corruption_level_change = 0;
+            self.settings.new_corruption_level = "";
+        end,
+        true
+    );
+
+    --[[-------------------------------------------------------------------------------------------------------------
         Listeners related to the great vortex mission.
 
         These run always, as they're shared between stages.
@@ -1630,18 +1831,20 @@ function disaster_chaos_invasion:set_status(status)
                 table.insert(objectives[1].conditions, "region " .. self.great_vortex_undone.regions[i])
             end
 
-            -- Apply the corruption effects to all alive factions, except humans.
-            -- Humans get this effect via payload with effect.
-            local faction_list = cm:model():world():faction_list()
-            for i = 0, faction_list:num_items() - 1 do
-                local faction = faction_list:item_at(i)
-                if not faction:is_dead() and not faction:is_human() then
-                    cm:apply_effect_bundle(self.great_vortex_undone_effect_key, faction:name(), 0)
-                end
-            end
+            -- Force a max increase on flow of the polar gates.
+            self.settings.corruption_level_change = 1;
+            self.settings.global_chaos = 60;
+            self.settings.new_corruption_level = self.global_corruption_6;
 
+            self:trigger_chaos_effects(0, nil);
+            dynamic_disasters:trigger_incident(self.global_corruption_increase, self.settings.new_corruption_level, 0, nil, nil, nil)
+
+            self.settings.corruption_level_change = 0;
+            self.settings.new_corruption_level = "";
+
+            -- Trigger the mission.
             dynamic_disasters:add_mission(objectives, false, self.name, self.great_vortex_undone_mission_name, self.great_vortex_undone_incident_key, self.great_vortex_undone.regions[i], nil, function () self:restore_vortex() end, true)
-            dynamic_disasters:trigger_incident(self.great_vortex_undone_incident_key, self.great_vortex_undone_effect_key, 0, nil, nil, nil);
+            dynamic_disasters:trigger_incident(self.great_vortex_undone_incident_key, nil, 0, nil, nil, nil);
             cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_chs_chaos")
             --cm:remove_vfx(dynamic_disasters.vortex_vfx);
         end,
@@ -1761,11 +1964,17 @@ function disaster_chaos_invasion:finish()
             local faction = faction_list:item_at(i)
             cm:remove_effect_bundle(self.great_vortex_undone_effect_key, faction:name());
             cm:remove_effect_bundle(self.effects_global_key, faction:name());
+            cm:remove_effect_bundle(self.global_corruption_1, faction:name());
+            cm:remove_effect_bundle(self.global_corruption_2, faction:name());
+            cm:remove_effect_bundle(self.global_corruption_3, faction:name());
+            cm:remove_effect_bundle(self.global_corruption_4, faction:name());
+            cm:remove_effect_bundle(self.global_corruption_5, faction:name());
+            cm:remove_effect_bundle(self.global_corruption_6, faction:name());
         end
 
         -- Remove all the related listeners.
         core:remove_listener("ChaosInvasionRiftArmies");
-        core:remove_listener("ChaosInvasionRespawnRiftsChaosWastes");
+        core:remove_listener("ChaosInvasionRespawnRifts");
         core:remove_listener("ChaosInvasionRiftSwitchingTemplates");
         core:remove_listener("ChaosInvasionRiftClosingBattleQuery");
         core:remove_listener("ChaosInvasionRiftClosingBattle");
@@ -1778,6 +1987,8 @@ function disaster_chaos_invasion:finish()
         core:remove_listener("ChaosInvasionRiftTraitRemover");
         core:remove_listener("ChaosInvasionFreeArmiesStage1");
         core:remove_listener("ChaosInvasionFreeArmiesStage2");
+        core:remove_listener("ChaosInvasionGlobalCorruptionUpdater");
+        core:remove_listener("ChaosInvasionGlobalCorruptionUpdaterDelayed");
         core:remove_listener("ChaosInvasionGreatVortexUndoneAIEnd");
         core:remove_listener("ChaosInvasionGreatVortexUndoneTrigger");
 
@@ -1922,10 +2133,14 @@ function disaster_chaos_invasion:trigger_stage_1()
     dynamic_disasters:force_peace_between_factions(self.settings.factions, true);
 
     -- Trigger the chaos-related effects
-    self:trigger_chaos_effects(self.settings.stage_2_delay, nil);
+    self.settings.corruption_level_change = 1;
+    self.settings.new_corruption_level = self.global_corruption_1;
+    self:trigger_chaos_effects(0, nil);
+    dynamic_disasters:trigger_incident(self.stage_1_incident_key, self.global_corruption_1, self.settings.stage_2_delay, nil, nil, nil);
+    self.settings.corruption_level_change = 0;
+    self.settings.new_corruption_level = "";
 
     -- Trigger all the stuff related to the invasion (missions, effects,...).
-    dynamic_disasters:trigger_incident(self.stage_1_incident_key, self.effects_global_key, self.settings.stage_2_delay, nil, nil, nil);
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_chs_chaos")
     cm:register_instant_movie("Warhammer/chs_rises");
 
@@ -2055,12 +2270,9 @@ function disaster_chaos_invasion:trigger_stage_2()
         end
     end
 
-    -- Trigger the chaos-related effects
-    self:trigger_chaos_effects(0, 0);
-
     -- Trigger the end game mission.
     dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.stage_2_incident_key, nil, self.settings.factions[1], function () self:finish() end, true)
-    dynamic_disasters:trigger_incident(self.stage_2_incident_key, self.effects_global_key, 0, nil, nil, nil);
+    dynamic_disasters:trigger_incident(self.stage_2_incident_key, nil, 0, nil, nil, nil);
     cm:activate_music_trigger("ScriptedEvent_Negative", "wh_main_sc_chs_chaos")
     cm:register_instant_movie("Warhammer/chs_invasion");
 
@@ -2417,26 +2629,31 @@ end
 function disaster_chaos_invasion:restore_vortex()
     self.settings.great_vortex_undone = false;
 
-    -- Disable the extra infinite effect for losing the Vortex.
-    local faction_list = cm:model():world():faction_list()
-
-    -- Remove the Great Vortex undone effect from everyone.
-    for i = 0, faction_list:num_items() - 1 do
-        local faction = faction_list:item_at(i)
-        cm:remove_effect_bundle(self.great_vortex_undone_effect_key, faction:name());
-    end
-
-    -- Close all the rifts outside the chaos wastes and norsca.
-    self:close_teleportation_nodes(self.teleportation_nodes_cathay);
-    self:close_teleportation_nodes(self.teleportation_nodes_old_world);
-    self:close_teleportation_nodes(self.teleportation_nodes_mountains_of_mourne);
-    self:close_teleportation_nodes(self.teleportation_nodes_dark_lands);
-    self:close_teleportation_nodes(self.teleportation_nodes_southlands);
-    self:close_teleportation_nodes(self.teleportation_nodes_lustria);
-    self:close_teleportation_nodes(self.teleportation_nodes_naggaroth);
-    self:close_teleportation_nodes(self.teleportation_nodes_ulthuan);
-
     --cm:add_vfx(dynamic_disasters.vortex_key, dynamic_disasters.vortex_vfx, 171.925, 431.5, 0)
+end
+
+--- Function to close all rifts depending on the global chaos level.
+function disaster_chaos_invasion:close_rifts_by_level()
+
+    -- Close the non-active rifts if needed.
+    if self.settings.global_chaos < 55 then
+        self:close_teleportation_nodes(self.teleportation_nodes_ulthuan);
+
+    elseif self.settings.global_chaos < 45 then
+        self:close_teleportation_nodes(self.teleportation_nodes_cathay);
+        self:close_teleportation_nodes(self.teleportation_nodes_old_world);
+
+    elseif self.settings.global_chaos < 35 then
+        self:close_teleportation_nodes(self.teleportation_nodes_southlands);
+        self:close_teleportation_nodes(self.teleportation_nodes_lustria);
+
+    elseif self.settings.global_chaos < 25 then
+        self:close_teleportation_nodes(self.teleportation_nodes_mountains_of_mourne);
+
+    elseif self.settings.global_chaos < 15 then
+        self:close_teleportation_nodes(self.teleportation_nodes_dark_lands);
+        self:close_teleportation_nodes(self.teleportation_nodes_naggaroth);
+    end
 end
 
 -- Function to trigger the effects related with each stage of the chaos invasion.
@@ -2454,13 +2671,20 @@ function disaster_chaos_invasion:trigger_chaos_effects(duration_global_effects, 
     for i = 0, faction_list:num_items() - 1 do
         local faction = faction_list:item_at(i)
 
-        if not faction:is_dead() and not faction:is_human() then
-            cm:apply_effect_bundle(self.effects_global_key, faction:name(), duration_global_effects)
+        if not faction:is_dead() and not faction:is_human() and self.settings.new_corruption_level ~= "" then
+            cm:remove_effect_bundle(self.global_corruption_1, faction:name());
+            cm:remove_effect_bundle(self.global_corruption_2, faction:name());
+            cm:remove_effect_bundle(self.global_corruption_3, faction:name());
+            cm:remove_effect_bundle(self.global_corruption_4, faction:name());
+            cm:remove_effect_bundle(self.global_corruption_5, faction:name());
+            cm:remove_effect_bundle(self.global_corruption_6, faction:name());
+            cm:apply_effect_bundle(self.settings.new_corruption_level, faction:name(), duration_global_effects)
         end
     end
 
     -- Apply attackers buffs to all alive attackers.
     for _, faction_key in pairs(self.settings.factions) do
+        cm:remove_effect_bundle(self.attacker_buffs_key, faction_key);
         cm:apply_effect_bundle(self.attacker_buffs_key, faction_key, duration_buffs);
     end
 
@@ -2469,6 +2693,7 @@ function disaster_chaos_invasion:trigger_chaos_effects(duration_global_effects, 
     if bastion_disaster and bastion_disaster.settings.started then
 
         out("Frodo45127: Applying Chaos Invasion effects to Great Bastion.");
+        cm:remove_effect_bundle_from_region(bastion_disaster.chaos_invasion_bonus_effect_bundle, bastion_disaster.settings.spawn_locations_by_gate[1].gate_key);
         cm:apply_effect_bundle_to_region(bastion_disaster.chaos_invasion_bonus_effect_bundle, bastion_disaster.settings.spawn_locations_by_gate[1].gate_key, duration_buffs);
         bastion_disaster:reload_ui()
     end

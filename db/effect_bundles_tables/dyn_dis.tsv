@@ -38,3 +38,9 @@ dyn_dis_empire_of_steel_and_faith_attacker_buffs			faction	1	disaster.png	true	f
 dyn_dis_bretonian_crusades_warning			faction	1	disaster.png	true	false	true
 dyn_dis_bretonian_crusades_invader_buffs			faction	1	disaster.png	true	false	true
 dyn_dis_chaos_invasion_bastion_threat			faction	1	disaster.png	false	false	false
+dyn_dis_chaos_invasion_flow_of_the_polar_gates_1	 	 	faction	1	disaster.png	true	false	false
+dyn_dis_chaos_invasion_flow_of_the_polar_gates_2	 	 	faction	1	disaster.png	true	false	false
+dyn_dis_chaos_invasion_flow_of_the_polar_gates_3	 	 	faction	1	disaster.png	true	false	false
+dyn_dis_chaos_invasion_flow_of_the_polar_gates_4	 	 	faction	1	disaster.png	true	false	false
+dyn_dis_chaos_invasion_flow_of_the_polar_gates_5	 	 	faction	1	disaster.png	true	false	false
+dyn_dis_chaos_invasion_flow_of_the_polar_gates_6	 	 	faction	1	disaster.png	true	false	false
