@@ -61,3 +61,4 @@ dyn_dis_bretonian_crusades_trigger	false	brt/errant_war	true	Disaster		false
 dyn_dis_bretonian_crusades_bad_end	false	brt/land_defeat	true	Disaster		false	
 dyn_dis_bretonian_crusades_good_end	false	brt/faction	true	Disaster		false	
 dyn_dis_bretonian_crusades_very_good_end	false	brt/errant_war	true	Disaster		false	
+dyn_dis_last_stand_allies_skaven_betrayal	false	faction	true	Disaster		false	

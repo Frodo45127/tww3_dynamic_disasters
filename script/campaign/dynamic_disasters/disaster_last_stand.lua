@@ -187,6 +187,7 @@ last_stand = {
         wh_main_sc_teb_teb = true,
     },
 
+    incident_key_allies_skaven_betrayal = "dyn_dis_last_stand_allies_skaven_betrayal",
     incident_key_allies = "dyn_dis_last_stand_allies",
     incident_key_master = "dyn_dis_last_stand_master",
     incident_key_vassal_normal = "dyn_dis_last_stand_vassal_normal",
@@ -411,6 +412,8 @@ function last_stand:rohan_arrives(faction)
                 end
 
                 -- Common check: allied armies.
+                --
+                -- If allied is skaven, it can betray the reveiver.
                 local army_spawned = false;
                 local allies = faction:factions_military_allies_with();
                 for j = 0, allies:num_items() - 1 do
@@ -422,14 +425,31 @@ function last_stand:rohan_arrives(faction)
                         local army_template = self:choose_army_template(ally, nil);
                         if army_template then
                             local army_size = cm:random_number(20, 14);
-                            local spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, army_size, false, 1, self.name, rohan_army_callback);
-                            if army_spawned == false then
-                                army_spawned = spawned;
-                            end
-                            out("Frodo45127: Faction " .. faction:name() .. " receives reinforcement army from ally " .. ally:name() .. ".")
 
-                            if army_spawned == true then
-                                dynamic_disasters:trigger_incident(self.incident_key_allies, nil, nil, region:name(), faction:name(), human_factions_at_war_with_faction);
+                            -- Skaven backstabba.
+                            local chance_betray = cm:random_number(100, 0);
+                            if ally:subculture() == "wh2_main_sc_skv_skaven" and chance_betray <= 25 then
+                                local spawned = dynamic_disasters:create_scenario_force(ally:name(), region:name(), army_template, army_size, true, 1, self.name, rohan_army_callback);
+                                if army_spawned == false then
+                                    army_spawned = spawned;
+                                end
+
+                                out("Frodo45127: Faction " .. faction:name() .. " gets betrayed by former ally " .. ally:name() .. ".")
+                                if army_spawned == true then
+                                    dynamic_disasters:trigger_incident(self.incident_key_allies_skaven_betrayal, nil, nil, region:name(), faction:name(), human_factions_at_war_with_faction);
+                                end
+
+                            -- Normal reinforcements.
+                            else
+                                local spawned = dynamic_disasters:create_scenario_force(faction:name(), region:name(), army_template, army_size, false, 1, self.name, rohan_army_callback);
+                                if army_spawned == false then
+                                    army_spawned = spawned;
+                                end
+
+                                out("Frodo45127: Faction " .. faction:name() .. " receives reinforcement army from ally " .. ally:name() .. ".")
+                                if army_spawned == true then
+                                    dynamic_disasters:trigger_incident(self.incident_key_allies, nil, nil, region:name(), faction:name(), human_factions_at_war_with_faction);
+                                end
                             end
                         end
                     end

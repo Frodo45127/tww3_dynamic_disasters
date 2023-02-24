@@ -349,3 +349,5 @@ mct_dyn_dis_the_great_bastion_improved_description	Moves the "Great Bastion" Cat
 mct_dyn_dis_the_great_bastion_improved_enable	Enable "The Great Bastion, Improved" disaster	true
 mct_dyn_dis_the_great_bastion_improved_enable_tooltip	Enable/Disable the "The Great Bastion, Improved" disaster.\\n\\nThis effectively replaces the vanilla Great Bastion mechanic to make it more extensible and less buggy.\\n\\nUnsafe to disable mid-campaign. If you end up doing it, you need to save after it, then reload that save to let the vanilla mechanic start properly.	true
 campaign_localised_strings_string_dyn_dis_bastion_tooltip_chaos_invasion_threat	The End Times: [[col:red]]+%d%%[[/col:red]]	false
+incidents_localised_title_dyn_dis_last_stand_allies_skaven_betrayal	Their ally betrays them!	true
+incidents_localised_description_dyn_dis_last_stand_allies_skaven_betrayal	Our enemy, thinking of rats as allies, has requested their help, but they have come to cut its throat instead!	true
