@@ -976,8 +976,9 @@ end
 ---@param total_armies integer #Amount of armies to spawn. If not provided, it'll spawn 1.
 ---@param disaster_name string #Name of the disaster that will use this army.
 ---@param success_callback function #Optional. Custom success callback.
+---@param general string #Optional. The key of the general unit, if any. If not provided, a random general for the relevant faction will be used.
 ---@return boolean #If at least one army has been spawned, or all armies failed to spawn due to invalid coordinates.
-function dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, unit_count, declare_war, total_armies, disaster_name, success_callback)
+function dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, unit_count, declare_war, total_armies, disaster_name, success_callback, general)
 
     -- total_armies shouldn't be nil, but if it is assume we want a single army
     if total_armies == nil or total_armies < 1 then
@@ -1018,15 +1019,33 @@ function dynamic_disasters:create_scenario_force(faction_key, region_key, army_t
             break;
         end
 
-        cm:create_force(
-            faction_key,
-            unit_list,
-            region_key,
-            pos_x,
-            pos_y,
-            false,
-            success_callback
-        )
+        if general and general ~= "" then
+            cm:create_force_with_general(
+                faction_key,
+                unit_list,
+                region_key,
+                pos_x,
+                pos_y,
+                "general",
+                general,
+                 "",
+                "",
+                "",
+                "",
+                false,
+                success_callback
+            );
+        else
+            cm:create_force(
+                faction_key,
+                unit_list,
+                region_key,
+                pos_x,
+                pos_y,
+                false,
+                success_callback
+            )
+        end
 
         -- If we manage to spawn at least one army, take it as a win.
         army_spawn = true;
@@ -1054,8 +1073,9 @@ end
 ---@param total_armies integer #Amount of armies to spawn. If not provided, it'll spawn 1.
 ---@param disaster_name string #Name of the disaster that will use this army.
 ---@param success_callback function #Optional. Custom success callback.
+---@param general string #Optional. The key of the general unit, if any. If not provided, a random general for the relevant faction will be used.
 ---@return boolean #If at least one army has been spawned, or all armies failed to spawn due to invalid coordinates.
-function dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, coords, army_template, unit_count, declare_war, total_armies, disaster_name, success_callback)
+function dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, coords, army_template, unit_count, declare_war, total_armies, disaster_name, success_callback, general)
 
     -- total_armies shouldn't be nil, but if it is assume we want a single army
     if total_armies == nil or total_armies < 1 then
@@ -1096,15 +1116,34 @@ function dynamic_disasters:create_scenario_force_at_coords(faction_key, region_k
             break;
         end
 
-        cm:create_force(
-            faction_key,
-            unit_list,
-            region_key,
-            pos_x,
-            pos_y,
-            false,
-            success_callback
-        )
+        if general and general ~= "" then
+            cm:create_force_with_general(
+                faction_key,
+                unit_list,
+                region_key,
+                pos_x,
+                pos_y,
+                "general",
+                general,
+                 "",
+                "",
+                "",
+                "",
+                false,
+                success_callback
+            );
+        else
+            cm:create_force(
+                faction_key,
+                unit_list,
+                region_key,
+                pos_x,
+                pos_y,
+                false,
+                success_callback
+            )
+        end
+
 
         -- If we manage to spawn at least one army, take it as a win.
         army_spawn = true;
@@ -1137,8 +1176,9 @@ end
 ---@param disaster_name string #Name of the disaster that will use this army.
 ---@param success_callback function #Optional. Custom success callback.
 ---@param backup_faction_keys table #List of faction keys we can use as backup.
+---@param general string #Optional. The key of the general unit, if any. If not provided, a random general for the relevant faction will be used.
 ---@return boolean #If at least one army has been spawned, or all armies failed to spawn due to invalid coordinates.
-function dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, army_template, unit_count, declare_war, total_armies, disaster_name, success_callback, backup_faction_keys)
+function dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, army_template, unit_count, declare_war, total_armies, disaster_name, success_callback, backup_faction_keys, general)
     local faction = cm:get_faction(faction_key);
     local region = cm:get_region(region_key);
     local spawned = false;
@@ -1147,7 +1187,7 @@ function dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, r
     if not region == false and region:is_null_interface() == false and (region:is_abandoned() or (not region:owning_faction() == false and region:owning_faction():is_null_interface() == false and not region:owning_faction():is_human())) then
         out("Frodo45127: Spawning armies in region " .. region_key .. " for faction " .. faction_key .. ".");
 
-        spawned = dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, unit_count, declare_war, total_armies, disaster_name, success_callback)
+        spawned = dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, unit_count, declare_war, total_armies, disaster_name, success_callback, general)
         if spawned then
             dynamic_disasters:prepare_reveal_regions({ region:name() });
         end
@@ -1157,7 +1197,7 @@ function dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, r
         out("Frodo45127: Spawning armies in home region " .. faction:home_region():name() .. " for faction " .. faction_key .. ".");
 
         region = faction:home_region();
-        spawned = dynamic_disasters:create_scenario_force(faction_key, region:name(), army_template, unit_count, false, total_armies, disaster_name, success_callback)
+        spawned = dynamic_disasters:create_scenario_force(faction_key, region:name(), army_template, unit_count, false, total_armies, disaster_name, success_callback, general)
         if spawned then
             dynamic_disasters:prepare_reveal_regions({ region:name() });
         end
@@ -1167,7 +1207,7 @@ function dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, r
         out("Frodo45127: Spawning armies in faction's leader region " .. faction:faction_leader():region():name() .. " for faction " .. faction_key .. ".");
 
         region = faction:faction_leader():region();
-        spawned = dynamic_disasters:create_scenario_force(faction_key, region:name(), army_template, unit_count, false, total_armies, disaster_name, success_callback)
+        spawned = dynamic_disasters:create_scenario_force(faction_key, region:name(), army_template, unit_count, false, total_armies, disaster_name, success_callback, general)
         if spawned then
             dynamic_disasters:prepare_reveal_regions({ region:name() });
         end
@@ -1181,7 +1221,7 @@ function dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, r
             local faction_alive = cm:get_faction(faction_alive_key);
             if not faction_alive == false and faction_alive:is_null_interface() == false and faction_alive:has_home_region() then
                 region = faction_alive:home_region();
-                spawned = dynamic_disasters:create_scenario_force(faction_key, region:name(), army_template, unit_count, false, total_armies, disaster_name, success_callback)
+                spawned = dynamic_disasters:create_scenario_force(faction_key, region:name(), army_template, unit_count, false, total_armies, disaster_name, success_callback, general)
                 if spawned then
                     dynamic_disasters:prepare_reveal_regions({ region:name() });
                 end
