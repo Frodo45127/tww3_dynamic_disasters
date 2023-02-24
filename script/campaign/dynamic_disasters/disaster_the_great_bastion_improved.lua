@@ -365,7 +365,7 @@ function the_great_bastion_improved:set_status(status)
                 end
 
                 -- If there isn't an active invasion but we got razed/uncontrolled gates (and not enough to stop the disaster), spawn small armies under ai control up to the number of razed gates.
-                if region_unoccupied_count < self.max_regions_unoccupied_by_cathay and not self.settings.invasion_active then
+                if region_unoccupied_count < self.settings.max_regions_unoccupied_by_cathay and not self.settings.invasion_active then
                     local gates_lost = 0
 
                     for i = 1, #self.settings.spawn_locations_by_gate do
