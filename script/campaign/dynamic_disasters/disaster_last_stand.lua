@@ -223,6 +223,8 @@ last_stand = {
         "wh2_dlc15_skv_clan_volkn",         -- Clan Volkn
         "wh3_main_skv_clan_verms",          -- Clan Verms
     },
+
+    modded_template_key = {},
 }
 
 -- Function to set the status of the disaster, initializing the needed listeners in the process.
@@ -615,6 +617,14 @@ function last_stand:choose_army_template(faction, subcultures)
     --[[
         Custom template manipulation starts here. Mare sure all possible templates here exist.
     ]]
+
+    -- Custom logic for integrations. Allows to set a custom template key for a specific subculture.
+    for modded_subculture, modded_template_key in pairs(self.modded_template_key) do
+        if modded_subculture == subculture then
+            template_key = modded_template_key(template_key);
+            break;
+        end
+    end
 
     -- Custom template: early and mid savage ocs use greenskin templates.
     if subculture == "wh_main_sc_grn_savage_orcs" then

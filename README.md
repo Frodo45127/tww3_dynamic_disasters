@@ -22,6 +22,7 @@ For spawning armies, this mod uses hardcoded army templates (similar to what the
 
 Currently, the framework has mod integrations with the following mods:
 
+* Cataph's Kraka Drak: the Norse Dwarfs 3.0
 * Cataph's Southern Realms (TEB) 3.0
 * Dead's Cathay Unit Pack
 * Dead's Kislev Units

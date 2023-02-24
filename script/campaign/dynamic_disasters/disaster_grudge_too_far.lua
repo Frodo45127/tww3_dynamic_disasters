@@ -311,7 +311,7 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
         if not faction:is_dead() or (faction:is_dead() and self.settings.revive_dead_factions == true) then
 
             local army_count = math.floor(self.army_count_per_province * self.settings.difficulty_mod);
-            if dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_template, self.unit_count, false, army_count, self.name, nil, self.settings.factions) then
+            if self:spawn_army(faction_key, region_key, army_count) then
 
                 -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
                 dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy)
@@ -365,6 +365,11 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
     dynamic_disasters:add_mission(self.objectives, true, self.name, self.endgame_mission_name, self.invasion_incident_key, self.settings.regions[1], self.settings.factions[1], function () self:finish() end, false)
     cm:activate_music_trigger("ScriptedEvent_Negative", self.subculture)
     self:set_status(STATUS_STARTED);
+end
+
+--- Replaceable function to spawn armies.
+function disaster_grudge_too_far:spawn_army(faction_key, region_key, army_count)
+    return dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_template, self.unit_count, false, army_count, self.name, nil, self.settings.factions)
 end
 
 return disaster_grudge_too_far
