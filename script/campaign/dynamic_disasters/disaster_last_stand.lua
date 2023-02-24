@@ -644,7 +644,7 @@ function last_stand:choose_army_template(faction, subcultures)
         end
     end
 
-    -- Custom template: lategame lizardmen for certain factions has custom templates.
+    -- Custom template: lategame lizardmen for certain factions have custom templates.
     if subculture == "wh2_main_sc_lzd_lizardmen" then
         if template_key == "lategame" then
             local faction_key = faction:name();
@@ -656,6 +656,25 @@ function last_stand:choose_army_template(faction, subcultures)
                 wh2_main_lzd_itza = "lategame_itza",
                 wh2_dlc13_lzd_spirits_of_the_jungle = "lategame_spirits_of_the_jungle",
                 wh2_dlc17_lzd_oxyotl = "lategame_oxyotl",
+            }
+
+            if not custom_templates[faction_key] == nil then
+                template_key = custom_templates[faction_key];
+            end
+        end
+    end
+
+    -- Custom template: lategame skaven for certain factions have custom templates.
+    if subculture == "wh2_main_sc_skv_skaven" then
+        if template_key == "lategame" then
+            local faction_key = faction:name();
+            local custom_templates = {
+                wh2_main_skv_clan_skryre = "lategame_skryre",
+                wh2_main_skv_clan_pestilens = "lategame_pestilens",
+                wh2_main_skv_clan_mors = "lategame_mors",
+                wh2_main_skv_clan_moulder = "lategame_moulder",
+                wh2_main_skv_clan_eshin = "lategame_eshin",
+                wh2_dlc09_skv_clan_rictus = "lategame_rictus",
             }
 
             if not custom_templates[faction_key] == nil then
