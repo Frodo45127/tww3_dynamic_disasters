@@ -2,7 +2,7 @@
 
     Companion module for Dynamic Disasters. Allows increasing armies spawned by underempire's Rat King building.
 
-    This is loaded as integration beacuse, unlike mods, integrations are loaded on first tick, after the game has initialized.
+    This is loaded as integration because, unlike mods, integrations are loaded on first tick, after the game has initialized.
 
 ]]--
 
