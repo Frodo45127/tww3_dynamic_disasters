@@ -8,6 +8,8 @@
 
     Chi'an Chi's Assault doesn't trigger if this disaster is active.
 
+    Chaos generals and the ability to end the invasions inspired by similar changes in SFO.
+
     The main changes of this vs the vanilla one are:
     - A bit more armies spawned (you actually need to keep stacks in the wall).
     - Status tracking moved from random saved values to disaster settings.
@@ -231,6 +233,29 @@ the_great_bastion_improved = {
             }
         }
     },
+
+    generals = {
+        default = {
+            "wh_main_nor_marauder_chieftain",
+            "wh_main_chs_lord",
+        },
+        khorne = {
+            "wh3_dlc20_chs_lord_mkho",
+            "wh3_main_kho_exalted_bloodthirster",
+        },
+        nurgle = {
+            "wh3_dlc20_chs_sorcerer_lord_nurgle_mnur",
+            "wh3_main_nur_exalted_great_unclean_one_nurgle",
+        },
+        slaanesh = {
+            "wh3_dlc20_chs_lord_msla",
+            "wh3_main_sla_exalted_keeper_of_secrets_slaanesh",
+        },
+        tzeentch = {
+            "wh3_dlc20_chs_sorcerer_lord_tzeentch_mtze",
+            "wh3_main_tze_exalted_lord_of_change_tzeentch"
+        },
+    }
 }
 
 --- Callback applied to spawned armies. This one is here because it needs to be before the listeners.
@@ -330,8 +355,17 @@ function the_great_bastion_improved:set_status(status)
                     self:end_bastion_invasion(false)
                 end
 
-                -- If there isn't an active invasion but we got razed/uncontrolled gates, spawn small armies under ai control up to the number of razed gates.
-                if not self.settings.invasion_active then
+                -- Check how many cathayan regions are not under Cathay control.
+                local region_unoccupied_count = 0
+                for i = 1, #self.settings.cathay_bastion_regions do
+                    local current_bastion_region = cm:get_region(self.settings.cathay_bastion_regions[i])
+                    if current_bastion_region:is_abandoned() or current_bastion_region:owning_faction():subculture() ~= self.cathay_subculture then
+                        region_unoccupied_count = region_unoccupied_count + 1
+                    end
+                end
+
+                -- If there isn't an active invasion but we got razed/uncontrolled gates (and not enough to stop the disaster), spawn small armies under ai control up to the number of razed gates.
+                if region_unoccupied_count < self.max_regions_unoccupied_by_cathay and not self.settings.invasion_active then
                     local gates_lost = 0
 
                     for i = 1, #self.settings.spawn_locations_by_gate do
@@ -341,7 +375,6 @@ function the_great_bastion_improved:set_status(status)
                         end
                     end
 
-                    -- TODO: this is... fucking weak. Change it for a more punishing alternative.
                     local armies_to_spawn = gates_lost - kurgan_warband:military_force_list():num_items()
                     if armies_to_spawn > 0 then
                         local template_key = "earlygame";
@@ -354,13 +387,14 @@ function the_great_bastion_improved:set_status(status)
                         for i = 1, math.min(armies_to_spawn, #self.settings.spawn_locations_by_gate) do
                             local gate = self.settings.spawn_locations_by_gate[i]
                             local coordinates = gate.spawn_locations[1]
+                            local general = self.generals["default"][cm:random_number(#self.generals["default"])];
                             local template = table.copy(self.settings.army_template);
 
                             for key, value in pairs(template) do
                                 template[key] = template_key
                             end
 
-                            dynamic_disasters:create_scenario_force_at_coords(self.invasion_faction, gate.gate_key, coordinates, template, 14, false, 1, self.name, invaders_callback);
+                            dynamic_disasters:create_scenario_force_at_coords(self.invasion_faction, gate.gate_key, coordinates, template, 14, false, 1, self.name, invaders_callback, general);
                             self:spawn_army(7, "chaos_besiegers_1", coordinates)
                             out("\tFrodo45127: Spawning small army for [" .. gate.gate_key .. "] at position [" .. coordinates[1] .. ", " .. coordinates[2] .. "]")
                         end
@@ -425,15 +459,6 @@ function the_great_bastion_improved:set_status(status)
                 -- Respawn heroes every 5 turns
                 if turn_number % 5 == 0 then
                     self:spawn_bastion_agent_if_none()
-                end
-
-                -- If an invasion is active, count how many regions are not occupied by cathay. if enough have been lost, end the invasion
-                local region_unoccupied_count = 0
-                for i = 1, #self.settings.cathay_bastion_regions do
-                    local current_bastion_region = cm:get_region(self.settings.cathay_bastion_regions[i])
-                    if current_bastion_region:is_abandoned() or current_bastion_region:owning_faction():subculture() ~= self.cathay_subculture then
-                        region_unoccupied_count = region_unoccupied_count + 1
-                    end
                 end
 
                 if region_unoccupied_count >= self.settings.max_regions_unoccupied_by_cathay then
@@ -687,19 +712,22 @@ function the_great_bastion_improved:trigger_pre_invasion_1(forced)
                 end
 
                 -- Add a random chaos god template in the mix to spice up the main armies.
-                template[self.settings.extra_army_templates[cm:random_number(#self.settings.extra_army_templates)]] = template_key;
-                dynamic_disasters:create_scenario_force_at_coords(self.invasion_faction, current_gate, position, template, 19, false, 1, self.name, invaders_callback);
+                local chaos_god = self.settings.extra_army_templates[cm:random_number(#self.settings.extra_army_templates)];
+                local general = self.generals[chaos_god][cm:random_number(#self.generals[chaos_god])];
+                template[chaos_god] = template_key;
+                dynamic_disasters:create_scenario_force_at_coords(self.invasion_faction, current_gate, position, template, 19, false, 1, self.name, invaders_callback, general);
             end
         else
             for j = 1, secondary_armies do
                 local position = self:get_random_position_for_gate(current_gate);
                 local template = table.copy(self.settings.army_template);
+                local general = self.generals["default"][cm:random_number(#self.generals["default"])];
 
                 for key, value in pairs(template) do
                     template[key] = template_key
                 end
 
-                dynamic_disasters:create_scenario_force_at_coords(self.invasion_faction, current_gate, position, template, 19, false, 1, self.name, invaders_callback);
+                dynamic_disasters:create_scenario_force_at_coords(self.invasion_faction, current_gate, position, template, 19, false, 1, self.name, invaders_callback, general);
             end
         end
     end
@@ -739,6 +767,19 @@ function the_great_bastion_improved:get_threat_increase_value()
     -- Thread modifiers from other sources (mainly compass and edicts).
     local bonus_values = self:collect_threat_bonus_values();
     threat_increase = math.max(threat_increase + bonus_values, 1)
+
+    --SFO: Alex end invasion if there is no corruption outside of bastions
+    local current_corruption = 0
+    for i = 1, #self.settings.dragon_emperors_wrath_region_list do
+        current_corruption = current_corruption + cm:get_corruption_value_in_region(self.settings.dragon_emperors_wrath_region_list[i], chaos_corruption_string)
+        current_corruption = current_corruption + cm:get_corruption_value_in_region(self.settings.dragon_emperors_wrath_region_list[i], khorne_corruption_string)
+        current_corruption = current_corruption + cm:get_corruption_value_in_region(self.settings.dragon_emperors_wrath_region_list[i], nurgle_corruption_string)
+        current_corruption = current_corruption + cm:get_corruption_value_in_region(self.settings.dragon_emperors_wrath_region_list[i], slaanesh_corruption_string)
+        current_corruption = current_corruption + cm:get_corruption_value_in_region(self.settings.dragon_emperors_wrath_region_list[i], tzeentch_corruption_string)
+    end;
+    if current_corruption < #self.settings.dragon_emperors_wrath_region_list then
+        threat_increase = threat_increase - 100
+    end;
 
     out("Frodo45127: Current bastion threat change is: " .. threat_increase .. " (bonus values are " .. bonus_values .. ")")
     cm:set_script_state(self.ui_bastion_threat_change, threat_increase)
