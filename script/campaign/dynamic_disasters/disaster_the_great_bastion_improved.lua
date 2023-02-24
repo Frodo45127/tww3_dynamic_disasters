@@ -322,7 +322,7 @@ function the_great_bastion_improved:set_status(status)
                 local kurgan_warband = cm:get_faction(self.invasion_faction)
 
                 -- Recalculate the current threat level
-                self.settings.threat_value = math.min(self.settings.threat_value + self:get_threat_increase_value(), self.settings.max_threat_value)
+                self.settings.threat_value = math.max(math.min(self.settings.threat_value + self:get_threat_increase_value(), self.settings.max_threat_value), 1)
                 cm:set_script_state(self.ui_bastion_threat, math.min(self.settings.threat_value / 100, 1.0))
 
                 -- If the faction is dead end any active invasion.
