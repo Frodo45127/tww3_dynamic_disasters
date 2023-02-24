@@ -2682,14 +2682,17 @@ function disaster_chaos_invasion:trigger_chaos_effects(duration_global_effects, 
     for i = 0, faction_list:num_items() - 1 do
         local faction = faction_list:item_at(i)
 
-        if not faction:is_dead() and not faction:is_human() and self.settings.new_corruption_level ~= "" then
+        if not faction:is_dead() and self.settings.new_corruption_level ~= "" then
             cm:remove_effect_bundle(self.global_corruption_1, faction:name());
             cm:remove_effect_bundle(self.global_corruption_2, faction:name());
             cm:remove_effect_bundle(self.global_corruption_3, faction:name());
             cm:remove_effect_bundle(self.global_corruption_4, faction:name());
             cm:remove_effect_bundle(self.global_corruption_5, faction:name());
             cm:remove_effect_bundle(self.global_corruption_6, faction:name());
-            cm:apply_effect_bundle(self.settings.new_corruption_level, faction:name(), duration_global_effects)
+
+            if not faction:is_human() then
+                cm:apply_effect_bundle(self.settings.new_corruption_level, faction:name(), duration_global_effects)
+            end
         end
     end
 
