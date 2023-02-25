@@ -2454,7 +2454,7 @@ function disaster_chaos_invasion:generate_rift_closure_battle(character, node_te
     ---@type invasion
     local invasion_1 = invasion_manager:new_invasion("ChaosInvasionRiftClosureArmy", rift_closure_battle_faction, rift_closure_battle_units, {character:logical_position_x(), character:logical_position_y()});
     invasion_1:set_target("CHARACTER", character:command_queue_index(), faction_name);
-    invasion_1:apply_effect("wh_main_bundle_military_upkeep_free_force_endgame", -1);
+    invasion_1:apply_effect("wh_main_bundle_military_upkeep_free_force_endgame", 0);
 
     if type(defender_general_subtype) == "string" then
         invasion_1:create_general(true, defender_general_subtype, nil, nil, nil, nil);
