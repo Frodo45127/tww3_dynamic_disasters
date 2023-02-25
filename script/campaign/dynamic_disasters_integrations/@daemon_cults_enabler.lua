@@ -6,6 +6,7 @@
 
 ]]--
 
+--[[
 if cm:get_campaign_name() == "main_warhammer" then
     out("\tFrodo45127: Replacing daemon cult logic to allow AI to build them.");
 
@@ -67,16 +68,6 @@ if cm:get_campaign_name() == "main_warhammer" then
             table.insert(record, {});
             cult_data[chaos_culture] = record;
         end;
-
-        -- cult_data table looks like this
-        --[[
-        local cult_data = {
-            ["wh3_main_kho_khorne"] =   {"wh3_main_corruption_khorne",      "wh3_main_slot_set_kho_cult", {}},
-            ["wh3_main_nur_nurgle"] =   {"wh3_main_corruption_nurgle",      "wh3_main_slot_set_nur_cult", {}},
-            ["wh3_main_sla_slaanesh"] = {"wh3_main_corruption_slaanesh",    "wh3_main_slot_set_sla_cult", {}},
-            ["wh3_main_tze_tzeentch"] = {"wh3_main_corruption_tzeentch",    "wh3_main_slot_set_tze_cult", {}}
-        };
-        ]]
 
         return cult_data;
     end;
@@ -179,3 +170,5 @@ if cm:get_campaign_name() == "main_warhammer" then
     -- Initialize it here.
     setup_daemon_cults()
 end
+
+]]
