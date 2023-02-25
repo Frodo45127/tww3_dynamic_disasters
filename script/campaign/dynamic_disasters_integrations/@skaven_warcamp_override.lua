@@ -20,7 +20,7 @@ for _, faction_name in pairs(human_factions) do
 end
 
 if man_sized_rats then
-    out("Frodo45127: Replacing under_empire_war_camp_created, as no man-sized rats have been found.");
+    out("\tFrodo45127: Replacing under_empire_war_camp_created, as no man-sized rats have been found.");
 
     -- Function to overwrite the vanilla underempire warcamp spawns with better ones, more in-line with this mod.
     ---@param region_key string #Region key where the army will spawn.

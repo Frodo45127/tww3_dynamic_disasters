@@ -7,7 +7,7 @@
 ]]--
 
 if cm:get_campaign_name() == "main_warhammer" then
-    out("Frodo45127: Replacing daemon cult logic to allow AI to build them.");
+    out("\tFrodo45127: Replacing daemon cult logic to allow AI to build them.");
 
     local cult_creation_cooldown_turns = 15;
     local chance_of_cult_creation = 25;

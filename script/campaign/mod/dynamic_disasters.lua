@@ -491,6 +491,8 @@ function dynamic_disasters:initialize_integrations()
     for i = 1, #integration_files do
         local filepath = integration_files[i]
         local name = tostring(string.sub(filepath, 48))
+        out("--------------------")
+        out("\tFilename: " .. name);
 
         -- Make sure the file is loaded correctly, skip its inclusion if not
         local loaded_file, load_error = loadfile(filepath)
@@ -525,6 +527,7 @@ function dynamic_disasters:initialize_integrations()
             end
 
         end
+        out("--------------------")
     end
 
     out("####################")
