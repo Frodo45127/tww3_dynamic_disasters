@@ -154,6 +154,9 @@ last_stand = {
         wh_main_sc_chs_chaos = {
             chaos = "",
         },
+        wh3_dlc23_sc_chd_chaos_dwarfs = {
+            chaos_dwarfs = "",
+        },
         wh_main_sc_dwf_dwarfs = {
             dwarfs = "",
         },

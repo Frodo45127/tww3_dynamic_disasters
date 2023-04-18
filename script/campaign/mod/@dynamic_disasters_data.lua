@@ -3029,6 +3029,129 @@ dyn_dis_army_templates = {
             wh_main_dwf_veh_gyrobomber = 1,
         },
     },
+    chaos_dwarfs = {
+        earlygame = {
+
+            --Melee Infantry
+            wh3_dlc23_chd_inf_orc_labourers = 8,
+            wh3_dlc23_chd_inf_goblin_labourers = 8,
+            wh3_dlc23_chd_inf_hobgoblin_cutthroats = 4,
+            wh3_dlc23_chd_inf_hobgoblin_sneaky_gits = 3,
+            wh3_dlc23_chd_inf_chaos_dwarf_warriors = 3,
+            wh3_dlc23_chd_inf_chaos_dwarf_warriors_great_weapons = 2,
+
+            --Ranged Infantry
+            wh3_dlc23_chd_inf_hobgoblin_archers = 6,
+            wh3_dlc23_chd_inf_chaos_dwarf_blunderbusses = 4,
+
+            --Cavalry
+            wh3_dlc23_chd_cav_hobgoblin_wolf_raiders_bows = 2,
+            wh3_dlc23_chd_cav_hobgoblin_wolf_raiders_spears = 3,
+            wh3_dlc23_chd_cav_bull_centaurs_axe = 1,
+
+            --Monsters
+            wh3_dlc23_chd_mon_great_taurus = 1,
+            wh3_dlc23_chd_mon_lammasu = 1,
+
+            --Artillery
+            wh3_dlc23_chd_veh_iron_daemon = 1,
+            wh3_dlc23_chd_veh_magma_cannon = 1,
+            wh3_dlc23_chd_veh_skullcracker = 1,
+            wh_main_chs_art_hellcannon = 1,
+
+            --Heroes
+            wh3_dlc23_chd_cha_daemonsmith_sorcerer_hashut = 1,
+            wh3_dlc23_chd_cha_daemonsmith_sorcerer_death = 1,
+            wh3_dlc23_chd_cha_daemonsmith_sorcerer_fire = 1,
+            wh3_dlc23_chd_cha_daemonsmith_sorcerer_metal = 1,
+            wh3_dlc23_chd_cha_infernal_castellan = 1,
+            wh3_dlc23_chd_cha_bull_centaur_taurruk = 1,
+        },
+        midgame = {
+
+            --Melee Infantry
+            wh3_dlc23_chd_inf_orc_labourers = 4,
+            wh3_dlc23_chd_inf_goblin_labourers = 4,
+            wh3_dlc23_chd_inf_hobgoblin_cutthroats = 6,
+            wh3_dlc23_chd_inf_hobgoblin_sneaky_gits = 4,
+            wh3_dlc23_chd_inf_chaos_dwarf_warriors = 4,
+            wh3_dlc23_chd_inf_chaos_dwarf_warriors_great_weapons = 4,
+            wh3_dlc23_chd_inf_infernal_guard = 2,
+            wh3_dlc23_chd_inf_infernal_guard_great_weapons = 2,
+
+            --Ranged Infantry
+            wh3_dlc23_chd_inf_hobgoblin_archers = 2,
+            wh3_dlc23_chd_inf_chaos_dwarf_blunderbusses = 5,
+            wh3_dlc23_chd_inf_infernal_guard_fireglaives = 2,
+
+            --Cavalry
+            wh3_dlc23_chd_cav_hobgoblin_wolf_raiders_bows = 2,
+            wh3_dlc23_chd_cav_bull_centaurs_axe = 2,
+            wh3_dlc23_chd_cav_bull_centaurs_dual_axe = 1,
+            wh3_dlc23_chd_cav_bull_centaurs_greatweapons = 1,
+
+            --Monsters
+            wh3_dlc23_chd_mon_bale_taurus = 1,
+            wh3_dlc23_chd_mon_great_taurus = 1,
+            wh3_dlc23_chd_mon_lammasu = 1,
+            wh3_dlc23_chd_mon_kdaai_fireborn = 1,
+
+            --Artillery
+            wh3_dlc23_chd_veh_deathshrieker_rocket_launcher = 1,
+            wh3_dlc23_chd_veh_dreadquake_mortar = 1,
+            wh3_dlc23_chd_veh_iron_daemon = 1,
+            wh3_dlc23_chd_veh_magma_cannon = 1,
+            wh3_dlc23_chd_veh_skullcracker = 1,
+            wh_main_chs_art_hellcannon = 1,
+
+            --Heroes
+            wh3_dlc23_chd_cha_daemonsmith_sorcerer_hashut = 1,
+            wh3_dlc23_chd_cha_daemonsmith_sorcerer_death = 1,
+            wh3_dlc23_chd_cha_daemonsmith_sorcerer_fire = 1,
+            wh3_dlc23_chd_cha_daemonsmith_sorcerer_metal = 1,
+            wh3_dlc23_chd_cha_infernal_castellan = 1,
+            wh3_dlc23_chd_cha_bull_centaur_taurruk = 1,
+        },
+        lategame = {
+
+            --Melee Infantry
+            wh3_dlc23_chd_inf_orc_labourers = 2,
+            wh3_dlc23_chd_inf_goblin_labourers = 2,
+            wh3_dlc23_chd_inf_hobgoblin_cutthroats = 8,
+            wh3_dlc23_chd_inf_hobgoblin_sneaky_gits = 8,
+            wh3_dlc23_chd_inf_infernal_guard = 4,
+            wh3_dlc23_chd_inf_infernal_guard_great_weapons = 4,
+            wh3_dlc23_chd_inf_infernal_ironsworn = 2,
+
+            --Ranged Infantry
+            wh3_dlc23_chd_inf_chaos_dwarf_blunderbusses = 3,
+            wh3_dlc23_chd_inf_infernal_guard_fireglaives = 5,
+
+            --Cavalry
+            wh3_dlc23_chd_cav_bull_centaurs_axe = 1,
+            wh3_dlc23_chd_cav_bull_centaurs_dual_axe = 2,
+            wh3_dlc23_chd_cav_bull_centaurs_greatweapons = 2,
+
+            --Monsters
+            wh3_dlc23_chd_mon_lammasu = 1,
+            wh3_dlc23_chd_mon_kdaai_fireborn = 1,
+            wh3_dlc23_chd_mon_kdaai_destroyer = 1,
+
+            --Artillery
+            wh3_dlc23_chd_veh_deathshrieker_rocket_launcher = 2,
+            wh3_dlc23_chd_veh_dreadquake_mortar = 2,
+            wh3_dlc23_chd_veh_magma_cannon = 1,
+            wh3_dlc23_chd_veh_skullcracker = 1,
+
+            --Heroes
+            wh3_dlc23_chd_cha_daemonsmith_sorcerer_hashut = 1,
+            wh3_dlc23_chd_cha_daemonsmith_sorcerer_death = 1,
+            wh3_dlc23_chd_cha_daemonsmith_sorcerer_fire = 1,
+            wh3_dlc23_chd_cha_daemonsmith_sorcerer_metal = 1,
+            wh3_dlc23_chd_cha_infernal_castellan = 1,
+            wh3_dlc23_chd_cha_bull_centaur_taurruk = 1,
+        },
+    },
     empire = {
         earlygame = {
 

@@ -1876,6 +1876,7 @@ function dynamic_disasters:is_chaos_faction(faction_key)
         "wh_dlc03_sc_bst_beastmen",
         "wh_dlc08_sc_nor_norsca",
         "wh_main_sc_chs_chaos",
+        "wh3_dlc23_sc_chd_chaos_dwarfs",
     }
 
     local subculture = faction:subculture();
