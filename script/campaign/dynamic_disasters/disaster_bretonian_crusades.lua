@@ -265,8 +265,8 @@ function disaster_bretonian_crusades:start()
         self.settings.wait_turns_between_repeats = 1;
     else
         self.settings.warning_delay = cm:random_number(10, 4);
-        self.settings.crusading_time = 8;
-        self.settings.grace_period = self.settings.warning_delay + self.settings.crusading_time + 6;
+        self.settings.crusading_time = self.settings.warning_delay + 8;
+        self.settings.grace_period = self.settings.crusading_time + 6;
         self.settings.wait_turns_between_repeats = self.settings.grace_period + 4;
     end
 
