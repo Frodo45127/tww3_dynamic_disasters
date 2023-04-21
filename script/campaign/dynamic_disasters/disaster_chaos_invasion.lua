@@ -123,6 +123,7 @@ disaster_chaos_invasion = {
         "wh_dlc03_sc_bst_beastmen",
         "wh_dlc08_sc_nor_norsca",
         "wh_main_sc_chs_chaos",
+        "wh3_dlc23_sc_chd_chaos_dwarfs",
     },
     campaigns = {                       -- Campaigns this disaster works on.
         "main_warhammer",
