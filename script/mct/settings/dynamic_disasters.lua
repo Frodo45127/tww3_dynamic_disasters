@@ -424,7 +424,7 @@ mod:set_description(loc_prefix.."mod_desc", true)
 
 if mct:get_version() == "0.9-beta" or mct:get_version() == "0.9" then
     mod:set_workshop_id("2856219244");
-    mod:set_version("1.1");
+    mod:set_version("1.2");
     mod:set_main_image("ui/mct/dynamic_disasters.png", 300, 300)
 end
 
