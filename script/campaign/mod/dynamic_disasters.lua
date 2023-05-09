@@ -1284,11 +1284,20 @@ end
 ---@param invite_attacker_allies boolean #Invite attacker allies to the war
 ---@param invite_defender_allies boolean #Invite defender allies to the war
 function dynamic_disasters:declare_war(attacker_key, defender_key, invite_attacker_allies, invite_defender_allies)
+
+    -- Ignore rebels (they're always at war).
     if defender_key == "rebels" then
-        return
+        return;
     end
+
     local defender_faction = cm:get_faction(defender_key)
     if not defender_faction == false and defender_faction:is_null_interface() == false then
+
+        -- Ignore rogue armies (they're used for missions, do not mess with them).
+        if defender_faction:subculture() == "wh2_main_rogue" or defender_faction:subculture() == "wh2_main_rogue_chaos" then
+            return;
+        end
+
         if defender_faction:is_vassal() then
             defender_faction = defender_faction:master()
             defender_key = defender_faction:name()
