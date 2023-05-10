@@ -1825,6 +1825,7 @@ end;
 ---@param faction_key string #Faction key to check.
 ---@return boolean #If the faction is considered an order faction or not. Returns false if the key is invalid.
 function dynamic_disasters:is_order_faction(faction_key)
+    local is_order_faction = false;
 
     -- Make sure the faction is valid before proceeding.
     local faction = cm:get_faction(faction_key);
@@ -1866,6 +1867,7 @@ end
 ---@param faction_key string #Faction key to check.
 ---@return boolean #If the faction is considered a chaos faction or not. Returns false if the key is invalid.
 function dynamic_disasters:is_chaos_faction(faction_key)
+    local is_chaos_faction = false;
 
     -- Make sure the faction is valid before proceeding.
     local faction = cm:get_faction(faction_key);
