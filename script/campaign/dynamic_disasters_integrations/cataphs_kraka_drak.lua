@@ -119,26 +119,30 @@ if dynamic_disasters then
     ---- Code changes
     ----------------------------------------
 
-    -- Changes for the last stand disaster, so reinforcements coming from Kraka Drak spawn modded units.
-    local last_stand = dynamic_disasters:disaster("last_stand");
-    if last_stand then
-        last_stand.army_templates["ak_kraka_custom"] = { dwarfs = "" };
+    -- Only perform function changes if we ended without an error message.
+    if not is_string(error_message) then
 
-        last_stand.modded_template_key["ak_kraka_custom"] = function (template_key)
-            return template_key .. "_kraka_drak";
-        end
-    end
+        -- Changes for the last stand disaster, so reinforcements coming from Kraka Drak spawn modded units.
+        local last_stand = dynamic_disasters:disaster("last_stand");
+        if last_stand then
+            last_stand.army_templates["ak_kraka_custom"] = { dwarfs = "" };
 
-    -- Changes for A Grudge too Far disaster.
-    local grudge_too_far = dynamic_disasters:disaster("grudge_too_far");
-    if grudge_too_far then
-        grudge_too_far["spawn_army"] = function (faction_key, region_key, army_count)
-            local template = grudge_too_far.army_template;
-            if faction_key == "ak_kraka_custom" or faction_key == "wh_main_dwf_kraka_drak" then
-                template = { dwarfs = "lategame_kraka_drak" };
+            last_stand.modded_template_key["ak_kraka_custom"] = function (template_key)
+                return template_key .. "_kraka_drak";
             end
+        end
 
-            return dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, template, grudge_too_far.unit_count, false, army_count, grudge_too_far.name, nil, grudge_too_far.settings.factions)
+        -- Changes for A Grudge too Far disaster.
+        local grudge_too_far = dynamic_disasters:disaster("grudge_too_far");
+        if grudge_too_far then
+            grudge_too_far["spawn_army"] = function (faction_key, region_key, army_count)
+                local template = grudge_too_far.army_template;
+                if faction_key == "ak_kraka_custom" or faction_key == "wh_main_dwf_kraka_drak" then
+                    template = { dwarfs = "lategame_kraka_drak" };
+                end
+
+                return dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, template, grudge_too_far.unit_count, false, army_count, grudge_too_far.name, nil, grudge_too_far.settings.factions)
+            end
         end
     end
 end

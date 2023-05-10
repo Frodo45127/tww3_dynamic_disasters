@@ -368,6 +368,9 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
 end
 
 --- Replaceable function to spawn armies.
+---@param faction_key string #Key of the faction that will receive the army.
+---@param region_key string #Region where to spawn the armies.
+---@param army_count string #Amount of armies to spawn.
 function disaster_grudge_too_far:spawn_army(faction_key, region_key, army_count)
     return dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, self.army_template, self.unit_count, false, army_count, self.name, nil, self.settings.factions)
 end

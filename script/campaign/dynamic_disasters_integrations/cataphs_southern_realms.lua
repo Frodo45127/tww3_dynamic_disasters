@@ -135,20 +135,24 @@ if dynamic_disasters then
     ---- Code changes
     ----------------------------------------
 
-    -- We need to replace the default TEB army template from Last Stand with the custom one for Southern Realms.
-    local last_stand = dynamic_disasters:disaster("last_stand");
-    if last_stand then
-        last_stand.army_templates.wh_main_sc_teb_teb = { teb = "" };
-        last_stand.army_templates["wh_main_teb_border_princes_CB"] = { teb = "" };
-        last_stand.army_templates["wh_main_teb_estalia_CB"] = { teb = "" };
-        last_stand.army_templates["wh_main_teb_tilea_CB"] = { teb = "" };
-        last_stand.army_templates["wh2_main_emp_new_world_colonies_CB"] = { teb = "" };
-        last_stand.army_templates["mixer_teb_southern_realms"] = { teb = "" };
+    -- Only perform function changes if we ended without an error message.
+    if not is_string(error_message) then
 
-        last_stand.mercenary_subcultures["wh_main_teb_border_princes_CB"] = true
-        last_stand.mercenary_subcultures["wh_main_teb_estalia_CB"] = true
-        last_stand.mercenary_subcultures["wh_main_teb_tilea_CB"] = true
-        last_stand.mercenary_subcultures["wh2_main_emp_new_world_colonies_CB"] = true
-        last_stand.mercenary_subcultures["mixer_teb_southern_realms"] = true
+        -- We need to replace the default TEB army template from Last Stand with the custom one for Southern Realms.
+        local last_stand = dynamic_disasters:disaster("last_stand");
+        if last_stand then
+            last_stand.army_templates.wh_main_sc_teb_teb = { teb = "" };
+            last_stand.army_templates["wh_main_teb_border_princes_CB"] = { teb = "" };
+            last_stand.army_templates["wh_main_teb_estalia_CB"] = { teb = "" };
+            last_stand.army_templates["wh_main_teb_tilea_CB"] = { teb = "" };
+            last_stand.army_templates["wh2_main_emp_new_world_colonies_CB"] = { teb = "" };
+            last_stand.army_templates["mixer_teb_southern_realms"] = { teb = "" };
+
+            last_stand.mercenary_subcultures["wh_main_teb_border_princes_CB"] = true
+            last_stand.mercenary_subcultures["wh_main_teb_estalia_CB"] = true
+            last_stand.mercenary_subcultures["wh_main_teb_tilea_CB"] = true
+            last_stand.mercenary_subcultures["wh2_main_emp_new_world_colonies_CB"] = true
+            last_stand.mercenary_subcultures["mixer_teb_southern_realms"] = true
+        end
     end
 end
