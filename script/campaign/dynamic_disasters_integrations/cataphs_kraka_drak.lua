@@ -135,7 +135,7 @@ if dynamic_disasters then
         -- Changes for A Grudge too Far disaster.
         local grudge_too_far = dynamic_disasters:disaster("grudge_too_far");
         if grudge_too_far then
-            grudge_too_far["spawn_army"] = function (faction_key, region_key, army_count)
+            grudge_too_far["spawn_army"] = function (_, faction_key, region_key, army_count)
                 local template = grudge_too_far.army_template;
                 if faction_key == "ak_kraka_custom" or faction_key == "wh_main_dwf_kraka_drak" then
                     template = { dwarfs = "lategame_kraka_drak" };
