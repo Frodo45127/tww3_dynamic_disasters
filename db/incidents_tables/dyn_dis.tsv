@@ -64,3 +64,4 @@ dyn_dis_bretonian_crusades_very_good_end	false	brt/errant_war	true	Disaster		fal
 dyn_dis_last_stand_allies_skaven_betrayal	false	skv/faction	true	Disaster		false		0.0000
 dyn_dis_chaos_invasion_flow_of_the_polar_gates_decrease	false	chs/civilisation_down	true	Disaster		false		0.0000
 dyn_dis_chaos_invasion_flow_of_the_polar_gates_increase	false	chs/civilisation_up	true	Disaster		false		0.0000
+dyn_dis_will_of_hashut_early_end	false	chd/politics	true	Disaster		false		0.0000

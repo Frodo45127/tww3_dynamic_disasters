@@ -193,6 +193,17 @@ disaster_configs = {
         short_victory_is_min_turn = false,
         long_victory_is_min_turn = true,
     },
+    will_of_hashut = {
+        description = loc_prefix .. "will_of_hashut" .. "_description",
+        enable = true,
+        revive_dead_factions = false,
+        enable_diplomacy = false,
+        difficulty_mod = {150, 10, 500, 10},
+        min_turn_value = {100, 10, 400, 10},
+        max_turn_value = {0, 0, 2000, 10},
+        short_victory_is_min_turn = false,
+        long_victory_is_min_turn = true,
+    },
 };
 
 --[[-------------------------------------------------------------------------------------------------------------
@@ -264,7 +275,6 @@ local disaster_sections = {};                           -- List of disaster sect
 ---@param use_disaster_name_in_loc_key boolean #If the loc key contains the disaster name.
 ---@param disabled_by_autodifficulty boolean #If the option should be disabled if autodifficulty is enabled.
 function load_checkbox(disaster_name, setting_key, default_value, use_disaster_name_in_loc_key, disabled_by_autodifficulty)
-    out("loading setting_key");
     local setting = mod:add_new_option(disaster_name .. "_" .. setting_key, "checkbox")
     setting:set_default_value(default_value)
 
@@ -497,6 +507,7 @@ load_disaster("pyramid_of_nagash", disaster_configs["pyramid_of_nagash"]);
 load_disaster("vampires_rise", disaster_configs["vampires_rise"]);
 load_disaster("waaagh", disaster_configs["waaagh"]);
 load_disaster("wild_hunt", disaster_configs["wild_hunt"]);
+load_disaster("will_of_hashut", disaster_configs["will_of_hashut"]);
 
 -- Listener to lock/unlock relevant settings if autodifficulty is enabled/disabled.
 core:add_listener(
