@@ -1285,8 +1285,9 @@ end
 ---@param invite_defender_allies boolean #Invite defender allies to the war
 function dynamic_disasters:declare_war(attacker_key, defender_key, invite_attacker_allies, invite_defender_allies)
 
-    -- Ignore rebels (they're always at war).
-    if defender_key == "rebels" then
+    -- Ignore rebels (they're always at war) and vassals (they cannot declare wars).
+    local attacker_faction = cm:get_faction(attacker_key);
+    if defender_key == "rebels" or attacker_faction:is_vassal() then
         return;
     end
 
@@ -1302,7 +1303,7 @@ function dynamic_disasters:declare_war(attacker_key, defender_key, invite_attack
             defender_faction = defender_faction:master()
             defender_key = defender_faction:name()
         end
-        if attacker_key ~= defender_key and cm:get_faction(attacker_key):at_war_with(defender_faction) == false then
+        if attacker_key ~= defender_key and attacker_faction:at_war_with(defender_faction) == false then
             out("Frodo45127: Declaring war between "..attacker_key.." and "..defender_key)
 
             if invite_defender_allies == true then
