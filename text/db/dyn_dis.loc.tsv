@@ -384,3 +384,5 @@ missions_localised_description_dyn_dis_will_of_hashut_will_of_hashut_2	The Dark 
 missions_localised_description_dyn_dis_will_of_hashut_will_of_hashut_1	The Dark Father's will is made manifest; his servants must unite to exterminate the weakling races of the world, to exploit their meagre resources and to expand the borders of the Dark Lands. Zealous and cruel, the lords of Zharr-Naggrund seize their opportunity to dominate the world. This destructive march of Chaos Dwarf industry must be stopped before it leads to ruination for all!	true
 incidents_localised_title_dyn_dis_will_of_hashut_early_end	Dark Lands are back to normal	true
 incidents_localised_description_dyn_dis_will_of_hashut_early_end	Seems like whatever was happening in the Dark Lands is no more. Lucky for us.	true
+mct_dyn_dis_perimeter_war	Perimeter War	true
+mct_dyn_dis_perimeter_war_tooltip	If the war declarations of this disaster will be against its direct neightbours and the player, or against everyone.	true
