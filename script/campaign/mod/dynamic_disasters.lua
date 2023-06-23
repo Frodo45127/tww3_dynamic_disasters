@@ -1350,6 +1350,10 @@ end
 ---@param subcultures_to_ignore table #List of subcultures to ignore on war declarations.
 ---@param declare_war_on_allies boolean #If we should betray allies.
 function dynamic_disasters:declare_war_for_owners_and_neightbours(faction, regions, attack_faction_neightbors, subcultures_to_ignore, declare_war_on_allies)
+    if regions == nil then
+        regions = {}
+    end
+
     if not faction == false and faction:is_null_interface() == false then
 
         -- First, declare war on the explicitly provided region owners and its neightbor regions.
@@ -1513,6 +1517,31 @@ function dynamic_disasters:declare_war_to_all(faction, subcultures_to_ignore, de
         end,
         0.5
     );
+end
+
+---Function to declare war on a way that can be configured depending on settings.
+---This is for big wars. If you just want to declare war on a single faction, use declare_war instead.
+---@param global_war boolean #If the war is against the entire world.
+---@param perimeter_war boolean #If the war is against the neightbours of a specific region or set of regions.
+---@param region_war boolean #If it's a perimeter war, this indicates if the war declaration should include the owners of the regions that will be the core of the declaration.
+---@param faction FACTION_SCRIPT_INTERFACE #Faction object. The one that declares war.
+---@param base_region REGION_SCRIPT_INTERFACE #Region object. Only used for perimeter wars that DO NOT include region war.
+---@param regions table #Region keys to declare war to. Only used for perimeter wars that include region war.
+---@param attack_faction_neightbors boolean #If we should declare war on all the current faction neighbours too. Only used for perimeter wars that include region war.
+---@param subcultures_to_ignore table #List of subcultures to ignore on war declarations.
+---@param declare_war_on_allies boolean #If we should betray allies.
+function dynamic_disasters:declare_war_configurable(global_war, perimeter_war, region_war, faction, base_region, regions, attack_faction_neightbors, subcultures_to_ignore, declare_war_on_allies)
+    if global_war == true then
+        self:declare_war_to_all(faction, subcultures_to_ignore, declare_war_on_allies);
+
+    -- For perimeter wars, they can be perimeter war around a faction or around a specific region.
+    elseif perimeter_war == true then
+        if region_war == true then
+            self:declare_war_for_owners_and_neightbours(faction, regions, attack_faction_neightbors, subcultures_to_ignore, declare_war_on_allies);
+        else
+            self:declare_war_on_adjacent_region_owners(faction, base_region, subcultures_to_ignore, declare_war_on_allies);
+        end
+    end
 end
 
 --[[-------------------------------------------------------------------------------------------------------------

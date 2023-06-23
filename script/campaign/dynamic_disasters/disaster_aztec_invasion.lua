@@ -480,10 +480,12 @@ function disaster_aztec_invasion:trigger_stage_1()
 
         if not faction:is_dead() or (faction:is_dead() and self.settings.revive_dead_factions == true) then
             local army_count = math.floor(self.army_count_per_province * self.settings.difficulty_mod);
-            if dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, nil, self.army_templates[faction_key], self.unit_count, false, army_count, self.name, nil, self.settings.factions) then
+            if dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, nil, self.army_templates[faction_key], self.unit_count, false, army_count, self.name, nil, self.settings.factions, nil) then
 
                 -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
                 dynamic_disasters:no_peace_only_war(faction_key, self.settings.enable_diplomacy)
+
+                local region_keys = {};
 
                 for _, coast in pairs(self.settings.stage_1_data.regions[faction_key]) do
                     out("Frodo45127: Coast " .. tostring(coast) .. ".")
@@ -498,6 +500,7 @@ function disaster_aztec_invasion:trigger_stage_1()
                             local region_key = dyn_dis_sea_regions[sea_region].coastal_regions[i];
                             local army_count = cm:random_number(math.ceil(self.settings.difficulty_mod));
                             local spawn_pos = dyn_dis_sea_regions[sea_region].spawn_positions[cm:random_number(#dyn_dis_sea_regions[sea_region].spawn_positions)];
+                            table.insert(region_keys, region_key);
                             out("Frodo45127: Armies to spawn: " .. tostring(army_count) .. " for " .. region_key .. " region, spawn pos X: " .. spawn_pos[1] .. ", Y: " .. spawn_pos[2] .. ".");
 
                             -- Store the region for invasion controls.
@@ -505,7 +508,7 @@ function disaster_aztec_invasion:trigger_stage_1()
                                 table.insert(self.settings.stage_1_data.targets, region_key)
                             end
 
-                            dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, spawn_pos, self.army_templates[faction_key], self.unit_count, false, army_count, self.name, aztec_invasion_spawn_armies_callback);
+                            dynamic_disasters:create_scenario_force_at_coords(faction_key, region_key, spawn_pos, self.army_templates[faction_key], self.unit_count, false, army_count, self.name, aztec_invasion_spawn_armies_callback, nil);
                         end
                     end
                 end
@@ -514,7 +517,7 @@ function disaster_aztec_invasion:trigger_stage_1()
                 cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
                 cm:instantly_research_all_technologies(faction_key);
                 cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)
-                dynamic_disasters:declare_war_to_all(faction, { self.subculture }, true);
+                dynamic_disasters:declare_war_configurable(not self.settings.perimeter_war, self.settings.perimeter_war, true, faction, nil, region_keys, true, { self.subculture }, true);
             end
         end
     end

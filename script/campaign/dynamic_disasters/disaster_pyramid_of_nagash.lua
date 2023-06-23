@@ -326,7 +326,7 @@ function disaster_pyramid_of_nagash:trigger_resurection_of_nagash()
 	local faction = cm:get_faction(self.settings.faction_data.faction_key)
 	cm:force_change_cai_faction_personality(self.settings.faction_data.faction_key, self.settings.faction_data.ai_personality)
 	cm:instantly_research_all_technologies(self.settings.faction_data.faction_key)
-	dynamic_disasters:declare_war_to_all(faction, { self.settings.faction_data.subculture }, true);
+    dynamic_disasters:declare_war_configurable(not self.settings.perimeter_war, self.settings.perimeter_war, true, faction, nil, nil, true, { self.settings.faction_data.subculture }, true);
 
 	cm:apply_effect_bundle(self.settings.faction_data.faction_bundle, self.settings.faction_data.faction_key, 0)
 	cm:apply_effect_bundle_to_region(self.settings.faction_data.region_bundle, self.region_key, 0)

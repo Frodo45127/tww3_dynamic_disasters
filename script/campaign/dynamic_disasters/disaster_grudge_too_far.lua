@@ -342,7 +342,7 @@ function disaster_grudge_too_far:trigger_second_great_beard_war()
                 -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
                 cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
                 cm:instantly_research_all_technologies(faction_key)
-                dynamic_disasters:declare_war_to_all(faction, { self.subculture }, true)
+                dynamic_disasters:declare_war_configurable(not self.settings.perimeter_war, self.settings.perimeter_war, true, faction, nil, nil, true, { self.subculture }, true);
 
                 cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)
                 table.insert(self.settings.regions, region_key);

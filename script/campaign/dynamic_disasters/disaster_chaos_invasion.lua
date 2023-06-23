@@ -2119,13 +2119,15 @@ function disaster_chaos_invasion:trigger_stage_1()
         local faction = cm:get_faction(faction_key);
         if not faction:is_dead() or (faction:is_dead() and self.settings.revive_dead_factions == true) then
             local army_template = self.stage_1_data.army_templates[faction_key];
+            local region_keys = {};
             for _, region_key in pairs(self.stage_1_data.regions[faction_key]) do
-                dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, army_template, self.base_army_unit_count, false, army_count, self.name, nil, self.settings.stage_1_data.factions)
+                table.insert(region_keys, region_key);
+                dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, army_template, self.base_army_unit_count, false, army_count, self.name, nil, self.settings.stage_1_data.factions, nil)
             end
 
             cm:instantly_research_all_technologies(faction_key);
             dynamic_disasters:no_peace_no_confederation_only_war(faction_key, self.settings.enable_diplomacy);
-            dynamic_disasters:declare_war_to_all(faction, self.denied_for_sc, true);
+            dynamic_disasters:declare_war_configurable(not self.settings.perimeter_war, self.settings.perimeter_war, true, faction, nil, region_keys, true, { self.denied_for_sc }, true);
             self:declare_war_on_unvasalized_norscans(faction)
         end
     end
@@ -2158,6 +2160,7 @@ function disaster_chaos_invasion:trigger_stage_2()
     for _, faction_key in pairs(self.settings.stage_2_data.factions) do
         local faction = cm:get_faction(faction_key);
         if not faction:is_dead() or (faction:is_dead() and self.settings.revive_dead_factions == true) then
+            local war_region_keys = {};
 
             -- Land spawns are region-based, so we spawn them using their region key.
             local army_template = self.stage_2_data.army_templates[faction_key];
@@ -2174,6 +2177,7 @@ function disaster_chaos_invasion:trigger_stage_2()
                                         table.insert(self.settings.stage_2_data.targets, target_region_key)
                                     end
 
+                                    table.insert(war_region_keys, region_key);
                                     dynamic_disasters:create_scenario_force(faction_key, region_key, army_template, self.base_army_unit_count, false, army_count, self.name, chaos_invasion_spawn_armies_callback_sea)
                                 end
                             end
@@ -2181,6 +2185,7 @@ function disaster_chaos_invasion:trigger_stage_2()
                             script_error("ERROR: Missing target region for spawn at land.")
                         end
                     else
+                        table.insert(war_region_keys, region_key);
                         dynamic_disasters:create_scenario_force_with_backup_plan(faction_key, region_key, army_template, self.base_army_unit_count, false, army_count, self.name, nil, self.settings.stage_2_data.factions)
                     end
                 end
@@ -2200,6 +2205,7 @@ function disaster_chaos_invasion:trigger_stage_2()
                             table.insert(self.settings.stage_2_data.targets, target_region_key)
                         end
 
+                        table.insert(war_region_keys, target_region_key);
                         dynamic_disasters:create_scenario_force_at_coords(faction_key, target_region_key, coords, army_template, self.base_army_unit_count, false, army_count, self.name, chaos_invasion_spawn_armies_callback_sea)
                     else
                         script_error("ERROR: Missing target region for spawn at sea.")
@@ -2238,19 +2244,18 @@ function disaster_chaos_invasion:trigger_stage_2()
 
                             if is_not_owned_by_ignored == true then
                                 cm:transfer_region_to_faction(region_key, faction_key)
+                                table.insert(war_region_keys, region_key);
                             end
                         end
                     end
                 end
             end
+
+            dynamic_disasters:no_peace_only_war(faction_key, self.settings.enable_diplomacy)
+            dynamic_disasters:declare_war_configurable(not self.settings.perimeter_war, self.settings.perimeter_war, true, faction, nil, war_region_keys, true, { self.denied_for_sc }, true);
+            self:declare_war_on_unvasalized_norscans(faction)
         end
 
-        -- First, declare war on the player, or we may end up in a locked turn due to mutual alliances. But do it after resurrecting them or we may break their war declarations!
-        dynamic_disasters:no_peace_only_war(faction_key, self.settings.enable_diplomacy)
-
-        -- War declarations against AI.
-        dynamic_disasters:declare_war_to_all(faction, self.denied_for_sc, true);
-        self:declare_war_on_unvasalized_norscans(faction)
         cm:instantly_research_all_technologies(faction_key);
     end
 

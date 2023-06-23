@@ -315,7 +315,7 @@ function for_the_motherland:trigger_for_the_motherland()
                 end
 
                 cm:instantly_research_all_technologies(faction_key);
-                dynamic_disasters:declare_war_to_all(invasion_faction, { self.subculture }, true);
+                dynamic_disasters:declare_war_configurable(not self.settings.perimeter_war, self.settings.perimeter_war, true, invasion_faction, nil, nil, true, { self.subculture }, true);
 
                 cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)
             end

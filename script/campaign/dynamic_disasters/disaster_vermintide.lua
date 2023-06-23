@@ -874,7 +874,7 @@ function disaster_vermintide:trigger_vermintide()
                 -- Change their AI so it becomes aggressive, while declaring war to everyone and their mother.
                 cm:force_change_cai_faction_personality(faction_key, self.ai_personality)
                 cm:instantly_research_all_technologies(faction_key);
-                dynamic_disasters:declare_war_to_all(invasion_faction, { self.subculture }, true);
+                dynamic_disasters:declare_war_configurable(not self.settings.perimeter_war, self.settings.perimeter_war, true, invasion_faction, nil, nil, true, { self.subculture }, true);
                 table.insert(self.settings.regions, region_key);
             end
         end

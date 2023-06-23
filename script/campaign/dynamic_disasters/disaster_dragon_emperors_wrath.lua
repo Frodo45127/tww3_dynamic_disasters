@@ -366,8 +366,7 @@ function dragon_emperors_wrath:trigger_dragon_emperors_wrath()
                 end
 
                 cm:instantly_research_all_technologies(faction_key);
-                dynamic_disasters:declare_war_to_all(invasion_faction, { self.subculture }, true);
-
+                dynamic_disasters:declare_war_configurable(not self.settings.perimeter_war, self.settings.perimeter_war, true, invasion_faction, nil, nil, true, { self.subculture }, true);
                 cm:apply_effect_bundle(self.invader_buffs_effects_key, faction_key, 0)
             end
         end
@@ -390,6 +389,11 @@ function dragon_emperors_wrath:trigger_dragon_emperors_wrath()
                         end
                     end
                 end
+            end
+
+            -- Declare war against the targets if it's a perimeter war.
+            if self.settings.perimeter_war == true then
+                dynamic_disasters:declare_war_configurable(not self.settings.perimeter_war, self.settings.perimeter_war, true, faction, nil, self.settings.targets, true, { self.subculture }, true);
             end
         end
     end
