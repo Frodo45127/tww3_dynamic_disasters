@@ -2317,9 +2317,8 @@ function disaster_chaos_invasion:declare_war_on_unvasalized_norscans(faction)
                     end
                 end
 
-                -- Ignore factions already vassalized by chaos.
                 if ignore_faction == false then
-                    dynamic_disasters:declare_war_to_all(faction, vassalizers, true);
+                    dynamic_disasters:declare_war(faction:name(), faction_to_war:name(), false, false);
                 end
             end
         end
