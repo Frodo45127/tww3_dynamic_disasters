@@ -75,7 +75,7 @@ will_of_hashut = {
     -- Settings of the disaster that will be stored in a save.
     settings = {},
     default_settings = {
-        enabled = true,                     -- If the disaster is enabled or not.
+        enabled = false,                     -- If the disaster is enabled or not.
         started = false,                    -- If the disaster has been started.
         finished = false,                   -- If the disaster has been finished.
         repeteable = false,                 -- If the disaster can be repeated.

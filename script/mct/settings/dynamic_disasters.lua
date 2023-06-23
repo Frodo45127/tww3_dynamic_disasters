@@ -205,6 +205,7 @@ disaster_configs = {
         short_victory_is_min_turn = false,
         long_victory_is_min_turn = true,
     },
+    --[[
     will_of_hashut = {
         description = loc_prefix .. "will_of_hashut" .. "_description",
         enable = true,
@@ -217,6 +218,7 @@ disaster_configs = {
         short_victory_is_min_turn = false,
         long_victory_is_min_turn = true,
     },
+    ]]
 };
 
 --[[-------------------------------------------------------------------------------------------------------------
@@ -526,7 +528,7 @@ load_disaster("pyramid_of_nagash", disaster_configs["pyramid_of_nagash"]);
 load_disaster("vampires_rise", disaster_configs["vampires_rise"]);
 load_disaster("waaagh", disaster_configs["waaagh"]);
 load_disaster("wild_hunt", disaster_configs["wild_hunt"]);
-load_disaster("will_of_hashut", disaster_configs["will_of_hashut"]);
+--load_disaster("will_of_hashut", disaster_configs["will_of_hashut"]);
 
 -- Listener to lock/unlock relevant settings if autodifficulty is enabled/disabled.
 core:add_listener(
