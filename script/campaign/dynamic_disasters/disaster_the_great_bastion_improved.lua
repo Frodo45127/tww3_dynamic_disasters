@@ -395,7 +395,6 @@ function the_great_bastion_improved:set_status(status)
                             end
 
                             dynamic_disasters:create_scenario_force_at_coords(self.invasion_faction, gate.gate_key, coordinates, template, 14, false, 1, self.name, invaders_callback, general);
-                            self:spawn_army(7, "chaos_besiegers_1", coordinates)
                             out("\tFrodo45127: Spawning small army for [" .. gate.gate_key .. "] at position [" .. coordinates[1] .. ", " .. coordinates[2] .. "]")
                         end
 
